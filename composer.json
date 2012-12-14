@@ -12,7 +12,7 @@
         "monolog/monolog": "dev-master"
     },
     "require-dev": {
-        "twig/twig": "dev-master",
+        "twig/twig": "dev-master"
     },
     "autoload": {
     	"psr-0": {
