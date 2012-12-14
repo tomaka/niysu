@@ -5,7 +5,7 @@ namespace Niysu;
 /// \details Uses Monolog
 class LogServiceProvider {
 	public function __construct() {
-		$this->monolog = new Monolog\Logger('NiysuServer');
+		$this->monolog = new \Monolog\Logger('NiysuServer');
 		$this->addLogHandler(__DIR__.'/../logs/log.txt');
 	}
 	
@@ -20,7 +20,7 @@ class LogServiceProvider {
 	
 	
 	private function addLogHandler($path) {
-		$this->monolog->pushHandler(new Monolog\Handler\RotatingFileHandler($path, 7));
+		$this->monolog->pushHandler(new \Monolog\Handler\RotatingFileHandler($path, 7));
 	}
 	
 	private $monolog;

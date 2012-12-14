@@ -2,7 +2,7 @@
 namespace Niysu;
 
 class TwigService {
-	public function __construct(HTTPResponseInterface &$response, Twig_Environment $twig) {
+	public function __construct(HTTPResponseInterface &$response, \Twig_Environment $twig) {
 		$this->response = &$response;
 		$this->twig = $twig;
 	}

@@ -3,7 +3,7 @@ namespace Niysu;
 
 class TwigServiceProvider {
 	public function __construct() {
-		$this->loader = new Twig_Loader_Filesystem([]);
+		$this->loader = new \Twig_Loader_Filesystem([]);
 	}
 
 	public function addPath($templateDir, $namespace = null) {
@@ -26,11 +26,11 @@ class TwigServiceProvider {
 
 	public function __invoke(HTTPResponseInterface &$response) {
 		if (!$this->twig) {
-			$this->twig = new Twig_Environment($this->loader);
+			$this->twig = new \Twig_Environment($this->loader);
 			foreach ($this->globals as $n => $v)
 				$this->twig->addGlobal($n, $v);
 		}
-		return new TwigService($response, $this->twig);
+		return new \TwigService($response, $this->twig);
 	}
 
 
