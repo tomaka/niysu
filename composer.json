@@ -1,0 +1,22 @@
+{
+	"name": "tomaka17/niysu",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {   "name": "Pierre Krieger",
+            "homepage": "http://tomaka17.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "monolog/monolog": "dev-master"
+    },
+    "require-dev": {
+        "twig/twig": "dev-master",
+    },
+    "autoload": {
+    	"psr-0": {
+    		"Niysu\\": "src/"
+    	}
+    }
+}
