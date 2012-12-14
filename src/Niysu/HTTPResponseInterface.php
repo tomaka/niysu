@@ -20,6 +20,12 @@ abstract class HTTPResponseInterface {
 	/// \brief Adds content
 	/// \note Sends the headers list of not already sent
 	abstract public function appendData($data);
+
+	/// \brief
+	public function redirect($target, $statusCode = 302) {
+		$this->setStatusCode($statusCode);
+		$this->setHeader('Location', $target);
+	}
 	
 	/// \param $type An array with keys like 'public' or 'max-age', with an optional value setting the value
 	public function setCache($value) {
