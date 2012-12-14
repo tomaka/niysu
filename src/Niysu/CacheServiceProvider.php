@@ -2,7 +2,7 @@
 namespace Niysu;
 
 class CacheServiceProvider {
-	public function __construct($directory) {
+	public function __construct($directory = null) {
 		try {
 			$this->directory = $directory;
 		} catch(Exception $e) {
