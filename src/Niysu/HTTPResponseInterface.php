@@ -24,7 +24,7 @@ abstract class HTTPResponseInterface {
 	/// \param $type An array with keys like 'public' or 'max-age', with an optional value setting the value
 	public function setCache($value) {
 		if (!is_array($value))
-			throw new LogicException('$type must be an array');
+			throw new \LogicException('$type must be an array');
 
 		$str = '';
 		foreach ($value as $key => $value) {
@@ -71,9 +71,9 @@ abstract class HTTPResponseInterface {
 			$this->appendData(XMLOutput::writeXML($data));
 			
 		} else if ($data === null) {
-			throw new LogicException('Null data in setXMLData');
+			throw new \LogicException('Null data in setXMLData');
 		} else {
-			throw new LogicException('Wrong variable type in setXMLData');
+			throw new \LogicException('Wrong variable type in setXMLData');
 		}
 	}
 

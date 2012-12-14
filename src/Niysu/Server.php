@@ -17,7 +17,9 @@ class Server {
 		$this->setServiceProvider('log', new LogServiceProvider());
 		$this->setServiceProvider('cacheMe', new ResourceCacheServiceProvider());
 		$this->setServiceProvider('cache', new CacheServiceProvider(__DIR__.'/../cache'));
-		$this->setServiceProvider('twig', new TwigServiceProvider());
+
+		if (class_exists('Twig_Loader_Filesystem'))
+			$this->setServiceProvider('twig', new TwigServiceProvider());
 
 		// loading environment
 		if ($environment)
@@ -26,7 +28,7 @@ class Server {
 
 	public function getServiceProvider($serviceName) {
 		if (!$this->serviceProviders[$serviceName])
-			throw new LogicException('Service "'.$serviceName.'" doesn\'t exist');
+			throw new \LogicException('Service "'.$serviceName.'" doesn\'t exist');
 		return $this->serviceProviders[$serviceName];
 	}
 
@@ -36,7 +38,7 @@ class Server {
 	
 	public function getService($serviceName) {
 		if (!isset($this->serviceProviders[$serviceName]))
-			throw new LogicException('Service "'.$serviceName.'" doesn\'t exist');
+			throw new \LogicException('Service "'.$serviceName.'" doesn\'t exist');
 
 		$localScope = clone $this->scope;
 		foreach($this->serviceProviders as $sNameIter => $provider) {
@@ -50,7 +52,7 @@ class Server {
 			return $localScope->callFunction($val);
 		}
 
-		throw new LogicException('Unvalid service provider format');
+		throw new \LogicException('Unvalid service provider format');
 	}
 
 	public function register($url, $method, $callback) {
@@ -66,7 +68,7 @@ class Server {
 			$prefix = substr($prefix, 0, -1);
 		$this->register($prefix.'/{file}', 'get', function($file, $response, $elapsedTime) {
 			if (!extension_loaded('fileinfo'))
-				throw new LogicException('The "fileinfo" extension must be activated');
+				throw new \LogicException('The "fileinfo" extension must be activated');
 
 			$finfo = finfo_open(FILEINFO_MIME);
 			$mime = finfo_file($finfo, $file);
@@ -178,10 +180,10 @@ class Server {
 
 		} else if (is_string($environment)) {
 			if (!file_exists($environment))
-				throw new LogicException('File doesn\'t exist: '.$environment);
+				throw new \LogicException('File doesn\'t exist: '.$environment);
 			$val = (include $environment);
 			if (!$val)
-				throw new LogicException('Environment file didn\'t return any data');
+				throw new \LogicException('Environment file didn\'t return any data');
 			$this->loadEnvironmentData($val);
 		}
 	}
@@ -207,7 +209,7 @@ class Server {
 
 			} else if ($key === 'config') {
 				if (!is_callable($value))
-					throw new LogicException('The "config" function in environment data must be callable');
+					throw new \LogicException('The "config" function in environment data must be callable');
 
 				// building scope for configuration
 				$configScope = clone $this->scope;
@@ -219,7 +221,7 @@ class Server {
 				if (is_numeric($key) && is_array($value)) {
 					$this->loadEnvironmentData($value);
 				} else {
-					throw new LogicException('Unknown environment option: '.$key);
+					throw new \LogicException('Unknown environment option: '.$key);
 				}
 			}
 		}

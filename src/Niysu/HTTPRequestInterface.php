@@ -33,7 +33,7 @@ abstract class HTTPRequestInterface {
 	
 	/// \brief Returns the list of cookies
 	public function getCookiesList() {
-		throw new Exception('Not yet implemented');
+		throw new \Exception('Not yet implemented');
 	}
 	
 	/// \brief Returns the value of the Content-Type header, or 'application/octet-stream' if no such header
@@ -205,7 +205,7 @@ abstract class HTTPRequestInterface {
 	
 	private static function getHighestPriorityFor($data, $args) {
 		if (empty($args))
-			throw new LogicException('getHighestPriority needs at least one parameter');
+			throw new \LogicException('getHighestPriority needs at least one parameter');
 		$vals = [];
 		foreach ($args as $arg) {
 			$prio = self::getPriorityFor($data, $arg);

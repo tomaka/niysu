@@ -46,7 +46,7 @@ class HTTPResponseCustomFilter extends HTTPResponseFilter {
 
 	public function setContentCallback($contentCallback) {
 		if ($contentCallback != null && !is_callable($contentCallback))
-			throw new LogicException('Content callback must be callable');
+			throw new \LogicException('Content callback must be callable');
 		$this->contentCallback = $contentCallback;
 	}
 	

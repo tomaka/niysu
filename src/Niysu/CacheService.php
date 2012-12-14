@@ -4,7 +4,7 @@ namespace Niysu;
 class CacheService {
 	public function __construct($directory) {
 		if (!is_dir($directory))
-			throw new LogicException('The cache directory doesn\'t exist: '.$directory);
+			throw new \LogicException('The cache directory doesn\'t exist: '.$directory);
 		$this->directory = $directory;
 	}
 	
@@ -35,7 +35,7 @@ class CacheService {
 	public function load($key) {
 		$file = $this->keyToFile($key);
 		if (!file_exists($file))
-			throw new LogicException('Cache element doesn\'t exist');
+			throw new \LogicException('Cache element doesn\'t exist');
 
 		$fp = fopen('compress.zlib://'.$file, 'rb');
 		$data = '';

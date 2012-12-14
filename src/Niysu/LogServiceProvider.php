@@ -6,7 +6,7 @@ namespace Niysu;
 class LogServiceProvider {
 	public function __construct() {
 		$this->monolog = new \Monolog\Logger('NiysuServer');
-		$this->addLogHandler(__DIR__.'/../logs/log.txt');
+		try { $this->addLogHandler('./logs/log.txt'); } catch (\Exception $e) {}
 	}
 	
 	public function __invoke() {
@@ -14,12 +14,15 @@ class LogServiceProvider {
 	}
 	
 	public function setLogsPath($path) {
-		$this->monolog->popHandler();
+		try { $this->monolog->popHandler(); } catch (\Exception $e) {}
 		$this->addLogHandler($path);
 	}
 	
 	
 	private function addLogHandler($path) {
+		if (!is_writable(dirname($path)))
+			throw new \LogicException('Log path is not writable: '.dirname($path));
+
 		$this->monolog->pushHandler(new \Monolog\Handler\RotatingFileHandler($path, 7));
 	}
 	

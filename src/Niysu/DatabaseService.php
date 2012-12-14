@@ -13,23 +13,23 @@ class DatabaseService implements Iterator, ArrayAccess, Countable {
 
 	public function BeginTransaction() {
 		if ($this->databasePDO->inTransaction())
-			throw new LogicException('A transaction is already in progress');
+			throw new \LogicException('A transaction is already in progress');
 		if (!$this->databasePDO->beginTransaction())
-			throw new RuntimeException('Error while starting a transaction');
+			throw new \RuntimException('Error while starting a transaction');
 	}
 
 	public function Commit() {
 		if (!$this->databasePDO->inTransaction())
-			throw new LogicException('No transaction is currently in progress');
+			throw new \LogicException('No transaction is currently in progress');
 		if (!$this->databasePDO->commit())
-			throw new RuntimeException('Error during commit');
+			throw new \RuntimException('Error during commit');
 	}
 
 	public function RollBack() {
 		if (!$this->databasePDO->inTransaction())
-			throw new LogicException('No transaction is currently in progress');
+			throw new \LogicException('No transaction is currently in progress');
 		if (!$this->databasePDO->rollBack())
-			throw new RuntimeException('Error during rollback');
+			throw new \RuntimException('Error during rollback');
 	}
 	
 	/// \brief Executes a query and returns an array containing the results with PDO::FETCH_BOTH
@@ -72,7 +72,7 @@ class DatabaseService implements Iterator, ArrayAccess, Countable {
 			$this->databasePDO = new PDO($database, func_get_arg(1), func_get_arg(2));
 			$this->databasePDO->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		} else {
-			throw new LogicException('Parameter passed to DatabaseService constructor is not valid');
+			throw new \LogicException('Parameter passed to DatabaseService constructor is not valid');
 		}
 
 		switch ($this->databasePDO->getAttribute(PDO::ATTR_DRIVER_NAME)) {
@@ -177,9 +177,9 @@ class DatabaseService implements Iterator, ArrayAccess, Countable {
 		// handling the $something[] = [...] syntax
 		if ($offset === null) {
 			if (!is_array($value))
-				throw new LogicException('Value for [] must be an array');
+				throw new \LogicException('Value for [] must be an array');
 			if ($this->fieldName !== null)
-				throw new LogicException('You can only insert after a table name');
+				throw new \LogicException('You can only insert after a table name');
 
 			$fields = [];
 			$vals = [];
@@ -221,7 +221,7 @@ class DatabaseService implements Iterator, ArrayAccess, Countable {
 	private function followForeignKey() {
 		$createTable = $this->databasePDO->query('SHOW CREATE TABLE "'.$this->tableName.'"')->fetch()[1];
 		if (!preg_match('/FOREIGN\\s+KEY\\s*\\("'.$this->fieldName.'"\\)\\s+REFERENCES\\s+"(.*?)"\s+\\("(.*?)"\\)/i', $createTable, $matches))
-			throw new RuntimeException('The field '.$this->fieldName.' is not a foreign key');
+			throw new \RuntimException('The field '.$this->fieldName.' is not a foreign key');
 
 		$newThis = clone $this;
 		$newThis->tableName = $matches[1];
@@ -250,7 +250,7 @@ class DatabaseService implements Iterator, ArrayAccess, Countable {
 	private function addWhereClause($offset) {
 		if (is_numeric($offset)) {
 			if ($this->offsetClause !== null && $offset != $this->offsetClause)
-				throw LogicException('Cannot specify two offsets at the same time');
+				throw \LogicException('Cannot specify two offsets at the same time');
 			$newThis = clone $this;
 			$newThis->offsetClause = $offset;
 			if ($newThis->currentResultSet && isset($newThis->currentResultSet[$offset]))
@@ -283,7 +283,7 @@ class DatabaseService implements Iterator, ArrayAccess, Countable {
 				return $newThis;
 
 			} else {
-				throw new LogicException('Can only pass numbers, strings or arrays inside brackets');
+				throw new \LogicException('Can only pass numbers, strings or arrays inside brackets');
 			}
 		}
 	}

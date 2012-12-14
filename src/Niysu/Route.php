@@ -114,7 +114,7 @@ class Route {
 	/// \param ... Other parameters are passed to the constructor after the HTTPResponseInterface
 	public function outputFilter($filterClass) {
 		if (!class_exists($filterClass))
-			throw new LogicException('Unvalid class: '.$filterClass);
+			throw new \LogicException('Unvalid class: '.$filterClass);
 
 		$existingFilter = $this->filterOutput;
 

@@ -4,7 +4,7 @@ namespace Niysu;
 class Scope {
 	public function getVariable($var) {
 		if (!isset($this->variables[$var]))
-			throw new LogicException('Unvalid variable');
+			throw new \LogicException('Unvalid variable');
 		return $this->variables[$var];
 	}
 
@@ -21,7 +21,7 @@ class Scope {
 	/// \details The first time a function requests for this variable, this callback will be called to generate ie
 	public function addByCallback($var, $callback, $type = null) {
 		if (!is_callable($callback))
-			throw new LogicException('The callback must be callable');
+			throw new \LogicException('The callback must be callable');
 		$this->variablesCallback[$var] = $callback;
 		$this->variablesTypes[$var] = $type;
 		return $this;
@@ -58,17 +58,17 @@ class Scope {
 	
 	private static function buildReflection($callable) {
 		if (is_string($callable) && ($pos = strpos($callable, '::')) !== false)
-			return new ReflectionMethod(substr($callable, 0, $pos), substr($callable, $pos + 2));
+			return new \ReflectionMethod(substr($callable, 0, $pos), substr($callable, $pos + 2));
 		if (is_string($callable) && function_exists($callable))
-			return new ReflectionFunction($callable);
+			return new \ReflectionFunction($callable);
 		if (method_exists($callable, '__invoke'))
-			return new ReflectionMethod($callable, '__invoke');
+			return new \ReflectionMethod($callable, '__invoke');
 		if (is_string($callable) && method_exists('HTTPResponseInterface', $callable))
-			return new ReflectionMethod('HTTPResponseInterface', $callable);
+			return new \ReflectionMethod('HTTPResponseInterface', $callable);
 		if (is_string($callable) && method_exists('HTTPRequestInterface', $callable))
-			return new ReflectionMethod('HTTPRequestInterface', $callable);
+			return new \ReflectionMethod('HTTPRequestInterface', $callable);
 		
-		throw new LogicException('Unvalid callable type in ControllerRegistration');
+		throw new \LogicException('Unvalid callable type in ControllerRegistration');
 	}
 	
 	// returns a closure taking as parameter (Scope $scope)

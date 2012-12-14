@@ -8,9 +8,9 @@ class HTTPResponseXSLTFilter extends HTTPResponseFilter {
 	
 	public function __construct(HTTPResponseInterface $output, $pathToXSLT, $turnIntoHTML = false) {
 		if (!extension_loaded('xsl'))
-			throw new LogicException('The php_xsl extension must be activated');
+			throw new \LogicException('The php_xsl extension must be activated');
 		if (!file_exists($pathToXSLT))
-			throw new LogicException('XSLT file passed to HTTPResponseXSLTFilter doesn\'t exist ("'.$pathToXSLT.'")');
+			throw new \LogicException('XSLT file passed to HTTPResponseXSLTFilter doesn\'t exist ("'.$pathToXSLT.'")');
 
 		parent::__construct($output);
 		$this->pathToXSLT = $pathToXSLT;

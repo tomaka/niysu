@@ -29,7 +29,7 @@ class ResourceCacheService {
 			$seconds = (((($seconds->y * 12 + $seconds->m) * 30.4 + $seconds->d) * 24 + $seconds->h) * 60 + $seconds->i) * 60 + $seconds->s;
 
 		if (!is_numeric($seconds))
-			throw new LogicException('Wrong value for cache duration');
+			throw new \LogicException('Wrong value for cache duration');
 
 		$this->duration = $seconds;
 		$this->refreshClientSide();
