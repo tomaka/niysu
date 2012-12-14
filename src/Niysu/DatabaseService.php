@@ -76,8 +76,11 @@ class DatabaseService implements \Iterator, \ArrayAccess, \Countable {
 		}
 
 		switch ($this->databasePDO->getAttribute(\PDO::ATTR_DRIVER_NAME)) {
+			case 'sqlite':		$this->colNameDelimiter = ''; break;
 			case 'mysql':		$this->colNameDelimiter = '`'; break;
 			case 'pgsql':		$this->colNameDelimiter = '"'; break;
+			default:
+				throw new \LogicException('Unknown PDO driver: '.$this->databasePDO->getAttribute(\PDO::ATTR_DRIVER_NAME));
 		}
 	}
 
@@ -189,7 +192,7 @@ class DatabaseService implements \Iterator, \ArrayAccess, \Countable {
 				$fields[] = '"'.$k.'"';
 				$vals[] = '?';
 			}
-			$sql = 'INSERT INTO "'.$this->tableName.'"'.(empty($fields) ? '' : ' ('.implode(', ', $fields).') VALUES ('.implode(', ', $vals).')');
+			$sql = 'INSERT INTO '.$this->colNameDelimiter.$this->tableName.$this->colNameDelimiter.(empty($fields) ? '' : ' ('.implode(', ', $fields).') VALUES ('.implode(', ', $vals).')');
 			$query = $this->databasePDO->prepare($sql);
 			$query->execute(array_values($value));
 			return;
@@ -233,12 +236,12 @@ class DatabaseService implements \Iterator, \ArrayAccess, \Countable {
 
 		if ($this->offsetClause !== null) {
 			$newThis->joinClause = null;
-			$newThis->whereClause = $newThis->tableAlias.'."'.$matches[2].'" = ('.$this->generateSQLRequest().')';
+			$newThis->whereClause = $newThis->tableAlias.'.'.$this->colNameDelimiter.$matches[2].$this->colNameDelimiter.' = ('.$this->generateSQLRequest().')';
 
 		} else {
 			if ($newThis->joinClause === null)
 				$newThis->joinClause = '';
-			$newThis->joinClause = 'INNER JOIN "'.$this->tableName.'" AS '.$this->tableAlias.' ON '.$newThis->tableAlias.'."'.$matches[2].'" = '.$this->tableAlias.'."'.$this->fieldName.'"'.$newThis->joinClause;
+			$newThis->joinClause = 'INNER JOIN '.$this->colNameDelimiter.$this->tableName.$this->colNameDelimiter.' AS '.$this->tableAlias.' ON '.$newThis->tableAlias.'."'.$matches[2].'" = '.$this->tableAlias.'."'.$this->fieldName.'"'.$newThis->joinClause;
 			if ($this->whereClause)
 				$newThis->joinClause .= ' AND '.$this->whereClause;
 		}
