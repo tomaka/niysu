@@ -82,8 +82,8 @@ class ScopeTest extends \PHPUnit_Framework_TestCase {
 		$scope = new Scope();
 		$scope->add('a', 1);
 		$scope->add('b', function() { return 2; });
-		$scope->add('cTest', new \LogicException('testC'));
-		$scope->add('dTest', function() { return new \RuntimeException('testD'); }, 'RuntimeException');
+		$scope->addByCallback('cTest', new \LogicException('testC'));
+		$scope->addByCallback('dTest', function() { return new \RuntimeException('testD'); }, 'RuntimeException');
 		$scope->add('e', 20);
 
 		$scope->callFunction(function($a, $b, \LogicException $c, \RuntimeException &$d, &$e) {
