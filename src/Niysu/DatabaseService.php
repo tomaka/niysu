@@ -122,6 +122,8 @@ class DatabaseService implements \Iterator, \ArrayAccess, \Countable {
 	}
 
 	public function __toString() {
+		if (!$this->tableName)
+			return '';
 		return (string)($this->__invoke([]));
 	}
 
@@ -292,6 +294,9 @@ class DatabaseService implements \Iterator, \ArrayAccess, \Countable {
 	}
 
 	private function generateSQLRequest() {
+		if (!$this->tableName || !$this->tableAlias)
+			throw new \LogicException('Trying to retrive data of an undefined table');
+
 		$sql  = 'SELECT '.$this->tableAlias.'.'.($this->fieldName === null ? '*' : $this->colNameDelimiter.$this->fieldName.$this->colNameDelimiter);
 		$sql .= ' FROM '.$this->colNameDelimiter.$this->tableName.$this->colNameDelimiter.' AS '.$this->tableAlias;
 		$sql .= ($this->joinClause !== null ? ' '.$this->joinClause : '');
