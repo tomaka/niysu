@@ -15,10 +15,10 @@ class DatabaseServiceProvider {
 	public function __invoke() {
 		if (!$this->databasePDO) {
 			$beforeConnection = microtime(true);
-			if (!$this->dsn)	$this->databasePDO = new PDO('sqlite::memory:');
-			else 				$this->databasePDO = new PDO($this->dsn, $this->username, $this->password);
-			$this->databasePDO->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-			$this->databasePDO->exec('SET NAMES \'UTF8\'');
+			if (!$this->dsn)	$this->databasePDO = new \PDO('sqlite::memory:');
+			else 				$this->databasePDO = new \PDO($this->dsn, $this->username, $this->password);
+			$this->databasePDO->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+			//$this->databasePDO->exec('SET NAMES \'UTF8\'');
 			$this->connectionDuration = microtime(true) - $beforeConnection;
 		}
 

@@ -1,7 +1,7 @@
 <?php
 namespace Niysu;
 
-class DatabaseService implements Iterator, ArrayAccess, Countable {
+class DatabaseService implements \Iterator, \ArrayAccess, \Countable {
 	public function OrderBy($param) {
 		$newThis = clone $this;
 		if ($newThis->orderByClause !== null)		$newThis->orderByClause .= ', ';
@@ -66,16 +66,16 @@ class DatabaseService implements Iterator, ArrayAccess, Countable {
 
 
 	public function __construct($database) {
-		if ($database instanceof PDO) {
+		if ($database instanceof \PDO) {
 			$this->databasePDO = $database;
 		} else if (is_string($database)) {
-			$this->databasePDO = new PDO($database, func_get_arg(1), func_get_arg(2));
-			$this->databasePDO->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$this->databasePDO = new \PDO($database, func_get_arg(1), func_get_arg(2));
+			$this->databasePDO->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 		} else {
 			throw new \LogicException('Parameter passed to DatabaseService constructor is not valid');
 		}
 
-		switch ($this->databasePDO->getAttribute(PDO::ATTR_DRIVER_NAME)) {
+		switch ($this->databasePDO->getAttribute(\PDO::ATTR_DRIVER_NAME)) {
 			case 'mysql':		$this->colNameDelimiter = '`'; break;
 			case 'pgsql':		$this->colNameDelimiter = '"'; break;
 		}
@@ -306,7 +306,7 @@ class DatabaseService implements Iterator, ArrayAccess, Countable {
 		$query->execute($this->whereParams);
 		self::$numQueries++;
 
-		$this->currentResultSet = $query->fetchAll(PDO::FETCH_ASSOC);
+		$this->currentResultSet = $query->fetchAll(\PDO::FETCH_ASSOC);
 	}
 
 	private function execUpdate($changes) {
