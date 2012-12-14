@@ -23,14 +23,14 @@ class ScopeTest extends \PHPUnit_Framework_TestCase {
 	/**
      * @expectedException PHPUnit_Framework_Warning
      */
-	public function testSetPassByRef() {
+	public function testSetVariablePassByRef() {
 		$scope = new Scope();
 		$scope->add('test', 4);
-		$scope->setPassByRef('test', false);
+		$scope->setVariablePassByRef('test', false);
 		$scope->callFunction(function(&$test) { $test = 10; });
 		$scope->assertEquals($scope->getVariable('test'), 4);
 	}
-	
+
 	public function testCallFunction() {
 		$scope = new Scope();
 		$scope->add('test', 1);
