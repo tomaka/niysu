@@ -21,7 +21,7 @@ class ScopeTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	/**
-     * @expectedException PHPUnit_Framework_Warning
+     * @expectedException PHPUnit_Framework_Error_Warning
      */
 	public function testSetVariablePassByRef() {
 		$scope = new Scope();
