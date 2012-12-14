@@ -41,7 +41,7 @@ class DatabaseService implements \Iterator, \ArrayAccess, \Countable {
 		
 		$query = $this->databasePDO->prepare($sql);
 		$query->execute($params);
-		return $query->fetchAll(PDO::FETCH_BOTH);
+		return $query->fetchAll(\PDO::FETCH_BOTH);
 	}
 	
 	/// \brief Executes a query and returns the first of the results with PDO::FETCH_BOTH, or null if no answer
@@ -159,12 +159,13 @@ class DatabaseService implements \Iterator, \ArrayAccess, \Countable {
 		if ($this->offsetClause !== null)
 			$this->currentTraversedRow = $this->offsetClause;
 
-		$this->buildResultSet();
+		if ($this->tableName)
+			$this->buildResultSet();
 	}
 
 	public function valid() {
 		if ($this->currentResultSet === null)
-			rewind();
+			$this->rewind();
 		if ($this->offsetClause !== null && $this->currentTraversedRow != $this->offsetClause)
 			return false;
 		return isset($this->currentResultSet[$this->currentTraversedRow]);
