@@ -16,7 +16,7 @@ class Server {
 		$this->setServiceProvider('database', new DatabaseServiceProvider());
 		$this->setServiceProvider('log', new LogServiceProvider());
 		$this->setServiceProvider('cacheMe', new CacheMeServiceProvider());
-		$this->setServiceProvider('cache', new CacheServiceProvider(__DIR__.'/../cache'));
+		$this->setServiceProvider('cache', new CacheServiceProvider());
 
 		if (class_exists('Twig_Loader_Filesystem'))
 			$this->setServiceProvider('twig', new TwigServiceProvider());
