@@ -2,14 +2,16 @@
 namespace Niysu;
 
 class CacheMeService {
-	public static function before($duration) {
-		return function($cacheMeService, &$callHandler) use ($duration) {
+	public static function before($duration, $vary = []) {
+		return function($cacheMeService, &$callHandler) use ($duration, $vary) {
 			$cacheMeService->setDuration($duration);
+			foreach ($vary as $v)
+				$cacheMeService->vary($v);
 			if ($cacheMeService->load())
 				$callHandler = false;
 		};
 	}
-
+	
 	public function __construct(HTTPRequestInterface $request, HTTPResponseInterface &$response, CacheService $cache, $log, $elapsedTime) {
 		$this->cache = $cache;
 		$this->log = $log;
