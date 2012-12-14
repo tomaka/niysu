@@ -1,7 +1,15 @@
 <?php
 namespace Niysu;
 
-class ResourceCacheService {
+class CacheMeService {
+	public static function before($duration) {
+		return function($cacheMeService, &$callHandler) use ($duration) {
+			$cacheMeService->setDuration($duration);
+			if ($cacheMeService->load())
+				$callHandler = false;
+		};
+	}
+	
 	public function __construct(HTTPRequestInterface $request, HTTPResponseInterface &$response, CacheService $cache, $log, $elapsedTime) {
 		$this->cache = $cache;
 		$this->log = $log;
@@ -21,7 +29,7 @@ class ResourceCacheService {
 		if ($request->getMethod() == 'GET')
 			$this->setDuration(60);
 	}
-
+	
 	public function setDuration($seconds) {
 		if (is_string($seconds))
 			$seconds = new DateInterval($seconds);
@@ -34,7 +42,7 @@ class ResourceCacheService {
 		$this->duration = $seconds;
 		$this->refreshClientSide();
 	}
-
+	
 	public function load() {
 		if (!$this->cache->exists($this->serverCacheResourceName)) {
 			$this->log->debug('Attempting to load resource from cache, not found: '.$this->serverCacheResourceName);

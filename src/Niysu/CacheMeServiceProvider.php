@@ -1,9 +1,9 @@
 <?php
 namespace Niysu;
 
-class ResourceCacheServiceProvider {
+class CacheMeServiceProvider {
 	public function __invoke(HTTPRequestInterface $request, HTTPResponseInterface &$response, CacheService $cache, $log, $elapsedTime) {
-		return new ResourceCacheService($request, $response, $cache, $log, $elapsedTime);
+		return new CacheMeService($request, $response, $cache, $log, $elapsedTime);
 	}
 };
 
