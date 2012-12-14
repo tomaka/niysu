@@ -15,9 +15,11 @@ class ScopeTest extends \PHPUnit_Framework_TestCase {
 	public function testScopeAccessible() {
 		$scope = new Scope();
 		$scope->add('test', 1);
-		$scope->callFunction(function($scope) { $this->assertEquals($scope->getVariable('test', 1)); });
+		$scope->callFunction(function($scope) {
+			$this->assertEquals($scope->getVariable('test'), 1);
+		});
 	}
-
+	
 	public function testClone() {
 		$scope1 = new Scope();
 		$scope1->add('test', 1);
