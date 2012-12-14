@@ -30,7 +30,7 @@ class TwigServiceProvider {
 			foreach ($this->globals as $n => $v)
 				$this->twig->addGlobal($n, $v);
 		}
-		return new \TwigService($response, $this->twig);
+		return new TwigService($response, $this->twig);
 	}
 
 
