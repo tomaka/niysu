@@ -186,6 +186,9 @@ class Server {
 				throw new \LogicException('Environment file didn\'t return any data');
 			$this->loadEnvironmentData($val);
 		}
+
+		if ($this->handleErrors == true)
+			$this->replaceErrorHandling();
 	}
 	
 	private function loadEnvironmentData($enviData) {
@@ -194,6 +197,7 @@ class Server {
 			if ($key === 'name') {
 
 			} else if ($key === 'handleErrors') {
+				$this->handleErrors = $value;
 				if ($value == true)
 					$this->replaceErrorHandling();
 
@@ -253,7 +257,7 @@ class Server {
 				return true;
 			}
 
-			throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
+			throw new \ErrorException($errstr, 0, $errno, $errfile, $errline);
 		});
 		
 		// changing the handler to be called when an exception is not handled
@@ -273,11 +277,8 @@ class Server {
 		error_reporting(0);
 	}
 
-	private function printError(Exception $e) {
-		if (count($this->currentResponsesStack) == 0)
-			return;
-
-		$response = $this->currentResponsesStack[count($this->currentResponsesStack) - 1];
+	private function printError(\Exception $e) {
+		$response = new HTTPResponseGlobal();
 
 		if (!$response->isHeadersListSent()) {
 			$response->setStatusCode(500);
@@ -318,6 +319,7 @@ class Server {
 
 	private $scope;
 	private $printErrors = false;
+	private $handleErrors = true;
 	private $showRoutesOn404 = false;
 	private $routes = [];
 	private $serviceProviders = [];
