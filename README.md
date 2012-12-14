@@ -24,9 +24,11 @@ $server->register('/', 'get', function($response) {
 $server->handle();
 ```
 
-You can 
+You can add variable parts in the URL, and access them in the handling function:
 ```php
-
+$server->register('/users/{userID}', 'get', function($userID, $response) {
+	$response->setPlainTextData('Hi, '.$userID.'!');
+});
 ```
 
 
