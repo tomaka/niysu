@@ -11,13 +11,13 @@ class ScopeTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals($scope->getVariable('testB'), 2);
 		$this->assertEquals($scope->getVariable('testC'), 3);
 	}
-
+	
 	public function testCallFunction() {
 		$scope = new Scope();
 		$scope->add('test', 1);
-		$scope->callFunction(function($test) { $this->assertEquals($test, 3); });
+		$scope->callFunction(function($test) { $this->assertEquals($test, 1); });
 	}
-
+	
 	public function testAddByCallback() {
 		$scope = new Scope();
 		$scope->addByCallback('test', function() { return 3; });
