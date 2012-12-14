@@ -81,26 +81,6 @@ abstract class HTTPResponseInterface {
 		$this->setHeader('Content-Type', 'text/plain; charset=utf8');
 		$this->appendData($data);
 	}
-
-	public static function handleXMLInput($request, &$inputXML, $response, &$ignoreHandler) {
-		if (!$request->isXMLData()) {
-			$response->setStatusCode(400);
-			$ignoreHandler = true;
-			return;
-		}
-
-		$inputXML = $request->getXMLData()->children('http://www.fdmjc67.net');
-	}
-	
-	public static function handleJSONInput($request, &$inputJSON, $response, &$ignoreHandler) {
-		if (!$request->isJSONData()) {
-			$response->setStatusCode(400);
-			$ignoreHandler = true;
-			return;
-		}
-
-		$inputJSON = $request->getJSONData();
-	}
 };
 
 ?>
