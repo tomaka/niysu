@@ -4,6 +4,16 @@ namespace Niysu;
 class Server {
 	public function __construct($environment = null) {
 		$constructionTime = microtime(true);
+
+		// loading environment
+		if ($environment) {
+			try {
+				$this->loadEnvironment($environment);
+			} catch(\Exception $e) {
+				if ($_SERVER['HTTP_HOST'] == 'localhost')
+					$this->printError($e);
+			}
+		}
 		
 		// building global scope
 		$this->scope = new Scope();
@@ -21,9 +31,14 @@ class Server {
 		if (class_exists('Twig_Loader_Filesystem'))
 			$this->setServiceProvider('twig', new TwigServiceProvider());
 
-		// loading environment
-		if ($environment)
-			$this->loadEnvironment($environment);
+		// calling configuration functions
+		foreach ($this->configFunctions as $f) {
+			// building scope for configuration
+			$configScope = clone $this->scope;
+			foreach ($this->serviceProviders as $serviceName => $provider)
+				$configScope->add($serviceName.'Provider', $provider);
+			$configScope->callFunction($f);
+		}
 	}
 
 	public function getServiceProvider($serviceName) {
@@ -174,7 +189,7 @@ class Server {
 	}
 
 	/// \brief Loads either a file or an array
-	public function loadEnvironment($environment) {
+	private function loadEnvironment($environment) {
 		if (is_array($environment)) {
 			$this->loadEnvironmentData($environment);
 
@@ -198,8 +213,6 @@ class Server {
 
 			} else if ($key === 'handleErrors') {
 				$this->handleErrors = $value;
-				if ($value == true)
-					$this->replaceErrorHandling();
 
 			} else if ($key === 'printErrors') {
 				$this->printErrors = ($value == true);
@@ -214,12 +227,7 @@ class Server {
 			} else if ($key === 'config') {
 				if (!is_callable($value))
 					throw new \LogicException('The "config" function in environment data must be callable');
-
-				// building scope for configuration
-				$configScope = clone $this->scope;
-				foreach ($this->serviceProviders as $serviceName => $provider)
-					$configScope->add($serviceName.'Provider', $provider);
-				$configScope->callFunction($value);
+				$this->configFunctions[] = $value;
 
 			} else {
 				if (is_numeric($key) && is_array($value)) {
@@ -239,7 +247,7 @@ class Server {
 				try {
 					$this->getService('log')->crit($error['message'], $error);
 					if ($this->printErrors)
-						$this->printError(new ErrorException($error['message'], 0, $error['type'], $error['file'], $error['line']));
+						$this->printError(new \ErrorException($error['message'], 0, $error['type'], $error['file'], $error['line']));
 
 					if (count($this->currentResponsesStack) >= 1) {
 						$response = $this->currentResponsesStack[count($this->currentResponsesStack) - 1];
@@ -322,6 +330,7 @@ class Server {
 	private $handleErrors = true;
 	private $showRoutesOn404 = false;
 	private $routes = [];
+	private $configFunctions = [];				// configuration functions (coming from the environment) to call
 	private $serviceProviders = [];
 	private $globalBefores = [];
 	private $currentResponsesStack = [];		// at every call to handle(), the response is pushed on top of this stack, and removed when the handle() is finished
