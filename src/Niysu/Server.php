@@ -21,6 +21,9 @@ class Server {
 		$this->scope->setVariablePassByRef('server', false);
 		$this->scope->add('elapsedTime', function() use ($constructionTime) { $now = microtime(true); return round(1000 * ($now - $constructionTime)); });
 		$this->scope->setVariablePassByRef('elapsedTime', false);
+
+		// building the routescollection
+		$this->routesCollection = new RoutesCollection('');
 		
 		// building default services providers
 		$this->setServiceProvider('database', new DatabaseServiceProvider());
@@ -71,68 +74,15 @@ class Server {
 	}
 
 	public function register($url, $method, $callback) {
-		$registration = new Route($url, $method, $callback);
-		foreach ($this->globalBefores as $b)
-			$registration->before($b);
-		$this->routes[] = $registration;
-		return $registration;
+		return $this->routesCollection->register($url, $method, $callback);
 	}
 
 	public function registerStaticDirectory($path, $prefix = '/') {
-		if (substr($prefix, -1) == '/')
-			$prefix = substr($prefix, 0, -1);
-		$this->register($prefix.'/{file}', 'get', function($file, $response, $elapsedTime) {
-			if (!extension_loaded('fileinfo'))
-				throw new \LogicException('The "fileinfo" extension must be activated');
-
-			$finfo = finfo_open(FILEINFO_MIME);
-			$mime = finfo_file($finfo, $file);
-			finfo_close($finfo);
-			$pathinfo = pathinfo($file);
-			if ($pathinfo['extension'] == 'css')
-				$mime = 'text/css';
-			if ($pathinfo['extension'] == 'js')
-				$mime = 'application/javascript';
-			if ($pathinfo['extension'] == 'svg')
-				$mime = 'image/svg+xml';
-			if (substr($mime, 0, 15) == 'application/xml' && ($pathinfo['extension'] == 'htm' || $pathinfo['extension'] == 'html'))
-				$mime = 'application/xhtml+xml';
-			$response->setHeader('Content-Type', $mime);
-			$response->appendData(file_get_contents($file));
-		})
-		->pattern('file', '([^\\.]{2,}.*|.)')
-		->before(function(&$file, &$isWrongResource) use ($path) {
-			$file = $path.DIRECTORY_SEPARATOR.str_replace('/', DIRECTORY_SEPARATOR, $file);
-			if (file_exists($file)) {
-				if (is_dir($file))
-					$isWrongResource = true;
-				return;
-			}
-
-			$checkDir = dirname($file);
-			if (!file_exists($checkDir) || !is_dir($checkDir)) {
-				$isWrongResource = true;
-				return;
-			}
-
-			$dirToCheck = dir($checkDir);
-			while ($entry = $dirToCheck->read()) {
-				$entryLong = $dirToCheck->path.'/'.$entry;
-				$pathinfo = pathinfo($entryLong);
-				if ($pathinfo['dirname'].DIRECTORY_SEPARATOR.$pathinfo['filename'] == $file) {
-					$file = $entryLong;
-					return;
-				}
-			}
-
-			$isWrongResource = true;
-		});
+		return $this->routesCollection->registerStaticDirectory($path, $prefix);
 	}
 
 	public function redirect($url, $method, $target, $statusCode = 301) {
-		$registration = new Route($url, $method, function($response) use ($target, $statusCode) { $response->setStatusCode($statusCode); $response->setHeader('Location', $target); });
-		$this->routes[] = $registration;
-		return $registration;
+		return $this->routesCollection->redirect($url, $method, $target, $statusCode);
 	}
 
 	/// \brief Handles the request described in $input by calling the functions from $output
@@ -159,7 +109,7 @@ class Server {
 				});
 			}
 			
-			foreach ($this->routes as $route) {
+			foreach ($this->routesCollection->getRoutesList() as $route) {
 				$localScope = clone $handleScope;
 				if ($route->handle($localScope)) {
 					$log->debug('Successful handling of resource', [ 'url' => $input->getURL(), 'method' => $input->getMethod() ]);
@@ -324,12 +274,12 @@ class Server {
 		exit(1);
 	}
 	
-
+	
 	private $scope;
 	private $printErrors = false;
 	private $handleErrors = true;
 	private $showRoutesOn404 = false;
-	private $routes = [];
+	private $routesCollection;					// instance of RoutesCollection
 	private $configFunctions = [];				// configuration functions (coming from the environment) to call
 	private $serviceProviders = [];
 	private $globalBefores = [];
