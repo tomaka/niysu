@@ -12,17 +12,17 @@ class CacheMeService {
 		};
 	}
 	
-	public function __construct(HTTPRequestInterface $request, HTTPResponseInterface &$response, CacheService $cache, $log, $elapsedTime) {
-		$this->cache = $cache;
-		$this->log = $log;
+	public function __construct(HTTPRequestInterface $request, HTTPResponseInterface &$response, CacheService $cacheService, $logService, $elapsedTime) {
+		$this->cache = $cacheService;
+		$this->log = $logService;
 		$this->elapsedTime = $elapsedTime;
 
 		$serverCacheResourceName = 'resource at '.$request->getURL();
 		$this->serverCacheResourceName = $serverCacheResourceName;
 
 		//$response = new HTTPResponseETagFilter($response);
-		$response = new HTTPResponseCustomFilter($response, \Closure::bind(function($data) use ($cache, $serverCacheResourceName) {
-			$cache->store($serverCacheResourceName, $data);
+		$response = new HTTPResponseCustomFilter($response, \Closure::bind(function($data) use ($cacheService, $serverCacheResourceName) {
+			$cacheService->store($serverCacheResourceName, $data);
 			return $data;
 		}, null));
 		

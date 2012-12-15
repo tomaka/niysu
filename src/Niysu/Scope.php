@@ -114,7 +114,7 @@ class Scope {
 					}
 				}
 				
-				if (isset($scope->variablesCallback[$inputParamName])) {
+				if (!isset($scope->variables[$inputParamName]) && isset($scope->variablesCallback[$inputParamName])) {
 					$scope->variables[$inputParamName] = $scope->variablesCallback[$inputParamName]($scope);
 				}
 				

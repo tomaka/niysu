@@ -118,9 +118,6 @@ class Server {
 			$handleScope->add('response', $output);
 
 			foreach($this->serviceProviders as $serviceName => $provider) {
-				$handleScope->addByCallback($serviceName, function(Scope $s) use ($provider) {
-					return $s->callFunction($provider);
-				});
 				$handleScope->addByCallback($serviceName.'Service', function(Scope $s) use ($provider) {
 					return $s->callFunction($provider);
 				});
