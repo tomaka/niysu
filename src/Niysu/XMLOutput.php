@@ -9,19 +9,19 @@ class XMLOutput {
 		$writeNode = function($xmlWriter, $node) use (&$writeNode) {
 			// first case: the node is a DOMDocument or derivate
 			// writing the raw data
-			if ($node instanceof DOMDocument) {
+			if ($node instanceof \DOMDocument) {
 				$xmlWriter->writeRaw($node->saveXML($node->documentElement));
 				return;
-			} else if ($node instanceof DOMNode) {
+			} else if ($node instanceof \DOMNode) {
 				$xmlWriter->writeRaw($node->ownerDocument->saveXML($node));
 				return;
-			} else if ($node instanceof DOMNodeList) {
+			} else if ($node instanceof \DOMNodeList) {
 				foreach ($node as $n) {
 					$xmlWriter->writeRaw($n->ownerDocument->saveXML($n));
 					$xmlWriter->writeRaw("\n");
 				}
 				return;
-			} else if ($node instanceof SimpleXMLElement) {
+			} else if ($node instanceof \SimpleXMLElement) {
 				$xmlWriter->writeRaw($node->asXML());
 				return;
 			}
@@ -84,7 +84,7 @@ class XMLOutput {
 		};
 		
 		// main body of the function
-		$writer = new XMLWriter();
+		$writer = new \XMLWriter();
 		$writer->openMemory();
 		$writer->setIndentString(' ');
 		$writer->setIndent(true);
