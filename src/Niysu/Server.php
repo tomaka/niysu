@@ -22,8 +22,11 @@ class Server {
 		$this->scope->add('elapsedTime', function() use ($constructionTime) { $now = microtime(true); return round(1000 * ($now - $constructionTime)); });
 		$this->scope->setVariablePassByRef('elapsedTime', false);
 
-		// building the routescollection
-		$this->routesCollection = new RoutesCollection('');
+		// building the main RoutesCollection
+		$mainCollection = new RoutesCollection('');
+		foreach ($this->globalBefores as $b)
+			$mainCollection->before($b);
+		$this->routesCollections[] = $mainCollection;
 		
 		// building default services providers
 		$this->setServiceProvider('database', new DatabaseServiceProvider());
@@ -74,15 +77,29 @@ class Server {
 	}
 
 	public function register($url, $method, $callback) {
-		return $this->routesCollection->register($url, $method, $callback);
+		return $this->routesCollections[0]->register($url, $method, $callback);
 	}
 
 	public function registerStaticDirectory($path, $prefix = '/') {
-		return $this->routesCollection->registerStaticDirectory($path, $prefix);
+		return $this->routesCollections[0]->registerStaticDirectory($path, $prefix);
 	}
 
 	public function redirect($url, $method, $target, $statusCode = 301) {
-		return $this->routesCollection->redirect($url, $method, $target, $statusCode);
+		return $this->routesCollections[0]->redirect($url, $method, $target, $statusCode);
+	}
+
+	public function before($callable) {
+		foreach ($this->routesCollections as $collec)
+			$collec->before($callable);
+		$this->globalBefores[] = $callable;
+	}
+
+	public function buildCollection($prefix) {
+		$newCollection = new RoutesCollection($prefix);
+		foreach ($this->globalBefores as $b)
+			$newCollection->before($b);
+		$this->routesCollections[] = $newCollection;
+		return $newCollection;
 	}
 
 	/// \brief Handles the request described in $input by calling the functions from $output
@@ -109,13 +126,15 @@ class Server {
 				});
 			}
 			
-			foreach ($this->routesCollection->getRoutesList() as $route) {
-				$localScope = clone $handleScope;
-				if ($route->handle($localScope)) {
-					$log->debug('Successful handling of resource', [ 'url' => $input->getURL(), 'method' => $input->getMethod() ]);
-					if ($nb = gc_collect_cycles())
-						$log->warn('gc_collect_cycles() returned non-zero value: '.$nb);
-					return;
+			foreach ($this->routesCollections as $collection) {
+				foreach ($collection->getRoutesList() as $route) {
+					$localScope = clone $handleScope;
+					if ($route->handle($localScope)) {
+						$log->debug('Successful handling of resource', [ 'url' => $input->getURL(), 'method' => $input->getMethod() ]);
+						if ($nb = gc_collect_cycles())
+							$log->warn('gc_collect_cycles() returned non-zero value: '.$nb);
+						return;
+					}
 				}
 			}
 
@@ -274,12 +293,12 @@ class Server {
 		exit(1);
 	}
 	
-	
+
 	private $scope;
 	private $printErrors = false;
 	private $handleErrors = true;
 	private $showRoutesOn404 = false;
-	private $routesCollection;					// instance of RoutesCollection
+	private $routesCollections = [];			// array of instances of RoutesCollection
 	private $configFunctions = [];				// configuration functions (coming from the environment) to call
 	private $serviceProviders = [];
 	private $globalBefores = [];
