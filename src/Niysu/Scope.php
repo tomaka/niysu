@@ -5,11 +5,11 @@ class Scope {
 	public function __get($var) {
 		return $this->getVariable($var);
 	}
-	
+
 	public function __set($var, $value) {
 		return $this->add($var, $value);
 	}
-	
+
 	public function getVariable($var) {
 		if (!isset($this->variables[$var]))
 			throw new \LogicException('Unvalid variable');
@@ -58,9 +58,12 @@ class Scope {
 		return $content;
 	}
 
-	public function __construct() {
+	public function __construct($variables = []) {
 		$this->add('scope', $this, get_class());
 		$this->setVariablePassByRef('scope', false);
+		
+		foreach ($variables as $var => $value)
+			$this->add($var, $value);
 	}
 
 	public function __clone() {
