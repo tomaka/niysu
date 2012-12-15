@@ -71,6 +71,18 @@ class ScopeTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals($scope->getVariable('test'), 3);
 	}
 	
+	public function testCallFunctionUniqueCallback() {
+		$n = 0;		// number of time the callback is called
+		
+		$scope = new Scope();
+		$scope->addByCallback('test', function() use (&$n) { $n += 1; return 3; });
+		
+		$scope->callFunction(function($test) {});
+		$scope->callFunction(function($test) {});
+		
+		$this->assertEquals($n, 1);
+	}
+	
 	public function testCallFunctionWithReference() {
 		$scope = new Scope();
 		$scope->add('test', 1);
