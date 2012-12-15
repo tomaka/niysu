@@ -52,6 +52,7 @@ class Scope {
 
 	public function __construct() {
 		$this->add('scope', $this, get_class());
+		$this->setVariablePassByRef('scope', false);
 	}
 
 	
