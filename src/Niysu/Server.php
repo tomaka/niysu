@@ -30,13 +30,13 @@ class Server {
 		
 		// building default services providers
 		$this->setServiceProvider('database', new DatabaseServiceProvider());
-		$this->setServiceProvider('log', new LogServiceProvider());
 		$this->setServiceProvider('cacheMe', new CacheMeServiceProvider());
 		$this->setServiceProvider('cache', new CacheServiceProvider());
-
+		$this->setServiceProvider('log', new LogServiceProvider());
 		if (class_exists('Twig_Loader_Filesystem'))
 			$this->setServiceProvider('twig', new TwigServiceProvider());
-
+		$this->setServiceProvider('xslt', new XSLTServiceProvider());
+		
 		// calling configuration functions
 		foreach ($this->configFunctions as $f) {
 			// building scope for configuration
