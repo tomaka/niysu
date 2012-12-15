@@ -16,10 +16,10 @@ class CacheMeService {
 		$this->cache = $cacheService;
 		$this->log = $logService;
 		$this->elapsedTime = $elapsedTime;
-
-		$serverCacheResourceName = 'resource at '.$request->getURL();
+		
+		$serverCacheResourceName = 'cacheMe/resources/'.$request->getURL();
 		$this->serverCacheResourceName = $serverCacheResourceName;
-
+		
 		//$response = new HTTPResponseETagFilter($response);
 		$response = new HTTPResponseCustomFilter($response, \Closure::bind(function($data) use ($cacheService, $serverCacheResourceName) {
 			$cacheService->store($serverCacheResourceName, $data);
