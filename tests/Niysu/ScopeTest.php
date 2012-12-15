@@ -5,11 +5,11 @@ class ScopeTest extends \PHPUnit_Framework_TestCase {
 	public function testGetVariable() {
 		$scope = new Scope();
 		$scope->add('testA', 1);
-		$scope->add('testB', 2);
-		$scope->add('testC', 3);
+		$scope->testB = 2;
 		$this->assertEquals($scope->getVariable('testA'), 1);
 		$this->assertEquals($scope->getVariable('testB'), 2);
-		$this->assertEquals($scope->getVariable('testC'), 3);
+		$this->assertEquals($scope->testA, 1);
+		$this->assertEquals($scope->testB, 2);
 	}
 	
 	public function testClone() {
