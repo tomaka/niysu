@@ -63,7 +63,7 @@ class Server {
 
 		$localScope = clone $this->scope;
 		foreach($this->serviceProviders as $sNameIter => $provider) {
-			$localScope->addByCallback($sNameIter, function(Scope $s) use ($provider) {
+			$localScope->addByCallback($sNameIter.'Service', function(Scope $s) use ($provider) {
 				return $s->callFunction($provider);
 			});
 		}
