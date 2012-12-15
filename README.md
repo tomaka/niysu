@@ -58,3 +58,15 @@ $server->register('/users/{userID}', 'get', function($user, $response) {
 	$user = new User($userID, $databaseService);
 });
 ```
+
+Documentation
+=============
+See [the wiki](https://github.com/Tomaka17/niysu/wiki).
+
+
+About
+=====
+
+License
+-------
+All the code is under MIT license. See the `LICENSE` file.
