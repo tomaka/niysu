@@ -1,5 +1,7 @@
 **Niysu** is a light but powerful PHP framework.
 
+[![build status](https://secure.travis-ci.org/Tomaka17/niysu.png)](http://travis-ci.org/Tomaka17/niysu)
+
 Examples
 ========
 
