@@ -55,6 +55,10 @@ class Scope {
 		$this->setVariablePassByRef('scope', false);
 	}
 
+	public function __clone() {
+		$this->add('scope', $this, get_class());
+	}
+
 	
 	
 	private static function buildReflection($callable) {
