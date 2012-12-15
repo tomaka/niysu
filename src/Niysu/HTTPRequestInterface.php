@@ -19,18 +19,7 @@ abstract class HTTPRequestInterface {
 		
 		$inputXML = $request->getXMLData();
 	}
-	
-	/// \brief Pass this to the ->before of a route
-	public static function requireInputJSON(HTTPRequestInterface $request, &$inputJSON, HTTPResponseInterface $response, &$ignoreHandler) {
-		if (!$request->isJSONData()) {
-			$response->setStatusCode(400);
-			$ignoreHandler = true;
-			return;
-		}
-
-		$inputJSON = $request->getJSONData();
-	}
-	
+		
 	/// \brief Returns the list of cookies
 	public function getCookiesList() {
 		throw new \Exception('Not yet implemented');
@@ -45,21 +34,6 @@ abstract class HTTPRequestInterface {
 	/// \brief Returns true if the data is x-www-url-encoded
 	public function isWWWUrlEncodedData() {
 		return $this->getContentTypeHeader() == 'x-www-url-encoded';
-	}
-	
-	/// \brief Returns true if the data is in JSON according to the Content-Type
-	public function isJSONData() {
-		if (substr($this->getContentTypeHeader(), 0, 16) == 'application/json')
-			return true;
-		if (substr($this->getContentTypeHeader(), 0, 22) == 'application/javascript')
-			return true;
-		if (substr($this->getContentTypeHeader(), 0, 15) == 'text/javascript')
-			return true;
-		if (substr($this->getContentTypeHeader(), 0, 17) == 'text/x-javascript')
-			return true;
-		if (substr($this->getContentTypeHeader(), 0, 11) == 'text/x-json')
-			return true;
-		return false;
 	}
 
 	/// \brief Returns true if the data is in XML according to the Content-Type
