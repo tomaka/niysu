@@ -8,56 +8,48 @@ class Route {
 		$this->method = strtoupper($method);
 	}
 
-	/// \ret True if the request was handled
+	/// \brief Tries to handle an HTTP request
+	/// \ret True if the request was handled, false if it was not
+	/// \param $scope Scope that will contain the variables accessible to the handler and before functions ; the "request" and "response" elements must be defined
 	public function handle(Scope $scope) {
 		$request = $scope->getVariable('request');
 		if ($request->getMethod() != $this->method)
 			return false;
 		
+		// checking whether the URL matches
 		$result = preg_match(implode($this->patternRegex), $request->getURL(), $matches);
-		if (!$result)		return false;
+		if (!$result)	return false;
+
+		// adding parts of the URL inside scope
 		for ($i = 1; $i < count($matches); ++$i) {
 			$varName = $this->patternRegexMatches[$i];
 			$value = urldecode($matches[$i]);
 			$scope->add($varName, $value);
 		}
 		
-		$scope->add('isWrongResource', false);
-		$scope->add('ignoreHandler', false);
+		// adding controlling variables to scope
+		$scope->add('isWrongResource', false);		// DEPRECATED
+		$scope->add('ignoreHandler', false);		// DEPRECATED
 		$scope->add('isRightResource', true);
 		$scope->add('callHandler', true);
-		
-		// calling "onlyIfCallbacks"
-		foreach ($this->onlyIfCallbacks as $onlyIf) {
-			if (!$scope->callFunction($onlyIf))
-				return false;
-		}
+
+		// some routine checks
+		if (!$scope->getVariable('request'))	throw new \LogicException('The "request" variable in the scope must be defined');
+		if (!$scope->getVariable('response'))	throw new \LogicException('The "response" variable in the scope must be defined');
 		
 		// calling befores
-		foreach ($this->before as $filter) {
-			$scope->callFunction($filter);
-			if ($scope->getVariable('isWrongResource') === true)
+		foreach ($this->before as $before) {
+			$scope->callFunction($before);
+
+			// checking controlling variables
+			if ($scope->getVariable('isWrongResource') === true)		// DEPRECATED
 				return false;
-			if ($scope->getVariable('ignoreHandler') === true)
+			if ($scope->getVariable('ignoreHandler') === true)			// DEPRECATED
 				return true;
 			if ($scope->getVariable('isRightResource') === false)
 				return false;
 			if ($scope->getVariable('callHandler') === false)
 				return true;
-		}
-		
-		// calling "validate"
-		foreach ($this->validateCallbacks as $vali) {
-			if (!$scope->callFunction($vali[0])) {
-				$response->setStatusCode($vali[1]);
-				return true;
-			}
-		}
-		
-		// calling output filter
-		if ($this->filterOutput) {
-			$cb = $this->filterOutput;
-			$response = $cb($response);
 		}
 		
 		// calling the handler
@@ -70,8 +62,8 @@ class Route {
 		return true;
 	}
 
-	/// \brief
-	/// \todo Handle if $regex contains ( )
+	/// \brief Changes the regex pattern that will match the given variable
+	/// \note The default pattern is '\w+'
 	public function pattern($varName, $regex) {
 		foreach ($this->patternRegexMatches as $pos => $match) {
 			if ($match != $varName)
@@ -82,16 +74,24 @@ class Route {
 		return $this;
 	}
 
-	/// \brief If $callable doesn't return true, the output contains a 400 Bad Request answer
+	/// \brief If $callable doesn't return true, the output returns a $statusCode status code answer
 	public function validate($callable, $statusCode = 500) {
-		$this->validateCallbacks[] = [ 0 => $callable, 1 => $statusCode ];
+		$this->before(function($scope, &$callHandler, $response) use ($callable, $statusCode) {
+			$ret = $scope->callFunction($callable);
+			if (!$ret) {
+				$response->setStatusCode($statusCode);
+				$callHandler = false;
+			}
+		});
 		return $this;
 	}
 
 	/// \brief Adds a callback which returns true or false whether the request must be handled
 	public function onlyIf($callable) {
-		//$this->before(function(&$isWrongResource) use ($callable) { if ($callable()); });
-		$this->onlyIfCallbacks[] = $callable;
+		$this->before(function($scope, &$isRightResource, $user) use ($callable) {
+			$ret = $scope->callFunction($callable);
+			if (!$ret)	$isRightResource = false;
+		});
 		return $this;
 	}
 
@@ -106,25 +106,6 @@ class Route {
 	public function after($callable) {
 		// inserting into $this->before
 		$this->after[] = $callable;
-		return $this;
-	}
-
-	/// \brief Adds an output filter
-	/// \param $filterClass A string describing a class parent of HTTPResponseFilter
-	/// \param ... Other parameters are passed to the constructor after the HTTPResponseInterface
-	public function outputFilter($filterClass) {
-		if (!class_exists($filterClass))
-			throw new \LogicException('Unvalid class: '.$filterClass);
-
-		$existingFilter = $this->filterOutput;
-
-		$this->filterOutput = function(HTTPResponseInterface $response) use ($filterClass, $existingFilter) {
-			$parameters[0] = $response;
-			if ($existingFilter)
-				return new $filterClass($existingFilter($response));
-			return new $filterClass($response);
-		};
-
 		return $this;
 	}
 
@@ -155,11 +136,8 @@ class Route {
 		$this->callback = $callback;
 	}
 
-	private $onlyIfCallbacks = [];				// array of callable
-	private $validateCallbacks = [];
 	private $before = [];						// an array of callable
 	private $after = [];						// an array of callable
-	private $filterOutput = null;				// filter around the HTTPResponseInterface
 	private $patternRegex = [];
 	private $patternRegexMatches = [];			// for each match offset, contains the variable name
 	private $callback = null;					// the main function that handles the resource
