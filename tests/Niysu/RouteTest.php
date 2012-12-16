@@ -54,13 +54,13 @@ class RouteTest extends \PHPUnit_Framework_TestCase {
 		$scope->request = new HTTPRequestCustom('/', 'test-test/test@test');
 		$this->assertTrue($route->handle($scope));
 	}
-	
+
 	public function testPatternFunction() {
 		$response = new HTTPResponseStorage();
 		$scope = new Scope([ 'response' => $response ]);
 		$route = new Route('/{var}', 'get', function() {});
 		$route->pattern('var', '\\d+');
-		
+
 		$scope->request = new HTTPRequestCustom('/', 'post');
 		$this->assertFalse($route->handle($scope));
 		$scope->request = new HTTPRequestCustom('/3', 'get');
@@ -70,7 +70,7 @@ class RouteTest extends \PHPUnit_Framework_TestCase {
 		$scope->request = new HTTPRequestCustom('/x', 'test');
 		$this->assertFalse($route->handle($scope));
 	}
-	
+
 	/**
      * @depends testPatternFunction
      */
@@ -89,7 +89,7 @@ class RouteTest extends \PHPUnit_Framework_TestCase {
 		$scope->request = new HTTPRequestCustom('/2hello/goodbye');
 		$this->assertTrue($route->handle($scope));
 
-		$this->assertEquals($scope->var1 2);
+		$this->assertEquals($scope->var1, 2);
 		$this->assertEquals($scope->var2, 'hello');
 		$this->assertEquals($scope->var3, 'goodbye');
 		$this->assertEquals($scope->valueByRef, 18);
