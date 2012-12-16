@@ -12,7 +12,7 @@ class CacheMeService {
 		};
 	}
 	
-	public function __construct(\Niysu\HTTPRequestInterface $request, \Niysu\HTTPResponseInterface &$response, CacheService $cacheService, $logService, $elapsedTime) {
+	public function __construct(\Niysu\HTTPRequestInterface $request, \Niysu\HTTPResponseInterface &$response, $cacheService, $logService, $elapsedTime) {
 		$this->cache = $cacheService;
 		$this->log = $logService;
 		$this->elapsedTime = $elapsedTime;
@@ -63,10 +63,10 @@ class CacheMeService {
 			$headers = explode("\r\n", $dataParts[0]);
 			foreach ($headers as $h) {
 				$val = explode(':', $h, 2);
-				$data->addHeader($val[0], $val[1]);
+				$response->addHeader($val[0], $val[1]);
 			}
 
-			$data->setData($dataParts[1]);
+			$response->setData($dataParts[1]);
 		}, null));
 
 		return true;

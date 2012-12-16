@@ -125,7 +125,8 @@ class Server {
 			$handleScope->passByRef('response', true);
 
 			foreach($this->serviceProviders as $serviceName => $provider) {
-				$handleScope->callback($serviceName.'Service', function(Scope $s) use ($provider) {
+				$handleScope->callback($serviceName.'Service', function(Scope $s) use ($serviceName, $provider, $log) {
+					$log->debug('Building service '.$serviceName);
 					return $s->call($provider);
 				});
 			}
