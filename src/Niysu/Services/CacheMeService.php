@@ -2,7 +2,7 @@
 namespace Niysu\Services;
 
 class CacheMeService {
-	public static function before($duration, $vary = []) {
+	public static function beforeEnableCache($duration, $vary = []) {
 		return function($cacheMeService, &$callHandler) use ($duration, $vary) {
 			$cacheMeService->setDuration($duration);
 			foreach ($vary as $v)
