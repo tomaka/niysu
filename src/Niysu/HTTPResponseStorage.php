@@ -43,6 +43,10 @@ class HTTPResponseStorage extends HTTPResponseInterface {
 		return $this->data;
 	}
 	
+	public function setData($data) {
+		$this->data = $data;
+	}
+	
 	public function appendData($data) {
 		$this->data .= $data;
 	}
