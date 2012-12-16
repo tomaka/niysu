@@ -6,7 +6,7 @@ class DatabaseServiceTest extends \PHPUnit_Framework_TestCase {
 
 	protected function setUp() {
 		$this->service = new DatabaseService('sqlite::memory:');
-		$this->service->execute('CREATE TABLE test (id INTEGER)';
+		$this->service->execute('CREATE TABLE test (id INTEGER)');
 	}
 
 	/**
@@ -21,7 +21,7 @@ class DatabaseServiceTest extends \PHPUnit_Framework_TestCase {
 		$val = $this->service->test[0]->id();
 		$this->assertEmpty($val, 1);
 	}
-	
+
 	/**
      * @depends testSelect
      */
