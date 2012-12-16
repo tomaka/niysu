@@ -1,7 +1,7 @@
 <?php
 namespace Niysu;
 
-class Scope /*implements \Serializable*/ {
+class Scope implements \Serializable {
 	public function __get($var) {
 		return $this->get($var);
 	}
@@ -110,6 +110,25 @@ class Scope /*implements \Serializable*/ {
 		$c = new Scope();
 		$c->parent = $this;
 		return $c;
+	}
+
+	public function serialize() {
+		return serialize([
+			'variables' => $this->variables,
+			'variablesCallback' => $this->variablesCallback,
+			'variablesTypes' => $this->variablesTypes,
+			'variablesPassByRef' => $this->variablesPassByRef,
+			'parent' => $this->parent
+		]);
+	}
+	
+	public function unserialize($serialized) {
+		$data = unserialize($serialized);
+		$this->variables = $data['variables'];
+		$this->variablesCallback = $data['variablesCallback'];
+		$this->variablesTypes = $data['variablesTypes'];
+		$this->variablesPassByRef = $data['variablesPassByRef'];
+		$this->parent = $data['parent'];
 	}
 	
 	/// \todo 
