@@ -29,16 +29,16 @@ class RouteTest extends \PHPUnit_Framework_TestCase {
 
 	public function testMethodMatch() {
 		$response = new HTTPResponseStorage();
-		$scope = new Scope([ 'response' => $response ])
-		
+		$scope = new Scope([ 'response' => $response ]);
+
 		$route = new Route('/', 'test', function() {});
-		
+
 		$scope->request = new HTTPRequestCustom('/', 'get');
 		$this->assertFalse($route->handle($scope));
-		
+
 		$scope->request = new HTTPRequestCustom('/', 'post');
 		$this->assertFalse($route->handle($scope));
-		
+
 		$scope->request = new HTTPRequestCustom('/', 'test');
 		$this->assertTrue($route->handle($scope));
 	}
