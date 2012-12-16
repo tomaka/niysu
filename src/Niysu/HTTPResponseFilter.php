@@ -4,6 +4,8 @@ namespace Niysu;
 /// \brief Filter for an HTTP response
 class HTTPResponseFilter extends HTTPResponseInterface {
 	public function __construct(HTTPResponseInterface $output) {
+		if (!$output)
+			throw new \LogicException('Filter output is null');
 		$this->output = $output;
 	}
 	
