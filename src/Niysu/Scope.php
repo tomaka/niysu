@@ -66,7 +66,7 @@ class Scope implements \Serializable {
 		}
 		if (!$this->parent)
 			return null;
-		return $this->parent->getByType();
+		return $this->parent->getByType($requestedType);
 	}
 	
 	public function &getByTypeByRef($requestedType) {
@@ -76,7 +76,7 @@ class Scope implements \Serializable {
 		}
 		if (!$this->parent)
 			throw new \RuntimeException('Variable with this type not found');
-		return $this->parent->getByType();
+		return $this->parent->getByType($requestedType);
 	}
 	
 	public function set($var, $value, $type = null) {
