@@ -36,31 +36,11 @@ abstract class HTTPRequestInterface {
 		return $this->getContentTypeHeader() == 'x-www-url-encoded';
 	}
 
-	/// \brief Returns true if the data is in XML according to the Content-Type
-	public function isXMLData() {
-		$ctntType = $this->getContentTypeHeader();
-		if (substr($ctntType, 0, 8) == 'text/xml' || substr($ctntType, 0, 15) == 'application/xml')
-			return true;
-		if (preg_match('/^(application|text)\\/.+?\\+xml$/i', $ctntType))
-			return true;
-		return false;
-	}
-
 	/// \brief Returns an array with the raw data decoded as x-www-url-encoded
 	public function getWWWUrlEncodedData() {
 		$array = [];
 		parse_str($this->getRawData(), $array);
 		return $array;
-	}
-
-	/// \brief Returns an array with the raw data decoded as if it was JSON
-	public function getJSONData() {
-		return json_decode($this->getRawData());
-	}
-
-	/// \brief Returns a SimpleXMLElement with the packet content
-	public function getXMLData() {
-		return new SimpleXMLElement($this->getRawData());
 	}
 
 	/// \brief Returns true if the method is GET or HEAD

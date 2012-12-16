@@ -32,6 +32,7 @@ class Server {
 		$this->setServiceProvider('database', new DatabaseServiceProvider());
 		$this->setServiceProvider('cacheMe', new CacheMeServiceProvider());
 		$this->setServiceProvider('cache', new CacheServiceProvider());
+		$this->setServiceProvider('inputJSON', 'Niysu\InputJSONService');
 		$this->setServiceProvider('log', new LogServiceProvider());
 		if (class_exists('Twig_Loader_Filesystem'))
 			$this->setServiceProvider('twig', new TwigServiceProvider());
