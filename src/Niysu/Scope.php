@@ -192,7 +192,7 @@ class Scope implements \Serializable {
 			if (!$reflection)	$reflection = new \ReflectionMethod(function() {}, '__invoke');
 			
 		} else {
-			throw new \LogicException('Unvalid callable type in ControllerRegistration: '.$callable);
+			throw new \LogicException('Unvalid callable type: '.gettype($callable));
 		}
 
 		// building the closure

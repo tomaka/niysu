@@ -2,7 +2,7 @@
 namespace Niysu;
 
 class RoutesCollection {
-	public function register($url, $method, $callback) {
+	public function register($url, $method, $callback = null) {
 		$registration = new Route($this->prefix.$url, $method, $callback);
 		foreach ($this->globalBefores as $b)
 			$registration->before($b);

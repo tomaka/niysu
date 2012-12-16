@@ -2,10 +2,11 @@
 namespace Niysu;
 
 class Route {
-	public function __construct($url, $method, $callback) {
+	public function __construct($url, $method, $callback = null) {
 		$this->setURLPattern($url);
-		$this->setCallback($callback);
 		$this->method = strtoupper($method);
+		if ($callback)
+			$this->handler($callback);
 	}
 
 	/// \brief Tries to handle an HTTP request
@@ -29,6 +30,10 @@ class Route {
 		
 		
 		$logService->debug('URL '.$request->getURL().' matching route '.$this->originalPattern.' ; regex is: '.implode($this->patternRegex));
+
+		// checking that the handler was defined
+		if (!$this->callback)
+			throw new \LogicException('The handler of the route '.$this->originalPattern.' has not been defined');
 		
 		// adding parts of the URL inside scope
 		for ($i = 1; $i < count($matches); ++$i) {
@@ -63,7 +68,7 @@ class Route {
 		}
 		
 		// calling the handler
-		$logService->debug('Calling handler of route '.implode($this->patternRegex));
+		$logService->debug('Calling handler of route '.$this->originalPattern);
 		$scope->call($this->callback);
 		
 		// calling after
@@ -113,6 +118,13 @@ class Route {
 		return $this;
 	}
 
+	/// \brief Changes the callback
+	public function handler($handler) {
+		if (!is_callable($handler))
+			throw new \LogicException('Handler for Route must be callable');
+		$this->callback = $handler;
+	}
+
 	/// \brief Adds a function to call after the handle is called
 	public function after($callable) {
 		// inserting into $this->before
@@ -143,10 +155,6 @@ class Route {
 		$this->patternRegex[] = '$/';
 
 		//var_dump($pattern.' '.implode($this->patternRegex));
-	}
-
-	private function setCallback($callback) {
-		$this->callback = $callback;
 	}
 
 	private $before = [];						// an array of callable

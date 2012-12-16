@@ -81,7 +81,7 @@ class Server {
 		throw new \LogicException('Unvalid service provider format');
 	}
 
-	public function register($url, $method, $callback) {
+	public function register($url, $method, $callback = null) {
 		return $this->routesCollections[0]->register($url, $method, $callback);
 	}
 
@@ -199,7 +199,7 @@ class Server {
 						$this->globalBefores[] = $v;
 				else
 					$this->globalBefores[] = $value;
-				
+
 			} else if ($key === 'config') {
 				if (!is_callable($value))
 					throw new \LogicException('The "config" function in environment data must be callable');
