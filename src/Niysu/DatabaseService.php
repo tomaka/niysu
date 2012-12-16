@@ -69,7 +69,7 @@ class DatabaseService implements \Iterator, \ArrayAccess, \Countable {
 		if ($database instanceof \PDO) {
 			$this->databasePDO = $database;
 		} else if (is_string($database)) {
-			$this->databasePDO = new \PDO($database, func_get_arg(1), func_get_arg(2));
+			$this->databasePDO = new \PDO($database, func_num_args() >= 2 ? func_get_arg(1) : null, func_num_args() >= 3 ? func_get_arg(2) : null);
 			$this->databasePDO->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 		} else {
 			throw new \LogicException('Parameter passed to DatabaseService constructor is not valid');
