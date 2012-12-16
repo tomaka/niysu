@@ -192,7 +192,7 @@ class DatabaseService implements \Iterator, \ArrayAccess, \Countable {
 			foreach ($value as $k => $v) {
 				if (is_numeric($k))
 					continue;
-				$fields[] = '"'.$k.'"';
+				$fields[] = $this->colNameDelimiter.$k.$this->colNameDelimiter;
 				$vals[] = '?';
 			}
 			$sql = 'INSERT INTO '.$this->colNameDelimiter.$this->tableName.$this->colNameDelimiter.(empty($fields) ? '' : ' ('.implode(', ', $fields).') VALUES ('.implode(', ', $vals).')');
