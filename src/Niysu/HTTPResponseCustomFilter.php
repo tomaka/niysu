@@ -11,6 +11,10 @@ class HTTPResponseCustomFilter extends HTTPResponseFilter {
 	public function __destruct() {
 		// calling callback
 		call_user_func($this->contentCallback, $this->httpStorage);
+
+		// 
+		if ($this->getOutput()->isHeadersListSent())
+			throw new \LogicException('Problem while flushing HTTPResponseCustomFilter: the next output has already sent headers list');
 		
 		// sending everything to next filter
 		$this->getOutput()->setStatusCode($this->httpStorage->getStatusCode());

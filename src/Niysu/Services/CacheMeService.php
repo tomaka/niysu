@@ -20,10 +20,14 @@ class CacheMeService {
 		$serverCacheResourceName = 'cacheMe/resources/'.$request->getURL();
 		$this->serverCacheResourceName = $serverCacheResourceName;
 		
-		//$response = new HTTPResponseETagFilter($response);
 		$response = new \Niysu\HTTPResponseCustomFilter($response, \Closure::bind(function($response) use ($cacheService, $serverCacheResourceName) {
-			/*$cacheService->store($serverCacheResourceName, $data);
-			return $data;*/
+			$data = '';
+			foreach ($response->getHeadersList() as $h => $v)
+				$data .= $h.':'.$v."\r\n";
+			$data .= "\r\n";
+			$data .= $response->getData();
+
+			$cacheService->store($serverCacheResourceName, $data);
 		}, null));
 		
 		$this->responseFilter = $response;
@@ -46,24 +50,26 @@ class CacheMeService {
 	}
 
 	public function load() {
-		return false;
-
-		/*if (!$this->cache->exists($this->serverCacheResourceName)) {
+		if (!$this->cache->exists($this->serverCacheResourceName)) {
 			$this->log->debug('Attempting to load resource from cache, not found: '.$this->serverCacheResourceName);
 			return false;
 		}
 
 		$data = $this->cache->load($this->serverCacheResourceName);
-		$e = $this->elapsedTime;
-		$this->log->debug('Loading resource from cache ('.$e().'ms): '.$this->serverCacheResourceName);
+		$this->log->debug('Loading resource from cache: '.$this->serverCacheResourceName);
 
-		$newCB = function($response) use ($data) {};
-		$newCB = $newCB->bindTo(null);
-		$this->responseFilter->setContentCallback(Closure::bind(function($response) use ($data) {
-			$response->setData();
+		$this->responseFilter->setContentCallback(\Closure::bind(function($response) use ($data) {
+			$dataParts = explode("\r\n\r\n", $data, 2);
+			$headers = explode("\r\n", $dataParts[0]);
+			foreach ($headers as $h) {
+				$val = explode(':', $h, 2);
+				$data->addHeader($val[0], $val[1]);
+			}
+
+			$data->setData($dataParts[1]);
 		}, null));
 
-		return true;*/
+		return true;
 	}
 
 	public function vary($header) {
