@@ -8,6 +8,8 @@ abstract class HTTPRequestInterface {
 	abstract public function getHeader($header);
 	abstract public function getHeadersList();
 	abstract public function getRawData();
+	/// \brief Returns true if the request uses HTTPS
+	abstract public function isHTTPS();
 	
 	/// \brief Pass this to the ->before of a route
 	public static function requireInputXML(HTTPRequestInterface $request, &$inputXML, HTTPResponseInterface $response, &$ignoreHandler) {

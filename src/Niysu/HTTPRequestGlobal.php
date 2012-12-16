@@ -29,6 +29,10 @@ class HTTPRequestGlobal extends HTTPRequestInterface {
 		return file_get_contents('php://input');
 	}
 
+	public function isHTTPS() {
+		return $_SERVER['HTTPS'] && $_SERVER['HTTPS'] != 'off';
+	}
+
 	public function getCookiesList() {
 		return $_COOKIE;
 	}
