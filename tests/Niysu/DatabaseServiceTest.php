@@ -28,15 +28,17 @@ class DatabaseServiceTest extends \PHPUnit_Framework_TestCase {
 	public function testInsert() {
 		$this->service->test[] = [ 'id' => 2 ];
 		$val = $this->service->test[0]->id();
-		$this->assertEquals($val, 1);
+		$this->assertEquals($val, 2);
 	}
 	
 	/**
      * @depends testSelect
      */
 	public function testForeach() {
-		$this->service->execute('INSERT INTO test(id) VALUES (1), (2), (3)');
-
+		$this->service->execute('INSERT INTO test VALUES (1)');
+		$this->service->execute('INSERT INTO test VALUES (2)');
+		$this->service->execute('INSERT INTO test VALUES (3)');
+		
 		$i = 1;
 		foreach ($this->service->test as $element) {
 			$this->assertEquals($element->id(), $i);
