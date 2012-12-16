@@ -19,7 +19,7 @@ class DatabaseServiceTest extends \PHPUnit_Framework_TestCase {
 	public function testSelect() {
 		$this->service->execute('INSERT INTO test(id) VALUES (1)');
 		$val = $this->service->test[0]->id();
-		$this->assertEmpty($val, 1);
+		$this->assertEquals($val, 1);
 	}
 
 	/**
@@ -28,7 +28,7 @@ class DatabaseServiceTest extends \PHPUnit_Framework_TestCase {
 	public function testInsert() {
 		$this->service->test[] = [ 'id' => 2 ];
 		$val = $this->service->test[0]->id();
-		$this->assertEmpty($val, 1);
+		$this->assertEquals($val, 1);
 	}
 	
 	/**
