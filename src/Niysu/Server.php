@@ -194,9 +194,12 @@ class Server {
 				$this->showRoutesOn404 = ($value == true);
 
 			} else if ($key === 'before') {
-				if (is_array($value))	$this->globalBefores = $value;
-				else					$this->globalBefores = [ $value ];
-
+				if (is_array($value))
+					foreach ($value as $v)
+						$this->globalBefores[] = $v;
+				else
+					$this->globalBefores[] = $value;
+				
 			} else if ($key === 'config') {
 				if (!is_callable($value))
 					throw new \LogicException('The "config" function in environment data must be callable');
