@@ -195,16 +195,15 @@ class Scope implements \Serializable {
 
 			foreach ($reflection->getParameters() as $param) {
 				$inputParamType = $param->getClass() ? $param->getClass()->getName() : null;
-				$passByRef = isset($scope->variablesPassByRef[$param->getName()]) ? $scope->variablesPassByRef[$param->getName()] : true;
 
 				// trying to write the given parameter
 				if ($inputParamType) {
-					if ($passByRef)		$parameters[] =& $scope->getByTypeByRef($inputParamType);
-					else 				$parameters[] = $scope->getByType($inputParamType);
+					if (!$param->canBePassedByValue())		$parameters[] =& $scope->getByTypeByRef($inputParamType);
+					else 									$parameters[] = $scope->getByType($inputParamType);
 
 				} else {
-					if ($passByRef)		$parameters[] =& $scope->getByRef($param->getName());
-					else 				$parameters[] = $scope->get($param->getName());
+					if (!$param->canBePassedByValue())		$parameters[] =& $scope->getByRef($param->getName());
+					else 									$parameters[] = $scope->get($param->getName());
 				}
 			}
 
