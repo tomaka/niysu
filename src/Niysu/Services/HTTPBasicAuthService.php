@@ -36,6 +36,8 @@ class HTTPBasicAuthService {
 			throw new \LogicException('Auth function has not been set');
 
 		//
+		if (!$this->request->isHTTPS())
+			$this->logService->warn('HTTP basic authentication is discouraged if you don\'t use HTTPS');
 		if (!$this->request->getHeader('Authorization'))
 			return false;
 
