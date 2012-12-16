@@ -14,7 +14,6 @@ class DebugPanelService {
 
 			if (preg_match('/\\<\\/body\\>/i', $data->getData(), $matches, PREG_OFFSET_CAPTURE)) {
 				$timeElapsed = call_user_func($scope->elapsedTime);
-				$dbConnectionTime = 'unknown';
 				eval('$evaluatedPanel = "'.addslashes(self::$panelTemplate).'";');
 
 				$splitOffset = $matches[0][1];
@@ -36,8 +35,9 @@ class DebugPanelService {
 	private $active = false;
 
 	private static $panelTemplate =
-		'<div style="position:fixed; left:0; bottom:0; width:100%; padding:0.5em 1em; background-color:gray; border-top:2px double black;">
-			$timeElapsed ms - $dbConnectionTime ms
+		'<div style="color:black; position:fixed; left:0; bottom:0; width:100%; padding:0.5em 1em; background-color:gray; border-top:3px double black;">
+			<em><a style="color:darkblue; text-decoration:inherit;" href="https://github.com/Tomaka17/niysu">Niysu debug panel</a></em>
+			<span style="margin-left:2em;">Time to build this page: $timeElapsed ms</span>
 		</div>';
 };
 
