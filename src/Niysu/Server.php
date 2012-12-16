@@ -33,6 +33,7 @@ class Server {
 		$this->setServiceProvider('cache', new Services\CacheServiceProvider());
 		$this->setServiceProvider('database', new Services\DatabaseServiceProvider());
 		$this->setServiceProvider('debugPanel', 'Niysu\\Services\\DebugPanelService');
+		$this->setServiceProvider('httpBasicAuth', 'Niysu\\Services\\HTTPBasicAuthService');
 		$this->setServiceProvider('inputJSON', 'Niysu\\Services\\InputJSONService');
 		$this->setServiceProvider('inputXML', 'Niysu\\Services\\InputXMLService');
 		$this->setServiceProvider('log', new Services\LogServiceProvider());
