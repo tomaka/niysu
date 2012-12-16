@@ -23,7 +23,9 @@ class LogServiceProvider {
 		if (!is_writable(dirname($path)))
 			throw new \LogicException('Log path is not writable: '.dirname($path));
 
-		$this->monolog->pushHandler(new \Monolog\Handler\RotatingFileHandler($path, 7));
+		$filesHandler = new \Monolog\Handler\RotatingFileHandler($path, 7);
+		$fingersCrossedHandler = new \Monolog\Handler\FingersCrossedHandler($filesHandler);
+		$this->monolog->pushHandler($fingersCrossedHandler);
 	}
 	
 	private $monolog;
