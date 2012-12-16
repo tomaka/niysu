@@ -88,7 +88,7 @@ class Scope {
 			// function
 			$reflection = new \ReflectionFunction($callable);
 
-		} else if (method_exists($callable, '__invoke')) {
+		} else if (is_callable($callable) && method_exists($callable, '__invoke')) {
 			// closure or callable object
 			$reflection = new \ReflectionMethod($callable, '__invoke');
 
