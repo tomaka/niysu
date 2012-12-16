@@ -1,5 +1,5 @@
 <?php
-namespace Niysu;
+namespace Niysu\Services;
 
 class DatabaseService implements \Iterator, \ArrayAccess, \Countable {
 	public function OrderBy($param) {

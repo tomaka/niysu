@@ -1,5 +1,5 @@
 <?php
-namespace Niysu;
+namespace Niysu\Services;
 
 class DatabaseServiceProvider {
 	public function __construct() {

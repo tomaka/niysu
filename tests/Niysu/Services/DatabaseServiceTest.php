@@ -1,5 +1,5 @@
 <?php
-namespace Niysu;
+namespace Niysu\Services;
 
 class DatabaseServiceTest extends \PHPUnit_Framework_TestCase {
 	protected $service;

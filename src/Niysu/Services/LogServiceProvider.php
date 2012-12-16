@@ -1,5 +1,5 @@
 <?php
-namespace Niysu;
+namespace Niysu\Services;
 
 /// \brief Class which allows to write in logs
 /// \details Uses Monolog

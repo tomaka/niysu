@@ -1,5 +1,5 @@
 <?php
-namespace Niysu;
+namespace Niysu\Services;
 
 class XSLTService {
 	public function __construct($response) {
@@ -14,7 +14,7 @@ class XSLTService {
 			$xmldoc = new \DOMDocument();
 			$xmldoc->encoding = 'utf-8';
 			$xmldoc->recover = true;
-			$data = XMLOutput::writeXML($xml);
+			$data = \Niysu\XMLOutput::writeXML($xml);
 			if (!$xmldoc->loadXML($data))
 				throw new \RuntimeException('Unable to parse XML data: '.$data);
 

@@ -1,5 +1,5 @@
 <?php
-namespace Niysu;
+namespace Niysu\Services;
 
 class CacheMeService {
 	public static function before($duration, $vary = []) {

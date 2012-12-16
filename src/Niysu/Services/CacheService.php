@@ -1,5 +1,5 @@
 <?php
-namespace Niysu;
+namespace Niysu\Services;
 
 class CacheService {
 	public function __construct($directory = null) {

@@ -1,5 +1,5 @@
 <?php
-namespace Niysu;
+namespace Niysu\Services;
 
 class TwigService {
 	public function __construct(HTTPResponseInterface &$response, \Twig_Environment $twig) {

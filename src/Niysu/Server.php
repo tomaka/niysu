@@ -21,7 +21,7 @@ class Server {
 		$this->scope->setVariablePassByRef('server', false);
 		$this->scope->add('elapsedTime', function() use ($constructionTime) { $now = microtime(true); return round(1000 * ($now - $constructionTime)); });
 		$this->scope->setVariablePassByRef('elapsedTime', false);
-
+		
 		// building the main RoutesCollection
 		$mainCollection = new RoutesCollection('');
 		foreach ($this->globalBefores as $b)
@@ -29,15 +29,15 @@ class Server {
 		$this->routesCollections[] = $mainCollection;
 		
 		// building default services providers
-		$this->setServiceProvider('database', new DatabaseServiceProvider());
-		$this->setServiceProvider('cacheMe', new CacheMeServiceProvider());
-		$this->setServiceProvider('cache', new CacheServiceProvider());
-		$this->setServiceProvider('inputJSON', 'Niysu\InputJSONService');
-		$this->setServiceProvider('inputXML', 'Niysu\InputXMLService');
-		$this->setServiceProvider('log', new LogServiceProvider());
+		$this->setServiceProvider('database', new Services\DatabaseServiceProvider());
+		$this->setServiceProvider('cacheMe', new Services\CacheMeServiceProvider());
+		$this->setServiceProvider('cache', new Services\CacheServiceProvider());
+		$this->setServiceProvider('inputJSON', 'Niysu\Services\InputJSONService');
+		$this->setServiceProvider('inputXML', 'Niysu\Services\InputXMLService');
+		$this->setServiceProvider('log', new Services\LogServiceProvider());
 		if (class_exists('Twig_Loader_Filesystem'))
-			$this->setServiceProvider('twig', new TwigServiceProvider());
-		$this->setServiceProvider('xslt', new XSLTServiceProvider());
+			$this->setServiceProvider('twig', new Services\TwigServiceProvider());
+		$this->setServiceProvider('xslt', new Services\XSLTServiceProvider());
 		
 		// calling configuration functions
 		foreach ($this->configFunctions as $f) {
