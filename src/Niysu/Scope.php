@@ -61,7 +61,7 @@ class Scope /*implements \Serializable*/ {
 	
 	public function getByType($requestedType) {
 		foreach ($this->variablesTypes as $varName => $type) {
-			if (is_a($type, $requestedType))
+			if (is_a($type, $requestedType, true))
 				return $this->get($varName);
 		}
 		if (!$this->parent)
