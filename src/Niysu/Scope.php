@@ -1,33 +1,81 @@
 <?php
 namespace Niysu;
 
-class Scope {
+class Scope /*implements \Serializable*/ {
 	public function __get($var) {
-		return $this->getVariable($var);
+		return $this->get($var);
 	}
 
 	public function __set($var, $value) {
-		return $this->add($var, $value);
+		return $this->set($var, $value);
 	}
 
-	public function getVariable($var) {
-		if (!isset($this->variables[$var]))
-			throw new \LogicException('Unvalid variable');
-		return $this->variables[$var];
+	public function has($var) {
+		if (isset($this->variables[$var]))
+			return true;
+		if (isset($this->variablesCallback[$var]))
+			return true;
+		if (!$this->parent)
+			return false;
+		return $this->parent->has($var);
 	}
 
-	public function add($var, $value, $type = null) {
+	public function get($var) {
+		if (isset($this->variables[$var]))
+			return $this->variables[$var];
+		if (isset($this->variablesCallback[$var])) {
+			$val = call_user_func($scope->variablesCallback[$var], $this);
+			$this->variables[$var] = $val;
+			return $val;
+		}
+		if (!$this->parent)
+			throw new \RuntimeException('Undefined variable');
+		return $this->parent->get($var);
+	}
+
+	public function &getByRef($var) {
+		if (!isset($this->variables[$var]) && isset($this->variablesCallback[$var])) {
+			$val = call_user_func($scope->variablesCallback[$var], $this);
+			$this->variables[$var] = $val;
+			return $val;
+		}
+		if (isset($this->variables[$var])) {
+			if (!isset($this->variablesPassByRef[$var]) || $this->variablesPassByRef[$var])
+				return $this->variables[$var];
+			throw new \RuntimeException('Forbidden to pass this variable by reference');
+		}
+		if (!$this->parent)
+			throw new \RuntimeException('Undefined variable');
+		return $this->parent->getByRef($var);
+	}
+	
+	public function getByType($requestedType) {
+		foreach ($this->variablesTypes as $varName => $type) {
+			if (is_a($type, $requestedType))
+				return $this->get($varName);
+		}
+	}
+	
+	public function &getByTypeByRef($requestedType) {
+		foreach ($this->variablesTypes as $varName => $type) {
+			if (is_a($type, $requestedType))
+				return $this->getByRef($varName);
+		}
+	}
+	
+	public function set($var, $value, $type = null) {
 		if ($type == null && is_object($value))
 			$type = get_class($value);
 
 		$this->variables[$var] = $value;
-		$this->variablesTypes[$var] = $type;
+		if ($type)
+			$this->variablesTypes[$var] = $type;
 		return $this;
 	}
 
 	/// \brief Registers a callback for the given variable
 	/// \details The first time a function requests for this variable, this callback will be called to generate ie
-	public function addByCallback($var, $callback, $type = null) {
+	public function callback($var, $callback, $type = null) {
 		if (!is_callable($callback))
 			throw new \LogicException('The callback must be callable');
 		$this->variablesCallback[$var] = $callback;
@@ -35,14 +83,20 @@ class Scope {
 		return $this;
 	}
 
-	public function setVariablePassByRef($var, $byRef = true) {
+	public function passByRef($var, $byRef = true) {
 		$this->variablesPassByRef[$var] = $byRef;
 		return $this;
 	}
 	
-	public function callFunction($function) {
+	public function call($function) {
 		$f = self::parseCallable($function);
 		return $f($this);
+	}
+
+	public function newChild() {
+		$c = new Scope();
+		$c->parent = this;
+		return $c;
 	}
 
 	/// \todo 
@@ -59,15 +113,15 @@ class Scope {
 	}
 
 	public function __construct($variables = []) {
-		$this->add('scope', $this, get_class());
-		$this->setVariablePassByRef('scope', false);
+		$this->set('scope', $this, get_class());
+		$this->passByRef('scope', false);
 		
 		foreach ($variables as $var => $value)
-			$this->add($var, $value);
+			$this->set($var, $value);
 	}
 
 	public function __clone() {
-		$this->add('scope', $this, get_class());
+		$this->set('scope', $this, get_class());
 	}
 
 	
@@ -75,11 +129,7 @@ class Scope {
 	// returns a closure taking as parameter (Scope $scope)
 	// this closure will call the parameter of "parseCallable" and return what the callable returned
 	private static function parseCallable($callable) {
-		$inputParamsNames = [];					// for each position, the variable name
-		$inputParamsTypes = [];					// for each position, the variable type
-		$nbParameters = 0;
-
-		// 
+		// building the reflection in $reflection
 		if (is_string($callable) && ($pos = strpos($callable, '::')) !== false) {
 			// static function
 			$reflection = new \ReflectionMethod(substr($callable, 0, $pos), substr($callable, $pos + 2));
@@ -103,66 +153,46 @@ class Scope {
 			if (!$reflection)	$reflection = new \ReflectionMethod(function() {}, '__invoke');
 			
 		} else {
-			throw new \LogicException('Unvalid callable type in ControllerRegistration');
-		}
-
-		// building the values of the variables above
-		$nbParameters = $reflection->getNumberOfParameters();
-		foreach ($reflection->getParameters() as $param) {
-			$inputParamsNames[$param->getPosition()] = $param->getName();
-			$inputParamsTypes[$param->getPosition()] = $param->getClass() ? $param->getClass()->getName() : null;
+			throw new \LogicException('Unvalid callable type in ControllerRegistration: '.$callable);
 		}
 
 		// building the closure
-		return function(Scope $scope) use ($reflection, $inputParamsNames, $inputParamsTypes, $nbParameters, $callable) {
+		return \Closure::bind(function(Scope $scope) use ($reflection, $callable) {
+			// the $parameters array will store parameter values to pass to the callable
 			$parameters = [];
 
-			for ($i = 0; $i < $nbParameters; ++$i) {
-				$inputParamName = $inputParamsNames[$i];
-				$inputParamType = $inputParamsTypes[$i];
-				$passByRef = isset($scope->variablesPassByRef[$inputParamName]) ? $scope->variablesPassByRef[$inputParamName] : true;
-				
-				// trying to write the given parameter
-				if ($inputParamType) {
-					foreach ($scope->variablesTypes as $varName => $type) {
-						if ($inputParamType == $type || is_subclass_of($type, $inputParamType)) {
-							if (isset($scope->variables[$varName])) {
-								if ($passByRef)		$parameters[] =& $scope->variables[$varName];
-								else 				$parameters[] = $scope->variables[$varName];
-								continue 2;
+			foreach ($reflection->getParameters() as $param) {
+				$inputParamType = $param->getClass() ? $param->getClass()->getName() : null;
+				$passByRef = isset($scope->variablesPassByRef[$param->getName()]) ? $scope->variablesPassByRef[$param->getName()] : true;
 
-							} else if (isset($scope->variablesCallback[$varName])) {
-								$scope->variables[$varName] = $scope->variablesCallback[$varName]($scope);
-								if ($passByRef)		$parameters[] =& $scope->variables[$varName];
-								else 				$parameters[] = $scope->variables[$varName];
-								continue 2;
-							}
-						}
+				// trying to write the given parameter
+				try {
+					if ($inputParamType) {
+						if ($passByRef)		$parameters[] =& $scope->getByTypeByRef($inputParamType);
+						else 				$parameters[] = $scope->getByType($inputParamType);
+
+					} else {
+						if ($passByRef)		$parameters[] =& $scope->getByRef($param->getName());
+						else 				$parameters[] = $scope->get($param->getName());
 					}
-				}
-				
-				if (!isset($scope->variables[$inputParamName]) && isset($scope->variablesCallback[$inputParamName])) {
-					$scope->variables[$inputParamName] = $scope->variablesCallback[$inputParamName]($scope);
-				}
-				
-				if (isset($scope->variables[$inputParamName])) {
-					if ($passByRef)		$parameters[] =& $scope->variables[$inputParamName];
-					else 				$parameters[] = $scope->variables[$inputParamName];
-					continue;
-				}
-				
-				if (!$passByRef || $reflection->getParameters()[$i]->canBePassedByValue()) {
-					$parameters[] = null;
-				} else {
-					$scope->variables[$inputParamName] = null;
-					$parameters[] =& $scope->variables[$inputParamName];
+
+				} catch(\Exception $e) {
+					// variable doesn't exist
+					if (!$passByRef) {
+						$parameters[] = null;
+					} else {
+						$scope->variables[$param->getName()] = null;
+						$parameters[] =& $scope->variables[$param->getName()];
+					}
 				}
 			}
 
 			return call_user_func_array($callable, $parameters);
-		};
+
+		}, null);
 	}
 
+	private $parent = null;
 	private $variables = [];
 	private $variablesCallback = [];
 	private $variablesTypes = [];

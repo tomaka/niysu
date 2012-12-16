@@ -5,10 +5,10 @@ class ScopeTest extends \PHPUnit_Framework_TestCase {
 	public function testVariables() {
 		$scope = new Scope([ 'testA' => 1 ]);
 		$scope->testB = 2;
-		$scope->add('testC', 3);
-		$this->assertEquals($scope->getVariable('testA'), 1);
-		$this->assertEquals($scope->getVariable('testB'), 2);
-		$this->assertEquals($scope->getVariable('testC'), 3);
+		$scope->set('testC', 3);
+		$this->assertEquals($scope->get('testA'), 1);
+		$this->assertEquals($scope->get('testB'), 2);
+		$this->assertEquals($scope->get('testC'), 3);
 		$this->assertEquals($scope->testA, 1);
 		$this->assertEquals($scope->testB, 2);
 		$this->assertEquals($scope->testC, 3);
@@ -16,10 +16,10 @@ class ScopeTest extends \PHPUnit_Framework_TestCase {
 	
 	public function testClone() {
 		$scope1 = new Scope();
-		$scope1->add('test', 1);
+		$scope1->set('test', 1);
 
 		$scope2 = clone $scope1;
-		$this->assertEquals($scope2->getVariable('test'), 1);
+		$this->assertEquals($scope2->get('test'), 1);
 	}
 
 	/**
@@ -27,38 +27,38 @@ class ScopeTest extends \PHPUnit_Framework_TestCase {
      */
 	public function testSetVariablePassByRef() {
 		$scope = new Scope();
-		$scope->add('test', 4);
-		$scope->setVariablePassByRef('test', false);
-		$scope->callFunction(function(&$test) { $test = 10; });
-		$scope->assertEquals($scope->getVariable('test'), 4);
+		$scope->set('test', 4);
+		$scope->passByRef('test', false);
+		$scope->call(function(&$test) { $test = 10; });
+		$scope->assertEquals($scope->get('test'), 4);
 	}
 
 	public function testCallFunction() {
 		$scope = new Scope();
-		$scope->add('test', 1);
-		$scope->callFunction(function($test) { $this->assertEquals($test, 1); });
+		$scope->set('test', 1);
+		$scope->call(function($test) { $this->assertEquals($test, 1); });
 	}
 
 	public function testCallFunctionsFancy() {
 		$scope = new Scope();
-		$scope->callFunction(function() {});
-		$scope->callFunction('rand');
+		$scope->call(function() {});
+		$scope->call('rand');
 		// TODO: static function of a class (must find a static function in a class in stdlib)
-		$this->assertInstanceOf('Exception', $scope->callFunction('Exception'));
+		$this->assertInstanceOf('Exception', $scope->call('Exception'));
 	}
 	
 	public function testCallFunctionScopeAccessible() {
 		$scope = new Scope();
-		$scope->add('test', 1);
-		$scope->callFunction(function($scope) {
-			$this->assertEquals($scope->getVariable('test'), 1);
+		$scope->set('test', 1);
+		$scope->call(function($scope) {
+			$this->assertEquals($scope->get('test'), 1);
 		});
 	}
 	
 	public function testCallFunctionByType() {
 		$scope = new Scope();
-		$scope->add('e', new \LogicException('test'));
-		$scope->callFunction(function(\Exception $x) {
+		$scope->set('e', new \LogicException('test'));
+		$scope->call(function(\Exception $x) {
 			$this->assertNotNull($x);
 			$this->assertEquals($x->getMessage(), 'test');
 		});
@@ -66,9 +66,9 @@ class ScopeTest extends \PHPUnit_Framework_TestCase {
 
 	public function testCallFunctionMultipleParams() {
 		$scope = new Scope();
-		$scope->add('a', 1);
-		$scope->add('b', 2);
-		$scope->callFunction(function($a, $b) {
+		$scope->set('a', 1);
+		$scope->set('b', 2);
+		$scope->call(function($a, $b) {
 			$this->assertEquals($a, 1);
 			$this->assertEquals($b, 2);
 		});
@@ -76,39 +76,39 @@ class ScopeTest extends \PHPUnit_Framework_TestCase {
 
 	public function testCallFunctionWithCallback() {
 		$scope = new Scope();
-		$scope->addByCallback('test', function() { return 3; });
-		$scope->callFunction(function($test) { $this->assertEquals($test, 3); });
-		$this->assertEquals($scope->getVariable('test'), 3);
+		$scope->callback('test', function() { return 3; });
+		$scope->call(function($test) { $this->assertEquals($test, 3); });
+		$this->assertEquals($scope->get('test'), 3);
 	}
 	
 	public function testCallFunctionUniqueCallback() {
 		$n = 0;		// number of time the callback is called
 		
 		$scope = new Scope();
-		$scope->addByCallback('test', function() use (&$n) { $n += 1; return 3; });
+		$scope->callback('test', function() use (&$n) { $n += 1; return 3; });
 		
-		$scope->callFunction(function($test) {});
-		$scope->callFunction(function($test) {});
+		$scope->call(function($test) {});
+		$scope->call(function($test) {});
 		
 		$this->assertEquals($n, 1);
 	}
 	
 	public function testCallFunctionWithReference() {
 		$scope = new Scope();
-		$scope->add('test', 1);
-		$scope->callFunction(function(&$test) { $test = 2; });
-		$this->assertEquals($scope->getVariable('test'), 2);
+		$scope->set('test', 1);
+		$scope->call(function(&$test) { $test = 2; });
+		$this->assertEquals($scope->get('test'), 2);
 	}
 
 	public function testCallFunctionCombo() {
 		$scope = new Scope();
-		$scope->add('a', 1);
-		$scope->addByCallback('b', function() { return 2; });
-		$scope->add('cTest', new \LogicException('testC'));
-		$scope->addByCallback('dTest', function() { return new \RuntimeException('testD'); }, 'RuntimeException');
-		$scope->add('e', 20);
+		$scope->set('a', 1);
+		$scope->callback('b', function() { return 2; });
+		$scope->set('cTest', new \LogicException('testC'));
+		$scope->callback('dTest', function() { return new \RuntimeException('testD'); }, 'RuntimeException');
+		$scope->set('e', 20);
 
-		$scope->callFunction(function($a, $b, \LogicException $c, \RuntimeException &$d, &$e) {
+		$scope->call(function($a, $b, \LogicException $c, \RuntimeException &$d, &$e) {
 			$this->assertEquals($a, 1);
 			$this->assertEquals($b, 2);
 			$this->assertEquals($c->getMessage(), 'testC');
@@ -117,8 +117,8 @@ class ScopeTest extends \PHPUnit_Framework_TestCase {
 			$e *= 2;
 		});
 
-		$this->assertEquals($scope->getVariable('e'), 40);
-		$this->assertEquals($scope->getVariable('dTest'), 'testModified');
+		$this->assertEquals($scope->get('e'), 40);
+		$this->assertEquals($scope->get('dTest'), 'testModified');
 	}
 };
 

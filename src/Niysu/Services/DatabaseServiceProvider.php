@@ -22,7 +22,7 @@ class DatabaseServiceProvider {
 			$this->connectionDuration = microtime(true) - $beforeConnection;
 		}*/
 
-		$obj = $scope->callFunction('Niysu\\Services\\DatabaseService');
+		$obj = $scope->call('Niysu\\Services\\DatabaseService');
 		if ($this->dsn) {
 			$obj->setDatabase($this->dsn, $this->username, $this->password);
 		}

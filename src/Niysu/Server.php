@@ -17,10 +17,10 @@ class Server {
 		
 		// building global scope
 		$this->scope = new Scope();
-		$this->scope->add('server', $this);
-		$this->scope->setVariablePassByRef('server', false);
-		$this->scope->add('elapsedTime', function() use ($constructionTime) { $now = microtime(true); return round(1000 * ($now - $constructionTime)); });
-		$this->scope->setVariablePassByRef('elapsedTime', false);
+		$this->scope->server = $this;
+		$this->scope->passByRef('server', false);
+		$this->elapsedTime = function() use ($constructionTime) { $now = microtime(true); return round(1000 * ($now - $constructionTime)); };
+		$this->scope->passByRef('elapsedTime', false);
 		
 		// building the main RoutesCollection
 		$mainCollection = new RoutesCollection('');
@@ -47,8 +47,8 @@ class Server {
 			// building scope for configuration
 			$configScope = clone $this->scope;
 			foreach ($this->serviceProviders as $serviceName => $provider)
-				$configScope->add($serviceName.'Provider', $provider);
-			$configScope->callFunction($f);
+				$configScope->set($serviceName.'Provider', $provider);
+			$configScope->call($f);
 		}
 	}
 
@@ -68,14 +68,14 @@ class Server {
 
 		$localScope = clone $this->scope;
 		foreach($this->serviceProviders as $sNameIter => $provider) {
-			$localScope->addByCallback($sNameIter.'Service', function(Scope $s) use ($provider) {
-				return $s->callFunction($provider);
+			$localScope->callback($sNameIter.'Service', function(Scope $s) use ($provider) {
+				return $s->call($provider);
 			});
 		}
 
 		$val = $this->serviceProviders[$serviceName];
 		if (is_callable($val)) {
-			return $localScope->callFunction($val);
+			return $localScope->call($val);
 		}
 
 		throw new \LogicException('Unvalid service provider format');
@@ -119,14 +119,14 @@ class Server {
 
 		try {
 			$handleScope = clone $this->scope;
-			$handleScope->add('request', $input);
-			$handleScope->setVariablePassByRef('request', true);
-			$handleScope->add('response', $output);
-			$handleScope->setVariablePassByRef('response', true);
+			$handleScope->set('request', $input);
+			$handleScope->passByRef('request', true);
+			$handleScope->set('response', $output);
+			$handleScope->passByRef('response', true);
 
 			foreach($this->serviceProviders as $serviceName => $provider) {
-				$handleScope->addByCallback($serviceName.'Service', function(Scope $s) use ($provider) {
-					return $s->callFunction($provider);
+				$handleScope->callback($serviceName.'Service', function(Scope $s) use ($provider) {
+					return $s->call($provider);
 				});
 			}
 			
@@ -255,7 +255,7 @@ class Server {
 		});
 		
 		// finally disabling error reporting
-		error_reporting(0);
+		//error_reporting(0);
 	}
 
 	private function printError(\Exception $e) {

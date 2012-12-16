@@ -13,10 +13,10 @@ class Route {
 	/// \param $scope Scope that will contain the variables accessible to the handler and before functions ; the "request" and "response" elements must be defined
 	public function handle(Scope $scope) {
 		// some routine checks
-		if (!$scope->getVariable('request'))	throw new \LogicException('The "request" variable in the scope must be defined');
-		if (!$scope->getVariable('response'))	throw new \LogicException('The "response" variable in the scope must be defined');
+		if (!$scope->get('request'))	throw new \LogicException('The "request" variable in the scope must be defined');
+		if (!$scope->get('response'))	throw new \LogicException('The "response" variable in the scope must be defined');
 
-		$request = $scope->getVariable('request');
+		$request = $scope->get('request');
 		if ($request->getMethod() != $this->method)
 			return false;
 		
@@ -28,36 +28,36 @@ class Route {
 		for ($i = 1; $i < count($matches); ++$i) {
 			$varName = $this->patternRegexMatches[$i];
 			$value = urldecode($matches[$i]);
-			$scope->add($varName, $value);
+			$scope->set($varName, $value);
 		}
 		
 		// adding controlling variables to scope
-		$scope->add('isWrongResource', false);		// DEPRECATED
-		$scope->add('ignoreHandler', false);		// DEPRECATED
-		$scope->add('isRightResource', true);
-		$scope->add('callHandler', true);
+		$scope->set('isWrongResource', false);		// DEPRECATED
+		$scope->set('ignoreHandler', false);		// DEPRECATED
+		$scope->set('isRightResource', true);
+		$scope->set('callHandler', true);
 		
 		// calling befores
 		foreach ($this->before as $before) {
-			$scope->callFunction($before);
+			$scope->call($before);
 
 			// checking controlling variables
-			if ($scope->getVariable('isWrongResource') === true)		// DEPRECATED
+			if ($scope->get('isWrongResource') === true)		// DEPRECATED
 				return false;
-			if ($scope->getVariable('ignoreHandler') === true)			// DEPRECATED
+			if ($scope->get('ignoreHandler') === true)			// DEPRECATED
 				return true;
-			if ($scope->getVariable('isRightResource') === false)
+			if ($scope->get('isRightResource') === false)
 				return false;
-			if ($scope->getVariable('callHandler') === false)
+			if ($scope->get('callHandler') === false)
 				return true;
 		}
 		
 		// calling the handler
-		$scope->callFunction($this->callback);
+		$scope->call($this->callback);
 		
 		// calling after
 		foreach ($this->after as $filter)
-			$scope->callFunction($filter);
+			$scope->call($filter);
 
 		return true;
 	}
@@ -77,7 +77,7 @@ class Route {
 	/// \brief If $callable doesn't return true, the output returns a $statusCode status code answer
 	public function validate($callable, $statusCode = 500) {
 		$this->before(function($scope, &$callHandler, $response) use ($callable, $statusCode) {
-			$ret = $scope->callFunction($callable);
+			$ret = $scope->call($callable);
 			if (!$ret) {
 				$response->setStatusCode($statusCode);
 				$callHandler = false;
@@ -89,7 +89,7 @@ class Route {
 	/// \brief Adds a callback which returns true or false whether the request must be handled
 	public function onlyIf($callable) {
 		$this->before(function($scope, &$isRightResource, $user) use ($callable) {
-			$ret = $scope->callFunction($callable);
+			$ret = $scope->call($callable);
 			if (!$ret)	$isRightResource = false;
 		});
 		return $this;

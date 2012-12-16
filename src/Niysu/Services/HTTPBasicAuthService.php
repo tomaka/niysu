@@ -52,7 +52,7 @@ class HTTPBasicAuthService {
 		$localScope = clone $this->scope;
 		$localScope->login = $login;
 		$localScope->password = $password;
-		$retValue = $localScope->callFunction($this->authFunction);
+		$retValue = $localScope->call($this->authFunction);
 		return $retValue;
 	}
 
