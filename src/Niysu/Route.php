@@ -12,6 +12,10 @@ class Route {
 	/// \ret True if the request was handled, false if it was not
 	/// \param $scope Scope that will contain the variables accessible to the handler and before functions ; the "request" and "response" elements must be defined
 	public function handle(Scope $scope) {
+		// some routine checks
+		if (!$scope->getVariable('request'))	throw new \LogicException('The "request" variable in the scope must be defined');
+		if (!$scope->getVariable('response'))	throw new \LogicException('The "response" variable in the scope must be defined');
+
 		$request = $scope->getVariable('request');
 		if ($request->getMethod() != $this->method)
 			return false;
@@ -32,10 +36,6 @@ class Route {
 		$scope->add('ignoreHandler', false);		// DEPRECATED
 		$scope->add('isRightResource', true);
 		$scope->add('callHandler', true);
-
-		// some routine checks
-		if (!$scope->getVariable('request'))	throw new \LogicException('The "request" variable in the scope must be defined');
-		if (!$scope->getVariable('response'))	throw new \LogicException('The "response" variable in the scope must be defined');
 		
 		// calling befores
 		foreach ($this->before as $before) {
