@@ -12,7 +12,7 @@ class CacheMeService {
 		};
 	}
 	
-	public function __construct(HTTPRequestInterface $request, HTTPResponseInterface &$response, CacheService $cacheService, $logService, $elapsedTime) {
+	public function __construct(\Niysu\HTTPRequestInterface $request, \Niysu\HTTPResponseInterface &$response, CacheService $cacheService, $logService, $elapsedTime) {
 		$this->cache = $cacheService;
 		$this->log = $logService;
 		$this->elapsedTime = $elapsedTime;
@@ -21,9 +21,9 @@ class CacheMeService {
 		$this->serverCacheResourceName = $serverCacheResourceName;
 		
 		//$response = new HTTPResponseETagFilter($response);
-		$response = new HTTPResponseCustomFilter($response, \Closure::bind(function($data) use ($cacheService, $serverCacheResourceName) {
-			$cacheService->store($serverCacheResourceName, $data);
-			return $data;
+		$response = new \Niysu\HTTPResponseCustomFilter($response, \Closure::bind(function($response) use ($cacheService, $serverCacheResourceName) {
+			/*$cacheService->store($serverCacheResourceName, $data);
+			return $data;*/
 		}, null));
 		
 		$this->responseFilter = $response;
@@ -46,7 +46,9 @@ class CacheMeService {
 	}
 
 	public function load() {
-		if (!$this->cache->exists($this->serverCacheResourceName)) {
+		return false;
+
+		/*if (!$this->cache->exists($this->serverCacheResourceName)) {
 			$this->log->debug('Attempting to load resource from cache, not found: '.$this->serverCacheResourceName);
 			return false;
 		}
@@ -55,11 +57,13 @@ class CacheMeService {
 		$e = $this->elapsedTime;
 		$this->log->debug('Loading resource from cache ('.$e().'ms): '.$this->serverCacheResourceName);
 
-		$newCB = function() use ($data) { return $data; };
+		$newCB = function($response) use ($data) {};
 		$newCB = $newCB->bindTo(null);
-		$this->responseFilter->setContentCallback($newCB);
+		$this->responseFilter->setContentCallback(Closure::bind(function($response) use ($data) {
+			$response->setData();
+		}, null));
 
-		return true;
+		return true;*/
 	}
 
 	public function vary($header) {

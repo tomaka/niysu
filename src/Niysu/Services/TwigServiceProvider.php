@@ -24,7 +24,7 @@ class TwigServiceProvider {
 			$this->twig->addGlobal($variable, $value);
 	}
 
-	public function __invoke(HTTPResponseInterface &$response) {
+	public function __invoke(\Niysu\HTTPResponseInterface &$response) {
 		if (!$this->twig) {
 			$this->twig = new \Twig_Environment($this->loader);
 			foreach ($this->globals as $n => $v)
