@@ -37,6 +37,7 @@ class Server {
 		$this->setServiceProvider('inputJSON', 'Niysu\\Services\\InputJSONService');
 		$this->setServiceProvider('inputXML', 'Niysu\\Services\\InputXMLService');
 		$this->setServiceProvider('log', new Services\LogServiceProvider());
+		$this->setServiceProvider('session', 'Niysu\\Services\\SessionService');
 		if (class_exists('Twig_Loader_Filesystem'))
 			$this->setServiceProvider('twig', new Services\TwigServiceProvider());
 		$this->setServiceProvider('xslt', new Services\XSLTServiceProvider());
