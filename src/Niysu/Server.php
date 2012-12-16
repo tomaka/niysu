@@ -29,9 +29,10 @@ class Server {
 		$this->routesCollections[] = $mainCollection;
 		
 		// building default services providers
-		$this->setServiceProvider('database', new Services\DatabaseServiceProvider());
 		$this->setServiceProvider('cacheMe', new Services\CacheMeServiceProvider());
 		$this->setServiceProvider('cache', new Services\CacheServiceProvider());
+		$this->setServiceProvider('database', new Services\DatabaseServiceProvider());
+		$this->setServiceProvider('debugPanel', 'Niysu\Services\DebugPanelService');
 		$this->setServiceProvider('inputJSON', 'Niysu\Services\InputJSONService');
 		$this->setServiceProvider('inputXML', 'Niysu\Services\InputXMLService');
 		$this->setServiceProvider('log', new Services\LogServiceProvider());
@@ -117,7 +118,9 @@ class Server {
 		try {
 			$handleScope = clone $this->scope;
 			$handleScope->add('request', $input);
+			$handleScope->setVariablePassByRef('request', true);
 			$handleScope->add('response', $output);
+			$handleScope->setVariablePassByRef('response', true);
 
 			foreach($this->serviceProviders as $serviceName => $provider) {
 				$handleScope->addByCallback($serviceName.'Service', function(Scope $s) use ($provider) {
