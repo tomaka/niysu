@@ -5,32 +5,32 @@ class ScopeTest extends \PHPUnit_Framework_TestCase {
 	public function testGetSet() {
 		$scope = new Scope([ 'testA' => 1 ]);
 		$scope->testB = 2;
-		$scope->set('testC', 3);
 
 		$this->assertEquals($scope->get('testA'), 1);
 		$this->assertEquals($scope->testB, 2);
+		$this->assertNull($scope->testC);
 	}
-
+	
 	public function testGetByRef() {
 		$scope = new Scope();
-
+		
 		$scope->set('testA', 3);
 		$a =& $scope->getByRef('testA');
 		$a = 12;
 		$this->assertEquals($scope->testA, 12);
-
+		
 		$b =& $scope->getByRef('testB');
 		$scope->testB = 40;
 		$this->assertEquals($b, 40);
 	}
-
+	
 	public function testGetByType() {
 		$scope = new Scope();
 		
 		$scope->set('testA', new \Exception());
 		$this->assertNotNull($scope->getByType('\Exception'));
 	}
-
+	
 	public function testGetByTypeByRef() {
 		$scope = new Scope();
 		
@@ -53,7 +53,7 @@ class ScopeTest extends \PHPUnit_Framework_TestCase {
 	public function testChild() {
 		$scope1 = new Scope();
 		$scope2 = $scope1->newChild();
-		
+
 		$scope1->test = 1;
 		$this->assertEquals($scope1->test, 1);
 		$this->assertEquals($scope2->test, 1);
@@ -73,7 +73,7 @@ class ScopeTest extends \PHPUnit_Framework_TestCase {
 		$scope->call(function(&$test) { $test = 10; });
 		$scope->assertEquals($scope->get('test'), 4);
 	}
-	
+
 	public function testCallFunction() {
 		$scope = new Scope();
 		$scope->set('test', 1);

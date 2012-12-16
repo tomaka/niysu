@@ -10,8 +10,16 @@ class Scope /*implements \Serializable*/ {
 		return $this->set($var, $value);
 	}
 
+	public function __unset($var) {
+		unset($this->variables[$var]);
+	}
+	
+	public function __isset($var) {
+		return $this->has($var);
+	}
+
 	public function has($var) {
-		if (isset($this->variables[$var]))
+		if (isset($this->variables[$var]) && $this->variables[$var] !== null)
 			return true;
 		if (isset($this->variablesCallback[$var]))
 			return true;
@@ -21,31 +29,33 @@ class Scope /*implements \Serializable*/ {
 	}
 
 	public function get($var) {
-		if (isset($this->variables[$var]))
+		if (isset($this->variables[$var]) && $this->variables[$var] !== null)
 			return $this->variables[$var];
 		if (isset($this->variablesCallback[$var])) {
-			$val = call_user_func($scope->variablesCallback[$var], $this);
+			$val = call_user_func($this->variablesCallback[$var], $this);
 			$this->variables[$var] = $val;
 			return $val;
 		}
 		if (!$this->parent)
-			throw new \RuntimeException('Undefined variable');
+			return null;
 		return $this->parent->get($var);
 	}
 
 	public function &getByRef($var) {
 		if (!isset($this->variables[$var]) && isset($this->variablesCallback[$var])) {
-			$val = call_user_func($scope->variablesCallback[$var], $this);
+			$val = call_user_func($this->variablesCallback[$var], $this);
 			$this->variables[$var] = $val;
 			return $val;
 		}
-		if (isset($this->variables[$var])) {
+		if (isset($this->variables[$var]) && $this->variables[$var] !== null) {
 			if (!isset($this->variablesPassByRef[$var]) || $this->variablesPassByRef[$var])
 				return $this->variables[$var];
 			throw new \RuntimeException('Forbidden to pass this variable by reference');
 		}
-		if (!$this->parent)
-			throw new \RuntimeException('Undefined variable');
+		if (!$this->parent || !$this->parent->has($var)) {
+			$this->variables[$var] = null;
+			return $this->variables[$var];
+		}
 		return $this->parent->getByRef($var);
 	}
 	
@@ -54,6 +64,9 @@ class Scope /*implements \Serializable*/ {
 			if (is_a($type, $requestedType))
 				return $this->get($varName);
 		}
+		if (!$this->parent)
+			return null;
+		return $this->parent->getByType();
 	}
 	
 	public function &getByTypeByRef($requestedType) {
@@ -61,6 +74,9 @@ class Scope /*implements \Serializable*/ {
 			if (is_a($type, $requestedType))
 				return $this->getByRef($varName);
 		}
+		if (!$this->parent)
+			throw new \RuntimeException('Variable with this type not found');
+		return $this->parent->getByType();
 	}
 	
 	public function set($var, $value, $type = null) {
@@ -68,9 +84,8 @@ class Scope /*implements \Serializable*/ {
 			$type = get_class($value);
 
 		$this->variables[$var] = $value;
-		if ($type)
-			$this->variablesTypes[$var] = $type;
-		return $this;
+		if ($type)	$this->variablesTypes[$var] = $type;
+		else 		unset($this->variablesTypes[$var]);
 	}
 
 	/// \brief Registers a callback for the given variable
@@ -80,12 +95,10 @@ class Scope /*implements \Serializable*/ {
 			throw new \LogicException('The callback must be callable');
 		$this->variablesCallback[$var] = $callback;
 		$this->variablesTypes[$var] = $type;
-		return $this;
 	}
 
 	public function passByRef($var, $byRef = true) {
 		$this->variablesPassByRef[$var] = $byRef;
-		return $this;
 	}
 	
 	public function call($function) {
@@ -98,7 +111,7 @@ class Scope /*implements \Serializable*/ {
 		$c->parent = $this;
 		return $c;
 	}
-
+	
 	/// \todo 
 	public function __toString() {
 		ob_start();
@@ -166,24 +179,13 @@ class Scope /*implements \Serializable*/ {
 				$passByRef = isset($scope->variablesPassByRef[$param->getName()]) ? $scope->variablesPassByRef[$param->getName()] : true;
 
 				// trying to write the given parameter
-				try {
-					if ($inputParamType) {
-						if ($passByRef)		$parameters[] =& $scope->getByTypeByRef($inputParamType);
-						else 				$parameters[] = $scope->getByType($inputParamType);
+				if ($inputParamType) {
+					if ($passByRef)		$parameters[] =& $scope->getByTypeByRef($inputParamType);
+					else 				$parameters[] = $scope->getByType($inputParamType);
 
-					} else {
-						if ($passByRef)		$parameters[] =& $scope->getByRef($param->getName());
-						else 				$parameters[] = $scope->get($param->getName());
-					}
-
-				} catch(\Exception $e) {
-					// variable doesn't exist
-					if (!$passByRef) {
-						$parameters[] = null;
-					} else {
-						$scope->variables[$param->getName()] = null;
-						$parameters[] =& $scope->variables[$param->getName()];
-					}
+				} else {
+					if ($passByRef)		$parameters[] =& $scope->getByRef($param->getName());
+					else 				$parameters[] = $scope->get($param->getName());
 				}
 			}
 
