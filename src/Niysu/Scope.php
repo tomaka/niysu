@@ -72,21 +72,6 @@ class Scope {
 
 	
 	
-	private static function buildReflection($callable) {
-		if (is_string($callable) && ($pos = strpos($callable, '::')) !== false)
-			return new \ReflectionMethod(substr($callable, 0, $pos), substr($callable, $pos + 2));
-		if (is_string($callable) && function_exists($callable))
-			return new \ReflectionFunction($callable);
-		if (method_exists($callable, '__invoke'))
-			return new \ReflectionMethod($callable, '__invoke');
-		if (is_string($callable) && method_exists('HTTPResponseInterface', $callable))
-			return new \ReflectionMethod('HTTPResponseInterface', $callable);
-		if (is_string($callable) && method_exists('HTTPRequestInterface', $callable))
-			return new \ReflectionMethod('HTTPRequestInterface', $callable);
-		
-		throw new \LogicException('Unvalid callable type in ControllerRegistration');
-	}
-	
 	// returns a closure taking as parameter (Scope $scope)
 	// this closure will call the parameter of "parseCallable" and return what the callable returned
 	private static function parseCallable($callable) {
@@ -94,8 +79,31 @@ class Scope {
 		$inputParamsTypes = [];					// for each position, the variable type
 		$nbParameters = 0;
 
+		// 
+		if (is_string($callable) && ($pos = strpos($callable, '::')) !== false) {
+			// static function
+			$reflection = new \ReflectionMethod(substr($callable, 0, $pos), substr($callable, $pos + 2));
+
+		} else if (is_string($callable) && function_exists($callable)) {
+			// function
+			$reflection = new \ReflectionFunction($callable);
+
+		} else if (method_exists($callable, '__invoke')) {
+			// closure or callable object
+			$reflection = new \ReflectionMethod($callable, '__invoke');
+
+		} else if (is_string($callable) && class_exists($callable)) {
+			// handling class constructors
+			$classReflec = new \ReflectionClass($callable);
+			$callable = function() use ($classReflec) { return $classReflec->newInstanceArgs(func_get_args()); };
+			$reflection = $classReflec->getConstructor();
+			if (!$reflection)	$reflection = new \ReflectionMethod(function() {}, '__invoke');
+			
+		} else {
+			throw new \LogicException('Unvalid callable type in ControllerRegistration');
+		}
+
 		// building the values of the variables above
-		$reflection = self::buildReflection($callable);
 		$nbParameters = $reflection->getNumberOfParameters();
 		foreach ($reflection->getParameters() as $param) {
 			$inputParamsNames[$param->getPosition()] = $param->getName();
