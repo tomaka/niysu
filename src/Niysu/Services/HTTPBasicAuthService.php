@@ -49,7 +49,7 @@ class HTTPBasicAuthService {
 			return false;
 
 		// calling auth function
-		$localScope = $this->scope->newChild();
+		$localScope = $this->scope->newSmallChild();
 		$localScope->login = $login;
 		$localScope->password = $password;
 		$retValue = $localScope->call($this->authFunction);

@@ -52,7 +52,7 @@ class Scope implements \Serializable {
 				return $this->variables[$var];
 			throw new \RuntimeException('Forbidden to pass this variable by reference');
 		}
-		if (!$this->parent || !$this->parent->has($var)) {
+		if (!$this->parent || (!$this->passNewVarsToParent && !$this->parent->has($var))) {
 			$this->variables[$var] = null;
 			return $this->variables[$var];
 		}
@@ -109,6 +109,13 @@ class Scope implements \Serializable {
 	public function newChild() {
 		$c = new Scope();
 		$c->parent = $this;
+		return $c;
+	}
+
+	public function newSmallChild() {
+		$c = new Scope();
+		$c->parent = $this;
+		$c->passNewVarsToParent = true;
 		return $c;
 	}
 
@@ -213,6 +220,7 @@ class Scope implements \Serializable {
 	}
 
 	private $parent = null;
+	private $passNewVarsToParent = false;
 	private $variables = [];
 	private $variablesCallback = [];
 	private $variablesTypes = [];
