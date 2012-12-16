@@ -95,7 +95,10 @@ class Scope {
 		} else if (is_string($callable) && class_exists($callable)) {
 			// handling class constructors
 			$classReflec = new \ReflectionClass($callable);
-			$callable = function() use ($classReflec) { return $classReflec->newInstanceArgs(func_get_args()); };
+			$callable = function() use ($classReflec) {
+				$trace = debug_backtrace();
+				return $classReflec->newInstanceArgs($trace[1]['args'][1]);
+			};
 			$reflection = $classReflec->getConstructor();
 			if (!$reflection)	$reflection = new \ReflectionMethod(function() {}, '__invoke');
 			
