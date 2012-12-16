@@ -14,6 +14,7 @@ class DebugPanelService {
 
 			if (preg_match('/\\<\\/body\\>/i', $data->getData(), $matches, PREG_OFFSET_CAPTURE)) {
 				$timeElapsed = call_user_func($scope->elapsedTime);
+				$peakMemory = self::formatBytes(memory_get_peak_usage());
 				eval('$evaluatedPanel = "'.addslashes(self::$panelTemplate).'";');
 
 				$splitOffset = $matches[0][1];
@@ -32,12 +33,26 @@ class DebugPanelService {
 	}
 
 
-	private $active = false;
+	
+	private static function formatBytes($bytes, $precision = 2) { 
+	    $units = array('B', 'KiB', 'MiB', 'GiB', 'TiB'); 
 
+	    $bytes = max($bytes, 0); 
+	    $pow = floor(($bytes ? log($bytes) : 0) / log(1024));
+	    $pow = min($pow, count($units) - 1);
+	    $bytes /= pow(1024, $pow);
+
+	    return round($bytes, $precision) . ' ' . $units[$pow]; 
+	}
+	
+	
+	private $active = false;
+	
 	private static $panelTemplate =
 		'<div style="color:black; position:fixed; left:0; bottom:0; width:100%; padding:0.5em 1em; background-color:gray; border-top:3px double black;">
 			<em><a style="color:darkblue; text-decoration:inherit;" href="https://github.com/Tomaka17/niysu">Niysu debug panel</a></em>
 			<span style="margin-left:2em;">Time to build this page: $timeElapsed ms</span>
+			<span style="margin-left:2em;">Peak memory: $peakMemory</span>
 		</div>';
 };
 
