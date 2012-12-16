@@ -44,9 +44,9 @@ class ScopeTest extends \PHPUnit_Framework_TestCase {
 		$scope->callFunction(function() {});
 		$scope->callFunction('rand');
 		// TODO: static function of a class (must find a static function in a class in stdlib)
-		$scope->callFunction('Exception');
+		$this->assertInstanceOf('Exception', $scope->callFunction('Exception'));
 	}
-
+	
 	public function testCallFunctionScopeAccessible() {
 		$scope = new Scope();
 		$scope->add('test', 1);
