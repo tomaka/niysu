@@ -9,7 +9,7 @@ class DebugPanelService {
 		$response = new \Niysu\HTTPResponseCustomFilter($response, function($data) use ($scope) {
 			if (!$this->active)
 				return;
-			if (!$data->hasHeader('Content-Type') || substr($data->getHeader('Content-Type'), 0, 9) != 'text/html')
+			if ($data->hasHeader('Content-Type') && substr($data->getHeader('Content-Type'), 0, 9) != 'text/html' && substr($data->getHeader('Content-Type'), 0, 21) != 'application/xml+xhtml')
 				return;
 
 			if (preg_match('/\\<\\/body\\>/i', $data->getData(), $matches, PREG_OFFSET_CAPTURE)) {
