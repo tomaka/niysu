@@ -30,7 +30,7 @@ class HTTPRequestGlobal extends HTTPRequestInterface {
 	}
 
 	public function isHTTPS() {
-		return $_SERVER['HTTPS'] && $_SERVER['HTTPS'] != 'off';
+		return isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] && $_SERVER['HTTPS'] != 'off';
 	}
 
 	public function getCookiesList() {
