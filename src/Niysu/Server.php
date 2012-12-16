@@ -45,7 +45,7 @@ class Server {
 		// calling configuration functions
 		foreach ($this->configFunctions as $f) {
 			// building scope for configuration
-			$configScope = clone $this->scope;
+			$configScope = $this->scope->newChild();
 			foreach ($this->serviceProviders as $serviceName => $provider)
 				$configScope->set($serviceName.'Provider', $provider);
 			$configScope->call($f);
@@ -66,7 +66,7 @@ class Server {
 		if (!isset($this->serviceProviders[$serviceName]))
 			throw new \LogicException('Service "'.$serviceName.'" doesn\'t exist');
 
-		$localScope = clone $this->scope;
+		$localScope = $this->scope->newChild();
 		foreach($this->serviceProviders as $sNameIter => $provider) {
 			$localScope->callback($sNameIter.'Service', function(Scope $s) use ($provider) {
 				return $s->call($provider);
@@ -118,7 +118,7 @@ class Server {
 		$this->currentResponsesStack[] = $output;
 
 		try {
-			$handleScope = clone $this->scope;
+			$handleScope = $this->scope->newChild();
 			$handleScope->set('request', $input);
 			$handleScope->passByRef('request', true);
 			$handleScope->set('response', $output);
@@ -132,7 +132,7 @@ class Server {
 			
 			foreach ($this->routesCollections as $collection) {
 				foreach ($collection->getRoutesList() as $route) {
-					$localScope = clone $handleScope;
+					$localScope = $handleScope->newChild();
 					if ($route->handle($localScope)) {
 						$log->debug('Successful handling of resource', [ 'url' => $input->getURL(), 'method' => $input->getMethod() ]);
 						if ($nb = gc_collect_cycles())

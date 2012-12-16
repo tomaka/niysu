@@ -95,7 +95,7 @@ class Scope /*implements \Serializable*/ {
 
 	public function newChild() {
 		$c = new Scope();
-		$c->parent = this;
+		$c->parent = $this;
 		return $c;
 	}
 
