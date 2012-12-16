@@ -16,7 +16,7 @@ class HTTPResponseStorageTest extends \PHPUnit_Framework_TestCase {
 	public function testSetStatusCode() {
 		$response = new HTTPResponseStorage();
 		$this->assertGreaterThanOrEqual($response->getStatusCode(), 200);
-		$this->assertLessThan($response->getStatusCode(), 300);
+		$this->assertLessThan(300, $response->getStatusCode());
 		
 		$response->setStatusCode(301);
 		$this->assertEquals($response->getStatusCode(), 301);
@@ -39,10 +39,10 @@ class HTTPResponseStorageTest extends \PHPUnit_Framework_TestCase {
 	public function testRemoveHeader() {
 		$response = new HTTPResponseStorage();
 		$this->assertFalse($response->hasHeader('Content-Type'));
-		
+
 		$response->setHeader('Content-Type', 'text/html');
 		$this->assertTrue($response->hasHeader('Content-Type'));
-		
+
 		$response->removeHeader('Content-Type');
 		$this->assertFalse($response->hasHeader('Content-Type'));
 	}
