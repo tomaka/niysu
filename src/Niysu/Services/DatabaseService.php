@@ -38,7 +38,7 @@ class DatabaseService implements \Iterator, \ArrayAccess, \Countable {
 			$params = [];
 		if (!is_array($params))
 			$params = [$params];
-		
+
 		$this->logService->debug('SQL query: '.$sql);
 		
 		$query = $this->databasePDO->prepare($sql);
@@ -77,7 +77,7 @@ class DatabaseService implements \Iterator, \ArrayAccess, \Countable {
 			$this->databasePDO = $database;
 
 		} else if (is_string($database)) {
-			$this->logService->debug('Connection attempt to '.$database.' [with'.(func_num_args() >= 2 '' : 'out').' username][with'.(func_num_args() >= 3 '' : 'out').' password]');
+			$this->logService->debug('Connection attempt to '.$database.' [with'.(func_num_args() >= 2 ? '' : 'out').' username][with'.(func_num_args() >= 3 ? '' : 'out').' password]');
 			$this->databasePDO = new \PDO($database, func_num_args() >= 2 ? func_get_arg(1) : null, func_num_args() >= 3 ? func_get_arg(2) : null);
 			$this->databasePDO->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 			$this->logService->debug('Successfully connected to '.$database);
