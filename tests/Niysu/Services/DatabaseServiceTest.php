@@ -3,12 +3,13 @@ namespace Niysu\Services;
 
 class DatabaseServiceTest extends \PHPUnit_Framework_TestCase {
 	protected $service;
-
+	
 	protected function setUp() {
-		$this->service = new DatabaseService('sqlite::memory:');
+		$this->service = new DatabaseService();
+		$this->service->setDatabase('sqlite::memory:');
 		$this->service->execute('CREATE TABLE test (id INTEGER)');
 	}
-
+	
 	/**
      * @expectedException PDOException
      */
