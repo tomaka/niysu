@@ -16,6 +16,9 @@ class Route {
 		if (!$scope->get('request'))	throw new \LogicException('The "request" variable in the scope must be defined');
 		if (!$scope->get('response'))	throw new \LogicException('The "response" variable in the scope must be defined');
 
+		// getting log service
+		$logService = $scope->logService;
+
 		$request = $scope->get('request');
 		if ($request->getMethod() != $this->method)
 			return false;
@@ -23,7 +26,10 @@ class Route {
 		// checking whether the URL matches
 		$result = preg_match(implode($this->patternRegex), $request->getURL(), $matches);
 		if (!$result)	return false;
-
+		
+		
+		$logService->debug('URL '.$request->getURL().' matching route '.$this->originalPattern.' ; regex is: '.implode($this->patternRegex));
+		
 		// adding parts of the URL inside scope
 		for ($i = 1; $i < count($matches); ++$i) {
 			$varName = $this->patternRegexMatches[$i];
@@ -46,13 +52,18 @@ class Route {
 				return false;
 			if ($scope->get('ignoreHandler') === true)			// DEPRECATED
 				return true;
-			if ($scope->get('isRightResource') === false)
+			if ($scope->get('isRightResource') === false) {
+				$logService->debug('Route ignored by before handler');
 				return false;
-			if ($scope->get('callHandler') === false)
+			}
+			if ($scope->get('callHandler') === false) {
+				$logService->debug('Route\'s handler won\'t get called because of before handler');
 				return true;
+			}
 		}
 		
 		// calling the handler
+		$logService->debug('Calling handler of route '.implode($this->patternRegex));
 		$scope->call($this->callback);
 		
 		// calling after
@@ -112,6 +123,8 @@ class Route {
 
 
 	private function setURLPattern($pattern) {
+		$this->originalPattern = $pattern;
+
 		$currentOffset = 0;
 		$this->patternRegex = ['/^'];
 		$this->patternRegexMatches = [];
@@ -142,6 +155,7 @@ class Route {
 	private $patternRegexMatches = [];			// for each match offset, contains the variable name
 	private $callback = null;					// the main function that handles the resource
 	private $method = null;
+	private $originalPattern = '';				// the original pattern
 };
 
 ?>
