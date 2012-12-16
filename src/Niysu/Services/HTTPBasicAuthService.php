@@ -4,9 +4,9 @@ namespace Niysu\Services;
 class HTTPBasicAuthService {
 	public static function beforeMustBeAuthenticated($realm = 'private') {
 		return function($httpBasicAuthService, $request, $response, &$callHandler) use ($realm) {
-			$statusOnFail = 401;
-			if ($request->getHeader('X-StatusOnLoginFail'))
-				$statusOnFail = intval($request->getHeader('X-StatusOnLoginFail'));
+			$statusOnFail = $request->getHeader('X-StatusOnLoginFail');
+			if (!$statusOnFail || $statusOnFail < 400 || $statusOnFail >= 500)
+				$statusOnFail = 401;
 
 			if ($httpBasicAuthService->login())
 				return;
