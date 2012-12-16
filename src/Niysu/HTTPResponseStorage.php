@@ -1,7 +1,7 @@
 <?php
 namespace Niysu;
 
-class HTTPResponseStorage {
+class HTTPResponseStorage extends HTTPResponseInterface {
 	public function getStatusCode() {
 		return $this->statusCode;
 	}

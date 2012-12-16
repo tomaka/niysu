@@ -4,44 +4,42 @@ namespace Niysu;
 class HTTPResponseCustomFilter extends HTTPResponseFilter {	
 	public function __construct(HTTPResponseInterface $output, $contentCallback) {
 		parent::__construct($output);
+		$this->httpStorage = new HTTPResponseStorage();
 		$this->setContentCallback($contentCallback);
 	}
 	
 	public function __destruct() {
-		$data = '';
-		foreach ($this->headersList as $h => $v)
-			$data .= $h.':'.$v."\r\n";
-		$data .= "\r\n";
-		$data .= $this->dataBuffer;
-		$this->dataBuffer = '';
-
 		// calling callback
-		$f = $this->contentCallback;
-		if ($f)		$out = $f($data);
-		else 		$out = $data;
+		call_user_func($this->contentCallback, $this->httpStorage);
 		
-		// extracting headers and content
-		$dataPos = strpos($out, "\r\n\r\n");
-		$headers = explode("\r\n", substr($out, 0, $dataPos));
-		foreach ($headers as $h) {
-			$pos = strpos($h, ':');
-			$this->getOutput()->setHeader(substr($h, 0, $pos), substr($h, $pos + 1));
-		}
-		$this->getOutput()->appendData(substr($out, $dataPos + 4));
+		// sending everything to next filter
+		$this->getOutput()->setStatusCode($this->httpStorage->getStatusCode());
+		foreach ($this->httpStorage->getHeadersList() as $h => $v)
+			$this->getOutput()->setHeader($h, $v);
+		$this->getOutput()->appendData($this->httpStorage->getData());
 
+		// 
 		parent::__destruct();
 	}
 
 	public function appendData($data) {
-		$this->dataBuffer .= $data;
+		$this->httpStorage->appendData($data);
 	}
 	
 	public function addHeader($header, $value) {
-		$this->headersList[$header] = $value;
+		$this->httpStorage->addHeader($header, $value);
 	}
 
 	public function setHeader($header, $value) {
-		$this->headersList[$header] = $value;
+		$this->httpStorage->setHeader($header, $value);
+	}
+
+	public function removeHeader($header) {
+		$this->httpStorage->removeHeader($header);
+	}
+
+	public function setStatusCode($code) {
+		$this->httpStorage->setStatusCode($code);
 	}
 
 	public function setContentCallback($contentCallback) {
@@ -50,10 +48,8 @@ class HTTPResponseCustomFilter extends HTTPResponseFilter {
 		$this->contentCallback = $contentCallback;
 	}
 	
-	private $dataBuffer = '';
-	private $alreadyDestroyed = false;
+	private $httpStorage;
 	private $contentCallback;
-	private $headersList = [];
 };
 
 ?>
