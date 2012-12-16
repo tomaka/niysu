@@ -39,7 +39,7 @@ class DatabaseService implements \Iterator, \ArrayAccess, \Countable {
 		if (!is_array($params))
 			$params = [$params];
 
-		$this->logService->debug('SQL query: '.$sql);
+		try { $this->logService->debug('SQL query: '.$sql); } catch(\Exception $e) {}
 		
 		$query = $this->databasePDO->prepare($sql);
 		$query->execute($params);
@@ -57,7 +57,7 @@ class DatabaseService implements \Iterator, \ArrayAccess, \Countable {
 	public function execute($sql, $params = []) {
 		if (!is_null($params) && !is_array($params))
 			$params = array($params);
-		$this->logService->debug('SQL query: '.$sql);
+		try { $this->logService->debug('SQL query: '.$sql); } catch(\Exception $e) {}
 		$query = $this->databasePDO->prepare($sql);
 		$query->execute($params);
 	}
@@ -77,10 +77,10 @@ class DatabaseService implements \Iterator, \ArrayAccess, \Countable {
 			$this->databasePDO = $database;
 
 		} else if (is_string($database)) {
-			$this->logService->debug('Connection attempt to '.$database.' [with'.(func_num_args() >= 2 ? '' : 'out').' username][with'.(func_num_args() >= 3 ? '' : 'out').' password]');
+			try { $this->logService->debug('Connection attempt to '.$database.' [with'.(func_num_args() >= 2 ? '' : 'out').' username][with'.(func_num_args() >= 3 ? '' : 'out').' password]'); } catch(\Exception $e) {}
 			$this->databasePDO = new \PDO($database, func_num_args() >= 2 ? func_get_arg(1) : null, func_num_args() >= 3 ? func_get_arg(2) : null);
 			$this->databasePDO->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-			$this->logService->debug('Successfully connected to '.$database);
+			try { $this->logService->debug('Successfully connected to '.$database); } catch(\Exception $e) {}
 
 		} else {
 			throw new \LogicException('Parameter passed to DatabaseService constructor is not valid');
@@ -315,7 +315,7 @@ class DatabaseService implements \Iterator, \ArrayAccess, \Countable {
 		$sql .= ($this->whereClause !== null ? ' WHERE '.$this->whereClause : '');
 		$sql .= ($this->orderByClause !== null ? ' ORDER BY '.$this->orderByClause : '');
 		$sql .= ($this->offsetClause !== null ? ' LIMIT '.$this->offsetClause.', 1' : '');
-		$this->logService->debug('SQL query: '.$sql);
+		try { $this->logService->debug('SQL query: '.$sql); } catch(\Exception $e) {}
 		return $sql;
 	}
 
@@ -338,7 +338,7 @@ class DatabaseService implements \Iterator, \ArrayAccess, \Countable {
 
 		// TODO: update only nth entry
 		$sql = 'UPDATE '.$this->colNameDelimiter.$this->tableName.$this->colNameDelimiter.' AS '.$this->tableAlias.' SET '.implode(', ', $setClauses).($this->whereClause == null ? '' : ' WHERE '.$this->whereClause);
-		$this->logService->debug('SQL query: '.$sql);
+		try { $this->logService->debug('SQL query: '.$sql); } catch(\Exception $e) {}
 		$query = $this->databasePDO->prepare($sql);
 		$query->execute(array_merge($setParams, $this->whereParams));
 		self::$numQueries++;
@@ -346,7 +346,7 @@ class DatabaseService implements \Iterator, \ArrayAccess, \Countable {
 
 	private function destroyMe() {
 		$sql = 'DELETE FROM '.$this->colNameDelimiter.$this->tableName.$this->colNameDelimiter.' AS '.$this->tableAlias.($this->joinClause === null ? '' : $this->joinClause).($this->whereClause === null ? '' : ' WHERE '.$this->whereClause);
-		$this->logService->debug('SQL query: '.$sql);
+		try { $this->logService->debug('SQL query: '.$sql); } catch(\Exception $e) {}
 		$query = $this->databasePDO->prepare($sql);
 		$query->execute($whereParams);
 		self::$numQueries++;
