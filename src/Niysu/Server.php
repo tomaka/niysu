@@ -32,9 +32,9 @@ class Server {
 		$this->setServiceProvider('cacheMe', new Services\CacheMeServiceProvider());
 		$this->setServiceProvider('cache', new Services\CacheServiceProvider());
 		$this->setServiceProvider('database', new Services\DatabaseServiceProvider());
-		$this->setServiceProvider('debugPanel', 'Niysu\Services\DebugPanelService');
-		$this->setServiceProvider('inputJSON', 'Niysu\Services\InputJSONService');
-		$this->setServiceProvider('inputXML', 'Niysu\Services\InputXMLService');
+		$this->setServiceProvider('debugPanel', 'Niysu\\Services\\DebugPanelService');
+		$this->setServiceProvider('inputJSON', 'Niysu\\Services\\InputJSONService');
+		$this->setServiceProvider('inputXML', 'Niysu\\Services\\InputXMLService');
 		$this->setServiceProvider('log', new Services\LogServiceProvider());
 		if (class_exists('Twig_Loader_Filesystem'))
 			$this->setServiceProvider('twig', new Services\TwigServiceProvider());
