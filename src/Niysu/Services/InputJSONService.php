@@ -2,7 +2,7 @@
 namespace Niysu\Services;
 
 class InputJSONService {
-	public static function validate() {
+	public static function validateJSONInput() {
 		return function($inputJSONService) {
 			return $inputJSONService->isJSONData();
 		}

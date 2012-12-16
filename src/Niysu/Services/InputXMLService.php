@@ -2,7 +2,7 @@
 namespace Niysu\Services;
 
 class InputXMLService {
-	public static function validate() {
+	public static function validateXMLInput() {
 		return function($inputXMLService) {
 			return $inputXMLService->isXMLData();
 		}
