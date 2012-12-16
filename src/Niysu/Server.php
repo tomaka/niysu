@@ -19,7 +19,7 @@ class Server {
 		$this->scope = new Scope();
 		$this->scope->server = $this;
 		$this->scope->passByRef('server', false);
-		$this->elapsedTime = function() use ($constructionTime) { $now = microtime(true); return round(1000 * ($now - $constructionTime)); };
+		$this->scope->elapsedTime = function() use ($constructionTime) { $now = microtime(true); return round(1000 * ($now - $constructionTime)); };
 		$this->scope->passByRef('elapsedTime', false);
 		
 		// building the main RoutesCollection
