@@ -3,12 +3,12 @@ namespace Niysu\Services;
 
 class CacheMeService {
 	public static function beforeEnableCache($duration, $vary = []) {
-		return function($cacheMeService, &$callHandler) use ($duration, $vary) {
+		return function($cacheMeService, &$stopRoute) use ($duration, $vary) {
 			$cacheMeService->setDuration($duration);
 			foreach ($vary as $v)
 				$cacheMeService->vary($v);
 			if ($cacheMeService->load())
-				$callHandler = false;
+				$stopRoute = true;
 		};
 	}
 	
@@ -68,8 +68,6 @@ class CacheMeService {
 
 			$response->setData($dataParts[1]);
 		}, null));
-
-		$this->responseFilter->flush();
 
 		return true;
 	}
