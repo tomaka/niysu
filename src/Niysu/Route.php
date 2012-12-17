@@ -47,6 +47,7 @@ class Route {
 		$scope->set('ignoreHandler', false);		// DEPRECATED
 		$scope->set('isRightResource', true);
 		$scope->set('callHandler', true);
+		$scope->set('stopRoute', false);
 		
 		// calling befores
 		foreach ($this->before as $before) {
@@ -63,6 +64,10 @@ class Route {
 			}
 			if ($scope->get('callHandler') === false) {
 				$logService->debug('Route\'s handler won\'t get called because of before handler');
+				return true;
+			}
+			if ($scope->get('stopRoute') === true) {
+				$logService->debug('Route\'s handler has been stopped by before handler');
 				return true;
 			}
 		}
