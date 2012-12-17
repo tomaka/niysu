@@ -134,13 +134,14 @@ class Server {
 			foreach ($this->routesCollections as $collection) {
 				foreach ($collection->getRoutesList() as $route) {
 					$localScope = $handleScope->newChild();
-					if ($route->handle($localScope)) {
-						$output->flush();
-						$log->debug('Successful handling of resource', [ 'url' => $input->getURL(), 'method' => $input->getMethod() ]);
-						if ($nb = gc_collect_cycles())
-							$log->warn('gc_collect_cycles() returned non-zero value: '.$nb);
-						return;
-					}
+					if (!$route->handle($localScope))
+						continue;
+
+					$localScope->response->flush();
+					$log->debug('Successful handling of resource', [ 'url' => $input->getURL(), 'method' => $input->getMethod() ]);
+					if ($nb = gc_collect_cycles())
+						$log->warn('gc_collect_cycles() returned non-zero value: '.$nb);
+					return;
 				}
 			}
 

@@ -10,7 +10,7 @@ class HTTPResponseFilter extends HTTPResponseInterface {
 	}
 	
 	public function __destruct() {
-		$this->flush();
+		//$this->flush();
 	}
 
 	public function flush() {
@@ -47,6 +47,7 @@ class HTTPResponseFilter extends HTTPResponseInterface {
 
 
 	private $output = null;
+	private $mustFlush = false;
 };
 
 ?>
