@@ -12,7 +12,6 @@ class HTTPResponseGlobal extends HTTPResponseInterface {
 
 	public function flush() {
 		flush();
-		parent::flush();
 	}
 
 	public function setStatusCode($statusCode) {

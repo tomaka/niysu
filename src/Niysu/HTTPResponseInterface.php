@@ -20,10 +20,8 @@ abstract class HTTPResponseInterface {
 	/// \brief Adds content
 	/// \note Sends the headers list of not already sent
 	abstract public function appendData($data);
-	
 	/// \brief Flushes the response
-	public function flush() {
-	}
+	abstract public function flush();
 	
 	/// \brief
 	public function redirect($target, $statusCode = 302) {

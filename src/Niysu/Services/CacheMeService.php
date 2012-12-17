@@ -69,6 +69,8 @@ class CacheMeService {
 			$response->setData($dataParts[1]);
 		}, null));
 
+		$this->responseFilter->flush();
+
 		return true;
 	}
 

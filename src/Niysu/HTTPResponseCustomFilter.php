@@ -14,11 +14,10 @@ class HTTPResponseCustomFilter extends HTTPResponseFilter {
 			call_user_func($this->contentCallback, $this->httpStorage);
 
 		// sending everything to next filter
-		if (!$this->getOutput()->isHeadersListSent()) {
+		if (!$this->getOutput()->isHeadersListSent())
 			$this->getOutput()->setStatusCode($this->httpStorage->getStatusCode());
-			foreach ($this->httpStorage->getHeadersList() as $h => $v)
-				$this->getOutput()->setHeader($h, $v);
-		}
+		foreach ($this->httpStorage->getHeadersList() as $h => $v)
+			$this->getOutput()->setHeader($h, $v);
 
 		$this->getOutput()->appendData($this->httpStorage->getData());
 		$this->httpStorage = new HTTPResponseStorage();

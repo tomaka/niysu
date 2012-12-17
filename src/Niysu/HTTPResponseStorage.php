@@ -2,6 +2,9 @@
 namespace Niysu;
 
 class HTTPResponseStorage extends HTTPResponseInterface {
+	public function flush() {
+	}
+
 	public function getStatusCode() {
 		return $this->statusCode;
 	}

@@ -15,7 +15,6 @@ class HTTPResponseFilter extends HTTPResponseInterface {
 
 	public function flush() {
 		$this->output->flush();
-		parent::flush();
 	}
 	
 	public function setStatusCode($statusCode) {
