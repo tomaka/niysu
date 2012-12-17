@@ -5,7 +5,7 @@ class InputJSONService {
 	public static function validateJSONInput() {
 		return function($inputJSONService) {
 			return $inputJSONService->isJSONData();
-		}
+		};
 	}
 	
 	public function __construct(HTTPRequestInterface $request) {

@@ -5,7 +5,7 @@ class InputXMLService {
 	public static function validateXMLInput() {
 		return function($inputXMLService) {
 			return $inputXMLService->isXMLData();
-		}
+		};
 	}
 	
 	public function __construct(HTTPRequestInterface $request) {
