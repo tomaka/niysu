@@ -7,26 +7,30 @@ class HTTPResponseCustomFilter extends HTTPResponseFilter {
 		$this->httpStorage = new HTTPResponseStorage();
 		$this->setContentCallback($contentCallback);
 	}
-	
-	public function __destruct() {
+
+	public function flush() {
 		// calling callback
-		call_user_func($this->contentCallback, $this->httpStorage);
+		if ($this->contentCallback)
+			call_user_func($this->contentCallback, $this->httpStorage);
 
-		// 
-		if ($this->getOutput()->isHeadersListSent())
-			throw new \LogicException('Problem while flushing HTTPResponseCustomFilter: the next output has already sent headers list');
-		
 		// sending everything to next filter
-		$this->getOutput()->setStatusCode($this->httpStorage->getStatusCode());
-		foreach ($this->httpStorage->getHeadersList() as $h => $v)
-			$this->getOutput()->setHeader($h, $v);
+		if (!$this->getOutput()->isHeadersListSent()) {
+			$this->getOutput()->setStatusCode($this->httpStorage->getStatusCode());
+			foreach ($this->httpStorage->getHeadersList() as $h => $v)
+				$this->getOutput()->setHeader($h, $v);
+		}
+
 		$this->getOutput()->appendData($this->httpStorage->getData());
+		$this->httpStorage = new HTTPResponseStorage();
 
 		// 
-		parent::__destruct();
+		parent::flush();
 	}
 
 	public function appendData($data) {
+		/*if (empty($this->httpStorage->getData()))
+			$this->flush();*/
+
 		$this->httpStorage->appendData($data);
 	}
 	

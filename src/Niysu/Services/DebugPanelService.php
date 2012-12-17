@@ -2,6 +2,12 @@
 namespace Niysu\Services;
 
 class DebugPanelService {
+	public static function beforeActivate() {
+		return function($debugPanelService) {
+			$debugPanelService->activate();
+		};
+	}
+
 	public function __construct(&$response, $scope) {
 		if (!$response)
 			throw new \LogicException('DebugPanelService can\'t be used outside of a route');

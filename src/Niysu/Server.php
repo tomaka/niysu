@@ -135,6 +135,7 @@ class Server {
 				foreach ($collection->getRoutesList() as $route) {
 					$localScope = $handleScope->newChild();
 					if ($route->handle($localScope)) {
+						$output->flush();
 						$log->debug('Successful handling of resource', [ 'url' => $input->getURL(), 'method' => $input->getMethod() ]);
 						if ($nb = gc_collect_cycles())
 							$log->warn('gc_collect_cycles() returned non-zero value: '.$nb);
@@ -153,6 +154,7 @@ class Server {
 
 			} else {
 				$output->setPlainTextData('A server-side error occured. Please try again later.');
+				$output->flush();
 			}
 		}
 
@@ -298,6 +300,7 @@ class Server {
 				</body>
 			</html>');
 
+		$response->flush();
 		exit(1);
 	}
 	

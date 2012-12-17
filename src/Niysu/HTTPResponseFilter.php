@@ -10,6 +10,12 @@ class HTTPResponseFilter extends HTTPResponseInterface {
 	}
 	
 	public function __destruct() {
+		$this->flush();
+	}
+
+	public function flush() {
+		$this->output->flush();
+		parent::flush();
 	}
 	
 	public function setStatusCode($statusCode) {
