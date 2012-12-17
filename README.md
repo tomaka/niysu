@@ -59,8 +59,17 @@ $server
 	})
 	->handler(function($user, $response) {
 		$response->appendData($user->name);
-	}));
+	});
 ```
+
+Route collections
+-----------------
+It is possible to create groups of routes named collections.
+You can add a prefix to all the URLs of a collection, or configure a before
+function that will be prepended to any route inside of it.
+
+This allows you to easily manage multiple sub-site with different databases,
+sessions, cache directories, etc.
 
 Documentation
 =============
