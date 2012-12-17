@@ -2,6 +2,8 @@
 
 [![build status](https://secure.travis-ci.org/Tomaka17/niysu.png)](http://travis-ci.org/Tomaka17/niysu)
 
+See [the wiki](https://github.com/Tomaka17/niysu/wiki) for documentation.
+
 Examples
 ========
 
