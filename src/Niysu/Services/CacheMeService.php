@@ -14,7 +14,7 @@ class CacheMeService {
 	
 	public function __construct(\Niysu\HTTPRequestInterface $request, \Niysu\HTTPResponseInterface &$response, $cacheService, $logService, $elapsedTime) {
 		$this->cache = $cacheService;
-		$this->log = $logService;
+		$this->logService = $logService;
 		$this->elapsedTime = $elapsedTime;
 		
 		$serverCacheResourceName = 'cacheMe/resources/'.$request->getURL();
@@ -51,12 +51,12 @@ class CacheMeService {
 
 	public function load() {
 		if (!$this->cache->exists($this->serverCacheResourceName)) {
-			$this->log->debug('Attempting to load resource from cache, not found: '.$this->serverCacheResourceName);
+			$this->logService->debug('Attempting to load resource from cache, not found: '.$this->serverCacheResourceName);
 			return false;
 		}
 
 		$data = $this->cache->load($this->serverCacheResourceName);
-		$this->log->debug('Loading resource from cache: '.$this->serverCacheResourceName);
+		$this->logService->debug('Loading resource from cache: '.$this->serverCacheResourceName);
 
 		$this->responseFilter->setContentCallback(\Closure::bind(function($response) use ($data) {
 			$dataParts = explode("\r\n\r\n", $data, 2);
@@ -86,7 +86,7 @@ class CacheMeService {
 
 	private $responseFilter;
 	private $cache;
-	private $log;
+	private $logService;
 	private $elapsedTime;
 	private $serverCacheResourceName;
 	private $duration = 0;						// cache duration in seconds that has been set

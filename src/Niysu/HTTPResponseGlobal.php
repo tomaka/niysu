@@ -6,8 +6,10 @@ require_once __DIR__.'/HTTPResponseInterface.php';
 class HTTPResponseGlobal extends HTTPResponseInterface {
 	public function __construct() {
 		// removing some headers
-		$this->removeHeader('Server');
-		$this->removeHeader('X-Powered-By');
+		if (!$this->isHeadersListSent()) {
+			$this->removeHeader('Server');
+			$this->removeHeader('X-Powered-By');
+		}
 	}
 
 	public function flush() {

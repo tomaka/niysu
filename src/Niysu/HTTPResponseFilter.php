@@ -8,10 +8,6 @@ class HTTPResponseFilter extends HTTPResponseInterface {
 			throw new \LogicException('Filter output is null');
 		$this->output = $output;
 	}
-	
-	public function __destruct() {
-		//$this->flush();
-	}
 
 	public function flush() {
 		$this->output->flush();
