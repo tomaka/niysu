@@ -1,4 +1,5 @@
-**Niysu** is a light but powerful PHP framework.
+**Niysu** is a light but flexible and easy to use PHP framework.
+Take any PHP framework, remove the annoying stuff, and you get Niysu!
 
 [![build status](https://secure.travis-ci.org/Tomaka17/niysu.png)](http://travis-ci.org/Tomaka17/niysu)
 
@@ -10,10 +11,8 @@ Examples
 Hello world
 -----------
 ```php
-use Niysu\Server;
-
 // create a new instance of the server ; this is where you will pass the configuration file
-$server = new Server();
+$server = new Niysu\Server();
 
 // registering a route, ie. a resource that the client can potentially request
 $server->register('/', 'get', function($response) {
@@ -46,19 +45,21 @@ $server->register('/echo', 'get', function($request, $response, $logService) {
 });
 ```
 
-Example of available services: database, session, etc.
+Examples of available services: database, session, http basic auth, etc.
 
 Before handlers
 ---------------
 It is possible to add functions that will be called before the handler of a given route in executed.
 This allows you to share code between multiple handlers.
 ```php
-$server->register('/users/{userID}', 'get', function($user, $response) {
-	$response->appendData($user->getName());
-
-})->before(function($userID, &$user, $databaseService) {
-	$user = new User($userID, $databaseService);
-});
+$server
+	->register('/users/{userID}', 'get')
+	->before(function($userID, &$user, $databaseService) {
+		$user = $databaseService->users[['id' => $userID]];
+	})
+	->handler(function($user, $response) {
+		$response->appendData($user->name);
+	}));
 ```
 
 Documentation
