@@ -32,6 +32,7 @@ class Server {
 		$this->setServiceProvider('cacheMe', 'Niysu\\Services\\CacheMeService');
 		$this->setServiceProvider('cache', new Services\CacheServiceProvider());
 		$this->setServiceProvider('database', new Services\DatabaseServiceProvider());
+		$this->setServiceProvider('databaseProfiling', 'Niysu\\Services\\DatabaseProfilingService');
 		$this->setServiceProvider('debugPanel', 'Niysu\\Services\\DebugPanelService');
 		$this->setServiceProvider('httpBasicAuth', 'Niysu\\Services\\HTTPBasicAuthService');
 		$this->setServiceProvider('inputJSON', 'Niysu\\Services\\InputJSONService');

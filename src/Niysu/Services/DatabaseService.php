@@ -33,7 +33,10 @@ class DatabaseService {
 
 		$this->buildDatabase();
 
-		try { $this->logService->debug('SQL query: '.$sql); } catch(\Exception $e) {}
+		try {
+			if ($this->logService)
+				$this->logService->debug('SQL query: '.$sql);
+		} catch(\Exception $e) {}
 		
 		$query = $this->databasePDO->prepare($sql);
 		$query->execute($params);
@@ -47,11 +50,21 @@ class DatabaseService {
 
 		$this->buildDatabase();
 
-		try { $this->logService->debug('SQL query: '.$sql); } catch(\Exception $e) {}
+		try {
+			if ($this->logService)
+				$this->logService->debug('SQL query: '.$sql);
+		} catch(\Exception $e) {}
 		
+		$before = microtime(true);
 		$query = $this->databasePDO->prepare($sql);
 		$query->execute($params);
-		return $query->fetchAll(\PDO::FETCH_BOTH);
+		$result = $query->fetchAll(\PDO::FETCH_BOTH);
+		$after = microtime(true);
+
+		if ($this->databaseProfilingService)
+			$this->databaseProfilingService->signalQuery($sql, $this->dsn, round(1000 * ($after - $before)));
+
+		return $result;
 	}
 	
 	/// \brief Executes a query and returns the first of the results with PDO::FETCH_BOTH, or null if no answer
@@ -68,9 +81,18 @@ class DatabaseService {
 
 		$this->buildDatabase();
 
-		try { $this->logService->debug('SQL query: '.$sql); } catch(\Exception $e) {}
+		try {
+			if ($this->logService)
+				$this->logService->debug('SQL query: '.$sql);
+		} catch(\Exception $e) {}
+
+		$before = microtime(true);
 		$query = $this->databasePDO->prepare($sql);
 		$query->execute($params);
+		$after = microtime(true);
+
+		if ($this->databaseProfilingService)
+			$this->databaseProfilingService->signalQuery($sql, $this->dsn, round(1000 * ($after - $before)));
 	}
 	
 	/// \brief Returns the last insert ID
@@ -80,8 +102,9 @@ class DatabaseService {
 	}
 
 
-	public function __construct($logService = null) {
+	public function __construct($logService = null, $databaseProfilingService = null) {
 		$this->logService = $logService;
+		$this->databaseProfilingService = $databaseProfilingService;
 	}
 
 	public function setDatabase($database) {
@@ -113,8 +136,12 @@ class DatabaseService {
 				$this->logService->debug('Connection attempt to '.$this->dsn.' [with'.($this->username ? '' : 'out').' username][with'.($this->password ? '' : 'out').' password]');
 		} catch(\Exception $e) {}
 
+		$before = microtime(true);
 		$this->databasePDO = new \PDO($this->dsn, $this->username, $this->password);
 		$this->databasePDO->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+
+		if ($this->databaseProfilingService)
+			$this->databaseProfilingService->signalConnection($thsi->dsn, round(1000 * (microtime(true) - $before)));
 
 		try {
 			if ($this->logService)
@@ -132,6 +159,7 @@ class DatabaseService {
 
 
 	private $logService = null;
+	private $databaseProfilingService = null;
 
 	private $dsn;
 	private $username;
