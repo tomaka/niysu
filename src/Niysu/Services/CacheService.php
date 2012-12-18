@@ -7,13 +7,27 @@ class CacheService {
 			throw new \LogicException('The cache directory doesn\'t exist: '.$directory);
 		$this->directory = $directory;
 	}
+
+	/// \brief Activates all caching, this is the default value
+	public function activate() {
+		$this->activated = true;
+	}
+
+	public function deactivate() {
+		$this->activated = false;
+	}
 	
 	public function exists($key) {
+		if (!$this->activated)
+			return false;
 		return file_exists($this->keyToFile($key));
 	}
 	
 	/// \param $ttl Time in seconds until the element is automatically cleared, or null if no TTL
 	public function store($key, $data, $ttl = null) {
+		if (!$this->activated)
+			return;
+
 		$file = $this->keyToFile($key);
 
 		$fp = fopen('compress.zlib://'.$file, 'wb');
@@ -33,6 +47,9 @@ class CacheService {
 	}
 
 	public function load($key) {
+		if (!$this->activated)
+			throw new \LogicException('Caching is disabled');
+
 		$file = $this->keyToFile($key);
 		if (!file_exists($file))
 			throw new \LogicException('Cache element doesn\'t exist');
@@ -62,7 +79,9 @@ class CacheService {
 		return $this->directory.'/'.md5(serialize($key)).'.cache.gz';
 	}
 
+
 	private $directory = null;
+	private $activated = true;
 };
 
 ?>
