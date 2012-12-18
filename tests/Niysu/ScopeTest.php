@@ -44,10 +44,14 @@ class ScopeTest extends \PHPUnit_Framework_TestCase {
 	
 	public function testClone() {
 		$scope1 = new Scope();
-		$scope1->set('test', 1);
+		$scope1->test = 1;
 
 		$scope2 = clone $scope1;
-		$this->assertEquals($scope2->get('test'), 1);
+		$this->assertEquals($scope2->test, 1);
+		$scope2->test = 5;
+
+		$this->assertEquals($scope1->test, 1);
+		$this->assertEquals($scope2->test, 5);
 	}
 	
 	public function testChild() {
@@ -62,9 +66,24 @@ class ScopeTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals($scope1->test, 1);
 		$this->assertEquals($scope2->test, 4);
 	}
+	
+	public function testSmallChild() {
+		$scope1 = new Scope();
+		$scope2 = $scope1->newSmallChild();
+
+		$scope1->test = 1;
+		$this->assertEquals($scope1->test, 1);
+		$this->assertEquals($scope2->test, 1);
+
+		$a =& $scope2->getByRef('test2');
+		$a = 12;
+		
+		$this->assertEquals($scope1->test2, 12);
+		$this->assertEquals($scope2->test2, 12);
+	}
 
 	/**
-     * @expectedException PHPUnit_Framework_Error_Warning
+     * @expectedException RuntimeException
      */
 	public function testSetVariablePassByRef() {
 		$scope = new Scope();
@@ -74,93 +93,163 @@ class ScopeTest extends \PHPUnit_Framework_TestCase {
 		$scope->assertEquals($scope->get('test'), 4);
 	}
 
-	public function testCallFunction() {
+	public function testCallParamTypes() {
 		$scope = new Scope();
-		$scope->set('test', 1);
+
+		$ret = $scope->call(function() { return 2; });
+		$this->assertEquals($ret, 2);
+
+		$scope->call('rand');
+
+		$ret = $scope->call('Exception');
+		$this->assertInstanceOf('Exception', $ret);
+	}
+
+	/**
+	 * @depends testCallParamTypes
+	 */
+	public function testCallValuePassing() {
+		$scope = new Scope();
+		$scope->test = 1;
 		$scope->call(function($test) { $this->assertEquals($test, 1); });
 	}
 
-	public function testCallFunctionsFancy() {
+	/**
+	 * @depends testCallParamTypes
+	 */
+	public function testCallTypePassing() {
 		$scope = new Scope();
-		$scope->call(function() {});
-		$scope->call('rand');
-		// TODO: static function of a class (must find a static function in a class in stdlib)
-		$this->assertInstanceOf('Exception', $scope->call('Exception'));
-	}
-	
-	public function testCallFunctionScopeAccessible() {
-		$scope = new Scope();
-		$scope->set('test', 1);
-		$scope->call(function($scope) {
-			$this->assertEquals($scope->get('test'), 1);
+		$scope->test = new \Exception();
+		$scope->call(function(\Exception $x, $scope) {
+			$this->assertInstanceOf('Exception', $x);
+			$this->assertEquals($scope->test, $x);
 		});
 	}
-	
-	public function testCallFunctionByType() {
+
+	/**
+	 * @depends testCallParamTypes
+	 */
+	public function testCallTypeInheritancePassing() {
 		$scope = new Scope();
-		$scope->set('e', new \LogicException('test'));
+		$scope->test = new \LogicException();
+		$scope->call(function(\Exception $x, $scope) {
+			$this->assertInstanceOf('LogicException', $x);
+			$this->assertEquals($scope->test, $x);
+		});
+	}
+
+	/**
+	 * @depends testCallValuePassing
+	 */
+	public function testCallScopeValueAvailable() {
+		$scope = new Scope();
+		$scope->testD = 93;
+		$scope->call(function($scope) { $this->assertEquals($scope->testD, 93); $scope->testD++; });
+		$this->assertEquals($scope->testD, 94);
+	}
+
+	/**
+	 * @depends testCallValuePassing
+	 */
+	public function testCallScopeTypeAvailable() {
+		$scope = new Scope();
+		$scope->testD = 93;
+		$scope->call(function(Scope $s) { $this->assertEquals($s->testD, 93); $s->testD++; });
+		$this->assertEquals($scope->testD, 94);
+	}
+
+	/**
+	 * @depends testCallValuePassing
+	 */
+	public function testCallPassingValueByReference() {
+		$scope = new Scope();
+
+		$scope->call(function(&$test) { $test = 5; });
+		$this->assertEquals($scope->test, 5);
+
+		$scope->call(function(&$test) { $test = 3; });
+		$this->assertEquals($scope->test, 3);
+	}
+
+	/**
+	 * @depends testCallPassingValueByReference
+     * @expectedException RuntimeException
+	 */
+	public function testCallNoPassByRef() {
+		$scope = new Scope();
+		$scope->test = 1;
+		$scope->passByRef('test', false);
+		$scope->call(function(&$test) { });
+	}
+
+	/**
+	 * @depends testCallValuePassing
+	 */
+	public function testCallPassingTypeByReference() {
+		$scope = new Scope();
+		$scope->test = new \LogicException();
+		$scope->call(function(\Exception &$x) {
+			$this->assertInstanceOf('LogicException', $x);
+			$x = new \RuntimeException();
+		});
+		$this->assertInstanceOf('RuntimeException', $scope->test);
+	}
+
+	/**
+	 * @depends testCallPassingTypeByReference
+     * @expectedException RuntimeException
+     */
+	public function testCallErrorOnNonexistingRefType() {
+		$scope = new Scope();
+		$scope->test = new \LogicException();
+		$scope->call(function(\RuntimeException &$x) { });
+	}
+
+	/**
+	 * @depends testCallValuePassing
+	 */
+	public function testCallPassingValueWithCallback() {
+		$scope = new Scope();
+		$scope->callback('test', function() { return 12; });
+		$scope->call(function($test) { $this->assertEquals($test, 12); });
+		$this->assertEquals($scope->test, 12);
+	}
+
+	/**
+	 * @depends testCallValuePassing
+	 */
+	public function testCallPassingTypeWithCallback() {
+		$scope = new Scope();
+		$scope->callback('test', function() { return new \Exception(); }, 'Exception');
 		$scope->call(function(\Exception $x) {
-			$this->assertNotNull($x);
-			$this->assertEquals($x->getMessage(), 'test');
+			$this->assertInstanceOf('Exception', $x);
 		});
 	}
 
-	public function testCallFunctionMultipleParams() {
+	/**
+	 * @depends testCallValuePassing
+	 */
+	public function testCallNullIfNotExists() {
 		$scope = new Scope();
-		$scope->set('a', 1);
-		$scope->set('b', 2);
-		$scope->call(function($a, $b) {
-			$this->assertEquals($a, 1);
-			$this->assertEquals($b, 2);
+		$scope->test = 3;
+		$scope->call(function($x) {
+			$this->assertNull($x);
 		});
 	}
 
-	public function testCallFunctionWithCallback() {
+	/**
+	 * @depends testCallValuePassing
+	 */
+	public function testCallDefaultValueIfNotExists() {
+		$this->markTestIncomplete();
+
 		$scope = new Scope();
-		$scope->callback('test', function() { return 3; });
-		$scope->call(function($test) { $this->assertEquals($test, 3); });
-		$this->assertEquals($scope->get('test'), 3);
+		$scope->test = 3;
+		$scope->call(function($x = 1) {
+			$this->assertEquals($x, 1);
+		});
 	}
 	
-	public function testCallFunctionUniqueCallback() {
-		$n = 0;		// number of time the callback is called
-		
-		$scope = new Scope();
-		$scope->callback('test', function() use (&$n) { $n += 1; return 3; });
-		
-		$scope->call(function($test) {});
-		$scope->call(function($test) {});
-		
-		$this->assertEquals($n, 1);
-	}
-	
-	public function testCallFunctionWithReference() {
-		$scope = new Scope();
-		$scope->set('test', 1);
-		$scope->call(function(&$test) { $test = 2; });
-		$this->assertEquals($scope->get('test'), 2);
-	}
-
-	public function testCallFunctionCombo() {
-		$scope = new Scope();
-		$scope->set('a', 1);
-		$scope->callback('b', function() { return 2; });
-		$scope->set('cTest', new \LogicException('testC'));
-		$scope->callback('dTest', function() { return new \RuntimeException('testD'); }, 'RuntimeException');
-		$scope->set('e', 20);
-
-		$scope->call(function($a, $b, \LogicException $c, \RuntimeException &$d, &$e) {
-			$this->assertEquals($a, 1);
-			$this->assertEquals($b, 2);
-			$this->assertEquals($c->getMessage(), 'testC');
-			$this->assertEquals($d->getMessage(), 'testD');
-			$d = 'testModified';
-			$e *= 2;
-		});
-
-		$this->assertEquals($scope->get('e'), 40);
-		$this->assertEquals($scope->get('dTest'), 'testModified');
-	}
 };
 
 ?>
