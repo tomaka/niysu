@@ -46,7 +46,7 @@ class DatabaseServiceTable implements \Iterator, \ArrayAccess, \Countable {
 	}
 
 	public function current() {
-		return $this->currentResultSet[$this->currentTraversedRow];
+		return (object)$this->currentResultSet[$this->currentTraversedRow];
 	}
 
 	public function key() {
