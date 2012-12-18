@@ -32,7 +32,7 @@ class HTTPBasicAuthService {
 	/// \todo Give access to parent scope (eg. merge function in Scope or something)
 	public function login() {
 		//
-		if (!$this->request->isHTTPS())
+		if (!$this->request->isHTTPS() && $this->logService)
 			$this->logService->warn('HTTP basic authentication is discouraged if you don\'t use HTTPS');
 		if (!$this->request->getHeader('Authorization'))
 			return false;
@@ -53,6 +53,10 @@ class HTTPBasicAuthService {
 		$localScope->login = $login;
 		$localScope->password = $password;
 		$retValue = $localScope->call($this->authFunction);
+
+		if ($this->logService)
+			$this->logService->info('Successful user login by basic HTTP authentication');
+
 		return $retValue;
 	}
 
