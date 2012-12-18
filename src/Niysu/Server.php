@@ -39,8 +39,8 @@ class Server {
 		$this->setServiceProvider('inputXML', 'Niysu\\Services\\InputXMLService');
 		$this->setServiceProvider('log', new Services\LogServiceProvider());
 		$this->setServiceProvider('session', 'Niysu\\Services\\SessionService');
-		if (class_exists('Twig_Loader_Filesystem'))
-			$this->setServiceProvider('twig', new Services\TwigServiceProvider());
+		if (class_exists('Twig_Environment'))
+			$this->setServiceProvider('twig', 'Niysu\\Services\\TwigService');
 		$this->setServiceProvider('xslt', new Services\XSLTServiceProvider());
 		
 		// calling configuration functions
