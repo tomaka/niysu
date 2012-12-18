@@ -2,7 +2,7 @@
 namespace Niysu\Services;
 
 class DatabaseService {
-	public function BeginTransaction() {
+	public function beginTransaction() {
 		$this->buildDatabase();
 		if ($this->databasePDO->inTransaction())
 			throw new \LogicException('A transaction is already in progress');
@@ -10,7 +10,7 @@ class DatabaseService {
 			throw new \RuntimException('Error while starting a transaction');
 	}
 
-	public function Commit() {
+	public function commit() {
 		$this->buildDatabase();
 		if (!$this->databasePDO->inTransaction())
 			throw new \LogicException('No transaction is currently in progress');
@@ -18,7 +18,7 @@ class DatabaseService {
 			throw new \RuntimException('Error during commit');
 	}
 
-	public function RollBack() {
+	public function rollBack() {
 		$this->buildDatabase();
 		if (!$this->databasePDO->inTransaction())
 			throw new \LogicException('No transaction is currently in progress');
