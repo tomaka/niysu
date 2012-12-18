@@ -3,7 +3,7 @@ namespace Niysu\Services;
 
 class DatabaseProfilingService {
 	public function signalConnection($dsn, $timer) {
-		$connectionTime += $timer;
+		$this->connectionTime += $timer;
 	}
 
 	public function signalQuery($sql, $dsn, $timer) {
@@ -18,6 +18,10 @@ class DatabaseProfilingService {
 	
 	public function getQueriesTotalMilliseconds() {
 		return $this->totalMilliseconds;
+	}
+	
+	public function getTotalConnectionMilliseconds() {
+		return $this->connectionTime;
 	}
 
 
