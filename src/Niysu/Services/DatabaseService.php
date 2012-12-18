@@ -28,8 +28,10 @@ class DatabaseService {
 	
 	/// \brief Opens a query and returns a \PDOStatement object
 	public function openQuery($sql, $params = []) {
-		if (!is_array($params))
-			$params = array_splice(func_get_args(), 0, 1);
+		if (!is_array($params)) {
+			$params = func_get_args();
+			array_splice($params, 0, 1);
+		}
 
 		$this->buildDatabase();
 
@@ -45,8 +47,10 @@ class DatabaseService {
 	
 	/// \brief Executes a query and returns an array containing the results with PDO::FETCH_BOTH
 	public function query($sql, $params = []) {
-		if (!is_array($params))
-			$params = array_splice(func_get_args(), 0, 1);
+		if (!is_array($params)) {
+			$params = func_get_args();
+			array_splice($params, 0, 1);
+		}
 
 		$this->buildDatabase();
 
@@ -69,8 +73,10 @@ class DatabaseService {
 	
 	/// \brief Executes a query and returns the first of the results with PDO::FETCH_BOTH, or null if no answer
 	public function querySingle($sql, $params = []) {
-		if (!is_array($params))
-			$params = array_splice(func_get_args(), 0, 1);
+		if (!is_array($params)) {
+			$params = func_get_args();
+			array_splice($params, 0, 1);
+		}
 		$r = $this->query($sql, $params);
 		return count($r) > 0 ? $r[0] : null;
 	}
