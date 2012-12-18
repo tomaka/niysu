@@ -112,7 +112,15 @@ class CacheService {
 	}
 
 	public function clearAll() {
+		$fp = $this->openResourcesList();
+		$data = $this->readResourcesList($fp);
 
+		foreach ($data as $k)
+			unlink($this->keyToFile($k));
+		$data = [];
+
+		$this->writeResourcesList($data);
+		fclose($fp);
 	}
 
 	public function __construct($logService) {
