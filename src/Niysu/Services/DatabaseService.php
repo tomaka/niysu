@@ -121,8 +121,8 @@ class DatabaseService {
 
 		} else if (is_string($database)) {
 			$this->dsn = $database;
-			$this->username = func_get_args() >= 2 ? func_get_arg(1) : null;
-			$this->password = func_get_args() >= 3 ? func_get_arg(2) : null;
+			$this->username = func_num_args() >= 2 ? func_get_arg(1) : null;
+			$this->password = func_num_args() >= 3 ? func_get_arg(2) : null;
 
 		} else {
 			throw new \LogicException('Parameter passed to DatabaseService constructor is not valid');
