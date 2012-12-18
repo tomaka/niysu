@@ -31,10 +31,6 @@ class HTTPBasicAuthService {
 	/// \ret False if the client didn't provide any username/password, or the result of calling the auth function
 	/// \todo Give access to parent scope (eg. merge function in Scope or something)
 	public function login() {
-		// checking
-		if (!$this->authFunction)
-			throw new \LogicException('Auth function has not been set');
-
 		//
 		if (!$this->request->isHTTPS())
 			$this->logService->warn('HTTP basic authentication is discouraged if you don\'t use HTTPS');
@@ -47,6 +43,10 @@ class HTTPBasicAuthService {
             list($login, $password) = explode(':', base64_decode($matches[1]));        	
         else
 			return false;
+
+		// checking
+		if (!$this->authFunction)
+			throw new \LogicException('Auth function has not been set');
 
 		// calling auth function
 		$localScope = $this->scope->newSmallChild();
