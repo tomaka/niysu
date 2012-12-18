@@ -68,8 +68,10 @@ class DatabaseService {
 	}
 	
 	/// \brief Executes a query and returns the first of the results with PDO::FETCH_BOTH, or null if no answer
-	public function querySingle($sql, $parameters = []) {
-		$r = $this->query($sql, $parameters);
+	public function querySingle($sql, $params = []) {
+		if (!is_array($params))
+			$params = array_splice(func_get_args(), 0, 1);
+		$r = $this->query($sql, $params);
 		return count($r) > 0 ? $r[0] : null;
 	}
 
