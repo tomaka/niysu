@@ -13,27 +13,34 @@ class CacheMeService {
 	}
 	
 	public function __construct(\Niysu\HTTPRequestInterface $request, \Niysu\HTTPResponseInterface &$response, $cacheService, $logService, $elapsedTime) {
-		$this->cache = $cacheService;
+		$this->cacheService = $cacheService;
 		$this->logService = $logService;
 		$this->elapsedTime = $elapsedTime;
 		
-		$serverCacheResourceName = 'cacheMe/resources/'.$request->getURL();
-		$this->serverCacheResourceName = $serverCacheResourceName;
+		$this->serverCacheResourceName = $this->requestToResourceName($request->getURL());
 		
-		$response = new \Niysu\HTTPResponseCustomFilter($response, function($response) use ($cacheService, $serverCacheResourceName) {
+		$response = new \Niysu\HTTPResponseCustomFilter($response, function($response) {
 			$data = '';
 			foreach ($response->getHeadersList() as $h => $v)
 				$data .= $h.':'.$v."\r\n";
 			$data .= "\r\n";
 			$data .= $response->getData();
 
-			$cacheService->store($serverCacheResourceName, $data, $this->duration);
+			$this->cacheService->store($this->serverCacheResourceName, $data, $this->duration);
 		}, null);
 		
 		$this->responseFilter = $response;
 
 		if ($request->getMethod() == 'GET')
 			$this->setDuration(60);
+	}
+
+	/// \param url If null, will clear the cache for the current resource ; if non-null, will clear the cache for the given URL
+	public function clear($url = null) {
+		$resource = $this->serverCacheResourceName;
+		if (!$url)
+			$resource = $this->requestToResourceName($url);
+		$this->cacheService->clear($resource);
 	}
 
 	public function setDuration($seconds) {
@@ -50,12 +57,12 @@ class CacheMeService {
 	}
 
 	public function load() {
-		if (!$this->cache->exists($this->serverCacheResourceName)) {
+		if (!$this->cacheService->exists($this->serverCacheResourceName)) {
 			$this->logService->debug('Attempting to load resource from cache, not found: '.$this->serverCacheResourceName);
 			return false;
 		}
 
-		$data = $this->cache->load($this->serverCacheResourceName);
+		$data = $this->cacheService->load($this->serverCacheResourceName);
 		$this->logService->debug('Loading resource from cache: '.$this->serverCacheResourceName);
 
 		$this->responseFilter->setContentCallback(\Closure::bind(function($response) use ($data) {
@@ -77,13 +84,19 @@ class CacheMeService {
 	}
 
 
+
+
 	private function refreshClientSide() {
 		if ($this->clientSideEnabled && $this->duration)
 			$this->responseFilter->setHeader('Cache-Control', 'public; max-age='.$this->duration);
 	}
 
+	private function requestToResourceName($requestURL) {
+		return 'cacheMe/resources'.$requestURL;
+	}
+
 	private $responseFilter;
-	private $cache;
+	private $cacheService;
 	private $logService;
 	private $elapsedTime;
 	private $serverCacheResourceName;
