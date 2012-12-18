@@ -17,9 +17,6 @@ class Route {
 		if (!$scope->get('request'))	throw new \LogicException('The "request" variable in the scope must be defined');
 		if (!$scope->get('response'))	throw new \LogicException('The "response" variable in the scope must be defined');
 
-		// getting log service
-		$logService = $scope->logService;
-
 		$request = $scope->get('request');
 		if ($request->getMethod() != $this->method)
 			return false;
@@ -28,8 +25,10 @@ class Route {
 		$result = preg_match(implode($this->patternRegex), $request->getURL(), $matches);
 		if (!$result)	return false;
 		
-		
-		$logService->debug('URL '.$request->getURL().' matching route '.$this->originalPattern.' ; regex is: '.implode($this->patternRegex));
+		// getting log service
+		$logService = $scope->logService;
+		if ($logService)
+			$logService->debug('URL '.$request->getURL().' matching route '.$this->originalPattern.' ; regex is: '.implode($this->patternRegex));
 
 		// checking that the handler was defined
 		if (!$this->callback)
@@ -54,26 +53,36 @@ class Route {
 			$scope->call($before);
 
 			// checking controlling variables
-			if ($scope->get('isWrongResource') === true)		// DEPRECATED
+			if ($scope->get('isWrongResource') === true) {		// DEPRECATED
+				if ($logService)
+					$logService->error('The isWrongResource parameter is deprecated');
 				return false;
-			if ($scope->get('ignoreHandler') === true)			// DEPRECATED
+			}
+			if ($scope->get('ignoreHandler') === true) {			// DEPRECATED
+				if ($logService)
+					$logService->error('The ignoreHandler parameter is deprecated');
 				return true;
+			}
 			if ($scope->get('isRightResource') === false) {
-				$logService->debug('Route ignored by before handler');
+				if ($logService)
+					$logService->debug('Route ignored by before handler');
 				return false;
 			}
 			if ($scope->get('callHandler') === false) {
-				$logService->debug('Route\'s handler won\'t get called because of before handler');
+				if ($logService)
+					$logService->debug('Route\'s handler won\'t get called because of before handler');
 				return true;
 			}
 			if ($scope->get('stopRoute') === true) {
-				$logService->debug('Route\'s handler has been stopped by before handler');
+				if ($logService)
+					$logService->debug('Route\'s handler has been stopped by before handler');
 				return true;
 			}
 		}
 		
 		// calling the handler
-		$logService->debug('Calling handler of route '.$this->originalPattern);
+		if ($logService)
+			$logService->debug('Calling handler of route '.$this->originalPattern);
 		$scope->call($this->callback);
 		
 		// calling after
