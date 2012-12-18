@@ -20,15 +20,15 @@ class CacheMeService {
 		$serverCacheResourceName = 'cacheMe/resources/'.$request->getURL();
 		$this->serverCacheResourceName = $serverCacheResourceName;
 		
-		$response = new \Niysu\HTTPResponseCustomFilter($response, \Closure::bind(function($response) use ($cacheService, $serverCacheResourceName) {
+		$response = new \Niysu\HTTPResponseCustomFilter($response, function($response) use ($cacheService, $serverCacheResourceName) {
 			$data = '';
 			foreach ($response->getHeadersList() as $h => $v)
 				$data .= $h.':'.$v."\r\n";
 			$data .= "\r\n";
 			$data .= $response->getData();
 
-			$cacheService->store($serverCacheResourceName, $data);
-		}, null));
+			$cacheService->store($serverCacheResourceName, $data, $this->duration);
+		}, null);
 		
 		$this->responseFilter = $response;
 
