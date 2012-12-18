@@ -7,13 +7,18 @@ class DatabaseProfilingService {
 	}
 
 	public function signalQuery($sql, $dsn, $timer) {
-		++$this->numQueries;
 		if (is_numeric($timer))
 			$this->totalMilliseconds += $timer;
+
+		$this->queries[] = [
+			'sql' => $sql,
+			'dsn' => $dsn,
+			'time' => $timer
+		];
 	}
 	
 	public function getNumberOfQueries() {
-		return $this->numQueries;
+		return count($this->queries);
 	}
 	
 	public function getQueriesTotalMilliseconds() {
@@ -24,10 +29,14 @@ class DatabaseProfilingService {
 		return $this->connectionTime;
 	}
 
+	public function getQueriesList() {
+		return $this->queries;
+	}
+
 
 	private $connectionTime = 0;
-	private $numQueries = 0;
 	private $totalMilliseconds = 0;
+	private $queries = [];
 };
 
 ?>
