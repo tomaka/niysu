@@ -37,10 +37,6 @@ class HTTPRequestCustom extends HTTPRequestInterface {
 		return $this->https;
 	}
 
-	public function getCookiesList() {
-		throw new \LogicException('Not yet implemented');
-	}
-
 
 	private $url;
 	private $method;
