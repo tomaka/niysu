@@ -11,6 +11,14 @@ class CacheMeService {
 				$stopRoute = true;
 		};
 	}
+
+	public static function beforeClearCache($urlToClear = null) {
+		return function($cacheMeService, $scope) use ($urlToClear) {
+			if (is_callable($urlToClear))
+				$urlToClear = $scope->call($urlToClear);
+			$cacheMeService->clear($urlToClear);
+		};
+	}
 	
 	public function __construct(\Niysu\HTTPRequestInterface $request, \Niysu\HTTPResponseInterface &$response, $cacheService, $logService, $elapsedTime) {
 		$this->cacheService = $cacheService;
