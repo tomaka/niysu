@@ -2,11 +2,6 @@
 namespace Niysu\Services;
 
 class CacheService {
-	public function __construct($directory = null) {
-		if ($directory)
-			$this->directory = $directory;
-	}
-
 	public function setCacheDirectory($directory) {
 		if (!is_dir($directory))
 			throw new \LogicException('The cache directory doesn\'t exist: '.$directory);
@@ -67,7 +62,7 @@ class CacheService {
 		return $this->directory.'/'.md5(serialize($key)).'.cache.gz';
 	}
 
-	private $directory;
+	private $directory = null;
 };
 
 ?>
