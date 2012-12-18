@@ -7,6 +7,13 @@ class TwigService {
 		$this->filesystemLoader = new \Twig_Loader_Filesystem([]);
 	}
 
+	public function setCachePath($directory) {
+		if (!is_dir($directory))
+			throw new \LogicException('Cache directory for TwigService doesn\'t exist');
+		$this->cachePath = $directory;
+		$this->twig = null;
+	}
+
 	public function addPath($templateDir, $namespace = null) {
 		if ($namespace)		$this->filesystemLoader->addPath($templateDir, $namespace);
 		else				$this->filesystemLoader->addPath($templateDir);
@@ -45,12 +52,19 @@ class TwigService {
 			new \Twig_Loader_String()
 		]);
 
-		$this->twig = new \Twig_Environment($loader);
+		$this->twig = new \Twig_Environment($loader, [
+			'cache' => $this->cachePath
+		]);
+
+		foreach($this->globals as $k => $v)
+			$this->twig->addGlobal($k, $v);
 	}
 
 	private $twig = null;
 	private $response = null;
 	private $filesystemLoader;
+	private $globals = [];
+	private $cachePath = false;
 };
 
 ?>
