@@ -41,7 +41,7 @@ class Server {
 		$this->setServiceProvider('session', 'Niysu\\Services\\SessionService');
 		if (class_exists('Twig_Environment'))
 			$this->setServiceProvider('twig', 'Niysu\\Services\\TwigService');
-		$this->setServiceProvider('xslt', new Services\XSLTServiceProvider());
+		$this->setServiceProvider('xslt', 'Niysu\\Services\\XSLTService');
 		
 		// calling configuration functions
 		foreach ($this->configFunctions as $f) {

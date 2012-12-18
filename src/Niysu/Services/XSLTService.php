@@ -2,11 +2,11 @@
 namespace Niysu\Services;
 
 class XSLTService {
-	public function __construct($response) {
+	public function __construct(&$response) {
 		if (!extension_loaded('xsl'))
 			throw new \LogicException('The php_xsl extension must be activated in order to use XSLTService');
 
-		$this->response = $response;
+		$this->response =& $response;
 	}
 	
 	public function transform($template, $xml) {
