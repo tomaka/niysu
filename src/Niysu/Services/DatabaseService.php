@@ -68,7 +68,7 @@ class DatabaseService implements \Iterator, \ArrayAccess, \Countable {
 	}
 
 
-	public function __construct($logService) {
+	public function __construct($logService = null) {
 		$this->logService = $logService;
 	}
 
@@ -133,9 +133,16 @@ class DatabaseService implements \Iterator, \ArrayAccess, \Countable {
 	}
 
 	public function __toString() {
-		if (!$this->tableName)
+		try {
+			if (!$this->tableName)
+				return '';
+			return (string)($this->__invoke([]));
+
+		} catch(\Exception $e) {
+			if ($this->logService)
+				$this->logService->err($e->getMessage(), $e);
 			return '';
-		return (string)($this->__invoke([]));
+		}
 	}
 
 	public function __unset($varName) {
