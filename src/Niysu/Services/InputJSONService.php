@@ -12,8 +12,13 @@ class InputJSONService {
 		$this->request = $request;
 	}
 	
-	public function isJSONData() {
-		$contentType = $this->request->getContentTypeHeader();
+	public function isJSONData($request = null) {
+		if (!$request)
+			$request = $this->request;
+		if (!$request || !$request instanceof \Niysu\HTTPRequestInterface)
+			throw new \LogicException('You need to specify a request');
+
+		$contentType = $request->getContentTypeHeader();
 
 		if (substr($contentType, 0, 16) == 'application/json')
 			return true;
@@ -28,8 +33,13 @@ class InputJSONService {
 		return false;
 	}
 
-	public function getJSONData() {
-		return json_decode($this->request->getRawData());
+	public function getJSONData($request = null) {
+		if (!$request)
+			$request = $this->request;
+		if (!$request || !$request instanceof \Niysu\HTTPRequestInterface)
+			throw new \LogicException('You need to specify a request');
+
+		return json_decode($request->getRawData());
 	}
 
 	private $request;
