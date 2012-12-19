@@ -32,7 +32,16 @@ class TwigService {
 			$this->twig->addGlobal($variable, $value);
 	}
 
+	public function render($template, $variables = []) {
+		$this->buildTwig();
+		$template = $this->twig->loadTemplate($template);
+		return $template->render($variables);
+	}
+
 	public function output($template, $variables = []) {
+		if (!$this->response)
+			throw new \LogicException('Response must be set to use the output function');
+
 		$this->buildTwig();
 		$template = $this->twig->loadTemplate($template);
 		$output = $template->render($variables);
