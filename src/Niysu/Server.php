@@ -41,6 +41,7 @@ class Server {
 		$this->setServiceProvider('inputXML', 'Niysu\\Services\\InputXMLService');
 		$this->setServiceProvider('log', new Services\LogServiceProvider());
 		$this->setServiceProvider('maintenanceMode', 'Niysu\\Services\\MaintenanceModeService');
+		$this->setServiceProvider('outputXML', 'Niysu\\Services\\OutputXMLService');
 		$this->setServiceProvider('session', 'Niysu\\Services\\SessionService');
 		if (class_exists('Twig_Environment'))
 			$this->setServiceProvider('twig', 'Niysu\\Services\\TwigService');

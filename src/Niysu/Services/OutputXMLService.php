@@ -1,10 +1,28 @@
 <?php
-namespace Niysu;
+namespace Niysu\Services;
 
 /// \brief 
-class XMLOutput {
+class OutputXMLService {
+	public function __construct(\Niysu\Scope $scope) {
+		$this->scope = $scope;
+	}
+
+	public function toString($xml) {
+		if (is_array($xml))
+			return $this->arrayToString($xml);
+		else
+			throw new \LogicException('Wrong ');
+	}
+
+	public function output($xml) {
+		$this->scope->response->setHeader('Content-Type', 'application/xml');
+		$this->scope->response->appendData($this->toString($xml));
+	}
+
+
+
 	/// \brief Writes an XML document
-	public static function writeXML($xml) {
+	private function arrayToString($xml) {
 		// this is a function object that will take an XML array and call all xml writer functions
 		$writeNode = function($xmlWriter, $node) use (&$writeNode) {
 			// first case: the node is a DOMDocument or derivate
@@ -93,6 +111,9 @@ class XMLOutput {
 		$writer->endDocument();
 		return $writer->outputMemory();
 	}
+
+
+	private $scope;
 };
 
 ?>

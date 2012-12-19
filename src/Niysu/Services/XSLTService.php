@@ -2,11 +2,12 @@
 namespace Niysu\Services;
 
 class XSLTService {
-	public function __construct(&$response) {
+	public function __construct(&$response, $outputXMLService) {
 		if (!extension_loaded('xsl'))
 			throw new \LogicException('The php_xsl extension must be activated in order to use XSLTService');
 
 		$this->response =& $response;
+		$this->outputXMLService = $outputXMLService;
 	}
 	
 	public function transform($template, $xml) {
@@ -14,7 +15,7 @@ class XSLTService {
 			$xmldoc = new \DOMDocument();
 			$xmldoc->encoding = 'utf-8';
 			$xmldoc->recover = true;
-			$data = \Niysu\XMLOutput::writeXML($xml);
+			$data = $this->outputXMLService->toString($xml);
 			if (!$xmldoc->loadXML($data))
 				throw new \RuntimeException('Unable to parse XML data: '.$data);
 
@@ -54,7 +55,9 @@ class XSLTService {
 		$response->appendData($output);
 	}
 	
-	private $response = null;
+
+	private $response;
+	private $outputXMLService;
 };
 
 ?>
