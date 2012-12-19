@@ -29,8 +29,6 @@ class CacheServiceTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	public function testStore() {
-		$this->markTestIncomplete();
-
 		$this->cacheService->setCacheDirectory(vfsStream::url('exampleDir'));
 
 		$this->cacheService->store('test', 'test');			// unexpected error, probably because of prefix vfsstream://
@@ -43,8 +41,6 @@ class CacheServiceTest extends \PHPUnit_Framework_TestCase {
 	 * @depends testStore
 	 */
 	public function testLoad() {
-		$this->markTestIncomplete();
-
 		$this->cacheService->setCacheDirectory(vfsStream::url('exampleDir'));
 		$serviceClone = clone $this->cacheService;
 
