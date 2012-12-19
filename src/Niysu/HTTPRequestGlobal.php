@@ -33,10 +33,6 @@ class HTTPRequestGlobal extends HTTPRequestInterface {
 		return isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] && $_SERVER['HTTPS'] != 'off';
 	}
 
-	public function getCookiesList() {
-		return $_COOKIE;
-	}
-
 
 	public function __construct() {
 	    if (function_exists('apache_request_headers'))

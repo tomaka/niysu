@@ -21,11 +21,6 @@ abstract class HTTPRequestInterface {
 		
 		$inputXML = $request->getXMLData();
 	}
-		
-	/// \brief Returns the list of cookies
-	public function getCookiesList() {
-		throw new \Exception('Not yet implemented');
-	}
 	
 	/// \brief Returns the value of the Content-Type header, or 'application/octet-stream' if no such header
 	public function getContentTypeHeader() {
