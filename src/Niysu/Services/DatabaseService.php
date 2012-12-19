@@ -2,6 +2,12 @@
 namespace Niysu\Services;
 
 class DatabaseService {
+	public static function beforeConfigureDatabase($dsn, $login = null, $password = null) {
+		return function($databaseService) use ($dsn, $login, $password) {
+			$databaseService->setDatabase($dsn, $login, $password);
+		};
+	}
+
 	public function beginTransaction() {
 		$this->buildDatabase();
 		if ($this->databasePDO->inTransaction())
@@ -115,14 +121,14 @@ class DatabaseService {
 		$this->databaseProfilingService = $databaseProfilingService;
 	}
 
-	public function setDatabase($database) {
+	public function setDatabase($database, $username = null, $password = null) {
 		if ($database instanceof \PDO) {
 			$this->databasePDO = $database;
 
 		} else if (is_string($database)) {
 			$this->dsn = $database;
-			$this->username = func_num_args() >= 2 ? func_get_arg(1) : null;
-			$this->password = func_num_args() >= 3 ? func_get_arg(2) : null;
+			$this->username = $username;
+			$this->password = $password;
 
 		} else {
 			throw new \LogicException('Parameter passed to DatabaseService constructor is not valid');
