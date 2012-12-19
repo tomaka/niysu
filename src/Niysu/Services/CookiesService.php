@@ -25,7 +25,7 @@ class CookiesService {
 		return $this->get($varName) !== null;
 	}
 
-	public function getCookiesList() {
+	public function list() {
 		return array_merge($this->requestCookies, $this->updatedCookies);
 	}
 
