@@ -8,10 +8,18 @@ class OutputXMLService {
 	}
 
 	public function toString($xml) {
-		if (is_array($xml))
+		if (is_array($xml)) {
 			return $this->arrayToString($xml);
-		else
-			throw new \LogicException('Wrong ');
+
+		} else if ($xml instanceof \SimpleXMLElement) {
+			return $xml->asXML();
+
+		} else if ($xml instanceof \DOMDocument) {
+			return $xml->saveXML($xml->documentElement);
+
+		} else {
+			throw new \LogicException('Wrong type for xml');
+		}
 	}
 
 	public function output($xml, $contentType = 'application/xml') {
