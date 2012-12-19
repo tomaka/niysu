@@ -90,7 +90,7 @@ class CookiesService {
 	private $logService;
 	private $requestCookies = [];			// cookies read from the request ; array of format name => value
 	private $updatedCookies = [];			// same format as $requestCookies but for cookies that have been set by this function
-	private $defaultLifetime = 0;			// default lifetime for cookies when expires is null
+	private $defaultLifetime = null;		// default lifetime for cookies when expires is null
 };
 
 ?>
