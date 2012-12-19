@@ -1,7 +1,6 @@
 <?php
 namespace Niysu\Services;
 
-/// \todo Better implementation
 class SessionService {
 	public static function beforeSetToCacheFilesStorage() {
 		return function($sessionService) {
@@ -59,6 +58,10 @@ class SessionService {
 
 	public function __destruct() {
 		$this->storeSession();
+	}
+
+	public function getVariables() {
+		return $this->currentSessionData;
 	}
 
 
