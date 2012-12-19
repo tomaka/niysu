@@ -115,11 +115,17 @@ class CacheService {
 		$fp = $this->openResourcesList();
 		$data = $this->readResourcesList($fp);
 
-		foreach ($data as $k)
-			unlink($this->keyToFile($k));
+		foreach ($data as $k => $v) {
+			try {
+				unlink($this->keyToFile($k));
+			} catch(\Exception $e) {
+				if ($this->logService)
+					$this->logService->warn($e->getMessage());
+			}
+		}
 		$data = [];
 
-		$this->writeResourcesList($data);
+		$this->writeResourcesList($fp, $data);
 		fclose($fp);
 	}
 
@@ -141,11 +147,14 @@ class CacheService {
 
 	private function readResourcesList($fp) {
 		fseek($fp, 0);
-		return unserialize(stream_get_contents($fp));
+		$val = unserialize(stream_get_contents($fp));
+		if (!$val) $val = [];
+		return $val;
 	}
 
 	private function writeResourcesList($fp, $data) {
 		fseek($fp, 0);
+		ftruncate($fp, 0);
 		fwrite($fp, serialize($data));
 	}
 
