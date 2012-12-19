@@ -59,18 +59,21 @@ class CookiesService {
 		if ($secure)	$header .= '; Secure';
 		if ($httponly)	$header .= '; HttpOnly';
 
-		if ($this->logService)
-			$this->logService->debug('Adding cookie '.$name.' set to value: '.$value);
-		if (!$this->request->isHTTPS() && $secure && $this->logService)
-			$this->logService->notice('Setting a secure cookie not through HTTPS is pointless');
+		if ($this->response) {
+			if ($this->logService)
+				$this->logService->debug('Adding cookie '.$name.' set to value: '.$value);
+			if ($this->request && !$this->request->isHTTPS() && $secure && $this->logService)
+				$this->logService->notice('Setting a secure cookie not through HTTPS is pointless');
 
-		$this->response->addHeader('Set-Cookie', $header);
+			$this->response->addHeader('Set-Cookie', $header);
+		}
 	}
 
 
 	private function refreshRequestCookies() {
 		$this->requestCookies = [];
 
+		if (!$this->request) return;
 		$header = $this->request->getHeader('Cookie');
 		if (!$header) return;
 
