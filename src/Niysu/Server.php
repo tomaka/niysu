@@ -35,6 +35,7 @@ class Server {
 		$this->setServiceProvider('database', 'Niysu\\Services\\DatabaseService');
 		$this->setServiceProvider('databaseProfiling', 'Niysu\\Services\\DatabaseProfilingService');
 		$this->setServiceProvider('debugPanel', 'Niysu\\Services\\DebugPanelService');
+		$this->setServiceProvider('email', 'Niysu\\Services\\EmailService');
 		$this->setServiceProvider('httpBasicAuth', 'Niysu\\Services\\HTTPBasicAuthService');
 		$this->setServiceProvider('inputJSON', 'Niysu\\Services\\InputJSONService');
 		$this->setServiceProvider('inputXML', 'Niysu\\Services\\InputXMLService');
