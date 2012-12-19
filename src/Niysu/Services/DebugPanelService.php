@@ -34,7 +34,9 @@ class DebugPanelService {
 				'queriesList' => $this->databaseProfilingService->getQueriesList(),
 				'queriesTime' => $this->databaseProfilingService->getQueriesTotalMilliseconds(),
 				'connectionMS' => $this->databaseProfilingService->getTotalConnectionMilliseconds(),
-				'totalDatabaseTime' => $this->databaseProfilingService->getTotalConnectionMilliseconds() + $this->databaseProfilingService->getQueriesTotalMilliseconds()
+				'totalDatabaseTime' => $this->databaseProfilingService->getTotalConnectionMilliseconds() + $this->databaseProfilingService->getQueriesTotalMilliseconds(),
+				'sessionID' => $scope->sessionService->getID(),
+				'sessionVariables' => $scope->sessionService->getVariables()
 			]);
 			
 			$splitOffset = $matches[0][1];
@@ -106,6 +108,23 @@ class DebugPanelService {
 							{% endfor %}
 							<li>Total: <strong>{{ numQueries }}</strong> queries in <strong>{{ queriesTime }}</strong> ms</li>
 						</ul>
+					</div>
+				</span>
+			</span>
+			<span style="margin-left:2em;">
+				<span
+					onmouseover="this.querySelector(&quot;div&quot;).style.display=&quot;block&quot;"
+					onmouseout="this.querySelector(&quot;div&quot;).style.display=&quot;none&quot;"
+					style="background-color:#bbb; border:2px solid #222; border-radius:0.3em; padding:0.1em 0.3em; position:relative;"
+				>
+					<strong>Session: {{ sessionID ? "on" : "off" }}</strong>
+					<div style="display:none; background-color:#eee; border:2px solid black; border-radius:10px; padding:1em 2em; position:absolute; bottom:0.7em; left:-50px; width:600px; max-height:40em; overflow-y:auto;">
+						<p style="font-weight:bold;">Session ID: {{ sessionID }}</p>
+						<p><strong>Variables</strong>
+						{% for key, val in sessionVariables %}
+							<br /><strong>{{ key }}</strong>: {{ val }}
+						{% endfor %}
+						</p>
 					</div>
 				</span>
 			</span>
