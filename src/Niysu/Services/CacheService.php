@@ -8,6 +8,10 @@ class CacheService {
 		$this->directory = $directory;
 	}
 
+	public function setCompressionLevel($level) {
+		$this->compressionLevel = $level;
+	}
+
 	/// \brief Activates all caching, this is the default value
 	public function activate() {
 		$this->activated = true;
@@ -54,15 +58,14 @@ class CacheService {
 		$file = $this->keyToFile($key);
 
 		$fp = fopen($file, 'wb');
-		stream_filter_append($fp, 'zlib.deflate', STREAM_FILTER_WRITE, 6);
 		if (!$fp) {
 			(new LogWriter())->write('Error while opening file "'.$file.'" for caching');
 			return;
 		}
 
-		if (!fwrite($fp, $data)) {
+		if (!fwrite($fp, gzencode($data, $this->compressionLevel))) {
 			(new LogWriter())->write('Error while writing file "'.$file.'" for caching');
-			gzclose($fp);
+			fclose($fp);
 			unlink($file);
 			return;
 		}
@@ -91,8 +94,7 @@ class CacheService {
 
 		$file = $this->keyToFile($key);
 		$fp = fopen($file, 'rb');
-		stream_filter_append($fp, 'zlib.inflate', STREAM_FILTER_READ, 6);
-		$data = stream_get_contents($fp);
+		$data = gzdecode(stream_get_contents($fp));
 		fclose($fp);
 
 		if ($this->logService)
@@ -163,6 +165,7 @@ class CacheService {
 
 	private $directory = null;
 	private $activated = true;
+	private $compressionLevel = -1;
 	private $logService = null;
 };
 
