@@ -82,8 +82,6 @@ class RoutesCollection {
 	}
 
 	public function before($f) {
-		if (!is_callable($f))
-			throw new \LogicException('The before function/object is not callable');
 		$this->globalBefores[] = $f;
 	}
 
