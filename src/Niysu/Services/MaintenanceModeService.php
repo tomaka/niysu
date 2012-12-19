@@ -2,10 +2,10 @@
 namespace Niysu\Services;
 
 class MaintenanceModeService {
-	public static function beforeCheckMaintenance($path = null) {
-		return function($maintenanceModeService, $response, &$stopRoute) use ($path) {
-			if ($path)
-				$maintenanceModeService->setPath($path);
+	public static function beforeCheckMaintenance($file = null) {
+		return function($maintenanceModeService, $response, &$stopRoute) use ($file) {
+			if ($file)
+				$maintenanceModeService->setFile($file);
 
 			if ($maintenanceModeService->isMaintenanceMode()) {
 				$response->setStatusCode(503);
@@ -17,34 +17,30 @@ class MaintenanceModeService {
 		};
 	}
 
-	public function setPath($path) {
-		$this->path = $path;
+	public function setFile($file) {
+		$this->file = $file;
 	}
 
 	public function isMaintenanceMode() {
-		return file_exists($this->getFileName());
+		if (!$this->file)
+			throw new \LogicException('File is not set in MaintenanceModeService');
+		return file_exists($this->file);
 	}
 
 	public function setMaintenanceMode() {
-		touch($this->getFileName());
+		if (!$this->file)
+			throw new \LogicException('File is not set in MaintenanceModeService');
+		touch($this->file);
 	}
 
 	public function clearMaintenanceMode() {
-		unlink($this->getFileName());
+		if (!$this->file)
+			throw new \LogicException('File is not set in MaintenanceModeService');
+		unlink($this->file);
 	}
 
 
-
-	private function getFileName() {
-		if (!$this->path)
-			throw new \LogicException('Path is not set in MaintenanceModeService');
-		if (substr($this->path, -1) == '/' || substr($this->path, -1) == '\\')
-			$this->path = substr($this->path, 0, -1);
-
-		return $this->path.DIRECTORY_SEPARATOR.'maintenance';
-	}
-
-	private $path = null;
+	private $file = null;
 };
 
 ?>
