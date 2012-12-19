@@ -196,7 +196,7 @@ class Scope implements \Serializable {
 			if (!$reflection)	$reflection = new \ReflectionMethod(function() {}, '__invoke');
 			
 		} else {
-			throw new \LogicException('Unvalid callable type: '.gettype($callable));
+			throw new \LogicException('Unvalid callable type: '.(is_string($callable) ? $callable : gettype($callable)));
 		}
 
 		// building the closure
