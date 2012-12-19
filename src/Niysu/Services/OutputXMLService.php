@@ -14,8 +14,8 @@ class OutputXMLService {
 			throw new \LogicException('Wrong ');
 	}
 
-	public function output($xml) {
-		$this->scope->response->setHeader('Content-Type', 'application/xml');
+	public function output($xml, $contentType = 'application/xml') {
+		$this->scope->response->setHeader('Content-Type', $contentType);
 		$this->scope->response->appendData($this->toString($xml));
 	}
 
