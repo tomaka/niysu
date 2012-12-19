@@ -60,9 +60,16 @@ class SessionService {
 		$this->storeSession();
 	}
 
+	public function getID() {
+		$this->loadSession();
+		return $this->currentSessionID;
+	}
+
 	public function getVariables() {
+		$this->loadSession();
 		return $this->currentSessionData;
 	}
+
 
 
 	private function loadSession() {
@@ -87,6 +94,7 @@ class SessionService {
 		} else {
 			if (!$this->currentSessionID)
 				$this->currentSessionID = self::generateSessionID();
+			// TODO: check collision with existing session
 		}
 	}
 
