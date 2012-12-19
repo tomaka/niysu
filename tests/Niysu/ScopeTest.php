@@ -241,12 +241,10 @@ class ScopeTest extends \PHPUnit_Framework_TestCase {
 	 * @depends testCallValuePassing
 	 */
 	public function testCallDefaultValueIfNotExists() {
-		$this->markTestIncomplete();
-
 		$scope = new Scope();
 		$scope->test = 3;
-		$scope->call(function($x = 1) {
-			$this->assertEquals($x, 1);
+		$scope->call(function($x = 5) {
+			$this->assertEquals(5, $x);
 		});
 	}
 	

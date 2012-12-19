@@ -177,6 +177,10 @@ class Scope implements \Serializable {
 			// function
 			$reflection = new \ReflectionFunction($callable);
 
+		} else if ($callable instanceof \Closure) {
+			// if I use "new \ReflectionMethod($callable, '__invoke')", then a PHP bug shows wrong default parameters
+			$reflection = new \ReflectionFunction($callable);
+
 		} else if (is_callable($callable) && method_exists($callable, '__invoke')) {
 			// closure or callable object
 			$reflection = new \ReflectionMethod($callable, '__invoke');
@@ -210,7 +214,13 @@ class Scope implements \Serializable {
 
 				} else {
 					if (!$param->canBePassedByValue())		$parameters[] =& $scope->getByRef($param->getName());
-					else 									$parameters[] = $scope->get($param->getName());
+					else {
+						$val = $scope->get($param->getName());
+						// note: isDefaultValueAvailable() always returns false for closures
+						if ($val === null && $param->isDefaultValueAvailable())
+							$val = $param->getDefaultValue();
+						$parameters[] = $val;
+					}
 				}
 			}
 
