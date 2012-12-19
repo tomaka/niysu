@@ -10,14 +10,6 @@ class CookiesService {
 	}
 
 	public function setDefaultLifetime($ttl) {
-		/*if (is_string($ttl))
-			$ttl = new \DateInterval($ttl);
-		if ($ttl instanceof \DateInterval)
-			$ttl = */
-
-		if (!is_numeric($ttl))
-			throw new \LogicException('Wrong format for default cookies lifetime');
-
 		$this->defaultLifetime = $ttl;
 	}
 
@@ -53,6 +45,10 @@ class CookiesService {
 
 		$this->updatedCookies[$name] = $value;
 
+		if (is_string($expires) && substr($expires, 0, 1) == 'P')
+			$expires = new \DateInterval($expires);
+		if ($expires instanceof \DateInterval)
+			$expires = (((($expires->y * 12 + $expires->m) * 30.4 + $expires->d) * 24 + $expires->h) * 60 + $expires->i) * 60 + $expires->s;
 		if (is_numeric($expires))
 			$expires = date('r', time() + intval($expires));
 
