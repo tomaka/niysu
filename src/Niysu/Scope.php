@@ -216,7 +216,6 @@ class Scope implements \Serializable {
 					if (!$param->canBePassedByValue())		$parameters[] =& $scope->getByRef($param->getName());
 					else {
 						$val = $scope->get($param->getName());
-						// note: isDefaultValueAvailable() always returns false for closures
 						if ($val === null && $param->isDefaultValueAvailable())
 							$val = $param->getDefaultValue();
 						$parameters[] = $val;
