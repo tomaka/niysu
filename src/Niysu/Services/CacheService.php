@@ -53,7 +53,8 @@ class CacheService {
 
 		$file = $this->keyToFile($key);
 
-		$fp = fopen('compress.zlib://'.$file, 'wb');
+		$fp = fopen($file, 'wb');
+		stream_filter_append($fp, 'zlib.deflate', STREAM_FILTER_WRITE, 6);
 		if (!$fp) {
 			(new LogWriter())->write('Error while opening file "'.$file.'" for caching');
 			return;
@@ -61,7 +62,7 @@ class CacheService {
 
 		if (!fwrite($fp, $data)) {
 			(new LogWriter())->write('Error while writing file "'.$file.'" for caching');
-			fclose($fp);
+			gzclose($fp);
 			unlink($file);
 			return;
 		}
@@ -89,7 +90,8 @@ class CacheService {
 			throw new \LogicException('Cache element doesn\'t exist');
 
 		$file = $this->keyToFile($key);
-		$fp = fopen('compress.zlib://'.$file, 'rb');
+		$fp = fopen($file, 'rb');
+		stream_filter_append($fp, 'zlib.inflate', STREAM_FILTER_READ, 6);
 		$data = stream_get_contents($fp);
 		fclose($fp);
 
@@ -107,7 +109,7 @@ class CacheService {
 		$fp = $this->openResourcesList();
 		$data = $this->readResourcesList($fp);
 		unset($data[$key]);
-		$this->writeResourcesList($data);
+		$this->writeResourcesList($fp, $data);
 		fclose($fp);
 	}
 
