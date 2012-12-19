@@ -4,7 +4,7 @@ namespace Niysu\Services;
 class CacheService {
 	public function setCacheDirectory($directory) {
 		if (!is_dir($directory))
-			throw new \LogicException('The cache directory doesn\'t exist: '.$directory);
+			throw new \RuntimeException('The cache directory doesn\'t exist: '.$directory);
 		$this->directory = $directory;
 	}
 
