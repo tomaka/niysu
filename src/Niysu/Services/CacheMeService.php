@@ -53,7 +53,7 @@ class CacheMeService {
 
 	public function setDuration($seconds) {
 		if (is_string($seconds))
-			$seconds = new DateInterval($seconds);
+			$seconds = \DateInterval::createFromDateString($seconds);
 		if ($seconds instanceof DateInterval)
 			$seconds = (((($seconds->y * 12 + $seconds->m) * 30.4 + $seconds->d) * 24 + $seconds->h) * 60 + $seconds->i) * 60 + $seconds->s;
 

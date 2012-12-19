@@ -55,8 +55,10 @@ class CookiesService {
 
 		if (is_string($expires) && substr($expires, 0, 1) == 'P')
 			$expires = new \DateInterval($expires);
+		else if (is_string($expires))
+			$expires = \DateInterval::createFromDateString($expires);
 		if ($expires instanceof \DateInterval)
-			$expires = (((($expires->y * 12 + $expires->m) * 30.4 + $expires->d) * 24 + $expires->h) * 60 + $expires->i) * 60 + $expires->s;
+			$expires = ((($expires->y * 365.25 + $expires->m * 30.4 + $expires->d) * 24 + $expires->h) * 60 + $expires->i) * 60 + $expires->s;
 		if (is_numeric($expires))
 			$expires = date('r', time() + intval($expires));
 
