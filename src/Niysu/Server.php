@@ -31,6 +31,7 @@ class Server {
 		// building default services providers
 		$this->setServiceProvider('cacheMe', 'Niysu\\Services\\CacheMeService');
 		$this->setServiceProvider('cache', 'Niysu\\Services\\CacheService');
+		$this->setServiceProvider('cookies', 'Niysu\\Services\\CookiesService');
 		$this->setServiceProvider('database', 'Niysu\\Services\\DatabaseService');
 		$this->setServiceProvider('databaseProfiling', 'Niysu\\Services\\DatabaseProfilingService');
 		$this->setServiceProvider('debugPanel', 'Niysu\\Services\\DebugPanelService');
