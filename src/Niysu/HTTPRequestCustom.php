@@ -10,12 +10,24 @@ class HTTPRequestCustom extends HTTPRequestInterface {
 		$this->https = $https;
 	}
 
+	public static function copyOf(HTTPRequestInterface $source) {
+		$destination = new HTTPRequestCustom($source->getURL(), $source->getMethod(), $source->getHeadersList(), $source->getRawData(), $source->isHTTPS());
+	}
+
 	public function getURL() {
 		return $this->url;
 	}
 
+	public function setURL($url) {
+		$this->url = $url;
+	}
+
 	public function getMethod() {
 		return strtoupper($this->method);
+	}
+
+	public function setMethod($method) {
+		$this->method = $method;
 	}
 
 	public function getHeader($header) {
@@ -33,8 +45,16 @@ class HTTPRequestCustom extends HTTPRequestInterface {
 		return $this->rawData;
 	}
 
+	public function setRawData($data) {
+		$this->rawData = $data;
+	}
+
 	public function isHTTPS() {
 		return $this->https;
+	}
+
+	public function setHTTPS($https) {
+		$this->https = $https;
 	}
 
 
