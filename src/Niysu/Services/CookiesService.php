@@ -18,7 +18,11 @@ class CookiesService {
 	}
 
 	public function __set($varName, $value) {
-		return $this->add($varName, $value);
+		$this->add($varName, $value);
+	}
+
+	public function __unset($varName) {
+		$this->destroy($varName);
 	}
 
 	public function __isset($varName) {
@@ -39,6 +43,10 @@ class CookiesService {
 		return $this->requestCookies[$cookieName];
 	}
 
+	public function destroy($cookieName) {
+		$this->add($cookieName, null);
+	}
+
 	public function add($name, $value, $expires = null, $path = null, $domain = null, $secure = false, $httponly = false) {
 		if ($expires === null)
 			$expires = $this->defaultLifetime;
@@ -51,6 +59,10 @@ class CookiesService {
 			$expires = (((($expires->y * 12 + $expires->m) * 30.4 + $expires->d) * 24 + $expires->h) * 60 + $expires->i) * 60 + $expires->s;
 		if (is_numeric($expires))
 			$expires = date('r', time() + intval($expires));
+
+		// setting date in the past if we want to clear the cookie
+		if ($value === null)
+			$expires = date('r', time() - 24 * 3600);
 
 		$header = $name.'='.$value;
 		if ($expires)	$header .= '; Expires='.$expires;
