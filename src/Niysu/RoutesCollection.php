@@ -7,9 +7,10 @@ class RoutesCollection {
 	 *
 	 * This function will analyse the comments of each method of the class and create the appropriate routes.
 	 * Recognized tokens are:
+	 *  - @method Pattern of the method to match
+	 *  - @name Name of the route
 	 *  - @url Pattern of the URL to match, see register()
 	 *  - @uri Alias of URL
-	 *  - @method Pattern of the method to match
 	 *
 	 * @param string 	$className 		Name of the class to parse
 	 */
@@ -34,16 +35,16 @@ class RoutesCollection {
 				// aliases go here
 				if ($parameter == 'uri')		$parameter = 'url';
 
-				if (isset($parameters[$parameter])) {
-					if (is_array($parameters[$parameter]))		$parameters[$parameter][] = $value;
-					else 										$parameters[$parameter] = [ $parameters[$parameter], $value ];
-				} else
-					$parameters[$parameter] = $value;
+				if (isset($parameters[$parameter]))		$parameters[$parameter][] = $value;
+				else									$parameters[$parameter] = [ $value ];
 			}
 
 			// now analyzing parameters
 			if (isset($parameters['url'])) {
-				$route = $this->register($parameters['url']);
+				if (count($parameters['url']) > 1)
+					throw new \LogicException('Multiple URLs not supported');
+
+				$route = $this->register($parameters['url'][0]);
 
 				$route->handler(function($scope) use ($methodReflection, $reflectionClass) {
 					$obj = null;
@@ -52,11 +53,11 @@ class RoutesCollection {
 					$closure = $methodReflection->getClosure($obj);
 					return $scope->call($closure);
 				});
-				
+
 				if (isset($parameters['method']))
-					$route->method($parameters['method']);
-				if (isset($parameters['method']))
-					$route->method($parameters['method']);
+					$route->method($parameters['method'][0]);
+				if (isset($parameters['name']))
+					$route->name($parameters['name'][0]);
 			}
 		}
 	}
