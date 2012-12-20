@@ -45,6 +45,14 @@ class HTTPResponseStorage extends HTTPResponseInterface {
 		return $this->headers[$header];
 	}
 	
+	/**
+	 * Returns an associative array of all headers.
+	 *
+	 * Beware that some values may be arrays. See getHeader() for format of values.
+	 *
+	 * @return array
+	 * @see getHeader
+	 */
 	public function getHeadersList() {
 		return $this->headers;
 	}
@@ -82,6 +90,11 @@ class HTTPResponseStorage extends HTTPResponseInterface {
 		return $this->data;
 	}
 	
+	/**
+	 * Removes all data and replaces it by this data.
+	 *
+	 * @param string 	$data 		The data to set
+	 */
 	public function setData($data) {
 		$this->data = $data;
 	}
