@@ -150,10 +150,14 @@ class Scope implements \Serializable {
 	 * @param string 	$var 	Name of the variable to set
 	 * @param mixed 	$value 	Value to set ; the null value means that the variable will be deleted
 	 * @param string 	$type 	(optional) Class name of the variable, or automatically detected from $value
+	 * @throws LogicException If trying to set the value of the reserved "scope" variable
 	 */
 	public function set($var, $value, $type = null) {
 		if ($type == null && is_object($value))
 			$type = get_class($value);
+
+		if ($var == 'scope')
+			throw new \LogicException('The variable name "scope" is reserved');
 
 		$this->variables[$var] = $value;
 		if ($type)	$this->variablesTypes[$var] = $type;
