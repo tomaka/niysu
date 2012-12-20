@@ -9,15 +9,15 @@ class InputXMLServiceTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * @dataProvider isXMLDataProvider
+	 * @dataProvider isXMLContentTypeProvider
 	 */
-	public function testIsXMLData($contentType, $expected) {
+	public function testIsXMLContentType($contentType, $expected) {
 		$request = new \Niysu\HTTPRequestCustom('/', 'GET', [ 'Content-Type' => $contentType ]);
 
-		$this->assertEquals($this->service->isXMLData($request), $expected);
+		$this->assertEquals($this->service->isXMLContentType($request), $expected);
 	}
 
-	public function isXMLDataProvider() {
+	public function isXMLContentTypeProvider() {
 		return [
 			[ 'application/xml',			true ],
 			[ 'text/xml', 					true ],
@@ -28,7 +28,6 @@ class InputXMLServiceTest extends \PHPUnit_Framework_TestCase {
 			[ 'text/css',					false ]
 		];
 	}
-
 
 	public function testGetXMLData() {
 		$request = new \Niysu\HTTPRequestCustom('/', 'GET', [ 'Content-Type' => 'application/json' ], '');
@@ -44,6 +43,16 @@ class InputXMLServiceTest extends \PHPUnit_Framework_TestCase {
 		$this->assertNotNull($parsed);
 		$this->assertNotNull($parsed->b);
 		$this->assertEquals('val', $parsed->b['attr']);
+	}
+
+	/**
+	 * @expectedException Exception
+	 */
+	public function testGetXMLInvalidData() {
+		$request = new \Niysu\HTTPRequestCustom('/', 'GET', [ 'Content-Type' => 'application/json' ], '');
+		$request->setRawData('< invalid> xml data');
+
+		$parsed = $this->service->getXMLData($request);
 	}
 };
 
