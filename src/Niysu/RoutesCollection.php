@@ -7,6 +7,7 @@ class RoutesCollection {
 	 *
 	 * This function will analyse the comments of each method of the class and create the appropriate routes.
 	 * Recognized tokens are:
+	 *  - @before PHP string of something to be called before the handler (will be passed to eval)
 	 *  - @method Pattern of the method to match
 	 *  - @name Name of the route
 	 *  - @static (class only) Adds a path of static resources ; path is relative to the class location
@@ -32,14 +33,14 @@ class RoutesCollection {
 			if (!($comment = $methodReflection->getDocComment()))
 				continue;
 			$parameters = self::parseDocComment($comment);
-
+			
 			// now analyzing parameters
 			if (isset($parameters['url'])) {
 				if (count($parameters['url']) > 1)
 					throw new \LogicException('Multiple URLs not supported');
-
+				
 				$route = $this->register($parameters['url'][0]);
-
+				
 				$route->handler(function($scope) use ($methodReflection, $reflectionClass) {
 					$obj = null;
 					if (!$methodReflection->isStatic())
@@ -47,11 +48,14 @@ class RoutesCollection {
 					$closure = $methodReflection->getClosure($obj);
 					return $scope->call($closure);
 				});
-
+				
 				if (isset($parameters['method']))
 					$route->method($parameters['method'][0]);
 				if (isset($parameters['name']))
 					$route->name($parameters['name'][0]);
+				if (isset($parameters['before']))
+					foreach($parameters['before'] as $b)
+						$route->before($b);
 			}
 		}
 	}
