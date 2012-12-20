@@ -55,12 +55,12 @@ class Route {
 			// checking controlling variables
 			if ($scope->get('isWrongResource') === true) {		// DEPRECATED
 				if ($logService)
-					$logService->error('The isWrongResource parameter is deprecated');
+					$logService->err('The isWrongResource parameter is deprecated');
 				return false;
 			}
 			if ($scope->get('ignoreHandler') === true) {			// DEPRECATED
 				if ($logService)
-					$logService->error('The ignoreHandler parameter is deprecated');
+					$logService->err('The ignoreHandler parameter is deprecated');
 				return true;
 			}
 			if ($scope->get('isRightResource') === false) {
