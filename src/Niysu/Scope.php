@@ -273,19 +273,6 @@ class Scope implements \Serializable {
 		$this->variablesPassByRef = $data['variablesPassByRef'];
 		$this->parent = $data['parent'];
 	}
-	
-	/// \todo 
-	public function __toString() {
-		ob_start();
-		//var_dump($this->variables);
-		foreach ($this->variables as $v => $val)
-			echo $v.' => '.gettype($val).PHP_EOL;
-		//var_dump($this->variablesCallback);
-		var_dump($this->variablesTypes);
-		$content = ob_get_contents();
-		ob_end_clean();
-		return $content;
-	}
 
 	/**
 	 * Initializes the scope with variables.
