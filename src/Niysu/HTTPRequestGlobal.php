@@ -1,6 +1,10 @@
 <?php
 namespace Niysu;
+require_once __DIR__.'/HTTPRequestInterface.php';
 
+/**
+ * Implementation of HTTPRequestInterface which reads all informations from the environment.
+ */
 class HTTPRequestGlobal extends HTTPRequestInterface {
 	public function getURL() {
 		$uri = $_SERVER['REQUEST_URI'];
