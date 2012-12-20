@@ -22,7 +22,7 @@ class InputXMLService {
 		$ctntType = $request->getContentTypeHeader();
 		if (substr($ctntType, 0, 8) == 'text/xml' || substr($ctntType, 0, 15) == 'application/xml')
 			return true;
-		if (preg_match('/^(application|text)\\/.+?\\+xml$/i', $ctntType))
+		if (preg_match('/^(\w+)\\/.+?\\+xml$/i', $ctntType))
 			return true;
 		return false;
 	}
