@@ -9,6 +9,9 @@ class Route {
 			$this->handler($callback);
 	}
 
+	public function name($name) {
+	}
+
 	/// \brief Tries to handle an HTTP request
 	/// \ret True if the request was handled, false if it was not
 	/// \param $scope Scope that will contain the variables accessible to the handler and before functions ; the "request" and "response" elements must be defined
