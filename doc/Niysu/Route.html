@@ -45,78 +45,78 @@
                     
                 </td>
                 <td class="last">
-                    <a href="#method_name">name</a>($name)
-                    <p></p>
+                    <a href="#method_name">name</a>(string $name)
+                    <p>Sets the name of the route.</p>
                 </td>
                 <td></td>
             </tr>
                     <tr>
                 <td class="type">
-                    
+                    boolean
                 </td>
                 <td class="last">
                     <a href="#method_handle">handle</a>(<a href="../Niysu/Scope.html"><abbr title="Niysu\Scope">Scope</abbr></a> $scope)
-                    <p></p>
+                    <p>Tries to handle an HTTP request through this route.</p>
                 </td>
                 <td></td>
             </tr>
                     <tr>
                 <td class="type">
-                    
+                    <a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a>
                 </td>
                 <td class="last">
-                    <a href="#method_pattern">pattern</a>($varName, $regex)
-                    <p></p>
+                    <a href="#method_pattern">pattern</a>(string $varName, string $regex)
+                    <p>Changes the regex pattern that a route parameter must match</p>
                 </td>
                 <td></td>
             </tr>
                     <tr>
                 <td class="type">
-                    
+                    <a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a>
                 </td>
                 <td class="last">
-                    <a href="#method_validate">validate</a>($callable, $statusCode = 500)
-                    <p></p>
+                    <a href="#method_validate">validate</a>(<abbr title="Niysu\callable">callable</abbr> $callable, integer $statusCode = 500)
+                    <p>Adds a function to be called before the handler and which can stop the route.</p>
                 </td>
                 <td></td>
             </tr>
                     <tr>
                 <td class="type">
-                    
+                    <a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a>
                 </td>
                 <td class="last">
-                    <a href="#method_onlyIf">onlyIf</a>($callable)
-                    <p></p>
+                    <a href="#method_onlyIf">onlyIf</a>(<abbr title="Niysu\callable">callable</abbr> $callable)
+                    <p>Adds a function to be called before the handler and which determines whether handling will be successful.</p>
                 </td>
                 <td></td>
             </tr>
                     <tr>
                 <td class="type">
-                    
+                    <a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a>
                 </td>
                 <td class="last">
                     <a href="#method_before">before</a>($callable)
-                    <p></p>
+                    <p>Adds a function to be called before the handler.</p>
                 </td>
                 <td></td>
             </tr>
                     <tr>
                 <td class="type">
-                    
+                    <a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a>
                 </td>
                 <td class="last">
-                    <a href="#method_handler">handler</a>($handler)
-                    <p></p>
+                    <a href="#method_handler">handler</a>(<abbr title="Niysu\callable">callable</abbr> $handler)
+                    <p>Sets the handling function who is in charge of building the resource.</p>
                 </td>
                 <td></td>
             </tr>
                     <tr>
                 <td class="type">
-                    
+                    <a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a>
                 </td>
                 <td class="last">
                     <a href="#method_after">after</a>($callable)
-                    <p></p>
+                    <p>Adds a function to be called after the handler.</p>
                 </td>
                 <td></td>
             </tr>
@@ -171,21 +171,21 @@
     </div>
 
                 <h3 id="method_name">
-        <div class="location">at line 12</div>
+        <div class="location">at line 20</div>
         <code>            public            
-    <strong>name</strong>($name)</code>
+    <strong>name</strong>(string $name)</code>
     </h3>
     <div class="details">
-        <p></p>
-        <p></p>
+        <p>Sets the name of the route.</p>
+        <p>Not implemented yet, but you will be able to retreive a route by its name.</p>
         <div class="tags">
                             <h4>Parameters</h4>
 
                     <table>
                     <tr>
-                <td></td>
+                <td>string</td>
                 <td>$name</td>
-                <td></td>
+                <td>Name of the route</td>
             </tr>
             </table>
 
@@ -196,13 +196,21 @@
     </div>
 
                 <h3 id="method_handle">
-        <div class="location">at line 18</div>
-        <code>            public            
+        <div class="location">at line 39</div>
+        <code>            public            boolean
     <strong>handle</strong>(<a href="../Niysu/Scope.html"><abbr title="Niysu\Scope">Scope</abbr></a> $scope)</code>
     </h3>
     <div class="details">
-        <p></p>
-        <p></p>
+        <p>Tries to handle an HTTP request through this route.</p>
+        <p>Returns true if the request was handled, false if the route didn&#039;t match this request.<br />
+ Note that answering a 500 error, or stopping the route because $stopRoute was set to true (see below), still counts as a successful handling.<br />
+<br />
+ This function will call all before functions, all onlyIf functions, and all validate functions in the order where they have been defined.<br />
+ These functions are called using a child of the scope given as parameter.<br />
+<br />
+ This scope will also contain two variables named &quot;stopRoute&quot; and &quot;isRightResource&quot;.<br />
+ If one of the before/onlyIf/validate handlers sets the &quot;stopRoute&quot; variable to true, then the route is stopped and handling is considered successful. For example, the resource was loaded from cache, so there is no need to go further in this route.<br />
+ If one of the before/onlyIf/validate handlers sets the &quot;isRightResource&quot; variable to false, then the route is stopped and handling is considered failed. For example, a route which is supposed to display a user but the user doesn&#039;t exist.</p>
         <div class="tags">
                             <h4>Parameters</h4>
 
@@ -210,109 +218,152 @@
                     <tr>
                 <td><a href="../Niysu/Scope.html"><abbr title="Niysu\Scope">Scope</abbr></a></td>
                 <td>$scope</td>
-                <td></td>
+                <td>Scope that will contain the variables accessible to the route</td>
             </tr>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td>boolean</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
                     </div>
     </div>
 
                 <h3 id="method_pattern">
-        <div class="location">at line 100</div>
-        <code>            public            
-    <strong>pattern</strong>($varName, $regex)</code>
+        <div class="location">at line 130</div>
+        <code>            public            <a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a>
+    <strong>pattern</strong>(string $varName, string $regex)</code>
     </h3>
     <div class="details">
-        <p></p>
-        <p></p>
+        <p>Changes the regex pattern that a route parameter must match</p>
+        <p>The default pattern is &#039;\w+&#039;. This function allows you to change it.<br />
+<br />
+ The pattern() function returns $this.</p>
         <div class="tags">
                             <h4>Parameters</h4>
 
                     <table>
                     <tr>
-                <td></td>
+                <td>string</td>
                 <td>$varName</td>
-                <td></td>
+                <td>Name of the route parameter</td>
             </tr>
                     <tr>
-                <td></td>
+                <td>string</td>
                 <td>$regex</td>
-                <td></td>
+                <td>Regular expression (without / /)</td>
             </tr>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td><a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
                     </div>
     </div>
 
                 <h3 id="method_validate">
-        <div class="location">at line 111</div>
-        <code>            public            
-    <strong>validate</strong>($callable, $statusCode = 500)</code>
+        <div class="location">at line 152</div>
+        <code>            public            <a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a>
+    <strong>validate</strong>(<abbr title="Niysu\callable">callable</abbr> $callable, integer $statusCode = 500)</code>
     </h3>
     <div class="details">
-        <p></p>
-        <p></p>
+        <p>Adds a function to be called before the handler and which can stop the route.</p>
+        <p>If the $callable returns false, then the route is stopped and handling is successful.<br />
+ Furthermore, the response will receive a status code determined in this function.<br />
+<br />
+ The validate() function returns $this.</p>
         <div class="tags">
                             <h4>Parameters</h4>
 
                     <table>
                     <tr>
-                <td></td>
+                <td><abbr title="Niysu\callable">callable</abbr></td>
                 <td>$callable</td>
-                <td></td>
+                <td>Callable by Scope::call</td>
             </tr>
                     <tr>
-                <td></td>
+                <td>integer</td>
                 <td>$statusCode</td>
-                <td></td>
+                <td>Status code to set if $callable returns false</td>
             </tr>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td><a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
                     </div>
     </div>
 
                 <h3 id="method_onlyIf">
-        <div class="location">at line 123</div>
-        <code>            public            
-    <strong>onlyIf</strong>($callable)</code>
+        <div class="location">at line 173</div>
+        <code>            public            <a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a>
+    <strong>onlyIf</strong>(<abbr title="Niysu\callable">callable</abbr> $callable)</code>
     </h3>
     <div class="details">
-        <p></p>
-        <p></p>
+        <p>Adds a function to be called before the handler and which determines whether handling will be successful.</p>
+        <p>If the $callable returns false, then the route is stopped and handling is unsuccessful.<br />
+<br />
+ The onlyIf() function returns $this.</p>
         <div class="tags">
                             <h4>Parameters</h4>
 
                     <table>
                     <tr>
-                <td></td>
+                <td><abbr title="Niysu\callable">callable</abbr></td>
                 <td>$callable</td>
-                <td></td>
+                <td>Callable by Scope::call</td>
             </tr>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td><a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
                     </div>
     </div>
 
                 <h3 id="method_before">
-        <div class="location">at line 132</div>
-        <code>            public            
+        <div class="location">at line 189</div>
+        <code>            public            <a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a>
     <strong>before</strong>($callable)</code>
     </h3>
     <div class="details">
-        <p></p>
-        <p></p>
+        <p>Adds a function to be called before the handler.</p>
+        <p>Returns $this.</p>
         <div class="tags">
                             <h4>Parameters</h4>
 
@@ -325,44 +376,62 @@
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td><a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
                     </div>
     </div>
 
                 <h3 id="method_handler">
-        <div class="location">at line 139</div>
-        <code>            public            
-    <strong>handler</strong>($handler)</code>
+        <div class="location">at line 203</div>
+        <code>            public            <a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a>
+    <strong>handler</strong>(<abbr title="Niysu\callable">callable</abbr> $handler)</code>
     </h3>
     <div class="details">
-        <p></p>
-        <p></p>
+        <p>Sets the handling function who is in charge of building the resource.</p>
+        <p>Returns $this.</p>
         <div class="tags">
                             <h4>Parameters</h4>
 
                     <table>
                     <tr>
-                <td></td>
+                <td><abbr title="Niysu\callable">callable</abbr></td>
                 <td>$handler</td>
-                <td></td>
+                <td>Callable by Scope::call</td>
             </tr>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td><a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
                     </div>
     </div>
 
                 <h3 id="method_after">
-        <div class="location">at line 146</div>
-        <code>            public            
+        <div class="location">at line 215</div>
+        <code>            public            <a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a>
     <strong>after</strong>($callable)</code>
     </h3>
     <div class="details">
-        <p></p>
-        <p></p>
+        <p>Adds a function to be called after the handler.</p>
+        <p>Returns $this.</p>
         <div class="tags">
                             <h4>Parameters</h4>
 
@@ -375,13 +444,22 @@
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td><a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
                     </div>
     </div>
 
                 <h3 id="method_getURL">
-        <div class="location">at line 160</div>
+        <div class="location">at line 229</div>
         <code>            public            string
     <strong>getURL</strong>(array $parameters = array())</code>
     </h3>
