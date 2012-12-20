@@ -7,8 +7,8 @@ class HTTPResponseGlobal extends HTTPResponseInterface {
 	public function __construct() {
 		// removing some headers
 		if (!$this->isHeadersListSent()) {
-			$this->removeHeader('Server');
 			$this->removeHeader('X-Powered-By');
+			$this->setHeader('Content-Type', '');
 		}
 	}
 
