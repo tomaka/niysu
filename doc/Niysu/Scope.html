@@ -25,6 +25,13 @@
                 <p>class    <strong>Scope</strong>        implements
         <a href="http://php.net/Serializable"><abbr title="Serializable">Serializable</abbr></a></p>
 
+            <div class="description">
+            <p>Utility class for dependency injection (or whatever this pattern is called).</p>
+            <p>This class acts a bit like an associative array but with more features:<br />
+  - possibility to a callback that will be called the first time a value is retreived<br />
+  - inheritance between scopes, where child scopes have access to parent scopes<br />
+  - possibility to call a function and pass values of the scope to it depending on its parameter name</p>
+        </div>
     
     
     
@@ -33,11 +40,11 @@
             <table>
                     <tr>
                 <td class="type">
-                    
+                    mixed
                 </td>
                 <td class="last">
-                    <a href="#method___get">__get</a>($var)
-                    <p></p>
+                    <a href="#method___get">__get</a>(string $var)
+                    <p>Alias for get()</p>
                 </td>
                 <td></td>
             </tr>
@@ -46,8 +53,8 @@
                     
                 </td>
                 <td class="last">
-                    <a href="#method___set">__set</a>($var, $value)
-                    <p></p>
+                    <a href="#method___set">__set</a>(string $var, mixed $value)
+                    <p>Alias for set()</p>
                 </td>
                 <td></td>
             </tr>
@@ -56,48 +63,48 @@
                     
                 </td>
                 <td class="last">
-                    <a href="#method___unset">__unset</a>($var)
-                    <p></p>
+                    <a href="#method___unset">__unset</a>(string $var)
+                    <p>Alias for set($var, null)</p>
                 </td>
                 <td></td>
             </tr>
                     <tr>
                 <td class="type">
-                    
+                    boolean
                 </td>
                 <td class="last">
-                    <a href="#method___isset">__isset</a>($var)
-                    <p></p>
+                    <a href="#method___isset">__isset</a>(string $var)
+                    <p>Alias for has()</p>
                 </td>
                 <td></td>
             </tr>
                     <tr>
                 <td class="type">
-                    
+                    boolean
                 </td>
                 <td class="last">
-                    <a href="#method_has">has</a>($var)
-                    <p></p>
+                    <a href="#method_has">has</a>(string $var)
+                    <p>Checks whether a variable exists.</p>
                 </td>
                 <td></td>
             </tr>
                     <tr>
                 <td class="type">
-                    
+                    mixed
                 </td>
                 <td class="last">
-                    <a href="#method_get">get</a>($var)
-                    <p></p>
+                    <a href="#method_get">get</a>(string $var)
+                    <p>Returns the value of a variable.</p>
                 </td>
                 <td></td>
             </tr>
                     <tr>
                 <td class="type">
-                    
+                    mixed
                 </td>
                 <td class="last">
-                    <a href="#method_getByRef">getByRef</a>($var)
-                    <p></p>
+                    <a href="#method_getByRef">getByRef</a>(string $var)
+                    <p>Returns a reference to a variable.</p>
                 </td>
                 <td></td>
             </tr>
@@ -126,8 +133,8 @@
                     
                 </td>
                 <td class="last">
-                    <a href="#method_set">set</a>($var, $value, $type = null)
-                    <p></p>
+                    <a href="#method_set">set</a>(string $var, mixed $value, string $type = null)
+                    <p>Changes the value of a variable.</p>
                 </td>
                 <td></td>
             </tr>
@@ -136,8 +143,8 @@
                     
                 </td>
                 <td class="last">
-                    <a href="#method_callback">callback</a>($var, $callback, $type = null)
-                    <p></p>
+                    <a href="#method_callback">callback</a>(string $var, <abbr title="Niysu\callable">callable</abbr> $callback, string $type = null)
+                    <p>Register a callback to be called when retreiving the value of a variable.</p>
                 </td>
                 <td></td>
             </tr>
@@ -146,38 +153,38 @@
                     
                 </td>
                 <td class="last">
-                    <a href="#method_passByRef">passByRef</a>($var, $byRef = true)
-                    <p></p>
+                    <a href="#method_passByRef">passByRef</a>(string $var, boolean $byRef = true)
+                    <p>Sets whether a variable can be accessed by reference.</p>
                 </td>
                 <td></td>
             </tr>
                     <tr>
                 <td class="type">
-                    
+                    mixed
                 </td>
                 <td class="last">
-                    <a href="#method_call">call</a>($function)
-                    <p></p>
+                    <a href="#method_call">call</a>(mixed $function)
+                    <p>Calls the given function.</p>
                 </td>
                 <td></td>
             </tr>
                     <tr>
                 <td class="type">
-                    
+                    <a href="../Niysu/Scope.html"><abbr title="Niysu\Scope">Scope</abbr></a>
                 </td>
                 <td class="last">
                     <a href="#method_newChild">newChild</a>()
-                    <p></p>
+                    <p>Creates a new scope child of this one.</p>
                 </td>
                 <td></td>
             </tr>
                     <tr>
                 <td class="type">
-                    
+                    <a href="../Niysu/Scope.html"><abbr title="Niysu\Scope">Scope</abbr></a>
                 </td>
                 <td class="last">
                     <a href="#method_newSmallChild">newSmallChild</a>()
-                    <p></p>
+                    <p>Creates a new scope child of this one.</p>
                 </td>
                 <td></td>
             </tr>
@@ -206,18 +213,8 @@
                     
                 </td>
                 <td class="last">
-                    <a href="#method___toString">__toString</a>()
-                    <p></p>
-                </td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td class="type">
-                    
-                </td>
-                <td class="last">
                     <a href="#method___construct">__construct</a>($variables = array())
-                    <p></p>
+                    <p>Initializes the scope with variables.</p>
                 </td>
                 <td></td>
             </tr>
@@ -237,187 +234,283 @@
         <h2>Details</h2>
 
                         <h3 id="method___get">
-        <div class="location">at line 5</div>
-        <code>            public            
-    <strong>__get</strong>($var)</code>
+        <div class="location">at line 19</div>
+        <code>            public            mixed
+    <strong>__get</strong>(string $var)</code>
     </h3>
     <div class="details">
-        <p></p>
+        <p>Alias for get()</p>
         <p></p>
         <div class="tags">
                             <h4>Parameters</h4>
 
                     <table>
                     <tr>
-                <td></td>
+                <td>string</td>
                 <td>$var</td>
-                <td></td>
+                <td>Name of the variable to retreive</td>
             </tr>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td>mixed</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
+                            <h4>See also</h4>
+
+                    <table>
+                    <tr>
+                <td>get</td>
+                <td></td>
+            </tr>
+            </table>
+
                     </div>
     </div>
 
                 <h3 id="method___set">
-        <div class="location">at line 9</div>
+        <div class="location">at line 29</div>
         <code>            public            
-    <strong>__set</strong>($var, $value)</code>
+    <strong>__set</strong>(string $var, mixed $value)</code>
     </h3>
     <div class="details">
-        <p></p>
+        <p>Alias for set()</p>
         <p></p>
         <div class="tags">
                             <h4>Parameters</h4>
 
                     <table>
                     <tr>
-                <td></td>
+                <td>string</td>
                 <td>$var</td>
-                <td></td>
+                <td>Name of the variable to set</td>
             </tr>
                     <tr>
-                <td></td>
+                <td>mixed</td>
                 <td>$value</td>
-                <td></td>
+                <td>Value to set</td>
             </tr>
             </table>
 
             
             
             
+                            <h4>See also</h4>
+
+                    <table>
+                    <tr>
+                <td>set</td>
+                <td></td>
+            </tr>
+            </table>
+
                     </div>
     </div>
 
                 <h3 id="method___unset">
-        <div class="location">at line 13</div>
+        <div class="location">at line 38</div>
         <code>            public            
-    <strong>__unset</strong>($var)</code>
+    <strong>__unset</strong>(string $var)</code>
     </h3>
     <div class="details">
-        <p></p>
+        <p>Alias for set($var, null)</p>
         <p></p>
         <div class="tags">
                             <h4>Parameters</h4>
 
                     <table>
                     <tr>
-                <td></td>
+                <td>string</td>
                 <td>$var</td>
-                <td></td>
+                <td>Name of the variable to destroy</td>
             </tr>
             </table>
 
             
             
             
+                            <h4>See also</h4>
+
+                    <table>
+                    <tr>
+                <td>set</td>
+                <td></td>
+            </tr>
+            </table>
+
                     </div>
     </div>
 
                 <h3 id="method___isset">
-        <div class="location">at line 17</div>
-        <code>            public            
-    <strong>__isset</strong>($var)</code>
+        <div class="location">at line 48</div>
+        <code>            public            boolean
+    <strong>__isset</strong>(string $var)</code>
     </h3>
     <div class="details">
-        <p></p>
+        <p>Alias for has()</p>
         <p></p>
         <div class="tags">
                             <h4>Parameters</h4>
 
                     <table>
                     <tr>
-                <td></td>
+                <td>string</td>
                 <td>$var</td>
-                <td></td>
+                <td>Name of the variable to check</td>
             </tr>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td>boolean</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
+                            <h4>See also</h4>
+
+                    <table>
+                    <tr>
+                <td>has</td>
+                <td></td>
+            </tr>
+            </table>
+
                     </div>
     </div>
 
                 <h3 id="method_has">
-        <div class="location">at line 21</div>
-        <code>            public            
-    <strong>has</strong>($var)</code>
+        <div class="location">at line 60</div>
+        <code>            public            boolean
+    <strong>has</strong>(string $var)</code>
     </h3>
     <div class="details">
-        <p></p>
-        <p></p>
+        <p>Checks whether a variable exists.</p>
+        <p>Variables defined as callback DO exist.</p>
         <div class="tags">
                             <h4>Parameters</h4>
 
                     <table>
                     <tr>
-                <td></td>
+                <td>string</td>
                 <td>$var</td>
-                <td></td>
+                <td>Name of the variable to check</td>
             </tr>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td>boolean</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
                     </div>
     </div>
 
                 <h3 id="method_get">
-        <div class="location">at line 31</div>
-        <code>            public            
-    <strong>get</strong>($var)</code>
+        <div class="location">at line 83</div>
+        <code>            public            mixed
+    <strong>get</strong>(string $var)</code>
     </h3>
     <div class="details">
-        <p></p>
-        <p></p>
+        <p>Returns the value of a variable.</p>
+        <p>If the variable was defined by callback, then the callback is called and its return value returned.<br />
+ If the variable doesn&#039;t exist, null is returned.<br />
+<br />
+ The &quot;scope&quot; name is reserved and will always return the scope itself.<br />
+<br />
+ May throw an exception when variable doesn&#039;t exist in a future version.</p>
         <div class="tags">
                             <h4>Parameters</h4>
 
                     <table>
                     <tr>
-                <td></td>
+                <td>string</td>
                 <td>$var</td>
-                <td></td>
+                <td>Name of the variable to retreive</td>
             </tr>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td>mixed</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
                     </div>
     </div>
 
                 <h3 id="method_getByRef">
-        <div class="location">at line 44</div>
-        <code>            public            
-    <strong>getByRef</strong>($var)</code>
+        <div class="location">at line 106</div>
+        <code>            public            mixed
+    <strong>getByRef</strong>(string $var)</code>
     </h3>
     <div class="details">
-        <p></p>
-        <p></p>
+        <p>Returns a reference to a variable.</p>
+        <p>If the variable was defined by callback, then the callback is called and its return value returned.<br />
+ If the variable doesn&#039;t exist, then it is created, set to null, and a reference returned.</p>
         <div class="tags">
                             <h4>Parameters</h4>
 
                     <table>
                     <tr>
-                <td></td>
+                <td>string</td>
                 <td>$var</td>
-                <td></td>
+                <td>Name of the variable to retreive</td>
             </tr>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td>mixed</td>
+            <td></td>
+        </tr>
+    </table>
+
             
+                            <h4>Exceptions</h4>
+
+                    <table>
+                    <tr>
+                <td><a href="http://php.net/RuntimeException"><abbr title="RuntimeException">RuntimeException</abbr></a></td>
+                <td>If the variable is forbidden to be passed by reference</td>
+            </tr>
+            </table>
+
             
                     </div>
     </div>
 
                 <h3 id="method_getByType">
-        <div class="location">at line 62</div>
+        <div class="location">at line 124</div>
         <code>            public            
     <strong>getByType</strong>($requestedType)</code>
     </h3>
@@ -442,7 +535,7 @@
     </div>
 
                 <h3 id="method_getByTypeByRef">
-        <div class="location">at line 72</div>
+        <div class="location">at line 134</div>
         <code>            public            
     <strong>getByTypeByRef</strong>($requestedType)</code>
     </h3>
@@ -467,66 +560,76 @@
     </div>
 
                 <h3 id="method_set">
-        <div class="location">at line 82</div>
+        <div class="location">at line 155</div>
         <code>            public            
-    <strong>set</strong>($var, $value, $type = null)</code>
+    <strong>set</strong>(string $var, mixed $value, string $type = null)</code>
     </h3>
     <div class="details">
-        <p></p>
-        <p></p>
+        <p>Changes the value of a variable.</p>
+        <p>If a variable already exists with this name, it is overwritten.<br />
+ Settings a variable to null is equivalent to destroying it.</p>
         <div class="tags">
                             <h4>Parameters</h4>
 
                     <table>
                     <tr>
-                <td></td>
+                <td>string</td>
                 <td>$var</td>
-                <td></td>
+                <td>Name of the variable to set</td>
             </tr>
                     <tr>
-                <td></td>
+                <td>mixed</td>
                 <td>$value</td>
-                <td></td>
+                <td>Value to set ; the null value means that the variable will be deleted</td>
             </tr>
                     <tr>
-                <td></td>
+                <td>string</td>
                 <td>$type</td>
-                <td></td>
+                <td>(optional) Class name of the variable, or automatically detected from $value</td>
             </tr>
             </table>
 
             
             
+                            <h4>Exceptions</h4>
+
+                    <table>
+                    <tr>
+                <td><a href="http://php.net/LogicException"><abbr title="LogicException">LogicException</abbr></a></td>
+                <td>If trying to set the value of the reserved &quot;scope&quot; variable</td>
+            </tr>
+            </table>
+
             
                     </div>
     </div>
 
                 <h3 id="method_callback">
-        <div class="location">at line 93</div>
+        <div class="location">at line 176</div>
         <code>            public            
-    <strong>callback</strong>($var, $callback, $type = null)</code>
+    <strong>callback</strong>(string $var, <abbr title="Niysu\callable">callable</abbr> $callback, string $type = null)</code>
     </h3>
     <div class="details">
-        <p></p>
-        <p></p>
+        <p>Register a callback to be called when retreiving the value of a variable.</p>
+        <p>The first time this variable is retreived, the callback will be called and the value of the variable set to what the callback returned.</p>
         <div class="tags">
                             <h4>Parameters</h4>
 
                     <table>
                     <tr>
-                <td></td>
+                <td>string</td>
                 <td>$var</td>
-                <td></td>
+                <td>Name of the variable to set</td>
             </tr>
                     <tr>
-                <td></td>
+                <td><abbr title="Niysu\callable">callable</abbr></td>
                 <td>$callback</td>
-                <td></td>
+                <td>Callback to be called ; takes as parameter the Scope object</td>
             </tr>
                     <tr>
-                <td></td>
+                <td>string</td>
                 <td>$type</td>
-                <td></td>
+                <td>(optional) Class name of the value returned by the callback</td>
             </tr>
             </table>
 
@@ -537,26 +640,27 @@
     </div>
 
                 <h3 id="method_passByRef">
-        <div class="location">at line 100</div>
+        <div class="location">at line 193</div>
         <code>            public            
-    <strong>passByRef</strong>($var, $byRef = true)</code>
+    <strong>passByRef</strong>(string $var, boolean $byRef = true)</code>
     </h3>
     <div class="details">
-        <p></p>
-        <p></p>
+        <p>Sets whether a variable can be accessed by reference.</p>
+        <p>If trying to get by reference a variable where it is denied, a RuntimeException will be thrown.<br />
+ The default value is true. If variable created is allowed to be accessed by reference unless changed using this function.</p>
         <div class="tags">
                             <h4>Parameters</h4>
 
                     <table>
                     <tr>
-                <td></td>
+                <td>string</td>
                 <td>$var</td>
-                <td></td>
+                <td>Name of the variable to set</td>
             </tr>
                     <tr>
-                <td></td>
+                <td>boolean</td>
                 <td>$byRef</td>
-                <td></td>
+                <td>True if the variable is authorized to be passed by reference</td>
             </tr>
             </table>
 
@@ -567,62 +671,109 @@
     </div>
 
                 <h3 id="method_call">
-        <div class="location">at line 104</div>
-        <code>            public            
-    <strong>call</strong>($function)</code>
+        <div class="location">at line 219</div>
+        <code>            public            mixed
+    <strong>call</strong>(mixed $function)</code>
     </h3>
     <div class="details">
-        <p></p>
-        <p></p>
+        <p>Calls the given function.</p>
+        <p>The function can be:<br />
+  - A string of a function name<br />
+  - A closure/anonoymous function<br />
+  - A string of a static function in the format Class::staticFunction<br />
+  - Any object which defines an __invoke method<br />
+  - A string of a class name ; if so a new object will be created, its constructor called with access to the scope, and the new object returned<br />
+<br />
+ The scope will study the function to call and pass values of the scope to it.<br />
+ Parameters without any class and without pass-by-reference will receive their value from the scope&#039;s get function.<br />
+ Parameters without any class and with pass-by-reference will receive their value from the scope&#039;s getByRef function.<br />
+ Parameters with a class and without pass-by-reference will receive their value from the scope&#039;s getByType function.<br />
+ Parameters with a class and with pass-by-reference will receive their value from the scope&#039;s getByTypeByRef function.<br />
+<br />
+ Returns what the called function returns.</p>
         <div class="tags">
                             <h4>Parameters</h4>
 
                     <table>
                     <tr>
-                <td></td>
+                <td>mixed</td>
                 <td>$function</td>
-                <td></td>
+                <td>See description</td>
             </tr>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td>mixed</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
                     </div>
     </div>
 
                 <h3 id="method_newChild">
-        <div class="location">at line 109</div>
-        <code>            public            
+        <div class="location">at line 235</div>
+        <code>            public            <a href="../Niysu/Scope.html"><abbr title="Niysu\Scope">Scope</abbr></a>
     <strong>newChild</strong>()</code>
     </h3>
     <div class="details">
-        <p></p>
-        <p></p>
+        <p>Creates a new scope child of this one.</p>
+        <p>- get will try to return the value from the child scope, or the value of its parent if no such variable exists<br />
+ - getByRef will try to return a reference to the value from the child scope, or a reference to the value from its parent ; if the parent doesn&#039;t have this variable then the variable is created in the child scope<br />
+ - set will modify the child scope only, never the parent<br />
+<br />
+ You can only modify the parent through &quot;getByRef&quot; and &quot;getByRefByType&quot;.</p>
         <div class="tags">
             
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td><a href="../Niysu/Scope.html"><abbr title="Niysu\Scope">Scope</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
                     </div>
     </div>
 
                 <h3 id="method_newSmallChild">
-        <div class="location">at line 115</div>
-        <code>            public            
+        <div class="location">at line 251</div>
+        <code>            public            <a href="../Niysu/Scope.html"><abbr title="Niysu\Scope">Scope</abbr></a>
     <strong>newSmallChild</strong>()</code>
     </h3>
     <div class="details">
-        <p></p>
-        <p></p>
+        <p>Creates a new scope child of this one.</p>
+        <p>This function is the same as &quot;newChild&quot;, except that &quot;getByRef&quot; will create a new variable in the parent if no such variable exists.<br />
+ The &quot;set&quot; function still writes the child scope, or it would be kind of useless.<br />
+<br />
+ This is useful when you want to use &quot;call&quot; with just an additional value. Just create a small child, set the additional value in it, and you won&#039;t lose newly created variables from the call.</p>
         <div class="tags">
             
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td><a href="../Niysu/Scope.html"><abbr title="Niysu\Scope">Scope</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
                     </div>
     </div>
 
                 <h3 id="method_serialize">
-        <div class="location">at line 122</div>
+        <div class="location">at line 258</div>
         <code>            public            
     <strong>serialize</strong>()</code>
     </h3>
@@ -637,7 +788,7 @@
     </div>
 
                 <h3 id="method_unserialize">
-        <div class="location">at line 132</div>
+        <div class="location">at line 268</div>
         <code>            public            
     <strong>unserialize</strong>($serialized)</code>
     </h3>
@@ -661,29 +812,14 @@
                     </div>
     </div>
 
-                <h3 id="method___toString">
-        <div class="location">at line 142</div>
-        <code>            public            
-    <strong>__toString</strong>()</code>
-    </h3>
-    <div class="details">
-        <p></p>
-        <p></p>
-        <div class="tags">
-            
-            
-            
-                    </div>
-    </div>
-
                 <h3 id="method___construct">
-        <div class="location">at line 154</div>
+        <div class="location">at line 282</div>
         <code>            public            
     <strong>__construct</strong>($variables = array())</code>
     </h3>
     <div class="details">
-        <p></p>
-        <p></p>
+        <p>Initializes the scope with variables.</p>
+        <p>array 	$variables 		A key =&gt; value array with the variables to set as keys and their values as value</p>
         <div class="tags">
                             <h4>Parameters</h4>
 
@@ -702,7 +838,7 @@
     </div>
 
                 <h3 id="method___clone">
-        <div class="location">at line 162</div>
+        <div class="location">at line 290</div>
         <code>            public            
     <strong>__clone</strong>()</code>
     </h3>
