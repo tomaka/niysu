@@ -219,6 +219,17 @@ class Route {
 	}
 
 	/**
+	 * Returns the regular expression to match with an URL.
+	 *
+	 * Includes / and / around the regex.
+	 *
+	 * @return string
+	 */
+	public function getURLRegex() {
+		return implode($this->patternRegex);
+	}
+
+	/**
 	 * Returns the URL of the route.
 	 *
 	 * @param array 	$parameters 	An associative array of parameter => value
