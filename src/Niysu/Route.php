@@ -10,7 +10,7 @@ namespace Niysu;
 class Route {
 	public function __construct($url, $method = '.*', $callback = null) {
 		$this->setURLPattern($url);
-		$this->method = strtoupper($method);
+		$this->method = $method;
 		if ($callback)
 			$this->handler($callback);
 	}
@@ -57,7 +57,7 @@ class Route {
 		if (!$scope->get('response'))	throw new \LogicException('The "response" variable in the scope must be defined');
 
 		$request = $scope->get('request');
-		if (!preg_match_all('/'.$this->method.'/', $request->getMethod()))
+		if (!preg_match_all('/'.$this->method.'/i', $request->getMethod()))
 			return false;
 		
 		// checking whether the URL matches
@@ -132,7 +132,20 @@ class Route {
 	}
 
 	/**
-	 * Changes the regex pattern that a route parameter must match
+	 * Changes the regex pattern that the method must match.
+	 *
+	 * The method() function returns $this.
+	 *
+	 * @param string 	$method 		Regular expression (without / /)
+	 * @return Route
+	 */
+	public function method($method) {
+		$this->method = $method;
+		return $this;
+	}
+
+	/**
+	 * Changes the regex pattern that a route parameter must match.
 	 *
 	 * The default pattern is '\w+'. This function allows you to change it.
 	 *
