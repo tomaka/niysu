@@ -35,6 +35,16 @@
                     
                 </td>
                 <td class="last">
+                    <a href="#method_parseClass">parseClass</a>(string $className)
+                    <p>Parses a class and registers all resources defined in it.</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    
+                </td>
+                <td class="last">
                     <a href="#method_register">register</a>($url, $method = &#039;.*&#039;, $callback = null)
                     <p></p>
                 </td>
@@ -105,8 +115,38 @@
 
         <h2>Details</h2>
 
-                        <h3 id="method_register">
-        <div class="location">at line 5</div>
+                        <h3 id="method_parseClass">
+        <div class="location">at line 17</div>
+        <code>            public            
+    <strong>parseClass</strong>(string $className)</code>
+    </h3>
+    <div class="details">
+        <p>Parses a class and registers all resources defined in it.</p>
+        <p>This function will analyse the comments of each method of the class and create the appropriate routes.<br />
+ Recognized tokens are:<br />
+  - @method Pattern of the method to match<br />
+  - @name Name of the route<br />
+  - @url Pattern of the URL to match, see register()<br />
+  - @uri Alias of URL</p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td>string</td>
+                <td>$className</td>
+                <td>Name of the class to parse</td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_register">
+        <div class="location">at line 54</div>
         <code>            public            
     <strong>register</strong>($url, $method = &#039;.*&#039;, $callback = null)</code>
     </h3>
@@ -141,7 +181,7 @@
     </div>
 
                 <h3 id="method_registerStaticDirectory">
-        <div class="location">at line 13</div>
+        <div class="location">at line 62</div>
         <code>            public            
     <strong>registerStaticDirectory</strong>($path, $prefix = &#039;/&#039;)</code>
     </h3>
@@ -171,7 +211,7 @@
     </div>
 
                 <h3 id="method_redirect">
-        <div class="location">at line 67</div>
+        <div class="location">at line 116</div>
         <code>            public            
     <strong>redirect</strong>($url, $method, $target, $statusCode = 301)</code>
     </h3>
@@ -211,7 +251,7 @@
     </div>
 
                 <h3 id="method___construct">
-        <div class="location">at line 73</div>
+        <div class="location">at line 122</div>
         <code>            public            
     <strong>__construct</strong>($prefix = &#039;&#039;)</code>
     </h3>
@@ -236,7 +276,7 @@
     </div>
 
                 <h3 id="method_setPrefix">
-        <div class="location">at line 77</div>
+        <div class="location">at line 126</div>
         <code>            public            
     <strong>setPrefix</strong>($prefix)</code>
     </h3>
@@ -261,7 +301,7 @@
     </div>
 
                 <h3 id="method_before">
-        <div class="location">at line 87</div>
+        <div class="location">at line 136</div>
         <code>            public            
     <strong>before</strong>($f)</code>
     </h3>
@@ -286,7 +326,7 @@
     </div>
 
                 <h3 id="method_getRoutesList">
-        <div class="location">at line 92</div>
+        <div class="location">at line 141</div>
         <code>            public            
     <strong>getRoutesList</strong>()</code>
     </h3>
