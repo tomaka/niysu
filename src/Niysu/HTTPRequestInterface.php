@@ -11,35 +11,13 @@ abstract class HTTPRequestInterface {
 	/// \brief Returns true if the request uses HTTPS
 	abstract public function isHTTPS();
 	
-	/// \brief Pass this to the ->before of a route
-	public static function requireInputXML(HTTPRequestInterface $request, &$inputXML, HTTPResponseInterface $response, &$ignoreHandler) {
-		if (!$request->isXMLData()) {
-			$response->setStatusCode(400);
-			$ignoreHandler = true;
-			return;
-		}
-		
-		$inputXML = $request->getXMLData();
-	}
-	
+
 	/// \brief Returns the value of the Content-Type header, or 'application/octet-stream' if no such header
 	public function getContentTypeHeader() {
 		$val = $this->getHeader('Content-Type');
 		return $val ? $val : 'application/octet-stream';
 	}
 	
-	/// \brief Returns true if the data is x-www-url-encoded
-	public function isWWWUrlEncodedData() {
-		return $this->getContentTypeHeader() == 'x-www-url-encoded';
-	}
-
-	/// \brief Returns an array with the raw data decoded as x-www-url-encoded
-	public function getWWWUrlEncodedData() {
-		$array = [];
-		parse_str($this->getRawData(), $array);
-		return $array;
-	}
-
 	/// \brief Returns true if the method is GET or HEAD
 	public function isMethodGETOrHEAD() {
 		$method = strtoupper($this->getMethod());
