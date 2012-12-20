@@ -2,7 +2,7 @@
 namespace Niysu;
 
 class Route {
-	public function __construct($url, $method, $callback = null) {
+	public function __construct($url, $method = '.*', $callback = null) {
 		$this->setURLPattern($url);
 		$this->method = strtoupper($method);
 		if ($callback)
@@ -21,7 +21,7 @@ class Route {
 		if (!$scope->get('response'))	throw new \LogicException('The "response" variable in the scope must be defined');
 
 		$request = $scope->get('request');
-		if ($request->getMethod() != $this->method)
+		if (!preg_match_all('/'.$this->method.'/', $request->getMethod()))
 			return false;
 		
 		// checking whether the URL matches

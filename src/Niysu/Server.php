@@ -88,7 +88,7 @@ class Server {
 		throw new \LogicException('Unvalid service provider format');
 	}
 
-	public function register($url, $method, $callback = null) {
+	public function register($url, $method = '.*', $callback = null) {
 		return $this->routesCollections[0]->register($url, $method, $callback);
 	}
 
