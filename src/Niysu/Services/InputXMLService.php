@@ -33,7 +33,7 @@ class InputXMLService {
 		if (!$request || !$request instanceof \Niysu\HTTPRequestInterface)
 			throw new \LogicException('You need to specify a request');
 
-		return new SimpleXMLElement($request->getRawData());
+		return new \SimpleXMLElement($request->getRawData());
 	}
 	
 	private $request;
