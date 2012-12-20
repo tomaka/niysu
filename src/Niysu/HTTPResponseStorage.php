@@ -1,10 +1,20 @@
 <?php
 namespace Niysu;
 
+/**
+ * Implementation of HTTPResponseInterface which will store everything in variables.
+ *
+ * This allows you to retreive the output later. 
+ */
 class HTTPResponseStorage extends HTTPResponseInterface {
 	public function flush() {
 	}
 
+	/**
+	 * Returns the status code previously set using setStatusCode
+	 *
+	 * @return integer
+	 */
 	public function getStatusCode() {
 		return $this->statusCode;
 	}
@@ -13,10 +23,24 @@ class HTTPResponseStorage extends HTTPResponseInterface {
 		$this->statusCode = $statusCode;
 	}
 	
+	/**
+	 * Returns true if the header has been defined.
+	 *
+	 * @param string 	$header 	Header name to check
+	 * @return boolean
+	 */
 	public function hasHeader($header) {
 		return isset($this->headers[$header]);
 	}
 	
+	/**
+	 * Returns the value of the header.
+	 *
+	 * Returns either the raw value, or an array of this header has multiple values.
+	 *
+	 * @param string 	$header 	Header to read
+	 * @return mixed
+	 */
 	public function getHeader($header) {
 		return $this->headers[$header];
 	}
@@ -26,8 +50,15 @@ class HTTPResponseStorage extends HTTPResponseInterface {
 	}
 	
 	public function addHeader($header, $value) {
-		// TODO:
-		$this->setHeader($header, $value);
+		if (!isset($this->headers[$header])) {
+			$this->headers[$header] = $value;
+
+		} else if (is_array($this->headers[$header])) {
+			$this->headers[$header][] = $value;
+
+		} else {
+			$this->headers[$header] = [ $this->headers[$header], $value ];
+		}
 	}
 
 	public function setHeader($header, $value) {
@@ -42,6 +73,11 @@ class HTTPResponseStorage extends HTTPResponseInterface {
 		return false;
 	}
 
+	/**
+	 * Returns all data that has been appended.
+	 *
+	 * @return string
+	 */
 	public function getData() {
 		return $this->data;
 	}

@@ -1,7 +1,9 @@
 <?php
 namespace Niysu;
 
-/// \brief Interface for an HTTP response
+/**
+ * Interface for the response of an HTTP request
+ */
 abstract class HTTPResponseInterface {
 	/**
 	 * Sets the status code to return with the headers.
