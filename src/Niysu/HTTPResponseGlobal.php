@@ -12,6 +12,9 @@ class HTTPResponseGlobal extends HTTPResponseInterface {
 		}
 	}
 
+	/**
+	 * Calls the PHP function flush()
+	 */
 	public function flush() {
 		flush();
 	}
