@@ -51,6 +51,15 @@ class RoutesCollection {
 		}
 	}
 
+	/**
+	 * Creates a new route in this collection.
+	 *
+	 * @param string 	$url 		The url to register
+	 * @param string 	$method 	A regular expression to match the request method with
+	 * @param callable 	$callback 	The handler of the route (has access to the scope)
+	 * @return Route
+	 * @see Route::__construct
+	 */
 	public function register($url, $method = '.*', $callback = null) {
 		$registration = new Route($this->prefix.$url, $method, $callback);
 		foreach ($this->globalBefores as $b)
@@ -59,6 +68,12 @@ class RoutesCollection {
 		return $registration;
 	}
 
+	/**
+	 * Registers all the files of a static directory as resources.
+	 *
+	 * @param string 	$path 		The absolute path on the server which contains the files
+	 * @param string 	$prefix 	A prefix to add to the name of the static files
+	 */
 	public function registerStaticDirectory($path, $prefix = '/') {
 		while (substr($prefix, -1) == '/')
 			$prefix = substr($prefix, 0, -1);
@@ -123,6 +138,11 @@ class RoutesCollection {
 		$this->setPrefix($prefix);
 	}
 
+	/**
+	 * Sets the prefix to add to all routes in this collection.
+	 *
+	 * @param string 	$prefix 	The prefix
+	 */
 	public function setPrefix($prefix) {
 		if (count($this->routes) >= 1)
 			throw new \LogicException('Cannot change prefix once routes have been registered');
@@ -133,11 +153,20 @@ class RoutesCollection {
 		$this->prefix = $prefix;
 	}
 
+	/**
+	 * Adds a before function to all routes in this collection.
+	 *
+	 * @param callable 	$f 			The function
+	 */
 	public function before($f) {
 		$this->globalBefores[] = $f;
 	}
 
-	/// \brief Returns an array of all the registered Routes
+	/**
+	 * Returns a list of all routes from this collection.
+	 *
+	 * @return array
+	 */
 	public function getRoutesList() {
 		return $this->routes;
 	}
