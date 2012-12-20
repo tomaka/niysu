@@ -1,6 +1,9 @@
 <?php
 namespace Niysu\Services;
 
+/**
+ * Reads and/or writes cookies from the request or to the response.
+ */
 class CookiesService {
 	public function __construct(&$request, &$response, &$logService) {
 		$this->request =& $request;
@@ -9,26 +12,64 @@ class CookiesService {
 		$this->refreshRequestCookies();
 	}
 
+	/**
+	 * Sets the default lifetime of a cookie if not set.
+	 *
+	 * If you call add() without precising any expiration, then the value set using this function will be used instead.
+	 *
+	 * @param mixed 	$ttl 		See add() for the format
+	 */
 	public function setDefaultLifetime($ttl) {
 		$this->defaultLifetime = $ttl;
 	}
 
+	/**
+	 * Alias of get()
+	 * @param string 	$varName 	Name of the cookie to read
+	 */
 	public function __get($varName) {
 		return $this->get($varName);
 	}
 
+	/**
+	 * Alias of add()
+	 *
+	 * This function is an alias of add($varName, $value).
+	 * Therefore, the default lifetime will be used.
+	 *
+	 * @param string 	$varName 	Name of the cookie to set
+	 * @param string 	$value 		Value to set
+	 * @see setDefaultLifetime
+	 */
 	public function __set($varName, $value) {
 		$this->add($varName, $value);
 	}
 
+	/**
+	 * Alias of destroy()
+	 * @param string 	$varName 	Name of the cookie to destroy
+	 */
 	public function __unset($varName) {
 		$this->destroy($varName);
 	}
 
+	/**
+	 * Returns true if this cookie exists in the request or has previously been set.
+	 *
+	 * @param string 	$varName 	Name of the cookie to check
+	 * @return boolean
+	 */
 	public function __isset($varName) {
 		return $this->get($varName) !== null;
 	}
 
+	/**
+	 * Returns the list of cookies.
+	 *
+	 * Returns an associative array of cookieName => value.
+	 *
+	 * @return array
+	 */
 	public function getCookiesList() {
 		$val = array_merge($this->requestCookies, $this->updatedCookies);
 		while ($pos = array_search(null, $val))
@@ -36,6 +77,18 @@ class CookiesService {
 		return $val;
 	}
 
+	/**
+	 * Reads a cookie.
+	 *
+	 * This function reads a cookie from the request.
+	 * Returns null if the cookie doesn't exist.
+	 *
+	 * If a cookie of this name has been set using add(), then its value is returned instead.
+	 * If a cookie of this name has been destroyed using destroy(), then null is returned instead.
+	 *
+	 * @param string 	$varName 	The name of the cookie to read
+	 * @return string
+	 */
 	public function get($cookieName) {
 		if (isset($this->updatedCookies[$cookieName]))
 			return $this->updatedCookies[$cookieName];
@@ -46,10 +99,39 @@ class CookiesService {
 		return $this->requestCookies[$cookieName];
 	}
 
+	/**
+	 * Destroys a cookie.
+	 *
+	 * This function will destroy a cookie by sending to the request a expiration date in the past.
+	 * Further attempts to get this cookie using get() will return null.
+	 *
+	 * @param string 	$cookieName 	Name of the cookie to destroy
+	 */
 	public function destroy($cookieName) {
 		$this->add($cookieName, null);
 	}
 
+	/**
+	 * Sets the value of a cookie.
+	 *
+	 * This function will send a Set-Cookie header to the response containing the informations about this cookie.
+	 * It will also add the cookie to an internal array. Any attempt to get the value of the cookie will return the value set here, even if there is already a cookie in the request.
+	 *
+	 * The $expires parameter can be:
+	 *  - a string passable to DateInterval::createFromDateString ; example: '1 day', '2 hours', etc.
+	 *  - a string passable to DateInterval::__construct ; example 'P1D', 'P2M', etc.
+	 *  - a number of seconds
+	 *  - an instance of \DateInterval
+	 *  - a string representing the date where to delete the cookie
+	 *
+	 * @param string 	$name 		Name of the cookie to set
+	 * @param string 	$value 		Value of the cookie
+	 * @param mixed 	$expires 	See description
+	 * @param string 	$path 		The path where this cookie is valid
+	 * @param string 	$domain 	The domain where this cookie is valid
+	 * @param boolean 	$secure 	True if the cookie should only be sent through HTTPS
+	 * @param boolean 	$httponly 	True if the cookie is accessible through Javascript
+	 */
 	public function add($name, $value, $expires = null, $path = null, $domain = null, $secure = false, $httponly = false) {
 		if ($expires === null)
 			$expires = $this->defaultLifetime;
@@ -85,6 +167,7 @@ class CookiesService {
 			$this->response->addHeader('Set-Cookie', $header);
 		}
 	}
+
 
 
 	private function refreshRequestCookies() {
