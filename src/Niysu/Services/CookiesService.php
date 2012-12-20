@@ -30,7 +30,10 @@ class CookiesService {
 	}
 
 	public function getCookiesList() {
-		return array_merge($this->requestCookies, $this->updatedCookies);
+		$val = array_merge($this->requestCookies, $this->updatedCookies);
+		while ($pos = array_search(null, $val))
+			unset($val[$pos]);
+		return $val;
 	}
 
 	public function get($cookieName) {
