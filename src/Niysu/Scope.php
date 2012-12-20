@@ -189,8 +189,12 @@ class Scope implements \Serializable {
 	 *
 	 * @param string 	$var 		Name of the variable to set
 	 * @param boolean 	$byRef 		True if the variable is authorized to be passed by reference
+	 * @throws LogicException If var is the reserved name "scope"
 	 */
 	public function passByRef($var, $byRef = true) {
+		if ($var == 'scope')
+			throw new \LogicException('The "scope" variable name is reserved');
+
 		$this->variablesPassByRef[$var] = $byRef;
 	}
 	
@@ -280,15 +284,17 @@ class Scope implements \Serializable {
 	 * array 	$variables 		A key => value array with the variables to set as keys and their values as value
 	 */
 	public function __construct($variables = []) {
-		$this->set('scope', $this, get_class());
-		$this->passByRef('scope', false);
+		$this->variables['scope'] = $this;
+		$this->variablesTypes['scope'] = get_class();
+		$this->variablesPassByRef['scope'] = false;
 		
 		foreach ($variables as $var => $value)
 			$this->set($var, $value);
 	}
 
 	public function __clone() {
-		$this->set('scope', $this, get_class());
+		$this->variables['scope'] = $this;
+		$this->variablesTypes['scope'] = get_class();
 	}
 
 	
