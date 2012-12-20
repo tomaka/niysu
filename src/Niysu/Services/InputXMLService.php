@@ -13,8 +13,13 @@ class InputXMLService {
 	}
 	
 	/// \brief Returns true if the data is in XML according to the Content-Type of the request
-	public function isXMLData() {
-		$ctntType = $this->request->getContentTypeHeader();
+	public function isXMLData($request = null) {
+		if (!$request)
+			$request = $this->request;
+		if (!$request || !$request instanceof \Niysu\HTTPRequestInterface)
+			throw new \LogicException('You need to specify a request');
+
+		$ctntType = $request->getContentTypeHeader();
 		if (substr($ctntType, 0, 8) == 'text/xml' || substr($ctntType, 0, 15) == 'application/xml')
 			return true;
 		if (preg_match('/^(application|text)\\/.+?\\+xml$/i', $ctntType))
@@ -22,8 +27,13 @@ class InputXMLService {
 		return false;
 	}
 	
-	public function getXMLData() {
-		return new SimpleXMLElement($this->request->getRawData());
+	public function getXMLData($request = null) {
+		if (!$request)
+			$request = $this->request;
+		if (!$request || !$request instanceof \Niysu\HTTPRequestInterface)
+			throw new \LogicException('You need to specify a request');
+
+		return new SimpleXMLElement($request->getRawData());
 	}
 	
 	private $request;
