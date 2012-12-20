@@ -144,6 +144,7 @@ class Scope implements \Serializable {
 	public function callback($var, $callback, $type = null) {
 		if (!is_callable($callback))
 			throw new \LogicException('The callback must be callable');
+		$this->set($var, null);
 		$this->variablesCallback[$var] = $callback;
 		$this->variablesTypes[$var] = $type;
 	}
