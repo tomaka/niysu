@@ -11,6 +11,22 @@ class InputJSONService implements InputServiceInterface {
 	public function __construct($request) {
 		$this->request = $request;
 	}
+
+	public function __get($varName) {
+		$this->getData()->$varName;
+	}
+	
+	public function __set($varName, $value) {
+		$this->getData()->$varName = $value;
+	}
+	
+	public function __unset($varName) {
+		unset($this->getData()->$varName);
+	}
+	
+	public function __isset($varName) {
+		return isset($this->getData()->$varName);
+	}
 	
 	public function isValidContentType($request = null) {
 		$request = $this->getRequest($request);
