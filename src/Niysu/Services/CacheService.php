@@ -39,7 +39,7 @@ class CacheService {
 				$this->logService->debug('Element is stale: '.$key);
 
 			unset($data[$key]);
-			unlink($this->keyToFile($key));
+			try { unlink($this->keyToFile($key)); } catch(\Exception $e) {}
 			fseek($fp, 0);
 			fwrite($fp, serialize($data));
 			fclose($fp);
@@ -66,7 +66,7 @@ class CacheService {
 		if (!fwrite($fp, gzencode($data, $this->compressionLevel))) {
 			(new LogWriter())->write('Error while writing file "'.$file.'" for caching');
 			fclose($fp);
-			unlink($file);
+			try { unlink($file); } catch(\Exception $e) {}
 			return;
 		}
 		fclose($fp);
@@ -105,7 +105,7 @@ class CacheService {
 	
 	public function clear($key) {
 		$file = $this->keyToFile($key);
-		unlink($file);
+		try { unlink($file); } catch(\Exception $e) {}
 
 		// removing from resources list
 		$fp = $this->openResourcesList();
