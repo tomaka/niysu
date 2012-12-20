@@ -2,6 +2,65 @@
 namespace Niysu;
 
 class RoutesCollection {
+	/**
+	 * Parses a class and registers all resources defined in it.
+	 *
+	 * This function will analyse the comments of each method of the class and create the appropriate routes.
+	 * Recognized tokens are:
+	 *  - @url Pattern of the URL to match, see register()
+	 *  - @uri Alias of URL
+	 *  - @method Pattern of the method to match
+	 *
+	 * @param string 	$className 		Name of the class to parse
+	 */
+	public function parseClass($className) {
+		$reflectionClass = new \ReflectionClass($className);
+
+		// looping through each method of the class
+		foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $methodReflection) {
+			if (!($comment = $methodReflection->getDocComment()))
+				continue;
+
+			// parsing doc comment
+			$parameters = [];		// will contain the result
+			foreach (preg_split('/\\r\\n/', $comment, -1, PREG_SPLIT_NO_EMPTY) as $line) {
+				if (!preg_match('/\\s*\\*?\\s*@(\\w+)(.*)/', $line, $matches))
+					continue;
+
+				list(, $parameter, $value) = $matches;
+				$parameter = strtolower($parameter);
+				$value = trim($value);
+
+				// aliases go here
+				if ($parameter == 'uri')		$parameter = 'url';
+
+				if (isset($parameters[$parameter])) {
+					if (is_array($parameters[$parameter]))		$parameters[$parameter][] = $value;
+					else 										$parameters[$parameter] = [ $parameters[$parameter], $value ];
+				} else
+					$parameters[$parameter] = $value;
+			}
+
+			// now analyzing parameters
+			if (isset($parameters['url'])) {
+				$route = $this->register($parameters['url']);
+
+				$route->handler(function($scope) use ($methodReflection, $reflectionClass) {
+					$obj = null;
+					if (!$methodReflection->isStatic())
+						$obj = $scope->call($reflectionClass->getName());
+					$closure = $methodReflection->getClosure($obj);
+					return $scope->call($closure);
+				});
+				
+				if (isset($parameters['method']))
+					$route->method($parameters['method']);
+				if (isset($parameters['method']))
+					$route->method($parameters['method']);
+			}
+		}
+	}
+
 	public function register($url, $method = '.*', $callback = null) {
 		$registration = new Route($this->prefix.$url, $method, $callback);
 		foreach ($this->globalBefores as $b)
