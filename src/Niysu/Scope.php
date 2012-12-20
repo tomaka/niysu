@@ -1,15 +1,40 @@
 <?php
 namespace Niysu;
 
+/**
+ * Utility class for dependency injection (or whatever this pattern is called).
+ *
+ * This class acts a bit like an associative array but with more features:
+ *  - possibility to a callback that will be called the first time a value is retreived
+ *  - inheritance between scopes, where child scopes have access to parent scopes
+ *  - possibility to call a function and pass values of the scope to it depending on its parameter name
+ */
 class Scope implements \Serializable {
+	/**
+	 * Alias for get()
+	 * @see get
+	 * @param string 	$var 	Name of the variable to retreive
+	 * @return mixed
+	 */
 	public function __get($var) {
 		return $this->get($var);
 	}
 
+	/**
+	 * Alias for set()
+	 * @see set
+	 * @param string 	$var 	Name of the variable to set
+	 * @param mixed 	$value 	Value to set
+	 */
 	public function __set($var, $value) {
 		return $this->set($var, $value);
 	}
 
+	/**
+	 * Alias for set($var, null)
+	 * @see set
+	 * @param string 	$var 	Name of the variable to destroy
+	 */
 	public function __unset($var) {
 		unset($this->variables[$var]);
 	}
@@ -48,6 +73,8 @@ class Scope implements \Serializable {
 	 * If the variable was defined by callback, then the callback is called and its return value returned.
 	 * If the variable doesn't exist, null is returned.
 	 *
+	 * The "scope" name is reserved and will always return the scope itself.
+	 *
 	 * May throw an exception when variable doesn't exist in a future version.
 	 *
 	 * @param string 	$var 	Name of the variable to retreive
@@ -74,6 +101,7 @@ class Scope implements \Serializable {
 	 *
 	 * @param string 	$var 	Name of the variable to retreive
 	 * @return mixed
+	 * @throws RuntimeException If the variable is forbidden to be passed by reference
 	 */
 	public function &getByRef($var) {
 		if (!isset($this->variables[$var]) && isset($this->variablesCallback[$var])) {
@@ -149,21 +177,73 @@ class Scope implements \Serializable {
 		$this->variablesTypes[$var] = $type;
 	}
 
+	/**
+	 * Sets whether a variable can be accessed by reference.
+	 *
+	 * If trying to get by reference a variable where it is denied, a RuntimeException will be thrown.
+	 * The default value is true. If variable created is allowed to be accessed by reference unless changed using this function.
+	 *
+	 * @param string 	$var 		Name of the variable to set
+	 * @param boolean 	$byRef 		True if the variable is authorized to be passed by reference
+	 */
 	public function passByRef($var, $byRef = true) {
 		$this->variablesPassByRef[$var] = $byRef;
 	}
 	
+	/**
+	 * Calls the given function.
+	 *
+	 * The function can be:
+	 *  - A string of a function name
+	 *  - A closure/anonoymous function
+	 *  - A string of a static function in the format Class::staticFunction
+	 *  - Any object which defines an __invoke method
+	 *  - A string of a class name ; if so a new object will be created, its constructor called with access to the scope, and the new object returned
+	 *
+	 * The scope will study the function to call and pass values of the scope to it.
+	 * Parameters without any class and without pass-by-reference will receive their value from the scope's get function.
+	 * Parameters without any class and with pass-by-reference will receive their value from the scope's getByRef function.
+	 * Parameters with a class and without pass-by-reference will receive their value from the scope's getByType function.
+	 * Parameters with a class and with pass-by-reference will receive their value from the scope's getByTypeByRef function.
+	 *
+	 * Returns what the called function returns.
+	 *
+	 * @param mixed 	$function 	See description
+	 * @return mixed
+	 * @example $scope->call(function($a) { ... });  is the same as  call_user_func(function($a) { ... }, $scope->a);
+	 */
 	public function call($function) {
 		$f = self::parseCallable($function);
 		return $f($this);
 	}
 
+	/**
+	 * Creates a new scope child of this one.
+	 *
+	 * - get will try to return the value from the child scope, or the value of its parent if no such variable exists
+	 * - getByRef will try to return a reference to the value from the child scope, or a reference to the value from its parent ; if the parent doesn't have this variable then the variable is created in the child scope
+	 * - set will modify the child scope only, never the parent
+	 *
+	 * You can only modify the parent through "getByRef" and "getByRefByType".
+	 * 
+	 * @return Scope
+	 */
 	public function newChild() {
 		$c = new Scope();
 		$c->parent = $this;
 		return $c;
 	}
 
+	/**
+	 * Creates a new scope child of this one.
+	 *
+	 * This function is the same as "newChild", except that "getByRef" will create a new variable in the parent if no such variable exists.
+	 * The "set" function still writes the child scope, or it would be kind of useless.
+	 *
+	 * This is useful when you want to use "call" with just an additional value. Just create a small child, set the additional value in it, and you won't lose newly created variables from the call.
+	 * 
+	 * @return Scope
+	 */
 	public function newSmallChild() {
 		$c = new Scope();
 		$c->parent = $this;
@@ -203,6 +283,11 @@ class Scope implements \Serializable {
 		return $content;
 	}
 
+	/**
+	 * Initializes the scope with variables.
+	 *
+	 * array 	$variables 		A key => value array with the variables to set as keys and their values as value
+	 */
 	public function __construct($variables = []) {
 		$this->set('scope', $this, get_class());
 		$this->passByRef('scope', false);
