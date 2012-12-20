@@ -9,15 +9,15 @@ class InputJSONServiceTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * @dataProvider isJSONDataProvider
+	 * @dataProvider isJSONContentTypeProvider
 	 */
-	public function testIsJSONData($contentType, $expected) {
+	public function testIsJSONContentType($contentType, $expected) {
 		$request = new \Niysu\HTTPRequestCustom('/', 'GET', [ 'Content-Type' => $contentType ]);
 
-		$this->assertEquals($this->service->isJSONData($request), $expected);
+		$this->assertEquals($this->service->isJSONContentType($request), $expected);
 	}
 
-	public function isJSONDataProvider() {
+	public function isJSONContentTypeProvider() {
 		return [
 			[ 'application/json',			true ],
 			[ 'application/javascript', 	true ],
@@ -30,6 +30,15 @@ class InputJSONServiceTest extends \PHPUnit_Framework_TestCase {
 		];
 	}
 
+	/**
+	 * @expectedException RuntimeException
+	 */
+	public function testGetJSONInvalidData() {
+		$request = new \Niysu\HTTPRequestCustom('/', 'GET', [ 'Content-Type' => 'application/json' ], '');
+		$request->setRawData('wrong f,ormat { jso]n [');
+
+		$parsed = $this->service->getJSONData($request);
+	}
 
 	public function testGetJSONData() {
 		$request = new \Niysu\HTTPRequestCustom('/', 'GET', [ 'Content-Type' => 'application/json' ], '');
@@ -61,10 +70,6 @@ class InputJSONServiceTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals($parsed->var1, 'hello');
 		$this->assertNotNull($parsed->var2);
 		$this->assertEquals($parsed->var2, 'world');
-
-		$request->setRawData('wrong f,ormat { jso]n [');
-		$parsed = $this->service->getJSONData($request);
-		$this->assertNull($parsed);
 	}
 };
 

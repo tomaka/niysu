@@ -12,12 +12,8 @@ class InputJSONService {
 		$this->request = $request;
 	}
 	
-	public function isJSONData($request = null) {
-		if (!$request)
-			$request = $this->request;
-		if (!$request || !$request instanceof \Niysu\HTTPRequestInterface)
-			throw new \LogicException('You need to specify a request');
-
+	public function isJSONContentType($request = null) {
+		$request = $this->getRequest($request);
 		$contentType = $request->getContentTypeHeader();
 
 		if (substr($contentType, 0, 16) == 'application/json')
@@ -33,13 +29,36 @@ class InputJSONService {
 		return false;
 	}
 
+	public function isJSONData($request = null) {
+		$request = $this->getRequest($request);
+
+		if (!$this->isJSONContentType($request))
+			return false;
+		
+		try {
+			$this->getJSONData($request);
+			return true;
+		} catch(\Exception $e) {
+			return false;
+		}
+	}
+
 	public function getJSONData($request = null) {
+		$request = $this->getRequest($request);
+
+		$data = json_decode($request->getRawData());
+		if (!$data)		throw new \RuntimeException('Unvalid JSON data');
+		return $data;
+	}
+
+
+
+	private function getRequest($request = null) {
 		if (!$request)
 			$request = $this->request;
 		if (!$request || !$request instanceof \Niysu\HTTPRequestInterface)
 			throw new \LogicException('You need to specify a request');
-
-		return json_decode($request->getRawData());
+		return $request;
 	}
 
 	private $request;
