@@ -21,24 +21,8 @@ class RoutesCollection {
 		foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $methodReflection) {
 			if (!($comment = $methodReflection->getDocComment()))
 				continue;
-
-			// parsing doc comment
-			$parameters = [];		// will contain the result
-			foreach (preg_split('/\\r\\n/', $comment, -1, PREG_SPLIT_NO_EMPTY) as $line) {
-				if (!preg_match('/\\s*\\*?\\s*@(\\w+)(.*)/', $line, $matches))
-					continue;
-
-				list(, $parameter, $value) = $matches;
-				$parameter = strtolower($parameter);
-				$value = trim($value);
-
-				// aliases go here
-				if ($parameter == 'uri')		$parameter = 'url';
-
-				if (isset($parameters[$parameter]))		$parameters[$parameter][] = $value;
-				else									$parameters[$parameter] = [ $value ];
-			}
-
+			$parameters = self::parseDocComment($comment);
+			
 			// now analyzing parameters
 			if (isset($parameters['url'])) {
 				if (count($parameters['url']) > 1)
@@ -49,7 +33,7 @@ class RoutesCollection {
 				$route->handler(function($scope) use ($methodReflection, $reflectionClass) {
 					$obj = null;
 					if (!$methodReflection->isStatic())
-						$obj = $scope->call($reflectionClass->getName());
+						$obj = $scope->call($reflectionClass);
 					$closure = $methodReflection->getClosure($obj);
 					return $scope->call($closure);
 				});
@@ -151,6 +135,29 @@ class RoutesCollection {
 	/// \brief Returns an array of all the registered Routes
 	public function getRoutesList() {
 		return $this->routes;
+	}
+
+
+	// returns an array where each key is a parameter (without @), and value is an array of all the values for this parameter in the right order
+	private static function parseDocComment($docComment) {
+		$parameters = [];		// will contain the result
+
+		foreach (preg_split('/\\r\\n/', $docComment, -1, PREG_SPLIT_NO_EMPTY) as $line) {
+			if (!preg_match('/\\s*\\*?\\s*@(\\w+)(.*)/', $line, $matches))
+				continue;
+
+			list(, $parameter, $value) = $matches;
+			$parameter = strtolower($parameter);
+			$value = trim($value);
+
+			// aliases go here
+			if ($parameter == 'uri')		$parameter = 'url';
+
+			if (isset($parameters[$parameter]))		$parameters[$parameter][] = $value;
+			else									$parameters[$parameter] = [ $value ];
+		}
+
+		return $parameters;
 	}
 
 
