@@ -13,7 +13,7 @@ class InputJSONService implements InputServiceInterface {
 	}
 
 	public function __get($varName) {
-		$this->getData()->$varName;
+		return $this->getData()->$varName;
 	}
 	
 	public function __isset($varName) {
