@@ -1,8 +1,19 @@
 <?php
 namespace Niysu;
+require_once __DIR__.'/HTTPResponseInterface.php';
 
-/// \brief Filter for an HTTP response
+/**
+ * Implementation of HTTPResponse which acts as a filter.
+ *
+ * It will automatically pass anything to an output response defined in the constructor.
+ * You must overload the functions you want to change if you want it to filter anything.
+ */
 class HTTPResponseFilter extends HTTPResponseInterface {
+	/**
+	 * Sets the output response.
+	 *
+	 * @param HTTPResponseInterface 	$output 	The output response where everything will be redirected by default
+	 */
 	public function __construct(HTTPResponseInterface $output) {
 		if (!$output)
 			throw new \LogicException('Filter output is null');
@@ -37,6 +48,12 @@ class HTTPResponseFilter extends HTTPResponseInterface {
 		$this->output->appendData($data);
 	}
 
+	/**
+	 * Returns the output response
+	 *
+	 * @see __construct
+	 * @return HTTPResponseInterface
+	 */
 	protected function getOutput() {
 		return $this->output;
 	}

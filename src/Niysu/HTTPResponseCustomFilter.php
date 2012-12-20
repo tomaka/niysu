@@ -1,13 +1,31 @@
 <?php
 namespace Niysu;
+require_once __DIR__.'/HTTPResponseFilter.php';
 
-class HTTPResponseCustomFilter extends HTTPResponseFilter {	
+/**
+ * Implementation of HTTPResponseFilter which will store everything in a HTTPResponseStorage.
+ *
+ * When you flush, a callback will be called and can change the content of the HTTPResponseStorage.
+ * Then the content of the HTTPResponseStorage is output to the output response.
+ */
+class HTTPResponseCustomFilter extends HTTPResponseFilter {
+	/**
+	 * 
+	 * @param HTTPResponseInterface 	$output 			The output response, where everything will be sent after filtering
+	 * @param callable 					$contentCallback 	Callback which takes as parameter a HTTPResponseStorage
+	 */
 	public function __construct(HTTPResponseInterface $output, $contentCallback) {
 		parent::__construct($output);
 		$this->httpStorage = new HTTPResponseStorage();
 		$this->setContentCallback($contentCallback);
 	}
 
+	/**
+	 * Calls the callback defined in the constructor and flushes.
+	 *
+	 * This function will call the callback defined in the constructor with the HTTPResponseStorage as parameter.
+	 * Then it will read the HTTPResponseStorage and output it to the output response.
+	 */
 	public function flush() {
 		// calling callback
 		if ($this->contentCallback)
@@ -49,6 +67,11 @@ class HTTPResponseCustomFilter extends HTTPResponseFilter {
 		$this->httpStorage->setStatusCode($code);
 	}
 
+	/**
+	 * Changes the content callback.
+	 *
+	 * @param callable 		$contentCallback 		See __construct
+	 */
 	public function setContentCallback($contentCallback) {
 		if ($contentCallback != null && !is_callable($contentCallback))
 			throw new \LogicException('Content callback must be callable');
