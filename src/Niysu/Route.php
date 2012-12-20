@@ -10,14 +10,23 @@ class Route {
 	}
 
 	/**
+	 * Returns the name of the route.
+	 * 
+	 * Returns null if the name has not been set.
+	 * 
+	 * @return string
+	 */
+	public function getName() {
+		return $this->name;
+	}
+
+	/**
 	 * Sets the name of the route.
 	 * 
-	 * Not implemented yet, but you will be able to retreive a route by its name.
-	 * 
 	 * @param string 	$name 	Name of the route
-	 * @todo Not implemented
 	 */
 	public function name($name) {
+		$this->name = $name;
 	}
 
 	/**
@@ -287,6 +296,7 @@ class Route {
 	private $callback = null;					// the main function that handles the resource
 	private $method = null;
 	private $originalPattern = '';				// the original pattern
+	private $name = null;
 };
 
 ?>
