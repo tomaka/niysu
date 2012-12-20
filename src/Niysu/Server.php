@@ -45,9 +45,15 @@ class Server {
 		$this->setServiceProvider('outputJSON', 'Niysu\\Services\\OutputJSONService');
 		$this->setServiceProvider('outputXML', 'Niysu\\Services\\OutputXMLService');
 		$this->setServiceProvider('session', 'Niysu\\Services\\SessionService');
-		if (class_exists('Twig_Environment'))
-			$this->setServiceProvider('twig', 'Niysu\\Services\\TwigService');
 		$this->setServiceProvider('xslt', 'Niysu\\Services\\XSLTService');
+
+		// facultative service providers
+		$this->setServiceProvider('twig', function($scope) {
+			if (!class_exists('Twig_Environment'))
+				throw new \LogicException('Can only use $twigService if twig is installed');
+			return $scope->call('Niysu\\Services\\TwigService');
+		});
+		
 		
 		// calling configuration functions
 		foreach ($this->configFunctions as $f) {
