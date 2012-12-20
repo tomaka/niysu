@@ -161,7 +161,7 @@ class Server {
 		$this->globalBefores[] = $callable;
 	}
 
-	public function buildCollection($prefix) {
+	public function buildCollection($prefix = '') {
 		$newCollection = new RoutesCollection($prefix);
 		foreach ($this->globalBefores as $b)
 			$newCollection->before($b);
