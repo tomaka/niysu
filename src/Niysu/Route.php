@@ -230,6 +230,7 @@ class Route {
 	 */
 	public function handler($handler) {
 		$this->callback = $handler;
+		return $this;
 	}
 
 	/**
