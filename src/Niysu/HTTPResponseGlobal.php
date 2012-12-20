@@ -33,7 +33,7 @@ class HTTPResponseGlobal extends HTTPResponseInterface {
 	}
 
 	public function removeHeader($header) {
-		header($header.':');
+		header_remove($header);
 	}
 
 	public function isHeadersListSent() {
