@@ -9,6 +9,7 @@ class RoutesCollection {
 	 * Recognized tokens are:
 	 *  - @method Pattern of the method to match
 	 *  - @name Name of the route
+	 *  - @static (class only) Adds a path of static resources ; path is relative to the class location
 	 *  - @url Pattern of the URL to match, see register()
 	 *  - @uri Alias of URL
 	 *
@@ -19,8 +20,12 @@ class RoutesCollection {
 
 		// analyzing the doccomment of the class
 		$classDocComment = self::parseDocComment($reflectionClass->getDocComment());
-		/*if (isset($classDocComment['echo']))
-			echo $classDocComment['echo'][0];*/
+
+		// handling @static
+		if (isset($classDocComment['static'])) {
+			foreach ($classDocComment['static'] as $path)
+				$this->registerStaticDirectory(dirname($reflectionClass->getFileName()).DIRECTORY_SEPARATOR.$path);
+		}
 
 		// looping through each method of the class
 		foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $methodReflection) {
