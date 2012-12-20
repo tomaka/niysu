@@ -208,6 +208,7 @@ class Scope implements \Serializable {
 	 *  - Any object which defines an __invoke method
 	 *  - A string of a class name ; if so a new object will be created, its constructor called with access to the scope, and the new object returned
 	 *  - An instance of \ReflectionClass
+	 *  - An instance of \ReflectionFunction
 	 *
 	 * The scope will study the function to call and pass values of the scope to it.
 	 * Parameters without any class and without pass-by-reference will receive their value from the scope's get function.
@@ -333,6 +334,11 @@ class Scope implements \Serializable {
 			$callable = function() use ($classReflec) { $trace = debug_backtrace(); return $classReflec->newInstanceArgs($trace[1]['args'][1]); };
 			$reflection = $classReflec->getConstructor();
 			if (!$reflection)	$reflection = new \ReflectionMethod(function() {}, '__invoke');
+
+		} else if ($callable instanceof \ReflectionFunction) {
+			// handling class constructors
+			$reflection = $callable;
+			$callable = function() use ($reflection) { $trace = debug_backtrace(); return $reflection->invokeArgs($trace[1]['args'][1]); };
 			
 		} else {
 			throw new \LogicException('Unvalid callable type: '.(is_string($callable) ? $callable : gettype($callable)));
