@@ -9,12 +9,33 @@ class Route {
 			$this->handler($callback);
 	}
 
+	/**
+	 * Sets the name of the route.
+	 * 
+	 * Not implemented yet, but you will be able to retreive a route by its name.
+	 * 
+	 * @param string 	$name 	Name of the route
+	 * @todo Not implemented
+	 */
 	public function name($name) {
 	}
 
-	/// \brief Tries to handle an HTTP request
-	/// \ret True if the request was handled, false if it was not
-	/// \param $scope Scope that will contain the variables accessible to the handler and before functions ; the "request" and "response" elements must be defined
+	/**
+	 * Tries to handle an HTTP request through this route.
+	 *
+	 * Returns true if the request was handled, false if the route didn't match this request.
+	 * Note that answering a 500 error, or stopping the route because $stopRoute was set to true (see below), still counts as a successful handling.
+	 *
+	 * This function will call all before functions, all onlyIf functions, and all validate functions in the order where they have been defined.
+	 * These functions are called using a child of the scope given as parameter.
+	 *
+	 * This scope will also contain two variables named "stopRoute" and "isRightResource".
+	 * If one of the before/onlyIf/validate handlers sets the "stopRoute" variable to true, then the route is stopped and handling is considered successful. For example, the resource was loaded from cache, so there is no need to go further in this route.
+	 * If one of the before/onlyIf/validate handlers sets the "isRightResource" variable to false, then the route is stopped and handling is considered failed. For example, a route which is supposed to display a user but the user doesn't exist.
+	 *
+	 * @param Scope 	$scope 		Scope that will contain the variables accessible to the route
+	 * @return boolean
+	 */
 	public function handle(Scope $scope) {
 		// some routine checks
 		if (!$scope->get('request'))	throw new \LogicException('The "request" variable in the scope must be defined');
@@ -95,8 +116,17 @@ class Route {
 		return true;
 	}
 
-	/// \brief Changes the regex pattern that will match the given variable
-	/// \note The default pattern is '\w+'
+	/**
+	 * Changes the regex pattern that a route parameter must match
+	 *
+	 * The default pattern is '\w+'. This function allows you to change it.
+	 *
+	 * The pattern() function returns $this.
+	 *
+	 * @param string 	$varName 		Name of the route parameter
+	 * @param string 	$regex 			Regular expression (without / /)
+	 * @return Route
+	 */
 	public function pattern($varName, $regex) {
 		foreach ($this->patternRegexMatches as $pos => $match) {
 			if ($match != $varName)
@@ -107,7 +137,18 @@ class Route {
 		return $this;
 	}
 
-	/// \brief If $callable doesn't return true, the output returns a $statusCode status code answer
+	/**
+	 * Adds a function to be called before the handler and which can stop the route.
+	 *
+	 * If the $callable returns false, then the route is stopped and handling is successful.
+	 * Furthermore, the response will receive a status code determined in this function.
+	 *
+	 * The validate() function returns $this.
+	 *
+	 * @param callable 	$callable 		Callable by Scope::call
+	 * @param integer 	$statusCode 	Status code to set if $callable returns false
+	 * @return Route
+	 */
 	public function validate($callable, $statusCode = 500) {
 		$this->before(function($scope, &$callHandler, $response) use ($callable, $statusCode) {
 			$ret = $scope->call($callable);
@@ -119,7 +160,16 @@ class Route {
 		return $this;
 	}
 
-	/// \brief Adds a callback which returns true or false whether the request must be handled
+	/**
+	 * Adds a function to be called before the handler and which determines whether handling will be successful.
+	 *
+	 * If the $callable returns false, then the route is stopped and handling is unsuccessful.
+	 *
+	 * The onlyIf() function returns $this.
+	 *
+	 * @param callable 	$callable 	Callable by Scope::call
+	 * @return Route
+	 */
 	public function onlyIf($callable) {
 		$this->before(function($scope, &$isRightResource, $user) use ($callable) {
 			$ret = $scope->call($callable);
@@ -128,21 +178,40 @@ class Route {
 		return $this;
 	}
 
-	/// \brief Adds a function to call before the handle is called
+	/**
+	 * Adds a function to be called before the handler.
+	 *
+	 * Returns $this.
+	 *
+	 * @param callable 	$handler 	Callable by Scope::call
+	 * @return Route
+	 */
 	public function before($callable) {
 		// inserting into $this->before
 		$this->before[] = $callable;
 		return $this;
 	}
 
-	/// \brief Changes the callback
+	/**
+	 * Sets the handling function who is in charge of building the resource.
+	 *
+	 * Returns $this.
+	 *
+	 * @param callable 	$handler 	Callable by Scope::call
+	 * @return Route
+	 */
 	public function handler($handler) {
-		if (!is_callable($handler))
-			throw new \LogicException('Handler for Route must be callable');
 		$this->callback = $handler;
 	}
 
-	/// \brief Adds a function to call after the handle is called
+	/**
+	 * Adds a function to be called after the handler.
+	 *
+	 * Returns $this.
+	 *
+	 * @param callable 	$handler 	Callable by Scope::call
+	 * @return Route
+	 */
 	public function after($callable) {
 		// inserting into $this->before
 		$this->after[] = $callable;
