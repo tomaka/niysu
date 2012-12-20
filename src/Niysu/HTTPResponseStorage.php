@@ -1,5 +1,6 @@
 <?php
 namespace Niysu;
+require_once __DIR__.'/HTTPResponseInterface.php';
 
 /**
  * Implementation of HTTPResponseInterface which will store everything in variables.
