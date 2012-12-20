@@ -11,7 +11,7 @@ class RoutesCollection {
 	 *  - @name Name of the route
 	 *  - @static (class only) Adds a path of static resources ; path is relative to the class location
 	 *  - @url Pattern of the URL to match, see register()
-	 *  - @uri Alias of URL
+	 *  - @uri Alias of @url
 	 *
 	 * @param string 	$className 		Name of the class to parse
 	 */
