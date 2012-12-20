@@ -149,6 +149,32 @@ class Route {
 		return $this;
 	}
 
+	/**
+	 * Returns the URL of the route.
+	 *
+	 * @param array 	$parameters 	An associative array of parameter => value
+	 * @return string
+	 * @throws RuntimeException If some parameters are missing in the array
+	 * @throws RuntimeException If a parameter does not match the corresponding regex
+	 */
+	public function getURL($parameters = []) {
+		// cloning the pattern
+		$patternRegex = $this->patternRegex;
+
+		foreach ($this->patternRegexMatches as $offset => $varName) {
+			if (!isset($parameters[$varName]))
+				throw new \RuntimeException('Parameter missing in the array: '.$varName);
+
+			$val = $parameters[$varName];
+			if (!preg_match_all('/'.$patternRegex[$offset * 2].'/', $val))
+				throw new \RuntimeException('Parameter does not match its regex: '.$varName.' doesn\'t match '.$patternRegex[$offset * 2]);
+
+			$patternRegex[$offset * 2] = $val;
+		}
+		
+		return implode($patternRegex);
+	}
+
 
 
 	private function setURLPattern($pattern) {
