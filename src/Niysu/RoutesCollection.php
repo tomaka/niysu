@@ -17,12 +17,17 @@ class RoutesCollection {
 	public function parseClass($className) {
 		$reflectionClass = new \ReflectionClass($className);
 
+		// analyzing the doccomment of the class
+		$classDocComment = self::parseDocComment($reflectionClass->getDocComment());
+		/*if (isset($classDocComment['echo']))
+			echo $classDocComment['echo'][0];*/
+
 		// looping through each method of the class
 		foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $methodReflection) {
 			if (!($comment = $methodReflection->getDocComment()))
 				continue;
 			$parameters = self::parseDocComment($comment);
-			
+
 			// now analyzing parameters
 			if (isset($parameters['url'])) {
 				if (count($parameters['url']) > 1)
@@ -138,8 +143,18 @@ class RoutesCollection {
 	}
 
 
-	// returns an array where each key is a parameter (without @), and value is an array of all the values for this parameter in the right order
+	/**
+	 * Parses a DocComment
+	 *
+	 * Returns an array where each key is a parameter (without @), and value is an array of all the values for this parameter in the right order.
+	 *
+	 * @param string 	$docComment 	The docComment string
+	 * @return array
+	 */
 	private static function parseDocComment($docComment) {
+		if (!$docComment)
+			return [];
+
 		$parameters = [];		// will contain the result
 
 		foreach (preg_split('/\\r\\n/', $docComment, -1, PREG_SPLIT_NO_EMPTY) as $line) {
