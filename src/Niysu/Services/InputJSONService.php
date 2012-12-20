@@ -1,10 +1,10 @@
 <?php
 namespace Niysu\Services;
 
-class InputJSONService {
-	public static function validateJSONInput() {
+class InputJSONService implements InputServiceInterface {
+	public static function validateInput() {
 		return function($inputJSONService) {
-			return $inputJSONService->isJSONData();
+			return $inputJSONService->isValid();
 		};
 	}
 	
@@ -12,7 +12,7 @@ class InputJSONService {
 		$this->request = $request;
 	}
 	
-	public function isJSONContentType($request = null) {
+	public function isValidContentType($request = null) {
 		$request = $this->getRequest($request);
 		$contentType = $request->getContentTypeHeader();
 
@@ -29,21 +29,21 @@ class InputJSONService {
 		return false;
 	}
 
-	public function isJSONData($request = null) {
+	public function isValid($request = null) {
 		$request = $this->getRequest($request);
 
-		if (!$this->isJSONContentType($request))
+		if (!$this->isValidContentType($request))
 			return false;
 		
 		try {
-			$this->getJSONData($request);
+			$this->getData($request);
 			return true;
 		} catch(\Exception $e) {
 			return false;
 		}
 	}
 
-	public function getJSONData($request = null) {
+	public function getData($request = null) {
 		$request = $this->getRequest($request);
 
 		$data = json_decode($request->getRawData());

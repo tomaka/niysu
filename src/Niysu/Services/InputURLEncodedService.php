@@ -1,10 +1,10 @@
 <?php
 namespace Niysu\Services;
 
-class InputURLEncodedService {
-	public static function validateURLEncodedInput() {
+class InputURLEncodedService implements InputServiceInterface {
+	public static function validateInput() {
 		return function($inputURLEncodedService) {
-			return $inputURLEncodedService->isJSONData();
+			return $inputURLEncodedService->isValid();
 		};
 	}
 	
@@ -12,7 +12,7 @@ class InputURLEncodedService {
 		$this->request = $request;
 	}
 	
-	public function isURLEncodedContentType($request = null) {
+	public function isValidContentType($request = null) {
 		$request = $this->getRequest($request);
 		$contentType = $request->getContentTypeHeader();
 
@@ -21,21 +21,21 @@ class InputURLEncodedService {
 		return false;
 	}
 
-	public function isURLEncodedData($request = null) {
+	public function isValid($request = null) {
 		$request = $this->getRequest($request);
 
-		if (!$this->isURLEncodedContentType($request))
+		if (!$this->isValidContentType($request))
 			return false;
 		
 		try {
-			$this->getURLEncodedData($request);
+			$this->getData($request);
 			return true;
 		} catch(\Exception $e) {
 			return false;
 		}
 	}
 
-	public function getURLEncodedData($request = null) {
+	public function getData($request = null) {
 		$request = $this->getRequest($request);
 		
 		$array = [];

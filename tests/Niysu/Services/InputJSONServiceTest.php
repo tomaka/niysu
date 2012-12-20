@@ -9,15 +9,15 @@ class InputJSONServiceTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * @dataProvider isJSONContentTypeProvider
+	 * @dataProvider isValidContentTypeProvider
 	 */
-	public function testIsJSONContentType($contentType, $expected) {
+	public function testIsValidContentType($contentType, $expected) {
 		$request = new \Niysu\HTTPRequestCustom('/', 'GET', [ 'Content-Type' => $contentType ]);
 
-		$this->assertEquals($this->service->isJSONContentType($request), $expected);
+		$this->assertEquals($expected, $this->service->isValidContentType($request));
 	}
 
-	public function isJSONContentTypeProvider() {
+	public function isValidContentTypeProvider() {
 		return [
 			[ 'application/json',			true ],
 			[ 'application/javascript', 	true ],
@@ -33,30 +33,30 @@ class InputJSONServiceTest extends \PHPUnit_Framework_TestCase {
 	/**
 	 * @expectedException RuntimeException
 	 */
-	public function testGetJSONInvalidData() {
+	public function testGetInvalidData() {
 		$request = new \Niysu\HTTPRequestCustom('/', 'GET', [ 'Content-Type' => 'application/json' ], '');
 		$request->setRawData('wrong f,ormat { jso]n [');
 
-		$parsed = $this->service->getJSONData($request);
+		$parsed = $this->service->getData($request);
 	}
 
-	public function testGetJSONData() {
+	public function testGetData() {
 		$request = new \Niysu\HTTPRequestCustom('/', 'GET', [ 'Content-Type' => 'application/json' ], '');
 
 		$request->setRawData('"hello world"');
-		$parsed = $this->service->getJSONData($request);
+		$parsed = $this->service->getData($request);
 		$this->assertEquals('hello world', $parsed);
 
 		$request->setRawData('true');
-		$parsed = $this->service->getJSONData($request);
+		$parsed = $this->service->getData($request);
 		$this->assertTrue($parsed);
 
 		$request->setRawData('54');
-		$parsed = $this->service->getJSONData($request);
+		$parsed = $this->service->getData($request);
 		$this->assertEquals(54, $parsed);
 
 		$request->setRawData('[ "John Doe", 29, true, null ]');
-		$parsed = $this->service->getJSONData($request);
+		$parsed = $this->service->getData($request);
 		$this->assertNotNull($parsed);
 		$this->assertEquals($parsed[0], 'John Doe');
 		$this->assertEquals($parsed[1], 29);
@@ -64,7 +64,7 @@ class InputJSONServiceTest extends \PHPUnit_Framework_TestCase {
 		$this->assertNull($parsed[3]);
 
 		$request->setRawData('{ "var1": "hello", "var2": "world" }');
-		$parsed = $this->service->getJSONData($request);
+		$parsed = $this->service->getData($request);
 		$this->assertNotNull($parsed);
 		$this->assertNotNull($parsed->var1);
 		$this->assertEquals($parsed->var1, 'hello');

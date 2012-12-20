@@ -1,10 +1,10 @@
 <?php
 namespace Niysu\Services;
 
-class InputXMLService {
-	public static function validateXMLInput() {
+class InputXMLService implements InputServiceInterface {
+	public static function validateInput() {
 		return function($inputXMLService) {
-			return $inputXMLService->isXMLData();
+			return $inputXMLService->isValid();
 		};
 	}
 	
@@ -13,7 +13,7 @@ class InputXMLService {
 	}
 	
 	/// \brief Returns true if the data is in XML according to the Content-Type of the request
-	public function isXMLContentType($request = null) {
+	public function isValidContentType($request = null) {
 		$request = $this->getRequest($request);
 		$ctntType = $request->getContentTypeHeader();
 
@@ -25,21 +25,21 @@ class InputXMLService {
 	}
 	
 	/// \brief Returns true if the data is in XML according to the Content-Type of the request
-	public function isXMLData($request = null) {
+	public function isValid($request = null) {
 		$request = $this->getRequest($request);
 
-		if (!$this->isXMLContentType($request))
+		if (!$this->isValidContentType($request))
 			return false;
 		
 		try {
-			$this->getXMLData($request);
+			$this->getData($request);
 			return true;
 		} catch(\Exception $e) {
 			return false;
 		}
 	}
 	
-	public function getXMLData($request = null) {
+	public function getData($request = null) {
 		$request = $this->getRequest($request);
 
 		return new \SimpleXMLElement($request->getRawData());
