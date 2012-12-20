@@ -38,6 +38,7 @@ class Server {
 		$this->setServiceProvider('email', 'Niysu\\Services\\EmailService');
 		$this->setServiceProvider('httpBasicAuth', 'Niysu\\Services\\HTTPBasicAuthService');
 		$this->setServiceProvider('inputJSON', 'Niysu\\Services\\InputJSONService');
+		$this->setServiceProvider('inputURLEncoded', 'Niysu\\Services\\InputURLEncodedService');
 		$this->setServiceProvider('inputXML', 'Niysu\\Services\\InputXMLService');
 		$this->setServiceProvider('log', new Services\LogServiceProvider());
 		$this->setServiceProvider('maintenanceMode', 'Niysu\\Services\\MaintenanceModeService');
