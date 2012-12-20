@@ -11,6 +11,14 @@ class InputURLEncodedService implements InputServiceInterface {
 	public function __construct($request) {
 		$this->request = $request;
 	}
+
+	public function __get($varName) {
+		$this->getData()->$varName;
+	}
+	
+	public function __isset($varName) {
+		return isset($this->getData()->$varName);
+	}
 	
 	public function isValidContentType($request = null) {
 		$request = $this->getRequest($request);
@@ -40,7 +48,7 @@ class InputURLEncodedService implements InputServiceInterface {
 		
 		$array = [];
 		parse_str($request->getRawData(), $array);
-		return $array;
+		return (object)$array;
 	}
 
 
