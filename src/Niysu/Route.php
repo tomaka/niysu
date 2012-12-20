@@ -1,6 +1,12 @@
 <?php
 namespace Niysu;
 
+/**
+ * A route is a path that the server can follow in order to answer a request.
+ *
+ * It is composed of a handler, and before functions. Both are callable objects.
+ * The handler is responsible of building the resource's content, and before functions have various roles: filtering, configuring services, etc.
+ */
 class Route {
 	public function __construct($url, $method = '.*', $callback = null) {
 		$this->setURLPattern($url);
