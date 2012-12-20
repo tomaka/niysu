@@ -24,6 +24,10 @@
         <div class="content">
                 <p>class    <strong>OutputJSONService</strong></p>
 
+            <div class="description">
+            <p>Allows to easily send JSON data to the response.</p>
+            <p></p>
+        </div>
     
     
     
@@ -42,11 +46,11 @@
             </tr>
                     <tr>
                 <td class="type">
-                    
+                    string
                 </td>
                 <td class="last">
-                    <a href="#method_toString">toString</a>($json)
-                    <p></p>
+                    <a href="#method_toString">toString</a>(mixed $json)
+                    <p>Turns a JSON object into a string.</p>
                 </td>
                 <td></td>
             </tr>
@@ -55,8 +59,8 @@
                     
                 </td>
                 <td class="last">
-                    <a href="#method_output">output</a>($json)
-                    <p></p>
+                    <a href="#method_output">output</a>(mixed $json)
+                    <p>Turns a JSON object into a string and sends it to the response.</p>
                 </td>
                 <td></td>
             </tr>
@@ -66,7 +70,7 @@
         <h2>Details</h2>
 
                         <h3 id="method___construct">
-        <div class="location">at line 6</div>
+        <div class="location">at line 8</div>
         <code>            public            
     <strong>__construct</strong>(<abbr title="Niysu\Services\Niysu\Scope">Scope</abbr> $scope)</code>
     </h3>
@@ -91,46 +95,55 @@
     </div>
 
                 <h3 id="method_toString">
-        <div class="location">at line 10</div>
-        <code>            public            
-    <strong>toString</strong>($json)</code>
+        <div class="location">at line 20</div>
+        <code>            public            string
+    <strong>toString</strong>(mixed $json)</code>
     </h3>
     <div class="details">
-        <p></p>
-        <p></p>
+        <p>Turns a JSON object into a string.</p>
+        <p>The implementation simply calls json_encode, see php.net</p>
         <div class="tags">
                             <h4>Parameters</h4>
 
                     <table>
                     <tr>
-                <td></td>
+                <td>mixed</td>
                 <td>$json</td>
-                <td></td>
+                <td>Data representing JSON</td>
             </tr>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
                     </div>
     </div>
 
                 <h3 id="method_output">
-        <div class="location">at line 14</div>
+        <div class="location">at line 29</div>
         <code>            public            
-    <strong>output</strong>($json)</code>
+    <strong>output</strong>(mixed $json)</code>
     </h3>
     <div class="details">
-        <p></p>
+        <p>Turns a JSON object into a string and sends it to the response.</p>
         <p></p>
         <div class="tags">
                             <h4>Parameters</h4>
 
                     <table>
                     <tr>
-                <td></td>
+                <td>mixed</td>
                 <td>$json</td>
-                <td></td>
+                <td>Data representing JSON</td>
             </tr>
             </table>
 
