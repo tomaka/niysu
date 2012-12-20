@@ -2,6 +2,11 @@
 namespace Niysu;
 
 class Server {
+	/**
+	 * Initializes the server with the given configuration
+	 *
+	 * @param mixed 	$environment 	Either the name of a file to load or an array containing the config
+	 */
 	public function __construct($environment = null) {
 		$constructionTime = microtime(true);
 
@@ -65,16 +70,37 @@ class Server {
 		}
 	}
 
+	/**
+	 * Returns the object previously registered by setServiceProvider
+	 *
+	 * @param string 	$serviceName 	The name of the service previously registered
+	 * @return mixed
+	 * @throws LogicException If no service of this name has been registered
+	 */
 	public function getServiceProvider($serviceName) {
 		if (!$this->serviceProviders[$serviceName])
 			throw new \LogicException('Service "'.$serviceName.'" doesn\'t exist');
 		return $this->serviceProviders[$serviceName];
 	}
 
+	/**
+	 * Registers a service.
+	 * Overwrites any existing service with the same name.
+	 *
+	 * @param string 	$serviceName 	The name of the service to set (without any "Service" suffix)
+	 * @param mixed 	$provider 		A callable accepted by Scope::call which returns an instance of the service
+	 */
 	public function setServiceProvider($serviceName, $provider) {
 		$this->serviceProviders[$serviceName] = $provider;
 	}
 	
+	/**
+	 * Builds a new instance of a service.
+	 * A new instance will always be created, even if an instance exists somewhere.
+	 *
+	 * @param string 	$serviceName 	The name of the service to get (without any "Service" suffix)
+	 * @return mixed
+	 */
 	public function getService($serviceName) {
 		if (!isset($this->serviceProviders[$serviceName]))
 			throw new \LogicException('Service "'.$serviceName.'" doesn\'t exist');
@@ -87,21 +113,44 @@ class Server {
 		}
 
 		$val = $this->serviceProviders[$serviceName];
-		if (is_callable($val)) {
-			return $localScope->call($val);
-		}
-
-		throw new \LogicException('Unvalid service provider format');
+		return $localScope->call($val);
 	}
 
+	/**
+	 * Creates a new route in the main collection.
+	 *
+	 * @param string 	$url 		The url to register
+	 * @param string 	$method 	A regular expression to match the request method with
+	 * @param callable 	$callback 	The handler of the route (has access to the scope)
+	 * @return Route
+	 * @see Route::__construct
+	 */
 	public function register($url, $method = '.*', $callback = null) {
 		return $this->routesCollections[0]->register($url, $method, $callback);
 	}
 
+	/**
+	 * Registers all the files of a static directory as resources.
+	 *
+	 * @param string 	$path 		The absolute path on the server which contains the files
+	 * @param string 	$prefix 	A prefix to add to the name of the static files
+	 * @see RouteCollection::registerStaticDirectory
+	 */
 	public function registerStaticDirectory($path, $prefix = '/') {
 		return $this->routesCollections[0]->registerStaticDirectory($path, $prefix);
 	}
 
+	/**
+	 * Registers an URL that will redirect to another when accessed.
+	 *
+	 * This is different from an alias.
+	 *
+	 * @param string 	$url 			The pattern of the URL
+	 * @param string 	$method 		A regular expression to match the request method with
+	 * @param string 	$target 		The destination resource
+	 * @param number 	$statusCode 	The status code to send alongside with the 'Location' header
+	 * @return Route
+	 */
 	public function redirect($url, $method, $target, $statusCode = 301) {
 		return $this->routesCollections[0]->redirect($url, $method, $target, $statusCode);
 	}
@@ -120,7 +169,14 @@ class Server {
 		return $newCollection;
 	}
 
-	/// \brief Handles the request described in $input by calling the functions from $output
+	/**
+	 * Handles the request described in $input.
+	 *
+	 * This function will go through all registered routes. All routes that match the requested URL will be called in the order of their registration.
+	 *
+	 * @param HTTPRequestInterface 		$input		The request to handle (if null, an instance of HTTPRequestGlobal)
+	 * @param HTTPResponseInterface 	$output		The response where to write the output (if null, an instance of HTTPResponseGlobal)
+	 */
 	public function handle(HTTPRequestInterface $input = null, HTTPResponseInterface $output = null) {
 		if (!$input)	$input = new HTTPRequestGlobal();
 		if (!$output)	$output = new HTTPResponseGlobal();
@@ -177,6 +233,8 @@ class Server {
 		$output->setStatusCode(404);
 		array_pop($this->currentResponsesStack);
 	}
+
+
 
 	/// \brief Loads either a file or an array
 	private function loadEnvironment($environment) {

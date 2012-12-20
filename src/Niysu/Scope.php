@@ -14,10 +14,24 @@ class Scope implements \Serializable {
 		unset($this->variables[$var]);
 	}
 	
+	/**
+	 * Alias for has()
+	 * @see has
+	 * @param string 	$var 	Name of the variable to check
+	 * @return boolean
+	 */
 	public function __isset($var) {
 		return $this->has($var);
 	}
 
+	/**
+	 * Checks whether a variable exists.
+	 *
+	 * Variables defined as callback DO exist.
+	 *
+	 * @param string 	$var 	Name of the variable to check
+	 * @return boolean
+	 */
 	public function has($var) {
 		if (isset($this->variables[$var]) && $this->variables[$var] !== null)
 			return true;
@@ -28,6 +42,17 @@ class Scope implements \Serializable {
 		return $this->parent->has($var);
 	}
 
+	/**
+	 * Returns the value of a variable.
+	 *
+	 * If the variable was defined by callback, then the callback is called and its return value returned.
+	 * If the variable doesn't exist, null is returned.
+	 *
+	 * May throw an exception when variable doesn't exist in a future version.
+	 *
+	 * @param string 	$var 	Name of the variable to retreive
+	 * @return mixed
+	 */
 	public function get($var) {
 		if (isset($this->variables[$var]) && $this->variables[$var] !== null)
 			return $this->variables[$var];
@@ -41,6 +66,15 @@ class Scope implements \Serializable {
 		return $this->parent->get($var);
 	}
 
+	/**
+	 * Returns a reference to a variable.
+	 *
+	 * If the variable was defined by callback, then the callback is called and its return value returned.
+	 * If the variable doesn't exist, then it is created, set to null, and a reference returned.
+	 *
+	 * @param string 	$var 	Name of the variable to retreive
+	 * @return mixed
+	 */
 	public function &getByRef($var) {
 		if (!isset($this->variables[$var]) && isset($this->variablesCallback[$var])) {
 			$val = call_user_func($this->variablesCallback[$var], $this);
@@ -79,6 +113,16 @@ class Scope implements \Serializable {
 		return $this->parent->getByType($requestedType);
 	}
 	
+	/**
+	 * Changes the value of a variable.
+	 *
+	 * If a variable already exists with this name, it is overwritten.
+	 * Settings a variable to null is equivalent to destroying it.
+	 *
+	 * @param string 	$var 	Name of the variable to set
+	 * @param mixed 	$value 	Value to set ; the null value means that the variable will be deleted
+	 * @param string 	$type 	(optional) Class name of the variable, or automatically detected from $value
+	 */
 	public function set($var, $value, $type = null) {
 		if ($type == null && is_object($value))
 			$type = get_class($value);
@@ -88,8 +132,15 @@ class Scope implements \Serializable {
 		else 		unset($this->variablesTypes[$var]);
 	}
 
-	/// \brief Registers a callback for the given variable
-	/// \details The first time a function requests for this variable, this callback will be called to generate ie
+	/**
+	 * Register a callback to be called when retreiving the value of a variable.
+	 *
+	 * The first time this variable is retreived, the callback will be called and the value of the variable set to what the callback returned.
+	 *
+	 * @param string 	$var 		Name of the variable to set
+	 * @param callable 	$callback 	Callback to be called ; takes as parameter the Scope object
+	 * @param string 	$type 		(optional) Class name of the value returned by the callback
+	 */
 	public function callback($var, $callback, $type = null) {
 		if (!is_callable($callback))
 			throw new \LogicException('The callback must be callable');
