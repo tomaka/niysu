@@ -74,6 +74,19 @@ class CookiesServiceTest extends \PHPUnit_Framework_TestCase {
 		$cookiesService->test = 10;
 		$this->assertTrue($scope->response->hasHeader('Set-Cookie'));
 	}
+
+	public function testUnsetCookie() {
+		$scope = new \Niysu\Scope([
+			'response' => new \Niysu\HTTPResponseStorage()
+		]);
+
+		$cookiesService = $scope->call(__NAMESPACE__.'\\CookiesService');
+
+		$cookiesService->test = 10;
+		unset($cookiesService->test);
+
+		$this->assertEquals(0, count($cookiesService->getCookiesList()));
+	}
 };
 
 ?>

@@ -71,6 +71,18 @@ class RouteTest extends \PHPUnit_Framework_TestCase {
 		$this->assertFalse($route->handle($scope));
 	}
 
+	public function testParenthesisInPattern() {
+		$response = new HTTPResponseStorage();
+		$scope = new Scope([ 'response' => $response ]);
+		$route = new Route('/{var}', 'get');
+		$route->pattern('var', '(\\d)+');
+
+		$route->handler(function($var) { $this->assertEquals(3, $var); });
+
+		$scope->request = new HTTPRequestCustom('/3', 'get');
+		$this->assertTrue($route->handle($scope));
+	}
+
 	/**
      * @depends testPatternFunction
      */
