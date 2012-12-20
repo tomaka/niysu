@@ -1,15 +1,17 @@
+# README
+
 **Niysu** is a light but flexible and easy to use PHP framework.
 Take any PHP framework, remove the annoying stuff, and you get Niysu!
 
 [![build status](https://secure.travis-ci.org/Tomaka17/niysu.png)](http://travis-ci.org/Tomaka17/niysu)
 
 See [the wiki](https://github.com/Tomaka17/niysu/wiki) for documentation.
+See [the wiki](http://tomaka17.github.com/niysu/doc/) for the API.
 
-Examples
-========
+## Examples
 
-Hello world
------------
+### Hello world
+
 ```php
 // create a new instance of the server ; this is where you will pass the configuration file
 $server = new Niysu\Server();
@@ -25,8 +27,8 @@ $server->register('/', 'get', function($response) {
 $server->handle();
 ```
 
-Variable parts
---------------
+### Variable parts
+
 You can add variable parts in the URL, and access them in the handling function:
 ```php
 // this will work for /users/john, /users/18, etc. but not /users/john/doe
@@ -35,8 +37,8 @@ $server->register('/users/{userID}', 'get', function($userID, $response) {
 });
 ```
 
-Services
---------
+### Services
+
 The library provides a services system. For example, you can access the "logService" like this:
 ```php
 $server->register('/echo', 'get', function($request, $response, $logService) {
@@ -47,8 +49,8 @@ $server->register('/echo', 'get', function($request, $response, $logService) {
 
 Examples of available services: database, session, http basic auth, etc.
 
-Before handlers
----------------
+### Before handlers
+
 It is possible to add functions that will be called before the handler of a given route in executed.
 This allows you to share code between multiple handlers.
 ```php
@@ -62,8 +64,8 @@ $server
 	});
 ```
 
-Route collections
------------------
+### Route collections
+
 It is possible to create groups of routes named collections.
 You can add a prefix to all the URLs of a collection, or configure a before
 function that will be prepended to any route inside of it.
@@ -71,14 +73,15 @@ function that will be prepended to any route inside of it.
 This allows you to easily manage multiple sub-site with different databases,
 sessions, cache directories, etc.
 
-Documentation
-=============
+## Documentation
+
 See [the wiki](https://github.com/Tomaka17/niysu/wiki).
+See [the API](http://tomaka17.github.com/niysu/doc/).
 
 
-About
-=====
+## About
 
-License
--------
+
+### License
+
 All the code is under MIT license. See the `LICENSE` file.
