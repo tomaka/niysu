@@ -32,7 +32,13 @@ class DatabaseService {
 			throw new \RuntimException('Error during rollback');
 	}
 	
-	/// \brief Opens a query and returns a \PDOStatement object
+	/**
+	 * Opens a query and executes it.
+	 *
+	 * @param string 	$sql 		The SQL query to execute
+	 * @param array 	$param 		An array with the parameters
+	 * @return PDOStatement
+	 */
 	public function openQuery($sql, $params = []) {
 		if (!is_array($params)) {
 			$params = func_get_args();
@@ -51,7 +57,15 @@ class DatabaseService {
 		return $query;
 	}
 	
-	/// \brief Executes a query and returns an array containing the results with PDO::FETCH_BOTH
+	/**
+	 * Opens a query with results, executes it, and returns all the rows.
+	 *
+	 * Returns an array containing the results with PDO::FETCH_BOTH
+	 *
+	 * @param string 	$sql 		The SQL query to execute
+	 * @param array 	$param 		An array with the parameters
+	 * @return array
+	 */
 	public function query($sql, $params = []) {
 		if (!is_array($params)) {
 			$params = func_get_args();
@@ -77,7 +91,15 @@ class DatabaseService {
 		return $result;
 	}
 	
-	/// \brief Executes a query and returns the first of the results with PDO::FETCH_BOTH, or null if no answer
+	/**
+	 * Opens a query with results, executes it, and returns the first row.
+	 *
+	 * Returns an array containing the first element of the results with PDO::FETCH_BOTH
+	 *
+	 * @param string 	$sql 		The SQL query to execute
+	 * @param array 	$param 		An array with the parameters
+	 * @return array
+	 */
 	public function querySingle($sql, $params = []) {
 		if (!is_array($params)) {
 			$params = func_get_args();
@@ -86,9 +108,13 @@ class DatabaseService {
 		$r = $this->query($sql, $params);
 		return count($r) > 0 ? $r[0] : null;
 	}
-
-	/// \brief Executes a query
-	/// \note Use this for UPDATE, INSERT, DELETE, etc.
+	
+	/**
+	 * Opens a query without results and executes it.
+	 *
+	 * @param string 	$sql 		The SQL query to execute
+	 * @param array 	$param 		An array with the parameters
+	 */
 	public function execute($sql, $params = []) {
 		if (!is_array($params))
 			$params = array_splice(func_get_args(), 0, 1);
@@ -121,6 +147,14 @@ class DatabaseService {
 		$this->databaseProfilingService = $databaseProfilingService;
 	}
 
+	
+	/**
+	 * Configures the database to use.
+	 *
+	 * @param string 	$database 		The DSN of the database
+	 * @param string 	$username 		(optional) Username
+	 * @param string 	$password 		(optional) Password
+	 */
 	public function setDatabase($database, $username = null, $password = null) {
 		if ($database instanceof \PDO) {
 			$this->databasePDO = $database;
