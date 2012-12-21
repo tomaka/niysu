@@ -123,7 +123,7 @@ class Route {
 		
 		// calling the handler
 		if ($logService)
-			$logService->debug('Calling handler of route '.$this->originalPattern);
+			$logService->debug('Calling handler of route '.$this->getOriginalPattern());
 		$scope->call($this->callback);
 		
 		// calling after
@@ -253,6 +253,14 @@ class Route {
 	 */
 	public function getURLRegex() {
 		return $this->urlPattern->getURLRegex();
+	}
+
+	/**
+	 * Returns the original pattern that was passed to the constructor.
+	 * @return string
+	 */
+	public function getOriginalPattern() {
+		return $this->urlPattern->getOriginalPattern();
 	}
 
 	/**
