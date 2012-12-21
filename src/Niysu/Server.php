@@ -242,6 +242,20 @@ class Server {
 		array_pop($this->currentResponsesStack);
 	}
 
+	/**
+	 * Returns the list of all registered routes
+	 *
+	 * Returns an array with instances of the Niysu\Route class.
+	 *
+	 * @return array
+	 */
+	public function getRoutesList() {
+		$a = [];
+		foreach ($this->routesCollections as $collec)
+			$a = array_merge($a, $collec->getRoutesList());
+		return $a;
+	}
+
 
 
 	/// \brief Loads either a file or an array
