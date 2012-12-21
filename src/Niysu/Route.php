@@ -9,7 +9,7 @@ namespace Niysu;
  */
 class Route {
 	public function __construct($url, $method = '.*', $callback = null) {
-		$this->setURLPattern($url);
+		$this->urlPattern = new URLPattern($url);
 		$this->method = $method;
 		if ($callback)
 			$this->handler($callback);
@@ -61,24 +61,22 @@ class Route {
 			return false;
 		
 		// checking whether the URL matches
-		$result = preg_match(implode($this->patternRegex), $request->getURL(), $matches);
-		if (!$result)	return false;
+		$result = $this->urlPattern->testURL($request->getURL());
+		if ($result === null)
+			return false;
 		
 		// getting log service
 		$logService = $scope->logService;
 		if ($logService)
-			$logService->debug('URL '.$request->getURL().' matching route '.$this->originalPattern.' ; regex is: '.implode($this->patternRegex));
+			$logService->debug('URL '.$request->getURL().' matching route '.$this->urlPattern->getOriginalPattern().' ; regex is: '.$this->urlPattern->getURLRegex());
 
 		// checking that the handler was defined
 		if (!$this->callback)
 			throw new \LogicException('The handler of the route '.$this->originalPattern.' has not been defined');
 		
 		// adding parts of the URL inside scope
-		for ($i = 1; $i < count($matches); ++$i) {
-			$varName = $this->patternRegexMatches[$i];
-			$value = urldecode($matches[$i]);
+		foreach ($result as $varName => $value)
 			$scope->set($varName, $value);
-		}
 		
 		// adding controlling variables to scope
 		$scope->set('isWrongResource', false);		// DEPRECATED
@@ -156,12 +154,7 @@ class Route {
 	 * @return Route
 	 */
 	public function pattern($varName, $regex) {
-		foreach ($this->patternRegexMatches as $pos => $match) {
-			if ($match != $varName)
-				continue;
-			$this->patternRegex[$pos*2] = '('.$regex.')';
-		}
-
+		$this->urlPattern->pattern($varName, $regex);
 		return $this;
 	}
 
@@ -267,55 +260,15 @@ class Route {
 	 * @throws RuntimeException If a parameter does not match the corresponding regex
 	 */
 	public function getURL($parameters = []) {
-		// cloning the pattern
-		$patternRegex = $this->patternRegex;
-
-		foreach ($this->patternRegexMatches as $offset => $varName) {
-			if (!isset($parameters[$varName]))
-				throw new \RuntimeException('Parameter missing in the array: '.$varName);
-
-			$val = $parameters[$varName];
-			if (!preg_match_all('/'.$patternRegex[$offset * 2].'/', $val))
-				throw new \RuntimeException('Parameter does not match its regex: '.$varName.' doesn\'t match '.$patternRegex[$offset * 2]);
-
-			$patternRegex[$offset * 2] = $val;
-		}
-		
-		return implode($patternRegex);
+		return $this->urlPattern->getURL($parameters);
 	}
 
-
-
-	private function setURLPattern($pattern) {
-		$this->originalPattern = $pattern;
-
-		$currentOffset = 0;
-		$this->patternRegex = ['/^'];
-		$this->patternRegexMatches = [];
-		while (preg_match('/\{(\w+)\}/', $pattern, $match, PREG_OFFSET_CAPTURE, $currentOffset)) {
-			$matchBeginOffset = $match[0][1];
-			$varName = $match[1][0];
-
-			$this->patternRegex[] = str_replace('/', '\/', preg_quote(substr($pattern, $currentOffset, $matchBeginOffset - $currentOffset)));
-			$this->patternRegex[] = '(\w+)';
-
-			$this->patternRegexMatches[count($this->patternRegexMatches) + 1] = $varName;
-
-			$currentOffset = $matchBeginOffset + strlen($match[0][0]);
-		}
-		$this->patternRegex[] = str_replace('/', '\/', preg_quote(substr($pattern, $currentOffset)));
-		$this->patternRegex[] = '$/';
-
-		//var_dump($pattern.' '.implode($this->patternRegex));
-	}
 
 	private $before = [];						// an array of callable
 	private $after = [];						// an array of callable
-	private $patternRegex = [];
-	private $patternRegexMatches = [];			// for each match offset, contains the variable name
+	private $urlPattern;						// contains an instance of URLPattern
 	private $callback = null;					// the main function that handles the resource
 	private $method = null;
-	private $originalPattern = '';				// the original pattern
 	private $name = null;
 };
 

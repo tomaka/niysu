@@ -41,11 +41,9 @@ class RouteTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	public function testAnyMethodMatch() {
-		$this->markTestIncomplete();
-
 		$response = new HTTPResponseStorage();
 		$scope = new Scope([ 'response' => $response ]);
-		$route = new Route('/', '*', function() {});
+		$route = new Route('/', '.*', function() {});
 
 		$scope->request = new HTTPRequestCustom('/', 'get');
 		$this->assertTrue($route->handle($scope));
