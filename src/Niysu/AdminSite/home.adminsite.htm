@@ -1,0 +1,23 @@
+{% extends "main.adminsite.htm" %}
+
+{% block body %}
+	<section class="mainPanel">
+		<h2>List of routes</h2>
+
+		<dl>
+			{% for route in routes %}
+				<dt>{{ route.name ? route.name : route.route }}</dt>
+				<dd>test</dd>
+			{% endfor %}
+		</dl>
+	</section>
+
+	<section class="mainPanel">
+		<h2>Maintenance mode</h2>
+
+		Maintenance: {{ isMaintenanceMode }}
+
+		<button >Set maintenance mode</button>
+		<button >Clear maintenance mode</button>
+	</section>
+{% endblock %}
