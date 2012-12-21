@@ -15,6 +15,7 @@
         "twig/twig": "dev-master",
         "phpunit/phpunit": "3.7.*",
         "mikey179/vfsStream": "1.*",
+        "CodePlex/PHPExcel": "dev-master",
         "sami/sami": "dev-master"
     },
     "autoload": {
