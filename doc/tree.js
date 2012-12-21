@@ -33,5 +33,6 @@ var tree = [["Niysu","Niysu.html","",
                 [        ]],["RoutesCollection","Niysu\/RoutesCollection.html","",
                 [        ]],["Scope","Niysu\/Scope.html","",
                 [        ]],["Server","Niysu\/Server.html","",
+                [        ]],["URLPattern","Niysu\/URLPattern.html","",
                 [        ]]        ]]        ]
 

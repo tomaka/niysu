@@ -116,7 +116,7 @@
         <h2>Details</h2>
 
                         <h3 id="method_parseClass">
-        <div class="location">at line 18</div>
+        <div class="location">at line 19</div>
         <code>            public            
     <strong>parseClass</strong>(string $className)</code>
     </h3>
@@ -124,6 +124,7 @@
         <p>Parses a class and registers all resources defined in it.</p>
         <p>This function will analyse the comments of each method of the class and create the appropriate routes.<br />
  Recognized tokens are:<br />
+  - @before PHP string of something to be called before the handler (will be passed to eval)<br />
   - @method Pattern of the method to match<br />
   - @name Name of the route<br />
   - @static (class only) Adds a path of static resources ; path is relative to the class location<br />
@@ -147,7 +148,7 @@
     </div>
 
                 <h3 id="method_register">
-        <div class="location">at line 68</div>
+        <div class="location">at line 72</div>
         <code>            public            <a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a>
     <strong>register</strong>(string $url, string $method = &#039;.*&#039;, <abbr title="Niysu\callable">callable</abbr> $callback = null)</code>
     </h3>
@@ -200,7 +201,7 @@
     </div>
 
                 <h3 id="method_registerStaticDirectory">
-        <div class="location">at line 82</div>
+        <div class="location">at line 86</div>
         <code>            public            
     <strong>registerStaticDirectory</strong>(string $path, string $prefix = &#039;/&#039;)</code>
     </h3>
@@ -230,7 +231,7 @@
     </div>
 
                 <h3 id="method_redirect">
-        <div class="location">at line 136</div>
+        <div class="location">at line 140</div>
         <code>            public            
     <strong>redirect</strong>($url, $method, $target, $statusCode = 301)</code>
     </h3>
@@ -270,7 +271,7 @@
     </div>
 
                 <h3 id="method___construct">
-        <div class="location">at line 142</div>
+        <div class="location">at line 146</div>
         <code>            public            
     <strong>__construct</strong>($prefix = &#039;&#039;)</code>
     </h3>
@@ -295,7 +296,7 @@
     </div>
 
                 <h3 id="method_setPrefix">
-        <div class="location">at line 151</div>
+        <div class="location">at line 155</div>
         <code>            public            
     <strong>setPrefix</strong>(string $prefix)</code>
     </h3>
@@ -320,7 +321,7 @@
     </div>
 
                 <h3 id="method_before">
-        <div class="location">at line 166</div>
+        <div class="location">at line 170</div>
         <code>            public            
     <strong>before</strong>(<abbr title="Niysu\callable">callable</abbr> $f)</code>
     </h3>
@@ -345,7 +346,7 @@
     </div>
 
                 <h3 id="method_getRoutesList">
-        <div class="location">at line 175</div>
+        <div class="location">at line 179</div>
         <code>            public            array
     <strong>getRoutesList</strong>()</code>
     </h3>
