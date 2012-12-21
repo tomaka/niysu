@@ -4,6 +4,10 @@ require_once __DIR__.'/HTTPResponseInterface.php';
 
 /**
  * Implementation of HTTPResponseInterface which will send everything to the output of PHP.
+ *
+ * @copyright 	2012 Pierre Krieger <pierre.krieger1708@gmail.com>
+ * @license 	MIT http://opensource.org/licenses/MIT
+ * @link 		http://github.com/Tomaka17/niysu
  */
 class HTTPResponseGlobal extends HTTPResponseInterface {
 	public function __construct() {

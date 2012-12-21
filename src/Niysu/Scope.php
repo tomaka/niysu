@@ -8,6 +8,10 @@ namespace Niysu;
  *  - possibility to a callback that will be called the first time a value is retreived
  *  - inheritance between scopes, where child scopes have access to parent scopes
  *  - possibility to call a function and pass values of the scope to it depending on its parameter name
+ *
+ * @copyright 	2012 Pierre Krieger <pierre.krieger1708@gmail.com>
+ * @license 	MIT http://opensource.org/licenses/MIT
+ * @link 		http://github.com/Tomaka17/niysu
  */
 class Scope implements \Serializable {
 	/**

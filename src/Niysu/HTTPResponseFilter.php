@@ -7,6 +7,10 @@ require_once __DIR__.'/HTTPResponseInterface.php';
  *
  * It will automatically pass anything to an output response defined in the constructor.
  * You must overload the functions you want to change if you want it to filter anything.
+ *
+ * @copyright 	2012 Pierre Krieger <pierre.krieger1708@gmail.com>
+ * @license 	MIT http://opensource.org/licenses/MIT
+ * @link 		http://github.com/Tomaka17/niysu
  */
 class HTTPResponseFilter extends HTTPResponseInterface {
 	/**

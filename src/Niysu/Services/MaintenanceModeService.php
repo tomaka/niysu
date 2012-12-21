@@ -7,6 +7,10 @@ namespace Niysu\Services;
  * Often you may want to set your website on maintenance, for example when updating.
  * You can now write a shell script that will create a file named "maintenance", then update your website, and then delete this file.
  * Meanwhile, all requests to your site will return a "503 Unavailable" status code thanks to this service.
+ *
+ * @copyright 	2012 Pierre Krieger <pierre.krieger1708@gmail.com>
+ * @license 	MIT http://opensource.org/licenses/MIT
+ * @link 		http://github.com/Tomaka17/niysu
  */
 class MaintenanceModeService {
 	/**

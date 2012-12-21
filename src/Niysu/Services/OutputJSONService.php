@@ -3,6 +3,10 @@ namespace Niysu\Services;
 
 /**
  * Allows to easily send JSON data to the response.
+ *
+ * @copyright 	2012 Pierre Krieger <pierre.krieger1708@gmail.com>
+ * @license 	MIT http://opensource.org/licenses/MIT
+ * @link 		http://github.com/Tomaka17/niysu
  */
 class OutputJSONService {
 	public function __construct(\Niysu\Scope $scope) {

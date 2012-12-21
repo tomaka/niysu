@@ -4,6 +4,10 @@ require_once __DIR__.'/HTTPRequestInterface.php';
 
 /**
  * Implementation of HTTPRequestInterface which allows you to define the values of the request.
+ *
+ * @copyright 	2012 Pierre Krieger <pierre.krieger1708@gmail.com>
+ * @license 	MIT http://opensource.org/licenses/MIT
+ * @link 		http://github.com/Tomaka17/niysu
  */
 class HTTPRequestCustom extends HTTPRequestInterface {
 	public function __construct($url, $method = 'GET', $headers = [], $rawData = null, $https = false) {

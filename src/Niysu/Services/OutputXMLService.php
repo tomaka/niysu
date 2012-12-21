@@ -1,7 +1,12 @@
 <?php
 namespace Niysu\Services;
 
-/// \brief 
+/**
+ *
+ * @copyright 	2012 Pierre Krieger <pierre.krieger1708@gmail.com>
+ * @license 	MIT http://opensource.org/licenses/MIT
+ * @link 		http://github.com/Tomaka17/niysu
+ */
 class OutputXMLService {
 	public function __construct(\Niysu\Scope $scope) {
 		$this->scope = $scope;

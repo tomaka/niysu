@@ -6,6 +6,10 @@ namespace Niysu;
  *
  * It is composed of a handler, and before functions. Both are callable objects.
  * The handler is responsible of building the resource's content, and before functions have various roles: filtering, configuring services, etc.
+ *
+ * @copyright 	2012 Pierre Krieger <pierre.krieger1708@gmail.com>
+ * @license 	MIT http://opensource.org/licenses/MIT
+ * @link 		http://github.com/Tomaka17/niysu
  */
 class Route {
 	public function __construct($url, $method = '.*', $callback = null) {

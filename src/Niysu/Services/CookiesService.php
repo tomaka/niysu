@@ -3,6 +3,10 @@ namespace Niysu\Services;
 
 /**
  * Reads and/or writes cookies from the request or to the response.
+ *
+ * @copyright 	2012 Pierre Krieger <pierre.krieger1708@gmail.com>
+ * @license 	MIT http://opensource.org/licenses/MIT
+ * @link 		http://github.com/Tomaka17/niysu
  */
 class CookiesService {
 	public function __construct(&$request, &$response, &$logService) {

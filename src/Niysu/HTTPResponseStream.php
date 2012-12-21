@@ -3,6 +3,10 @@ namespace Niysu;
 
 /**
  * This class can build a PHP filename that will act as a stream to write in a HTTPResponse.
+ *
+ * @copyright 	2012 Pierre Krieger <pierre.krieger1708@gmail.com>
+ * @license 	MIT http://opensource.org/licenses/MIT
+ * @link 		http://github.com/Tomaka17/niysu
  */
 class HTTPResponseStream {
 	/**

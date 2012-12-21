@@ -7,6 +7,10 @@ require_once __DIR__.'/HTTPResponseFilter.php';
  *
  * When you flush, a callback will be called and can change the content of the HTTPResponseStorage.
  * Then the content of the HTTPResponseStorage is output to the output response.
+ *
+ * @copyright 	2012 Pierre Krieger <pierre.krieger1708@gmail.com>
+ * @license 	MIT http://opensource.org/licenses/MIT
+ * @link 		http://github.com/Tomaka17/niysu
  */
 class HTTPResponseCustomFilter extends HTTPResponseFilter {
 	/**

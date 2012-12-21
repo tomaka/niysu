@@ -4,6 +4,10 @@ require_once __DIR__.'/HTTPRequestInterface.php';
 
 /**
  * Implementation of HTTPRequestInterface which reads all informations from the environment.
+ *
+ * @copyright 	2012 Pierre Krieger <pierre.krieger1708@gmail.com>
+ * @license 	MIT http://opensource.org/licenses/MIT
+ * @link 		http://github.com/Tomaka17/niysu
  */
 class HTTPRequestGlobal extends HTTPRequestInterface {
 	public function getURL() {

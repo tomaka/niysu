@@ -1,8 +1,12 @@
 <?php
 namespace Niysu\Services;
 
-/// \brief Class which allows to write in logs
-/// \details Uses Monolog
+/**
+ *
+ * @copyright 	2012 Pierre Krieger <pierre.krieger1708@gmail.com>
+ * @license 	MIT http://opensource.org/licenses/MIT
+ * @link 		http://github.com/Tomaka17/niysu
+ */
 class LogServiceProvider {
 	public function __construct() {
 		$this->monolog = new \Monolog\Logger('NiysuServer');

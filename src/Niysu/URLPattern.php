@@ -3,6 +3,10 @@ namespace Niysu;
 
 /**
  * Allows to build patterns for URLs and check if a URL matches it.
+ *
+ * @copyright 	2012 Pierre Krieger <pierre.krieger1708@gmail.com>
+ * @license 	MIT http://opensource.org/licenses/MIT
+ * @link 		http://github.com/Tomaka17/niysu
  */
 class URLPattern {
 	/**

@@ -5,6 +5,10 @@ namespace Niysu\Services;
  * This class allows for easy XSLT transformations.
  *
  * It requires the php_xsl extension to run.
+ *
+ * @copyright 	2012 Pierre Krieger <pierre.krieger1708@gmail.com>
+ * @license 	MIT http://opensource.org/licenses/MIT
+ * @link 		http://github.com/Tomaka17/niysu
  */
 class XSLTService {
 	public function __construct(&$response, $outputXMLService) {
