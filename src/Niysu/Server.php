@@ -54,6 +54,7 @@ class Server {
 		$this->setServiceProvider('log', new Services\LogServiceProvider());
 		$this->setServiceProvider('maintenanceMode', 'Niysu\\Services\\MaintenanceModeService');
 		$this->setServiceProvider('outputCSV', 'Niysu\\Services\\OutputCSVService');
+		$this->setServiceProvider('outputExcel', 'Niysu\\Services\\OutputExcelService');
 		$this->setServiceProvider('outputJSON', 'Niysu\\Services\\OutputJSONService');
 		$this->setServiceProvider('outputXML', 'Niysu\\Services\\OutputXMLService');
 		$this->setServiceProvider('session', 'Niysu\\Services\\SessionService');
