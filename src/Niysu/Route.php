@@ -248,7 +248,7 @@ class Route {
 	 * @return string
 	 */
 	public function getURLRegex() {
-		return implode($this->patternRegex);
+		return $this->urlPattern->getURLRegex();
 	}
 
 	/**
