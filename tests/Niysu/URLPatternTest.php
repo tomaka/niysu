@@ -110,6 +110,14 @@ class URLPatternTest extends \PHPUnit_Framework_TestCase {
 
 		$this->assertEquals($pattern->getURL([ 'var1' => 'a', 'var2' => 'b' ]), '/a/b');
 	}
+
+	/**
+	 * @expectedException RuntimeException
+	 */
+	public function testGetURLException() {
+		$pattern = new URLPattern('/{var1}/{var2}');
+		$pattern->getURL([ 'var1' => 'a' ]);
+	}
 }
 
 ?>
