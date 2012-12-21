@@ -11,6 +11,7 @@ namespace Niysu\AdminSite;
  */
 class AdminSite {
 	/**
+	 * @name niysu-adminsite-home
 	 * @url /admin
 	 * @method GET
 	 */
@@ -26,6 +27,7 @@ class AdminSite {
 	}
 
 	/**
+	 * @name niysu-adminsite-ajaxtest
 	 * @url /admin/ajax-test
 	 * @method GET
 	 */
