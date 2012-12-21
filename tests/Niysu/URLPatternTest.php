@@ -86,6 +86,30 @@ class URLPatternTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals(187, $pattern->testURL('/187/test')['var1']);
 		$this->assertEquals('test', $pattern->testURL('/187/test')['var2']);
 	}
+
+	/**
+	 */
+	public function testGetOriginalPattern() {
+		$pattern = new URLPattern('/{var1}/{var2}');
+		$this->assertEquals('/{var1}/{var2}', $pattern->getOriginalPattern());
+	}
+
+	/**
+	 */
+	public function testGetURLRegex() {
+		$pattern = new URLPattern('/{var1}/{var2}');
+		$pattern->pattern('var1', '\\w+');
+		$pattern->pattern('var2', '\\w+');
+		$this->assertEquals('/^\\/(\\w+)\\/(\\w+)$/', $pattern->getURLRegex());
+	}
+
+	/**
+	 */
+	public function testGetURL() {
+		$pattern = new URLPattern('/{var1}/{var2}');
+
+		$this->assertEquals($pattern->getURL([ 'var1' => 'a', 'var2' => 'b' ]), '/a/b');
+	}
 }
 
 ?>

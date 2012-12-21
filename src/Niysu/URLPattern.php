@@ -16,7 +16,10 @@ class URLPattern {
 			$matchBeginOffset = $match[0][1];
 			$varName = $match[1][0];
 
-			$this->patternRegex[] = str_replace('/', '\/', preg_quote(substr($pattern, $currentOffset, $matchBeginOffset - $currentOffset)));
+			$val = substr($pattern, $currentOffset, $matchBeginOffset - $currentOffset);
+			$this->patternRegexOriginal[count($this->patternRegex)] = $val;
+
+			$this->patternRegex[] = str_replace('/', '\/', preg_quote($val));
 			$this->patternRegex[] = '(\w+)';
 
 			$this->variablesList[] = $varName;
@@ -26,6 +29,8 @@ class URLPattern {
 		$this->patternRegex[] = str_replace('/', '\/', preg_quote(substr($pattern, $currentOffset)));
 
 		$this->patternRegex[0] = '/^'.$this->patternRegex[0];
+
+		$this->patternRegexOriginal[count($this->patternRegex)] = '';
 		$this->patternRegex[] = '$/';
 	}
 
@@ -48,7 +53,7 @@ class URLPattern {
 		for ($matchNum = 1, $varNum = 0; $matchNum < count($matches); ++$varNum) {
 			$varName = $this->variablesList[$varNum];
 			$parameters[$varName] = urldecode($matches[$matchNum]);
-			
+
 			// adding to matchNum the number of '(' in the regex part
 			$matchNum += count(explode('(', $this->patternRegex[$varNum * 2 + 1])) - 1;
 		}
@@ -102,25 +107,29 @@ class URLPattern {
 		// cloning the pattern
 		$patternRegex = $this->patternRegex;
 
-		foreach ($this->patternRegexMatches as $offset => $varName) {
+		foreach ($this->variablesList as $offset => $varName) {
 			if (!isset($parameters[$varName]))
 				throw new \RuntimeException('Parameter missing in the array: '.$varName);
 
 			$val = $parameters[$varName];
-			if (!preg_match_all('/'.$patternRegex[$offset * 2].'/', $val))
+			if (!preg_match_all('/'.$patternRegex[$offset * 2 + 1].'/', $val))
 				throw new \RuntimeException('Parameter does not match its regex: '.$varName.' doesn\'t match '.$patternRegex[$offset * 2]);
 
-			$patternRegex[$offset * 2] = $val;
+			$patternRegex[$offset * 2 + 1] = $val;
 		}
+
+		foreach ($this->patternRegexOriginal as $offset => $val)
+			$patternRegex[$offset] = $val;
 		
 		return implode($patternRegex);
 	}
 
 
 
-	private $originalPattern;		// the raw URL passed to __construct
-	private $patternRegex = [];		// the different parts of the regex ; even offsets are constant parts ; uneven offsets are variable names
-	private $variablesList = [];	// the list of variables in the right order
+	private $originalPattern;				// the raw URL passed to __construct
+	private $patternRegex = [];				// the different parts of the regex ; even offsets are constant parts ; uneven offsets are variable names
+	private $patternRegexOriginal = [];		// constant parts of $patternRegex but unparsed
+	private $variablesList = [];			// the list of variables in the right order
 }
 
 ?>
