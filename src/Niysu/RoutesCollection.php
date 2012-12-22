@@ -180,7 +180,7 @@ class RoutesCollection {
 	 *
 	 * @param string 	$prefix 	The prefix
 	 */
-	public function setPrefix($prefix) {
+	public function prefix($prefix) {
 		if (count($this->routes) >= 1)
 			throw new \LogicException('Cannot change prefix once routes have been registered');
 
