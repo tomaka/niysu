@@ -37,16 +37,17 @@ Niysu is a front controller.
 Every single request made to your web server should be passed to a single PHP file which will invoke Niysu.
 
 This PHP is in four steps:
- 1 - Include 'vendor/autoload.php' to have access to Niysu
- 2 - Create a new instance of Niysu\Server
- 3 - Register all the resources (pages, images, RESTful resources, etc.) towards the server (note: don't worry, this is not as annoying as it sounds)
- 4 - Call `$server->handle()`
+ - Include `vendor/autoload.php` to have access to Niysu
+ - Create a new instance of Niysu\Server
+ - Register all the resources (pages, images, RESTful resources, etc.) towards the server (note: don't worry, this is not as annoying as it sounds)
+ - Call `$server->handle()`
 
 ### Hello world
 
 This is an example of a "Hello world" server.
 Put this code in a PHP file named `index.php`.
 ```php
+<?php
 require 'vendor/autoload.php';
 
 // create a new instance of the server
@@ -62,6 +63,8 @@ $server->register('/', 'get', function($response) {
 
 // asking the server to handle the client's request
 $server->handle();
+
+?>
 ```
 
 Now you should tell your web server to redirect all requests to this single file.
@@ -91,11 +94,12 @@ You either call `$server->register()` for every single route on your server, lik
 This is useful for small websites or to test something.
 
 You can also ask Niysu to parse a class.
-It will then read all the doxygen-style comments and build all the routes described in them.
+It will then read all the doxygen-style comments and build all the routes described in them. See the API for details.
 
 Example:
 
 ```php
+<?php
 require 'vendor/autoload.php';
 
 /**
@@ -113,6 +117,8 @@ class Foo {
 $server = new Niysu\Server();
 $server->parseClass('Foo');
 $server->handle();
+
+?>
 ```
 
 In this example, Niysu will build a route with the URL `/foo/home`.
