@@ -11,6 +11,8 @@ class RoutesCollection {
 	 * Parses a class and registers all resources defined in it.
 	 *
 	 * This function will analyse the comments of each method of the class and create the appropriate routes.
+	 * The routes are created in a child RoutesCollection that is returned by this function.
+	 *
 	 * Recognized tokens are:
 	 *  - @before PHP string of something to be called before the handler (will be passed to eval)
 	 *  - @method Pattern of the method to match
@@ -20,9 +22,11 @@ class RoutesCollection {
 	 *  - @uri Alias of @url
 	 *
 	 * @param string 	$className 		Name of the class to parse
+	 * @return RoutesCollection
 	 */
 	public function parseClass($className) {
 		$reflectionClass = new \ReflectionClass($className);
+		$newCollection = $this->newChild('');
 
 		// analyzing the doccomment of the class
 		$classDocComment = self::parseDocComment($reflectionClass->getDocComment());
@@ -30,7 +34,13 @@ class RoutesCollection {
 		// handling @static
 		if (isset($classDocComment['static'])) {
 			foreach ($classDocComment['static'] as $path)
-				$this->registerStaticDirectory(dirname($reflectionClass->getFileName()).DIRECTORY_SEPARATOR.$path);
+				$newCollection->registerStaticDirectory(dirname($reflectionClass->getFileName()).DIRECTORY_SEPARATOR.$path);
+		}
+
+		// handling @before
+		if (isset($classDocComment['before'])) {
+			foreach ($classDocComment['before'] as $before)
+				;//$newCollection->before($before);
 		}
 
 		// looping through each method of the class
@@ -44,7 +54,7 @@ class RoutesCollection {
 				if (count($parameters['url']) > 1)
 					throw new \LogicException('Multiple URLs not supported');
 				
-				$route = $this->register($parameters['url'][0]);
+				$route = $newCollection->register($parameters['url'][0]);
 				
 				$route->handler(function($scope) use ($methodReflection, $reflectionClass) {
 					$obj = null;
@@ -63,6 +73,8 @@ class RoutesCollection {
 						$route->before($b);
 			}
 		}
+
+		return $newCollection;
 	}
 
 	/**
