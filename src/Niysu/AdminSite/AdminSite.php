@@ -18,7 +18,7 @@ class AdminSite {
 	public function mainPanel($twigService, $server) {
 		$routes = [];
 		foreach ($server->getRoutesList() as $r)
-			$routes[] = [ 'route' => $r->getOriginalPattern(), 'name' => $r->getName() ];
+			$routes[] = [ 'route' => $r->getOriginalPattern(), 'name' => $r->getName(), 'regex' => $r->getURLRegex() ];
 
 		$twigService->addPath(__DIR__);
 		$twigService->output('home.adminsite.htm', [

@@ -1,20 +1,32 @@
 {% extends "main.adminsite.htm" %}
 
-{% block body %}
+{% block head %}
 <!--
 	Copyright 2012 Pierre Krieger
 
 	This code is under MIT license. See the LICENSE file.
 -->
+	<style type="text/css">
+		.routesList dd {
+			font-size:80%;
+			margin-top:0.2em;
+			margin-bottom:1em;
+		}
+	</style>
+{% endblock %}
 
 
+{% block body %}
 	<section class="mainPanel">
 		<h2>List of routes</h2>
 
-		<dl>
+		<dl class="routesList">
 			{% for route in routes %}
 				<dt>{{ route.name ? route.name : route.route }}</dt>
-				<dd>test</dd>
+				<dd>
+					<strong>Name: </strong>{{ route.name }}<br />
+					<strong>Regex: </strong>{{ route.regex }}
+				</dd>
 			{% endfor %}
 		</dl>
 	</section>
