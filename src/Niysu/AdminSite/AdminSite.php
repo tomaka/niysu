@@ -7,6 +7,7 @@ namespace Niysu\AdminSite;
  * @license 	MIT http://opensource.org/licenses/MIT
  * @link 		http://github.com/Tomaka17/niysu
  *
+ * @prefix 		/admin
  * @static 		assets
  */
 class AdminSite {

@@ -199,11 +199,10 @@ class Server {
 				});
 			}
 			
-			foreach ($this->routesCollection->getRoutesList() as $route) {
-				$localScope = $handleScope->newChild();
-				if (!$route->handle($localScope))
-					continue;
 
+			$localScope = $handleScope->newChild();
+
+			if ($this->routesCollection->handle($localScope)) {
 				$localScope->response->flush();
 				$log->debug('Successful handling of resource', [ 'url' => $input->getURL(), 'method' => $input->getMethod() ]);
 				if ($nb = gc_collect_cycles())
@@ -257,7 +256,7 @@ class Server {
 		return $this->routesCollection->parseClass($className);
 	}
 
-	
+
 
 	/// \brief Loads either a file or an array
 	private function loadEnvironment($environment) {

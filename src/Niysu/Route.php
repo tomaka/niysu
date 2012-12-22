@@ -53,9 +53,10 @@ class Route {
 	 * If one of the before/onlyIf/validate handlers sets the "isRightResource" variable to false, then the route is stopped and handling is considered failed. For example, a route which is supposed to display a user but the user doesn't exist.
 	 *
 	 * @param Scope 	$scope 		Scope that will contain the variables accessible to the route
+	 * @param string 	$prefix 	(optional) A prefix to append to the Route's URL
 	 * @return boolean
 	 */
-	public function handle(Scope $scope) {
+	public function handle(Scope $scope, $prefix = '') {
 		// some routine checks
 		if (!$scope->get('request'))	throw new \LogicException('The "request" variable in the scope must be defined');
 		if (!$scope->get('response'))	throw new \LogicException('The "response" variable in the scope must be defined');
@@ -63,16 +64,24 @@ class Route {
 		$request = $scope->get('request');
 		if (!preg_match_all('/'.$this->method.'/i', $request->getMethod()))
 			return false;
+
+		// checking prefix
+		$url = $request->getURL();
+		if ($prefix && strpos($url, $prefix) !== 0)
+			return false;
+		$url = substr($url, strlen($prefix));
+		if ($url === false)
+			$url = '/';
 		
 		// checking whether the URL matches
-		$result = $this->urlPattern->testURL($request->getURL());
+		$result = $this->urlPattern->testURL($url);
 		if ($result === null)
 			return false;
 		
 		// getting log service
 		$logService = $scope->logService;
 		if ($logService)
-			$logService->debug('URL '.$request->getURL().' matching route '.$this->urlPattern->getOriginalPattern().' ; regex is: '.$this->urlPattern->getURLRegex());
+			$logService->debug('URL '.$request->getURL().' matching route '.$this->urlPattern->getOriginalPattern().' with prefix '.$prefix.' ; regex is: '.$this->urlPattern->getURLRegex());
 
 		// checking that the handler was defined
 		if (!$this->callback)

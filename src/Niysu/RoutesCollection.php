@@ -31,16 +31,21 @@ class RoutesCollection {
 		// analyzing the doccomment of the class
 		$classDocComment = self::parseDocComment($reflectionClass->getDocComment());
 
-		// handling @static
-		if (isset($classDocComment['static'])) {
-			foreach ($classDocComment['static'] as $path)
-				$newCollection->registerStaticDirectory(dirname($reflectionClass->getFileName()).DIRECTORY_SEPARATOR.$path);
-		}
-
 		// handling @before
 		if (isset($classDocComment['before'])) {
 			foreach ($classDocComment['before'] as $before)
 				;//$newCollection->before($before);
+		}
+
+		// handling @prefix
+		if (isset($classDocComment['prefix'])) {
+			$newCollection->prefix($classDocComment['prefix'][0]);
+		}
+
+		// handling @static
+		if (isset($classDocComment['static'])) {
+			foreach ($classDocComment['static'] as $path)
+				$newCollection->registerStaticDirectory(dirname($reflectionClass->getFileName()).DIRECTORY_SEPARATOR.$path);
 		}
 
 		// looping through each method of the class
@@ -87,7 +92,7 @@ class RoutesCollection {
 	 * @see Route::__construct
 	 */
 	public function register($url, $method = '.*', $callback = null) {
-		$registration = new Route($this->prefix.$url, $method, $callback);
+		$registration = new Route($url, $method, $callback);
 		$registration->before(function($scope) {
 			foreach ($this->globalBefores as $b) {
 				$scope->call($b);
@@ -259,6 +264,35 @@ class RoutesCollection {
 		$this->children[] = $c;
 		$c->parent = $this;
 		return $c;
+	}
+
+	/**
+	 * Tries to handle an HTTP request through a route of this collection or its children collections.
+	 *
+	 * Returns true if the request was handled, false if the route didn't match this request.
+	 * See Route::handle for details.
+	 *
+	 * @param Scope 	$scope 		Scope that will contain the variables accessible to the route
+	 * @return boolean
+	 */
+	public function handle(Scope $scope) {
+		$request = $scope->get('request');
+
+		$fullPrefix = $this->getFullPrefix();
+		if ($fullPrefix && strpos($request->getURL(), $fullPrefix) !== 0)
+			return false;
+
+		foreach ($this->routes as $route) {
+			if ($route->handle($scope, $fullPrefix))
+				return true;
+		}
+
+		foreach ($this->children as $child) {
+			if ($child->handle($scope))
+				return true;
+		}
+
+		return false;
 	}
 
 
