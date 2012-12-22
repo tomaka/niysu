@@ -85,7 +85,7 @@
                     
                 </td>
                 <td class="last">
-                    <a href="#method_registerStaticDirectory">registerStaticDirectory</a>(string $path, string $prefix = &#039;/&#039;)
+                    <a href="#method_registerStaticDirectory">registerStaticDirectory</a>($path)
                     <p>Registers all the files of a static directory as resources.</p>
                 </td>
                 <td></td>
@@ -130,6 +130,26 @@
                 </td>
                 <td></td>
             </tr>
+                    <tr>
+                <td class="type">
+                    array
+                </td>
+                <td class="last">
+                    <a href="#method_getRoutesList">getRoutesList</a>()
+                    <p>Returns the list of all registered routes</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    <a href="../Niysu/RoutesCollection.html"><abbr title="Niysu\RoutesCollection">RoutesCollection</abbr></a>
+                </td>
+                <td class="last">
+                    <a href="#method_parseClass">parseClass</a>(string $className, string $prefix = &#039;&#039;)
+                    <p>Parses a class and registers all resources defined in it.</p>
+                </td>
+                <td></td>
+            </tr>
             </table>
 
 
@@ -161,7 +181,7 @@
     </div>
 
                 <h3 id="method_getServiceProvider">
-        <div class="location">at line 88</div>
+        <div class="location">at line 85</div>
         <code>            public            mixed
     <strong>getServiceProvider</strong>(string $serviceName)</code>
     </h3>
@@ -204,7 +224,7 @@
     </div>
 
                 <h3 id="method_setServiceProvider">
-        <div class="location">at line 101</div>
+        <div class="location">at line 98</div>
         <code>            public            
     <strong>setServiceProvider</strong>(string $serviceName, mixed $provider)</code>
     </h3>
@@ -234,7 +254,7 @@
     </div>
 
                 <h3 id="method_getService">
-        <div class="location">at line 112</div>
+        <div class="location">at line 109</div>
         <code>            public            mixed
     <strong>getService</strong>(string $serviceName)</code>
     </h3>
@@ -268,7 +288,7 @@
     </div>
 
                 <h3 id="method_register">
-        <div class="location">at line 136</div>
+        <div class="location">at line 133</div>
         <code>            public            <a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a>
     <strong>register</strong>(string $url, string $method = &#039;.*&#039;, <abbr title="Niysu\callable">callable</abbr> $callback = null)</code>
     </h3>
@@ -321,9 +341,9 @@
     </div>
 
                 <h3 id="method_registerStaticDirectory">
-        <div class="location">at line 147</div>
+        <div class="location">at line 144</div>
         <code>            public            
-    <strong>registerStaticDirectory</strong>(string $path, string $prefix = &#039;/&#039;)</code>
+    <strong>registerStaticDirectory</strong>($path)</code>
     </h3>
     <div class="details">
         <p>Registers all the files of a static directory as resources.</p>
@@ -333,14 +353,9 @@
 
                     <table>
                     <tr>
-                <td>string</td>
+                <td></td>
                 <td>$path</td>
-                <td>The absolute path on the server which contains the files</td>
-            </tr>
-                    <tr>
-                <td>string</td>
-                <td>$prefix</td>
-                <td>A prefix to add to the name of the static files</td>
+                <td></td>
             </tr>
             </table>
 
@@ -360,7 +375,7 @@
     </div>
 
                 <h3 id="method_redirect">
-        <div class="location">at line 162</div>
+        <div class="location">at line 159</div>
         <code>            public            <a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a>
     <strong>redirect</strong>(string $url, string $method, string $target, <abbr title="Niysu\number">number</abbr> $statusCode = 301)</code>
     </h3>
@@ -409,7 +424,7 @@
     </div>
 
                 <h3 id="method_before">
-        <div class="location">at line 166</div>
+        <div class="location">at line 163</div>
         <code>            public            
     <strong>before</strong>($callable)</code>
     </h3>
@@ -434,7 +449,7 @@
     </div>
 
                 <h3 id="method_buildCollection">
-        <div class="location">at line 172</div>
+        <div class="location">at line 167</div>
         <code>            public            
     <strong>buildCollection</strong>($prefix = &#039;&#039;)</code>
     </h3>
@@ -459,7 +474,7 @@
     </div>
 
                 <h3 id="method_handle">
-        <div class="location">at line 188</div>
+        <div class="location">at line 179</div>
         <code>            public            
     <strong>handle</strong>(<a href="../Niysu/HTTPRequestInterface.html"><abbr title="Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr></a> $input = null, <a href="../Niysu/HTTPResponseInterface.html"><abbr title="Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr></a> $output = null)</code>
     </h3>
@@ -483,6 +498,72 @@
             </table>
 
             
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_getRoutesList">
+        <div class="location">at line 240</div>
+        <code>            public            array
+    <strong>getRoutesList</strong>()</code>
+    </h3>
+    <div class="details">
+        <p>Returns the list of all registered routes</p>
+        <p>Returns an array with instances of the Niysu\Route class.</p>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td>array</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_parseClass">
+        <div class="location">at line 256</div>
+        <code>            public            <a href="../Niysu/RoutesCollection.html"><abbr title="Niysu\RoutesCollection">RoutesCollection</abbr></a>
+    <strong>parseClass</strong>(string $className, string $prefix = &#039;&#039;)</code>
+    </h3>
+    <div class="details">
+        <p>Parses a class and registers all resources defined in it.</p>
+        <p>This function will analyse the comments of each method of the class and create the appropriate routes.<br />
+ The routes are created in a child RoutesCollection that is returned by this function.<br />
+<br />
+ See RoutesCollection::parseClass for details.</p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td>string</td>
+                <td>$className</td>
+                <td>Name of the class to parse</td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$prefix</td>
+                <td>(optional) Prefix to add to all URLs of this class</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td><a href="../Niysu/RoutesCollection.html"><abbr title="Niysu\RoutesCollection">RoutesCollection</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
                     </div>

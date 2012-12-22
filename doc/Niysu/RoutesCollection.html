@@ -32,10 +32,10 @@
             <table>
                     <tr>
                 <td class="type">
-                    
+                    <a href="../Niysu/RoutesCollection.html"><abbr title="Niysu\RoutesCollection">RoutesCollection</abbr></a>
                 </td>
                 <td class="last">
-                    <a href="#method_parseClass">parseClass</a>(string $className)
+                    <a href="#method_parseClass">parseClass</a>(string $className, string $prefix = &#039;&#039;)
                     <p>Parses a class and registers all resources defined in it.</p>
                 </td>
                 <td></td>
@@ -55,7 +55,7 @@
                     
                 </td>
                 <td class="last">
-                    <a href="#method_registerStaticDirectory">registerStaticDirectory</a>(string $path, string $prefix = &#039;/&#039;)
+                    <a href="#method_registerStaticDirectory">registerStaticDirectory</a>($path)
                     <p>Registers all the files of a static directory as resources.</p>
                 </td>
                 <td></td>
@@ -82,17 +82,37 @@
             </tr>
                     <tr>
                 <td class="type">
-                    
+                    <a href="../Niysu/RoutesCollection.html"><abbr title="Niysu\RoutesCollection">RoutesCollection</abbr></a>
                 </td>
                 <td class="last">
-                    <a href="#method_setPrefix">setPrefix</a>(string $prefix)
+                    <a href="#method_prefix">prefix</a>(string $prefix)
                     <p>Sets the prefix to add to all routes in this collection.</p>
                 </td>
                 <td></td>
             </tr>
                     <tr>
                 <td class="type">
-                    
+                    string
+                </td>
+                <td class="last">
+                    <a href="#method_getLocalPrefix">getLocalPrefix</a>()
+                    <p>Returns the local prefix that was defined on construction or by using prefix().</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    string
+                </td>
+                <td class="last">
+                    <a href="#method_getFullPrefix">getFullPrefix</a>()
+                    <p>Returns the full prefix, ie.</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    <a href="../Niysu/RoutesCollection.html"><abbr title="Niysu\RoutesCollection">RoutesCollection</abbr></a>
                 </td>
                 <td class="last">
                     <a href="#method_before">before</a>(<abbr title="Niysu\callable">callable</abbr> $f)
@@ -110,23 +130,56 @@
                 </td>
                 <td></td>
             </tr>
+                    <tr>
+                <td class="type">
+                    <a href="../Niysu/RoutesCollection.html"><abbr title="Niysu\RoutesCollection">RoutesCollection</abbr></a>
+                </td>
+                <td class="last">
+                    <a href="#method_newChild">newChild</a>($prefix = &#039;&#039;)
+                    <p>Builds a new child and returns it.</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    boolean
+                </td>
+                <td class="last">
+                    <a href="#method_handle">handle</a>(<a href="../Niysu/Scope.html"><abbr title="Niysu\Scope">Scope</abbr></a> $scope)
+                    <p>Tries to handle an HTTP request through a route of this collection or its children collections.</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    <a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a>
+                </td>
+                <td class="last">
+                    <a href="#method_getRouteByName">getRouteByName</a>(string $name)
+                    <p>Search for a route with this name in this collection and its children.</p>
+                </td>
+                <td></td>
+            </tr>
             </table>
 
 
         <h2>Details</h2>
 
                         <h3 id="method_parseClass">
-        <div class="location">at line 24</div>
-        <code>            public            
-    <strong>parseClass</strong>(string $className)</code>
+        <div class="location">at line 29</div>
+        <code>            public            <a href="../Niysu/RoutesCollection.html"><abbr title="Niysu\RoutesCollection">RoutesCollection</abbr></a>
+    <strong>parseClass</strong>(string $className, string $prefix = &#039;&#039;)</code>
     </h3>
     <div class="details">
         <p>Parses a class and registers all resources defined in it.</p>
         <p>This function will analyse the comments of each method of the class and create the appropriate routes.<br />
+ The routes are created in a child RoutesCollection that is returned by this function.<br />
+<br />
  Recognized tokens are:<br />
   - @before PHP string of something to be called before the handler (will be passed to eval)<br />
   - @method Pattern of the method to match<br />
   - @name Name of the route<br />
+  - @prefix (class only) Adds a prefix to all URLs of this class<br />
   - @static (class only) Adds a path of static resources ; path is relative to the class location<br />
   - @url Pattern of the URL to match, see register()<br />
   - @uri Alias of @url</p>
@@ -139,16 +192,30 @@
                 <td>$className</td>
                 <td>Name of the class to parse</td>
             </tr>
+                    <tr>
+                <td>string</td>
+                <td>$prefix</td>
+                <td>(optional) Prefix to add to all URLs (the @prefix token will still be added too)</td>
+            </tr>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td><a href="../Niysu/RoutesCollection.html"><abbr title="Niysu\RoutesCollection">RoutesCollection</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
                     </div>
     </div>
 
                 <h3 id="method_register">
-        <div class="location">at line 77</div>
+        <div class="location">at line 96</div>
         <code>            public            <a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a>
     <strong>register</strong>(string $url, string $method = &#039;.*&#039;, <abbr title="Niysu\callable">callable</abbr> $callback = null)</code>
     </h3>
@@ -201,9 +268,9 @@
     </div>
 
                 <h3 id="method_registerStaticDirectory">
-        <div class="location">at line 91</div>
+        <div class="location">at line 121</div>
         <code>            public            
-    <strong>registerStaticDirectory</strong>(string $path, string $prefix = &#039;/&#039;)</code>
+    <strong>registerStaticDirectory</strong>($path)</code>
     </h3>
     <div class="details">
         <p>Registers all the files of a static directory as resources.</p>
@@ -213,14 +280,9 @@
 
                     <table>
                     <tr>
-                <td>string</td>
+                <td></td>
                 <td>$path</td>
-                <td>The absolute path on the server which contains the files</td>
-            </tr>
-                    <tr>
-                <td>string</td>
-                <td>$prefix</td>
-                <td>A prefix to add to the name of the static files</td>
+                <td></td>
             </tr>
             </table>
 
@@ -231,7 +293,7 @@
     </div>
 
                 <h3 id="method_redirect">
-        <div class="location">at line 145</div>
+        <div class="location">at line 172</div>
         <code>            public            
     <strong>redirect</strong>($url, $method, $target, $statusCode = 301)</code>
     </h3>
@@ -271,7 +333,7 @@
     </div>
 
                 <h3 id="method___construct">
-        <div class="location">at line 151</div>
+        <div class="location">at line 178</div>
         <code>            public            
     <strong>__construct</strong>($prefix = &#039;&#039;)</code>
     </h3>
@@ -295,14 +357,14 @@
                     </div>
     </div>
 
-                <h3 id="method_setPrefix">
-        <div class="location">at line 160</div>
-        <code>            public            
-    <strong>setPrefix</strong>(string $prefix)</code>
+                <h3 id="method_prefix">
+        <div class="location">at line 190</div>
+        <code>            public            <a href="../Niysu/RoutesCollection.html"><abbr title="Niysu\RoutesCollection">RoutesCollection</abbr></a>
+    <strong>prefix</strong>(string $prefix)</code>
     </h3>
     <div class="details">
         <p>Sets the prefix to add to all routes in this collection.</p>
-        <p></p>
+        <p>Returns $this.</p>
         <div class="tags">
                             <h4>Parameters</h4>
 
@@ -315,19 +377,76 @@
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td><a href="../Niysu/RoutesCollection.html"><abbr title="Niysu\RoutesCollection">RoutesCollection</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_getLocalPrefix">
+        <div class="location">at line 200</div>
+        <code>            public            string
+    <strong>getLocalPrefix</strong>()</code>
+    </h3>
+    <div class="details">
+        <p>Returns the local prefix that was defined on construction or by using prefix().</p>
+        <p></p>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_getFullPrefix">
+        <div class="location">at line 209</div>
+        <code>            public            string
+    <strong>getFullPrefix</strong>()</code>
+    </h3>
+    <div class="details">
+        <p>Returns the full prefix, ie.</p>
+        <p>including the parent&#039;s full prefix.</p>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
                     </div>
     </div>
 
                 <h3 id="method_before">
-        <div class="location">at line 175</div>
-        <code>            public            
+        <div class="location">at line 224</div>
+        <code>            public            <a href="../Niysu/RoutesCollection.html"><abbr title="Niysu\RoutesCollection">RoutesCollection</abbr></a>
     <strong>before</strong>(<abbr title="Niysu\callable">callable</abbr> $f)</code>
     </h3>
     <div class="details">
         <p>Adds a before function to all routes in this collection.</p>
-        <p></p>
+        <p>Returns $this;</p>
         <div class="tags">
                             <h4>Parameters</h4>
 
@@ -340,13 +459,22 @@
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td><a href="../Niysu/RoutesCollection.html"><abbr title="Niysu\RoutesCollection">RoutesCollection</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
                     </div>
     </div>
 
                 <h3 id="method_getRoutesList">
-        <div class="location">at line 184</div>
+        <div class="location">at line 234</div>
         <code>            public            array
     <strong>getRoutesList</strong>()</code>
     </h3>
@@ -360,6 +488,110 @@
                     <table>
         <tr>
             <td>array</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_newChild">
+        <div class="location">at line 249</div>
+        <code>            public            <a href="../Niysu/RoutesCollection.html"><abbr title="Niysu\RoutesCollection">RoutesCollection</abbr></a>
+    <strong>newChild</strong>($prefix = &#039;&#039;)</code>
+    </h3>
+    <div class="details">
+        <p>Builds a new child and returns it.</p>
+        <p>The child will have all the before functions from its parent.<br />
+ It will also inherit of the prefix from its parent.</p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td></td>
+                <td>$prefix</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td><a href="../Niysu/RoutesCollection.html"><abbr title="Niysu\RoutesCollection">RoutesCollection</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_handle">
+        <div class="location">at line 277</div>
+        <code>            public            boolean
+    <strong>handle</strong>(<a href="../Niysu/Scope.html"><abbr title="Niysu\Scope">Scope</abbr></a> $scope)</code>
+    </h3>
+    <div class="details">
+        <p>Tries to handle an HTTP request through a route of this collection or its children collections.</p>
+        <p>Returns true if the request was handled, false if the route didn&#039;t match this request.<br />
+ See Route::handle for details.</p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td><a href="../Niysu/Scope.html"><abbr title="Niysu\Scope">Scope</abbr></a></td>
+                <td>$scope</td>
+                <td>Scope that will contain the variables accessible to the route</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td>boolean</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_getRouteByName">
+        <div class="location">at line 305</div>
+        <code>            public            <a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a>
+    <strong>getRouteByName</strong>(string $name)</code>
+    </h3>
+    <div class="details">
+        <p>Search for a route with this name in this collection and its children.</p>
+        <p>Returns null if no route is found.</p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td>string</td>
+                <td>$name</td>
+                <td>Name of the route to look for</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td><a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a></td>
             <td></td>
         </tr>
     </table>

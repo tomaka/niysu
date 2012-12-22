@@ -70,7 +70,7 @@
                     boolean
                 </td>
                 <td class="last">
-                    <a href="#method_handle">handle</a>(<a href="../Niysu/Scope.html"><abbr title="Niysu\Scope">Scope</abbr></a> $scope)
+                    <a href="#method_handle">handle</a>(<a href="../Niysu/Scope.html"><abbr title="Niysu\Scope">Scope</abbr></a> $scope, string $prefix = &#039;&#039;)
                     <p>Tries to handle an HTTP request through this route.</p>
                 </td>
                 <td></td>
@@ -120,6 +120,16 @@
                     <a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a>
                 </td>
                 <td class="last">
+                    <a href="#method_filter">filter</a>(string $className)
+                    <p>Adds a filter to either an request or a response.</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    <a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a>
+                </td>
+                <td class="last">
                     <a href="#method_before">before</a>($callable)
                     <p>Adds a function to be called before the handler.</p>
                 </td>
@@ -152,6 +162,16 @@
                 <td class="last">
                     <a href="#method_getURLRegex">getURLRegex</a>()
                     <p>Returns the regular expression to match with an URL.</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    string
+                </td>
+                <td class="last">
+                    <a href="#method_getOriginalPattern">getOriginalPattern</a>()
+                    <p>Returns the original pattern that was passed to the constructor.</p>
                 </td>
                 <td></td>
             </tr>
@@ -255,9 +275,9 @@
     </div>
 
                 <h3 id="method_handle">
-        <div class="location">at line 58</div>
+        <div class="location">at line 59</div>
         <code>            public            boolean
-    <strong>handle</strong>(<a href="../Niysu/Scope.html"><abbr title="Niysu\Scope">Scope</abbr></a> $scope)</code>
+    <strong>handle</strong>(<a href="../Niysu/Scope.html"><abbr title="Niysu\Scope">Scope</abbr></a> $scope, string $prefix = &#039;&#039;)</code>
     </h3>
     <div class="details">
         <p>Tries to handle an HTTP request through this route.</p>
@@ -279,6 +299,11 @@
                 <td>$scope</td>
                 <td>Scope that will contain the variables accessible to the route</td>
             </tr>
+                    <tr>
+                <td>string</td>
+                <td>$prefix</td>
+                <td>(optional) A prefix to append to the Route&#039;s URL</td>
+            </tr>
             </table>
 
             
@@ -297,7 +322,7 @@
     </div>
 
                 <h3 id="method_method">
-        <div class="location">at line 144</div>
+        <div class="location">at line 153</div>
         <code>            public            <a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a>
     <strong>method</strong>(string $method)</code>
     </h3>
@@ -331,7 +356,7 @@
     </div>
 
                 <h3 id="method_pattern">
-        <div class="location">at line 160</div>
+        <div class="location">at line 169</div>
         <code>            public            <a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a>
     <strong>pattern</strong>(string $varName, string $regex)</code>
     </h3>
@@ -372,7 +397,7 @@
     </div>
 
                 <h3 id="method_validate">
-        <div class="location">at line 177</div>
+        <div class="location">at line 186</div>
         <code>            public            <a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a>
     <strong>validate</strong>(<abbr title="Niysu\callable">callable</abbr> $callable, integer $statusCode = 500)</code>
     </h3>
@@ -414,7 +439,7 @@
     </div>
 
                 <h3 id="method_onlyIf">
-        <div class="location">at line 198</div>
+        <div class="location">at line 207</div>
         <code>            public            <a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a>
     <strong>onlyIf</strong>(<abbr title="Niysu\callable">callable</abbr> $callable)</code>
     </h3>
@@ -449,8 +474,45 @@
                     </div>
     </div>
 
+                <h3 id="method_filter">
+        <div class="location">at line 226</div>
+        <code>            public            <a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a>
+    <strong>filter</strong>(string $className)</code>
+    </h3>
+    <div class="details">
+        <p>Adds a filter to either an request or a response.</p>
+        <p>If the class is a derivate of HTTPRequestInterface, then it will replace the request.<br />
+ If the class is a derivate of HTTPResponseInterface, then it will replace the response.<br />
+<br />
+ The filter() function returns $this.</p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td>string</td>
+                <td>$className</td>
+                <td>Name of a class derivate of HTTPRequestInterface or HTTPResponseInterface</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td><a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
                 <h3 id="method_before">
-        <div class="location">at line 214</div>
+        <div class="location">at line 253</div>
         <code>            public            <a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a>
     <strong>before</strong>($callable)</code>
     </h3>
@@ -484,7 +546,7 @@
     </div>
 
                 <h3 id="method_handler">
-        <div class="location">at line 228</div>
+        <div class="location">at line 267</div>
         <code>            public            <a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a>
     <strong>handler</strong>(<abbr title="Niysu\callable">callable</abbr> $handler)</code>
     </h3>
@@ -518,7 +580,7 @@
     </div>
 
                 <h3 id="method_after">
-        <div class="location">at line 241</div>
+        <div class="location">at line 280</div>
         <code>            public            <a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a>
     <strong>after</strong>($callable)</code>
     </h3>
@@ -552,7 +614,7 @@
     </div>
 
                 <h3 id="method_getURLRegex">
-        <div class="location">at line 254</div>
+        <div class="location">at line 293</div>
         <code>            public            string
     <strong>getURLRegex</strong>()</code>
     </h3>
@@ -575,8 +637,32 @@
                     </div>
     </div>
 
+                <h3 id="method_getOriginalPattern">
+        <div class="location">at line 301</div>
+        <code>            public            string
+    <strong>getOriginalPattern</strong>()</code>
+    </h3>
+    <div class="details">
+        <p>Returns the original pattern that was passed to the constructor.</p>
+        <p></p>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
                 <h3 id="method_getURL">
-        <div class="location">at line 266</div>
+        <div class="location">at line 313</div>
         <code>            public            string
     <strong>getURL</strong>(array $parameters = array())</code>
     </h3>
