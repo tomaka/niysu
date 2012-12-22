@@ -43,7 +43,7 @@
 			{% for route in routes %}
 				<dt>{{ route.name ? route.name : route.route }}</dt>
 				<dd>
-					<strong>Name: </strong>{{ route.name }}<br />
+					<strong>Name: </strong>{{ route.name }}{% if route.name == false %}<em>no name</em>{% endif %}<br />
 					<strong>Regex: </strong>{{ route.regex }}
 				</dd>
 			{% endfor %}
