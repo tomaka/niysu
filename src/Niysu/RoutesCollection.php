@@ -184,14 +184,29 @@ class RoutesCollection {
 	 * @return RoutesCollection
 	 */
 	public function prefix($prefix) {
-		if (count($this->routes) >= 1)
-			throw new \LogicException('Cannot change prefix once routes have been registered');
-
-		while (substr($prefix, -1) == '/')
-			$prefix = substr($prefix, 0, -1);
-
 		$this->prefix = $prefix;
 		return $this;
+	}
+
+	/**
+	 * Returns the local prefix that was defined on construction or by using prefix().
+	 *
+	 * @return string
+	 */
+	public function getLocalPrefix() {
+		return $this->prefix;
+	}
+
+	/**
+	 * Returns the full prefix, ie. including the parent's full prefix.
+	 *
+	 * @return string
+	 */
+	public function getFullPrefix() {
+		$prefix = $this->prefix;
+		if ($this->parent)
+			$prefix = $this->parent->getFullPrefix().$prefix;
+		return $prefix;
 	}
 
 	/**
@@ -242,6 +257,7 @@ class RoutesCollection {
 			}
 		});
 		$this->children[] = $c;
+		$c->parent = $this;
 		return $c;
 	}
 
@@ -283,6 +299,7 @@ class RoutesCollection {
 	private $routes = [];					// array of instances of Route
 	private $prefix = '';					// prefix to add to all URLs
 	private $globalBefores = [];			// array of functions that are automatically added as ->before
+	private $parent = null;
 	private $children = [];					// 
 };
 
