@@ -9,7 +9,8 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "monolog/monolog": "dev-master"
+        "monolog/monolog": "dev-master",
+        "jdorn/sql-formatter": "1.2.*@dev"
     },
     "require-dev": {
         "twig/twig": "dev-master",
