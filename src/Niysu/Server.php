@@ -242,7 +242,22 @@ class Server {
 		return $this->routesCollection->getRoutesList();
 	}
 
+	/**
+	 * Parses a class and registers all resources defined in it.
+	 *
+	 * This function will analyse the comments of each method of the class and create the appropriate routes.
+	 * The routes are created in a child RoutesCollection that is returned by this function.
+	 *
+	 * See RoutesCollection::parseClass for details.
+	 *
+	 * @param string 	$className 		Name of the class to parse
+	 * @return RoutesCollection
+	 */
+	public function parseClass($className) {
+		return $this->routesCollection->parseClass($className);
+	}
 
+	
 
 	/// \brief Loads either a file or an array
 	private function loadEnvironment($environment) {
