@@ -118,12 +118,9 @@ class RoutesCollection {
 	 * @param string 	$path 		The absolute path on the server which contains the files
 	 * @param string 	$prefix 	A prefix to add to the name of the static files
 	 */
-	public function registerStaticDirectory($path, $prefix = '/') {
-		while (substr($prefix, -1) == '/')
-			$prefix = substr($prefix, 0, -1);
-		
+	public function registerStaticDirectory($path) {		
 		$this
-			->register($prefix.'/{file}', 'get')
+			->register('/{file}', 'get')
 			->pattern('file', '([^\\.]{2,}.*|.)')
 			->before(function(&$file, &$isRightResource) use ($path) {
 				$file = $path.DIRECTORY_SEPARATOR.str_replace('/', DIRECTORY_SEPARATOR, $file);
@@ -173,7 +170,7 @@ class RoutesCollection {
 	}
 
 	public function redirect($url, $method, $target, $statusCode = 301) {
-		$registration = new Route($this->prefix.$url, $method, function($response) use ($target, $statusCode) { $response->setStatusCode($statusCode); $response->setHeader('Location', $target); });
+		$registration = new Route($url, $method, function($response) use ($target, $statusCode) { $response->setStatusCode($statusCode); $response->setHeader('Location', $target); });
 		$this->routes[] = $registration;
 		return $registration;
 	}

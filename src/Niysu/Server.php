@@ -141,8 +141,8 @@ class Server {
 	 * @param string 	$prefix 	A prefix to add to the name of the static files
 	 * @see RouteCollection::registerStaticDirectory
 	 */
-	public function registerStaticDirectory($path, $prefix = '/') {
-		return $this->routesCollection->registerStaticDirectory($path, $prefix);
+	public function registerStaticDirectory($path) {
+		return $this->routesCollection->registerStaticDirectory($path);
 	}
 
 	/**
