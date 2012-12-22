@@ -17,16 +17,18 @@ class RoutesCollection {
 	 *  - @before PHP string of something to be called before the handler (will be passed to eval)
 	 *  - @method Pattern of the method to match
 	 *  - @name Name of the route
+	 *  - @prefix (class only) Adds a prefix to all URLs of this class
 	 *  - @static (class only) Adds a path of static resources ; path is relative to the class location
 	 *  - @url Pattern of the URL to match, see register()
 	 *  - @uri Alias of @url
 	 *
 	 * @param string 	$className 		Name of the class to parse
+	 * @param string 	$prefix 		(optional) Prefix to add to all URLs (the @prefix token will still be added too)
 	 * @return RoutesCollection
 	 */
-	public function parseClass($className) {
+	public function parseClass($className, $prefix = '') {
 		$reflectionClass = new \ReflectionClass($className);
-		$newCollection = $this->newChild('');
+		$newCollection = $this->newChild($prefix);
 
 		// analyzing the doccomment of the class
 		$classDocComment = self::parseDocComment($reflectionClass->getDocComment());
@@ -39,7 +41,7 @@ class RoutesCollection {
 
 		// handling @prefix
 		if (isset($classDocComment['prefix'])) {
-			$newCollection->prefix($classDocComment['prefix'][0]);
+			$newCollection->prefix($prefix.$classDocComment['prefix'][0]);
 		}
 
 		// handling @static

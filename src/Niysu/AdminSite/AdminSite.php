@@ -13,7 +13,7 @@ namespace Niysu\AdminSite;
 class AdminSite {
 	/**
 	 * @name niysu-adminsite-home
-	 * @url /admin
+	 * @url /
 	 * @method GET
 	 */
 	public function mainPanel($twigService, $server) {
@@ -29,7 +29,7 @@ class AdminSite {
 
 	/**
 	 * @name niysu-adminsite-ajaxtest
-	 * @url /admin/ajax-test
+	 * @url /ajax-test
 	 * @method GET
 	 */
 	public function ajaxTestPanel($twigService) {

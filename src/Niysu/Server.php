@@ -250,10 +250,11 @@ class Server {
 	 * See RoutesCollection::parseClass for details.
 	 *
 	 * @param string 	$className 		Name of the class to parse
+	 * @param string 	$prefix 		(optional) Prefix to add to all URLs of this class
 	 * @return RoutesCollection
 	 */
-	public function parseClass($className) {
-		return $this->routesCollection->parseClass($className);
+	public function parseClass($className, $prefix = '') {
+		return $this->routesCollection->parseClass($className, $prefix);
 	}
 
 
