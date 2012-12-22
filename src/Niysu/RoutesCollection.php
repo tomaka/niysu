@@ -172,13 +172,16 @@ class RoutesCollection {
 	}
 
 	public function __construct($prefix = '') {
-		$this->setPrefix($prefix);
+		$this->prefix($prefix);
 	}
 
 	/**
 	 * Sets the prefix to add to all routes in this collection.
 	 *
+	 * Returns $this.
+	 *
 	 * @param string 	$prefix 	The prefix
+	 * @return RoutesCollection
 	 */
 	public function prefix($prefix) {
 		if (count($this->routes) >= 1)
@@ -188,15 +191,20 @@ class RoutesCollection {
 			$prefix = substr($prefix, 0, -1);
 
 		$this->prefix = $prefix;
+		return $this;
 	}
 
 	/**
 	 * Adds a before function to all routes in this collection.
 	 *
+	 * Returns $this;
+	 *
 	 * @param callable 	$f 			The function
+	 * @return RoutesCollection
 	 */
 	public function before($f) {
 		$this->globalBefores[] = $f;
+		return $this;
 	}
 
 	/**
