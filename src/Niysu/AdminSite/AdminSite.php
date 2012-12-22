@@ -16,14 +16,15 @@ class AdminSite {
 	 * @url /
 	 * @method GET
 	 */
-	public function mainPanel($twigService, $server) {
+	public function mainPanel($twigService, $server, $scope) {
 		$routes = [];
 		foreach ($server->getRoutesList() as $r)
 			$routes[] = [ 'route' => $r->getOriginalPattern(), 'name' => $r->getName(), 'regex' => $r->getURLRegex() ];
 
 		$twigService->addPath(__DIR__);
 		$twigService->output('home.adminsite.htm', [
-			'routes' => $routes
+			'routes' => $routes,
+			'maintenanceMode' => $scope->maintenanceModeService->isMaintenanceMode()
 		]);
 	}
 
@@ -37,6 +38,16 @@ class AdminSite {
 		$twigService->output('ajaxTest.htm', [
 			'routes' => $routes
 		]);
+	}
+
+	/**
+	 * @name niysu-adminsite-database
+	 * @url /database
+	 * @method GET
+	 */
+	public function ajaxDatabasePanel($twigService) {
+		$twigService->addPath(__DIR__);
+		$twigService->output('databaseAccess.htm');
 	}
 }
 

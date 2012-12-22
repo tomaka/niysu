@@ -8,6 +8,24 @@
 
 {% block head %}
 	<style type="text/css">
+		.mainPanel {
+			display:inline-block;
+			-moz-box-sizing:border-box;
+			box-sizing:border-box;
+			padding:1em;
+			margin-left:10px;
+			vertical-align:top;
+			width:460px;
+		}
+
+		.mainPanel > *:first-child {
+			margin-top:0;
+		}
+
+		.mainPanel > *:last-child {
+			margin-bottom:0;
+		}
+
 		.routesList dd {
 			font-size:80%;
 			margin-top:0.2em;
@@ -35,9 +53,8 @@
 	<section class="mainPanel">
 		<h2>Maintenance mode</h2>
 
-		Maintenance: {{ isMaintenanceMode }}
-
-		<button >Set maintenance mode</button>
-		<button >Clear maintenance mode</button>
+		<p>Maintenance: {{ maintenanceMode ? 'Yes' : 'No' }}</p>
+		<p><button >Set maintenance mode</button><br />
+			<button >Clear maintenance mode</button></p>
 	</section>
 {% endblock %}
