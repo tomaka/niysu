@@ -294,6 +294,24 @@ class RoutesCollection {
 		return false;
 	}
 
+	/**
+	 * Search for a route with this name in this collection and its children.
+	 *
+	 * Returns null if no route is found.
+	 *
+	 * @param string 	$name 		Name of the route to look for
+	 * @return Route
+	 */
+	public function getRouteByName($name) {
+		foreach ($this->routes as $route)
+			if ($route->getName() == $name)				return $route;
+
+		foreach ($this->children as $child)
+			if ($r = $child->getRouteByName($name))		return $r;
+
+		return null;
+	}
+
 
 
 	/**
