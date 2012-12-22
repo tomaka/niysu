@@ -16,6 +16,9 @@ class Server {
 	public function __construct($environment = null) {
 		$constructionTime = microtime(true);
 
+		// building the main RoutesCollection
+		$this->routesCollection = new RoutesCollection('');
+
 		// loading environment
 		if ($environment) {
 			try {
@@ -32,13 +35,7 @@ class Server {
 		$this->scope->passByRef('server', false);
 		$this->scope->elapsedTime = function() use ($constructionTime) { $now = microtime(true); return round(1000 * ($now - $constructionTime)); };
 		$this->scope->passByRef('elapsedTime', false);
-		
-		// building the main RoutesCollection
-		$mainCollection = new RoutesCollection('');
-		foreach ($this->globalBefores as $b)
-			$mainCollection->before($b);
-		$this->routesCollections[] = $mainCollection;
-		
+				
 		// building default services providers
 		$this->setServiceProvider('cacheMe', 'Niysu\\Services\\CacheMeService');
 		$this->setServiceProvider('cache', 'Niysu\\Services\\CacheService');
@@ -134,7 +131,7 @@ class Server {
 	 * @see Route::__construct
 	 */
 	public function register($url, $method = '.*', $callback = null) {
-		return $this->routesCollections[0]->register($url, $method, $callback);
+		return $this->routesCollection->register($url, $method, $callback);
 	}
 
 	/**
@@ -145,7 +142,7 @@ class Server {
 	 * @see RouteCollection::registerStaticDirectory
 	 */
 	public function registerStaticDirectory($path, $prefix = '/') {
-		return $this->routesCollections[0]->registerStaticDirectory($path, $prefix);
+		return $this->routesCollection->registerStaticDirectory($path, $prefix);
 	}
 
 	/**
@@ -160,21 +157,15 @@ class Server {
 	 * @return Route
 	 */
 	public function redirect($url, $method, $target, $statusCode = 301) {
-		return $this->routesCollections[0]->redirect($url, $method, $target, $statusCode);
+		return $this->routesCollection->redirect($url, $method, $target, $statusCode);
 	}
 
 	public function before($callable) {
-		foreach ($this->routesCollections as $collec)
-			$collec->before($callable);
-		$this->globalBefores[] = $callable;
+		$this->routesCollection->before($callable);
 	}
 
 	public function buildCollection($prefix = '') {
-		$newCollection = new RoutesCollection($prefix);
-		foreach ($this->globalBefores as $b)
-			$newCollection->before($b);
-		$this->routesCollections[] = $newCollection;
-		return $newCollection;
+		return $this->routesCollection->newChild($prefix);
 	}
 
 	/**
@@ -208,18 +199,16 @@ class Server {
 				});
 			}
 			
-			foreach ($this->routesCollections as $collection) {
-				foreach ($collection->getRoutesList() as $route) {
-					$localScope = $handleScope->newChild();
-					if (!$route->handle($localScope))
-						continue;
+			foreach ($this->routesCollection->getRoutesList() as $route) {
+				$localScope = $handleScope->newChild();
+				if (!$route->handle($localScope))
+					continue;
 
-					$localScope->response->flush();
-					$log->debug('Successful handling of resource', [ 'url' => $input->getURL(), 'method' => $input->getMethod() ]);
-					if ($nb = gc_collect_cycles())
-						$log->notice('gc_collect_cycles() returned non-zero value: '.$nb);
-					return;
-				}
+				$localScope->response->flush();
+				$log->debug('Successful handling of resource', [ 'url' => $input->getURL(), 'method' => $input->getMethod() ]);
+				if ($nb = gc_collect_cycles())
+					$log->notice('gc_collect_cycles() returned non-zero value: '.$nb);
+				return;
 			}
 
 
@@ -250,10 +239,7 @@ class Server {
 	 * @return array
 	 */
 	public function getRoutesList() {
-		$a = [];
-		foreach ($this->routesCollections as $collec)
-			$a = array_merge($a, $collec->getRoutesList());
-		return $a;
+		return $this->routesCollection->getRoutesList();
 	}
 
 
@@ -293,9 +279,9 @@ class Server {
 			} else if ($key === 'before') {
 				if (is_array($value))
 					foreach ($value as $v)
-						$this->globalBefores[] = $v;
+						$this->routesCollection->before($v);
 				else
-					$this->globalBefores[] = $value;
+					$this->routesCollection->before($value);
 
 			} else if ($key === 'config') {
 				if (!is_callable($value))
@@ -403,10 +389,9 @@ class Server {
 	private $printErrors = false;
 	private $handleErrors = true;
 	private $showRoutesOn404 = false;
-	private $routesCollections = [];			// array of instances of RoutesCollection
+	private $routesCollection;					// main RoutesCollection
 	private $configFunctions = [];				// configuration functions (coming from the environment) to call
 	private $serviceProviders = [];
-	private $globalBefores = [];
 	private $currentResponsesStack = [];		// at every call to handle(), the response is pushed on top of this stack, and removed when the handle() is finished
 };
 

@@ -76,8 +76,19 @@ class RoutesCollection {
 	 */
 	public function register($url, $method = '.*', $callback = null) {
 		$registration = new Route($this->prefix.$url, $method, $callback);
-		foreach ($this->globalBefores as $b)
-			$registration->before($b);
+		$registration->before(function($scope) {
+			foreach ($this->globalBefores as $b) {
+				$scope->call($b);
+
+				if ($scope->isRightResource === false)
+					return;
+				if ($scope->callHandler === false)
+					return;
+				if ($scope->stopRoute === true)
+					return;
+			}
+		});
+
 		$this->routes[] = $registration;
 		return $registration;
 	}
@@ -95,17 +106,17 @@ class RoutesCollection {
 		$this
 			->register($prefix.'/{file}', 'get')
 			->pattern('file', '([^\\.]{2,}.*|.)')
-			->before(function(&$file, &$isWrongResource) use ($path) {
+			->before(function(&$file, &$isRightResource) use ($path) {
 				$file = $path.DIRECTORY_SEPARATOR.str_replace('/', DIRECTORY_SEPARATOR, $file);
 				if (file_exists($file)) {
 					if (is_dir($file))
-						$isWrongResource = true;
+						$isRightResource = false;
 					return;
 				}
 
 				$checkDir = dirname($file);
 				if (!file_exists($checkDir) || !is_dir($checkDir)) {
-					$isWrongResource = true;
+					$isRightResource = false;
 					return;
 				}
 
@@ -119,7 +130,7 @@ class RoutesCollection {
 					}
 				}
 
-				$isWrongResource = true;
+				$isRightResource = false;
 			})
 			->handler(function($file, $response, $elapsedTime) {
 				if (!extension_loaded('fileinfo'))
@@ -182,8 +193,38 @@ class RoutesCollection {
 	 * @return array
 	 */
 	public function getRoutesList() {
-		return $this->routes;
+		$result = $this->routes;
+		foreach ($this->children as $c)
+			$result = array_merge($result, $c->getRoutesList());
+		return $result;
 	}
+
+	/**
+	 * Builds a new child and returns it.
+	 *
+	 * The child will have all the before functions from its parent.
+	 * It will also inherit of the prefix from its parent.
+	 *
+	 * @return RoutesCollection
+	 */
+	public function newChild($prefix = '') {
+		$c = new RoutesCollection($prefix);
+		$c->before(function($scope) {
+			foreach ($this->globalBefores as $b) {
+				$scope->call($b);
+
+				if ($scope->isRightResource === false)
+					return;
+				if ($scope->callHandler === false)
+					return;
+				if ($scope->stopRoute === true)
+					return;
+			}
+		});
+		$this->children[] = $c;
+		return $c;
+	}
+
 
 
 	/**
@@ -222,6 +263,7 @@ class RoutesCollection {
 	private $routes = [];					// array of instances of Route
 	private $prefix = '';					// prefix to add to all URLs
 	private $globalBefores = [];			// array of functions that are automatically added as ->before
+	private $children = [];					// 
 };
 
 ?>
