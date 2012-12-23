@@ -272,6 +272,7 @@ class Server {
 		// handling 404 if we didn't find any handler
 		$log->debug('Didn\'t find any route for request, returning 404', [ 'url' => $input->getURL(), 'method' => $input->getMethod() ]);
 		$output->setStatusCode(404);
+		$output->flush();
 		array_pop($this->currentResponsesStack);
 	}
 
