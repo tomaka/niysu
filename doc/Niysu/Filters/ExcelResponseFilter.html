@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="robots" content="index, follow, all" />
-        <title>Niysu\Filters\ErrorPagesResponseFilter | API</title>
+        <title>Niysu\Filters\ExcelResponseFilter | API</title>
                     <link rel="stylesheet" type="text/css" href="../../stylesheet.css">
                             </head>
         <body id="class">
@@ -19,13 +19,13 @@
         <div id="title">API</div>
 
             <div class="type">Class</div>
-    <h1><a href="../../Niysu/Filters.html">Niysu\Filters</a>\ErrorPagesResponseFilter</h1>
+    <h1><a href="../../Niysu/Filters.html">Niysu\Filters</a>\ExcelResponseFilter</h1>
     </div>
         <div class="content">
-                <p>class    <strong>ErrorPagesResponseFilter</strong>        extends <a href="../../Niysu/HTTPResponseFilterInterface.html"><abbr title="Niysu\HTTPResponseFilterInterface">HTTPResponseFilterInterface</abbr></a></p>
+                <p>class    <strong>ExcelResponseFilter</strong>        extends <a href="../../Niysu/HTTPResponseFilterInterface.html"><abbr title="Niysu\HTTPResponseFilterInterface">HTTPResponseFilterInterface</abbr></a></p>
 
             <div class="description">
-            <p>Allows you to customize error pages.</p>
+            <p>Allows to easily send Excel documents to the response.</p>
             <p></p>
         </div>
     
@@ -39,7 +39,7 @@
                     
                 </td>
                 <td class="last">
-                    <a href="#method___construct">__construct</a>(<abbr title="Niysu\Filters\Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr> $response, <abbr title="Niysu\Filters\Niysu\Server">Server</abbr> $server = null, <abbr title="Niysu\Filters\Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr> $request)
+                    <a href="#method___construct">__construct</a>(<abbr title="Niysu\Filters\Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr> $next)
                     <p>Sets the output response.</p>
                 </td>
                 <td></td>
@@ -50,7 +50,7 @@
                 </td>
                 <td class="last">
                     <a href="#method_flush">flush</a>()
-                    <p></p>
+                    <p>Flushes the response.</p>
                 </td>
                 <td></td>
             </tr>
@@ -62,7 +62,7 @@
                     <a href="#method_setStatusCode">setStatusCode</a>(integer $statusCode)
                     <p>Sets the status code to return with the headers.</p>
                 </td>
-                <td></td>
+                <td><small>from&nbsp;<a href="../../Niysu/HTTPResponseFilterInterface.html#method_setStatusCode"><abbr title="Niysu\HTTPResponseFilterInterface">HTTPResponseFilterInterface</abbr></a></small></td>
             </tr>
                     <tr>
                 <td class="type">
@@ -102,7 +102,7 @@
                     <a href="#method_isHeadersListSent">isHeadersListSent</a>()
                     <p>Returns true if the response has already sent its headers and is now sending data.</p>
                 </td>
-                <td></td>
+                <td><small>from&nbsp;<a href="../../Niysu/HTTPResponseFilterInterface.html#method_isHeadersListSent"><abbr title="Niysu\HTTPResponseFilterInterface">HTTPResponseFilterInterface</abbr></a></small></td>
             </tr>
                     <tr>
                 <td class="type">
@@ -119,8 +119,18 @@
                     
                 </td>
                 <td class="last">
-                    <a href="#method_setErrorRoute">setErrorRoute</a>(mixed $errorCode, string $routeName)
-                    <p>Sets the route to call as a replacement if a response with this status code is detected.</p>
+                    <a href="#method_setCellValue">setCellValue</a>(string $cell, string $value, integer $sheet = null)
+                    <p>Changes the value inside a cell</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    
+                </td>
+                <td class="last">
+                    <a href="#method_setCellStyle">setCellStyle</a>(string $cell, array $style, integer $sheet = null)
+                    <p>Changes the style of a cell</p>
                 </td>
                 <td></td>
             </tr>
@@ -130,9 +140,9 @@
         <h2>Details</h2>
 
                         <h3 id="method___construct">
-        <div class="location">at line 14</div>
+        <div class="location">at line 12</div>
         <code>            public            
-    <strong>__construct</strong>(<abbr title="Niysu\Filters\Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr> $response, <abbr title="Niysu\Filters\Niysu\Server">Server</abbr> $server = null, <abbr title="Niysu\Filters\Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr> $request)</code>
+    <strong>__construct</strong>(<abbr title="Niysu\Filters\Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr> $next)</code>
     </h3>
     <div class="details">
         <p>Sets the output response.</p>
@@ -143,17 +153,7 @@
                     <table>
                     <tr>
                 <td><abbr title="Niysu\Filters\Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr></td>
-                <td>$response</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td><abbr title="Niysu\Filters\Niysu\Server">Server</abbr></td>
-                <td>$server</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td><abbr title="Niysu\Filters\Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr></td>
-                <td>$request</td>
+                <td>$next</td>
                 <td></td>
             </tr>
             </table>
@@ -165,13 +165,13 @@
     </div>
 
                 <h3 id="method_flush">
-        <div class="location">at line 44</div>
+        <div class="location">at line 42</div>
         <code>            public            
     <strong>flush</strong>()</code>
     </h3>
     <div class="details">
-        <p></p>
-        <p></p>
+        <p>Flushes the response.</p>
+        <p>If some data has already been appended, then this will send all headers and the data already added.</p>
         <div class="tags">
             
             
@@ -180,7 +180,7 @@
     </div>
 
                 <h3 id="method_setStatusCode">
-        <div class="location">at line 33</div>
+        <div class="location">in <a href="../../Niysu/HTTPResponseFilterInterface.html#method_setStatusCode"><abbr title="Niysu\HTTPResponseFilterInterface">HTTPResponseFilterInterface</abbr></a> at line 31</div>
         <code>            public            
     <strong>setStatusCode</strong>(integer $statusCode)</code>
     </h3>
@@ -290,7 +290,7 @@
     </div>
 
                 <h3 id="method_isHeadersListSent">
-        <div class="location">at line 63</div>
+        <div class="location">in <a href="../../Niysu/HTTPResponseFilterInterface.html#method_isHeadersListSent"><abbr title="Niysu\HTTPResponseFilterInterface">HTTPResponseFilterInterface</abbr></a> at line 47</div>
         <code>            public            boolean
     <strong>isHeadersListSent</strong>()</code>
     </h3>
@@ -314,7 +314,7 @@
     </div>
 
                 <h3 id="method_appendData">
-        <div class="location">at line 57</div>
+        <div class="location">at line 53</div>
         <code>            public            
     <strong>appendData</strong>(string $data)</code>
     </h3>
@@ -338,28 +338,67 @@
                     </div>
     </div>
 
-                <h3 id="method_setErrorRoute">
-        <div class="location">at line 29</div>
+                <h3 id="method_setCellValue">
+        <div class="location">at line 26</div>
         <code>            public            
-    <strong>setErrorRoute</strong>(mixed $errorCode, string $routeName)</code>
+    <strong>setCellValue</strong>(string $cell, string $value, integer $sheet = null)</code>
     </h3>
     <div class="details">
-        <p>Sets the route to call as a replacement if a response with this status code is detected.</p>
-        <p>If the response receives the given error code, then the route will be called and erase everything except the status code.<br />
- The errorCode parameter can be either a number or an array of numbers.</p>
+        <p>Changes the value inside a cell</p>
+        <p></p>
         <div class="tags">
                             <h4>Parameters</h4>
 
                     <table>
                     <tr>
-                <td>mixed</td>
-                <td>$errorCode</td>
-                <td>The error code or codes that will trigger the replacement</td>
+                <td>string</td>
+                <td>$cell</td>
+                <td>The cell to change (eg. &#039;A1&#039;)</td>
             </tr>
                     <tr>
                 <td>string</td>
-                <td>$routeName</td>
-                <td>Name of the route to be called</td>
+                <td>$value</td>
+                <td>New value of the cell (formulas start by &#039;=&#039;)</td>
+            </tr>
+                    <tr>
+                <td>integer</td>
+                <td>$sheet</td>
+                <td>Numero of the sheet to modify</td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_setCellStyle">
+        <div class="location">at line 37</div>
+        <code>            public            
+    <strong>setCellStyle</strong>(string $cell, array $style, integer $sheet = null)</code>
+    </h3>
+    <div class="details">
+        <p>Changes the style of a cell</p>
+        <p></p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td>string</td>
+                <td>$cell</td>
+                <td>The cell to change (eg. &#039;A1&#039;)</td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$style</td>
+                <td>New style of the cell</td>
+            </tr>
+                    <tr>
+                <td>integer</td>
+                <td>$sheet</td>
+                <td>Numero of the sheet to modify</td>
             </tr>
             </table>
 

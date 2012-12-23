@@ -72,6 +72,16 @@
             </tr>
                     <tr>
                 <td class="type">
+                    
+                </td>
+                <td class="last">
+                    <a href="#method_setFilterProvider">setFilterProvider</a>(string $filterName, mixed $provider)
+                    <p>Registers a filter.</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
                     <a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a>
                 </td>
                 <td class="last">
@@ -132,6 +142,16 @@
             </tr>
                     <tr>
                 <td class="type">
+                    <a href="../Niysu/Scope.html"><abbr title="Niysu\Scope">Scope</abbr></a>
+                </td>
+                <td class="last">
+                    <a href="#method_generateQueryScope">generateQueryScope</a>()
+                    <p>Generates a Scope that contains the variables provided by the server and accessible to a route.</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
                     array
                 </td>
                 <td class="last">
@@ -147,6 +167,16 @@
                 <td class="last">
                     <a href="#method_parseClass">parseClass</a>(string $className, string $prefix = &#039;&#039;)
                     <p>Parses a class and registers all resources defined in it.</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    <a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a>
+                </td>
+                <td class="last">
+                    <a href="#method_getRouteByName">getRouteByName</a>(string $name)
+                    <p>Search for a route with this name in the main collection and its children.</p>
                 </td>
                 <td></td>
             </tr>
@@ -181,7 +211,7 @@
     </div>
 
                 <h3 id="method_getServiceProvider">
-        <div class="location">at line 85</div>
+        <div class="location">at line 96</div>
         <code>            public            mixed
     <strong>getServiceProvider</strong>(string $serviceName)</code>
     </h3>
@@ -224,7 +254,7 @@
     </div>
 
                 <h3 id="method_setServiceProvider">
-        <div class="location">at line 98</div>
+        <div class="location">at line 109</div>
         <code>            public            
     <strong>setServiceProvider</strong>(string $serviceName, mixed $provider)</code>
     </h3>
@@ -254,7 +284,7 @@
     </div>
 
                 <h3 id="method_getService">
-        <div class="location">at line 109</div>
+        <div class="location">at line 120</div>
         <code>            public            mixed
     <strong>getService</strong>(string $serviceName)</code>
     </h3>
@@ -287,8 +317,38 @@
                     </div>
     </div>
 
+                <h3 id="method_setFilterProvider">
+        <div class="location">at line 142</div>
+        <code>            public            
+    <strong>setFilterProvider</strong>(string $filterName, mixed $provider)</code>
+    </h3>
+    <div class="details">
+        <p>Registers a filter.</p>
+        <p>Overwrites any existing filter with the same name.</p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td>string</td>
+                <td>$filterName</td>
+                <td>The name of the filter to set (without any &quot;Filter&quot; suffix)</td>
+            </tr>
+                    <tr>
+                <td>mixed</td>
+                <td>$provider</td>
+                <td>A callable accepted by Scope::call which returns an instance of the filter</td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
                 <h3 id="method_register">
-        <div class="location">at line 133</div>
+        <div class="location">at line 155</div>
         <code>            public            <a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a>
     <strong>register</strong>(string $url, string $method = &#039;.*&#039;, <abbr title="Niysu\callable">callable</abbr> $callback = null)</code>
     </h3>
@@ -341,7 +401,7 @@
     </div>
 
                 <h3 id="method_registerStaticDirectory">
-        <div class="location">at line 144</div>
+        <div class="location">at line 166</div>
         <code>            public            
     <strong>registerStaticDirectory</strong>($path)</code>
     </h3>
@@ -375,7 +435,7 @@
     </div>
 
                 <h3 id="method_redirect">
-        <div class="location">at line 159</div>
+        <div class="location">at line 181</div>
         <code>            public            <a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a>
     <strong>redirect</strong>(string $url, string $method, string $target, <abbr title="Niysu\number">number</abbr> $statusCode = 301)</code>
     </h3>
@@ -424,7 +484,7 @@
     </div>
 
                 <h3 id="method_before">
-        <div class="location">at line 163</div>
+        <div class="location">at line 185</div>
         <code>            public            
     <strong>before</strong>($callable)</code>
     </h3>
@@ -449,7 +509,7 @@
     </div>
 
                 <h3 id="method_buildCollection">
-        <div class="location">at line 167</div>
+        <div class="location">at line 189</div>
         <code>            public            
     <strong>buildCollection</strong>($prefix = &#039;&#039;)</code>
     </h3>
@@ -474,13 +534,16 @@
     </div>
 
                 <h3 id="method_handle">
-        <div class="location">at line 179</div>
+        <div class="location">at line 204</div>
         <code>            public            
     <strong>handle</strong>(<a href="../Niysu/HTTPRequestInterface.html"><abbr title="Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr></a> $input = null, <a href="../Niysu/HTTPResponseInterface.html"><abbr title="Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr></a> $output = null)</code>
     </h3>
     <div class="details">
         <p>Handles the request described in $input.</p>
-        <p>This function will go through all registered routes. All routes that match the requested URL will be called in the order of their registration.</p>
+        <p>This function will go through all registered routes. All routes that match the requested URL will be called in the order of their registration.<br />
+ The server passes a scope containing variables coming from it. See generateQueryScope for more infos.<br />
+<br />
+ If no route is found or if an error is triggered, the server will start a pseudo-route. This will call all the before handles of the server and return a 404 or 500 code.</p>
         <div class="tags">
                             <h4>Parameters</h4>
 
@@ -503,8 +566,36 @@
                     </div>
     </div>
 
+                <h3 id="method_generateQueryScope">
+        <div class="location">at line 252</div>
+        <code>            public            <a href="../Niysu/Scope.html"><abbr title="Niysu\Scope">Scope</abbr></a>
+    <strong>generateQueryScope</strong>()</code>
+    </h3>
+    <div class="details">
+        <p>Generates a Scope that contains the variables provided by the server and accessible to a route.</p>
+        <p>This scope includes:<br />
+  - services, where each service has a &quot;Service&quot; suffix (eg. if you register a service named &quot;log&quot;, it is accessed by &quot;$logService&quot;)<br />
+  - filters, where each filter has a &quot;Filter&quot; suffix (eg. if you register a filter named &quot;jsonInput&quot;, it is accessed by &quot;$jsonInputFilter&quot;)<br />
+  - $elapsedTime, a function that returns the number of seconds between the time the server was created and the time where it was called<br />
+  - $server, the server</p>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td><a href="../Niysu/Scope.html"><abbr title="Niysu\Scope">Scope</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
                 <h3 id="method_getRoutesList">
-        <div class="location">at line 240</div>
+        <div class="location">at line 292</div>
         <code>            public            array
     <strong>getRoutesList</strong>()</code>
     </h3>
@@ -528,7 +619,7 @@
     </div>
 
                 <h3 id="method_parseClass">
-        <div class="location">at line 256</div>
+        <div class="location">at line 308</div>
         <code>            public            <a href="../Niysu/RoutesCollection.html"><abbr title="Niysu\RoutesCollection">RoutesCollection</abbr></a>
     <strong>parseClass</strong>(string $className, string $prefix = &#039;&#039;)</code>
     </h3>
@@ -560,6 +651,40 @@
                     <table>
         <tr>
             <td><a href="../Niysu/RoutesCollection.html"><abbr title="Niysu\RoutesCollection">RoutesCollection</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_getRouteByName">
+        <div class="location">at line 320</div>
+        <code>            public            <a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a>
+    <strong>getRouteByName</strong>(string $name)</code>
+    </h3>
+    <div class="details">
+        <p>Search for a route with this name in the main collection and its children.</p>
+        <p>Returns null if no route is found.</p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td>string</td>
+                <td>$name</td>
+                <td>Name of the route to look for</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td><a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a></td>
             <td></td>
         </tr>
     </table>

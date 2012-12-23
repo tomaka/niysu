@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="robots" content="index, follow, all" />
-        <title>Niysu\Filters\ErrorPagesResponseFilter | API</title>
+        <title>Niysu\Filters\StatusCodeOverwriteResponseFilter | API</title>
                     <link rel="stylesheet" type="text/css" href="../../stylesheet.css">
                             </head>
         <body id="class">
@@ -19,13 +19,13 @@
         <div id="title">API</div>
 
             <div class="type">Class</div>
-    <h1><a href="../../Niysu/Filters.html">Niysu\Filters</a>\ErrorPagesResponseFilter</h1>
+    <h1><a href="../../Niysu/Filters.html">Niysu\Filters</a>\StatusCodeOverwriteResponseFilter</h1>
     </div>
         <div class="content">
-                <p>class    <strong>ErrorPagesResponseFilter</strong>        extends <a href="../../Niysu/HTTPResponseFilterInterface.html"><abbr title="Niysu\HTTPResponseFilterInterface">HTTPResponseFilterInterface</abbr></a></p>
+                <p>class    <strong>StatusCodeOverwriteResponseFilter</strong>        extends <a href="../../Niysu/HTTPResponseFilterInterface.html"><abbr title="Niysu\HTTPResponseFilterInterface">HTTPResponseFilterInterface</abbr></a></p>
 
             <div class="description">
-            <p>Allows you to customize error pages.</p>
+            <p>Doesn&#039;t do anything except replace the status code by a predefined code.</p>
             <p></p>
         </div>
     
@@ -39,7 +39,7 @@
                     
                 </td>
                 <td class="last">
-                    <a href="#method___construct">__construct</a>(<abbr title="Niysu\Filters\Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr> $response, <abbr title="Niysu\Filters\Niysu\Server">Server</abbr> $server = null, <abbr title="Niysu\Filters\Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr> $request)
+                    <a href="#method___construct">__construct</a>(<abbr title="Niysu\Filters\Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr> $response, $code)
                     <p>Sets the output response.</p>
                 </td>
                 <td></td>
@@ -50,9 +50,9 @@
                 </td>
                 <td class="last">
                     <a href="#method_flush">flush</a>()
-                    <p></p>
+                    <p>Flushes the response.</p>
                 </td>
-                <td></td>
+                <td><small>from&nbsp;<a href="../../Niysu/HTTPResponseFilterInterface.html#method_flush"><abbr title="Niysu\HTTPResponseFilterInterface">HTTPResponseFilterInterface</abbr></a></small></td>
             </tr>
                     <tr>
                 <td class="type">
@@ -102,7 +102,7 @@
                     <a href="#method_isHeadersListSent">isHeadersListSent</a>()
                     <p>Returns true if the response has already sent its headers and is now sending data.</p>
                 </td>
-                <td></td>
+                <td><small>from&nbsp;<a href="../../Niysu/HTTPResponseFilterInterface.html#method_isHeadersListSent"><abbr title="Niysu\HTTPResponseFilterInterface">HTTPResponseFilterInterface</abbr></a></small></td>
             </tr>
                     <tr>
                 <td class="type">
@@ -112,17 +112,7 @@
                     <a href="#method_appendData">appendData</a>(string $data)
                     <p>Appends data to the end of the response.</p>
                 </td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td class="type">
-                    
-                </td>
-                <td class="last">
-                    <a href="#method_setErrorRoute">setErrorRoute</a>(mixed $errorCode, string $routeName)
-                    <p>Sets the route to call as a replacement if a response with this status code is detected.</p>
-                </td>
-                <td></td>
+                <td><small>from&nbsp;<a href="../../Niysu/HTTPResponseFilterInterface.html#method_appendData"><abbr title="Niysu\HTTPResponseFilterInterface">HTTPResponseFilterInterface</abbr></a></small></td>
             </tr>
             </table>
 
@@ -130,9 +120,9 @@
         <h2>Details</h2>
 
                         <h3 id="method___construct">
-        <div class="location">at line 14</div>
+        <div class="location">at line 12</div>
         <code>            public            
-    <strong>__construct</strong>(<abbr title="Niysu\Filters\Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr> $response, <abbr title="Niysu\Filters\Niysu\Server">Server</abbr> $server = null, <abbr title="Niysu\Filters\Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr> $request)</code>
+    <strong>__construct</strong>(<abbr title="Niysu\Filters\Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr> $response, $code)</code>
     </h3>
     <div class="details">
         <p>Sets the output response.</p>
@@ -147,13 +137,8 @@
                 <td></td>
             </tr>
                     <tr>
-                <td><abbr title="Niysu\Filters\Niysu\Server">Server</abbr></td>
-                <td>$server</td>
                 <td></td>
-            </tr>
-                    <tr>
-                <td><abbr title="Niysu\Filters\Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr></td>
-                <td>$request</td>
+                <td>$code</td>
                 <td></td>
             </tr>
             </table>
@@ -165,13 +150,13 @@
     </div>
 
                 <h3 id="method_flush">
-        <div class="location">at line 44</div>
+        <div class="location">in <a href="../../Niysu/HTTPResponseFilterInterface.html#method_flush"><abbr title="Niysu\HTTPResponseFilterInterface">HTTPResponseFilterInterface</abbr></a> at line 27</div>
         <code>            public            
     <strong>flush</strong>()</code>
     </h3>
     <div class="details">
-        <p></p>
-        <p></p>
+        <p>Flushes the response.</p>
+        <p>If some data has already been appended, then this will send all headers and the data already added.</p>
         <div class="tags">
             
             
@@ -180,7 +165,7 @@
     </div>
 
                 <h3 id="method_setStatusCode">
-        <div class="location">at line 33</div>
+        <div class="location">at line 17</div>
         <code>            public            
     <strong>setStatusCode</strong>(integer $statusCode)</code>
     </h3>
@@ -290,7 +275,7 @@
     </div>
 
                 <h3 id="method_isHeadersListSent">
-        <div class="location">at line 63</div>
+        <div class="location">in <a href="../../Niysu/HTTPResponseFilterInterface.html#method_isHeadersListSent"><abbr title="Niysu\HTTPResponseFilterInterface">HTTPResponseFilterInterface</abbr></a> at line 47</div>
         <code>            public            boolean
     <strong>isHeadersListSent</strong>()</code>
     </h3>
@@ -314,7 +299,7 @@
     </div>
 
                 <h3 id="method_appendData">
-        <div class="location">at line 57</div>
+        <div class="location">in <a href="../../Niysu/HTTPResponseFilterInterface.html#method_appendData"><abbr title="Niysu\HTTPResponseFilterInterface">HTTPResponseFilterInterface</abbr></a> at line 51</div>
         <code>            public            
     <strong>appendData</strong>(string $data)</code>
     </h3>
@@ -329,37 +314,6 @@
                 <td>string</td>
                 <td>$data</td>
                 <td>Data to append</td>
-            </tr>
-            </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-                <h3 id="method_setErrorRoute">
-        <div class="location">at line 29</div>
-        <code>            public            
-    <strong>setErrorRoute</strong>(mixed $errorCode, string $routeName)</code>
-    </h3>
-    <div class="details">
-        <p>Sets the route to call as a replacement if a response with this status code is detected.</p>
-        <p>If the response receives the given error code, then the route will be called and erase everything except the status code.<br />
- The errorCode parameter can be either a number or an array of numbers.</p>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table>
-                    <tr>
-                <td>mixed</td>
-                <td>$errorCode</td>
-                <td>The error code or codes that will trigger the replacement</td>
-            </tr>
-                    <tr>
-                <td>string</td>
-                <td>$routeName</td>
-                <td>Name of the route to be called</td>
             </tr>
             </table>
 

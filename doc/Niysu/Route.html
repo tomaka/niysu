@@ -70,8 +70,18 @@
                     boolean
                 </td>
                 <td class="last">
-                    <a href="#method_handle">handle</a>(<a href="../Niysu/Scope.html"><abbr title="Niysu\Scope">Scope</abbr></a> $scope, string $prefix = &#039;&#039;)
+                    <a href="#method_handle">handle</a>(<a href="../Niysu/HTTPRequestInterface.html"><abbr title="Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr></a> $request, <a href="../Niysu/HTTPResponseInterface.html"><abbr title="Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr></a> $response, <a href="../Niysu/Scope.html"><abbr title="Niysu\Scope">Scope</abbr></a> $scope = null, $prefix = &#039;&#039;)
                     <p>Tries to handle an HTTP request through this route.</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    
+                </td>
+                <td class="last">
+                    <a href="#method_handleNoURLCheck">handleNoURLCheck</a>(<a href="../Niysu/HTTPRequestInterface.html"><abbr title="Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr></a> $request, <a href="../Niysu/HTTPResponseInterface.html"><abbr title="Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr></a> $response, <a href="../Niysu/Scope.html"><abbr title="Niysu\Scope">Scope</abbr></a> $scope = null, $prefix = &#039;&#039;)
+                    <p>Same as handle() but continues even if wrong URL or method.</p>
                 </td>
                 <td></td>
             </tr>
@@ -275,34 +285,48 @@
     </div>
 
                 <h3 id="method_handle">
-        <div class="location">at line 59</div>
+        <div class="location">at line 63</div>
         <code>            public            boolean
-    <strong>handle</strong>(<a href="../Niysu/Scope.html"><abbr title="Niysu\Scope">Scope</abbr></a> $scope, string $prefix = &#039;&#039;)</code>
+    <strong>handle</strong>(<a href="../Niysu/HTTPRequestInterface.html"><abbr title="Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr></a> $request, <a href="../Niysu/HTTPResponseInterface.html"><abbr title="Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr></a> $response, <a href="../Niysu/Scope.html"><abbr title="Niysu\Scope">Scope</abbr></a> $scope = null, $prefix = &#039;&#039;)</code>
     </h3>
     <div class="details">
         <p>Tries to handle an HTTP request through this route.</p>
         <p>Returns true if the request was handled, false if the route didn&#039;t match this request.<br />
- Note that answering a 500 error, or stopping the route because $stopRoute was set to true (see below), still counts as a successful handling.<br />
+ Note that for example answering a 500 error, or stopping the route because $stopRoute was set to true (see below), still counts as a successful handling.<br />
 <br />
  This function will call all before functions, all onlyIf functions, and all validate functions in the order where they have been defined.<br />
- These functions are called using a child of the scope given as parameter.<br />
+ These functions are called using a normal child of the scope given as parameter.<br />
 <br />
  This scope will also contain two variables named &quot;stopRoute&quot; and &quot;isRightResource&quot;.<br />
  If one of the before/onlyIf/validate handlers sets the &quot;stopRoute&quot; variable to true, then the route is stopped and handling is considered successful. For example, the resource was loaded from cache, so there is no need to go further in this route.<br />
- If one of the before/onlyIf/validate handlers sets the &quot;isRightResource&quot; variable to false, then the route is stopped and handling is considered failed. For example, a route which is supposed to display a user but the user doesn&#039;t exist.</p>
+ If one of the before/onlyIf/validate handlers sets the &quot;isRightResource&quot; variable to false, then the route is stopped and handling is considered failed. For example, a route which is supposed to display a user but the user doesn&#039;t exist.<br />
+<br />
+ The scope accessible to before functions and handler is the one passed as parameter, plus:<br />
+  - the &quot;stopRoute&quot; and &quot;isRightResource&quot; variables<br />
+  - the &quot;request&quot; and &quot;reponse&quot; variables</p>
         <div class="tags">
                             <h4>Parameters</h4>
 
                     <table>
                     <tr>
-                <td><a href="../Niysu/Scope.html"><abbr title="Niysu\Scope">Scope</abbr></a></td>
-                <td>$scope</td>
-                <td>Scope that will contain the variables accessible to the route</td>
+                <td><a href="../Niysu/HTTPRequestInterface.html"><abbr title="Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr></a></td>
+                <td>$request</td>
+                <td></td>
             </tr>
                     <tr>
-                <td>string</td>
+                <td><a href="../Niysu/HTTPResponseInterface.html"><abbr title="Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr></a></td>
+                <td>$response</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><a href="../Niysu/Scope.html"><abbr title="Niysu\Scope">Scope</abbr></a></td>
+                <td>$scope</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
                 <td>$prefix</td>
-                <td>(optional) A prefix to append to the Route&#039;s URL</td>
+                <td></td>
             </tr>
             </table>
 
@@ -321,8 +345,48 @@
                     </div>
     </div>
 
+                <h3 id="method_handleNoURLCheck">
+        <div class="location">at line 70</div>
+        <code>            public            
+    <strong>handleNoURLCheck</strong>(<a href="../Niysu/HTTPRequestInterface.html"><abbr title="Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr></a> $request, <a href="../Niysu/HTTPResponseInterface.html"><abbr title="Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr></a> $response, <a href="../Niysu/Scope.html"><abbr title="Niysu\Scope">Scope</abbr></a> $scope = null, $prefix = &#039;&#039;)</code>
+    </h3>
+    <div class="details">
+        <p>Same as handle() but continues even if wrong URL or method.</p>
+        <p></p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td><a href="../Niysu/HTTPRequestInterface.html"><abbr title="Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr></a></td>
+                <td>$request</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><a href="../Niysu/HTTPResponseInterface.html"><abbr title="Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr></a></td>
+                <td>$response</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><a href="../Niysu/Scope.html"><abbr title="Niysu\Scope">Scope</abbr></a></td>
+                <td>$scope</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$prefix</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
                 <h3 id="method_method">
-        <div class="location">at line 153</div>
+        <div class="location">at line 82</div>
         <code>            public            <a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a>
     <strong>method</strong>(string $method)</code>
     </h3>
@@ -356,7 +420,7 @@
     </div>
 
                 <h3 id="method_pattern">
-        <div class="location">at line 169</div>
+        <div class="location">at line 98</div>
         <code>            public            <a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a>
     <strong>pattern</strong>(string $varName, string $regex)</code>
     </h3>
@@ -397,7 +461,7 @@
     </div>
 
                 <h3 id="method_validate">
-        <div class="location">at line 186</div>
+        <div class="location">at line 115</div>
         <code>            public            <a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a>
     <strong>validate</strong>(<abbr title="Niysu\callable">callable</abbr> $callable, integer $statusCode = 500)</code>
     </h3>
@@ -439,7 +503,7 @@
     </div>
 
                 <h3 id="method_onlyIf">
-        <div class="location">at line 207</div>
+        <div class="location">at line 136</div>
         <code>            public            <a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a>
     <strong>onlyIf</strong>(<abbr title="Niysu\callable">callable</abbr> $callable)</code>
     </h3>
@@ -475,7 +539,7 @@
     </div>
 
                 <h3 id="method_filter">
-        <div class="location">at line 226</div>
+        <div class="location">at line 155</div>
         <code>            public            <a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a>
     <strong>filter</strong>(string $className)</code>
     </h3>
@@ -512,7 +576,7 @@
     </div>
 
                 <h3 id="method_before">
-        <div class="location">at line 253</div>
+        <div class="location">at line 182</div>
         <code>            public            <a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a>
     <strong>before</strong>($callable)</code>
     </h3>
@@ -546,7 +610,7 @@
     </div>
 
                 <h3 id="method_handler">
-        <div class="location">at line 267</div>
+        <div class="location">at line 196</div>
         <code>            public            <a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a>
     <strong>handler</strong>(<abbr title="Niysu\callable">callable</abbr> $handler)</code>
     </h3>
@@ -580,7 +644,7 @@
     </div>
 
                 <h3 id="method_after">
-        <div class="location">at line 280</div>
+        <div class="location">at line 209</div>
         <code>            public            <a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a>
     <strong>after</strong>($callable)</code>
     </h3>
@@ -614,7 +678,7 @@
     </div>
 
                 <h3 id="method_getURLRegex">
-        <div class="location">at line 293</div>
+        <div class="location">at line 222</div>
         <code>            public            string
     <strong>getURLRegex</strong>()</code>
     </h3>
@@ -638,7 +702,7 @@
     </div>
 
                 <h3 id="method_getOriginalPattern">
-        <div class="location">at line 301</div>
+        <div class="location">at line 230</div>
         <code>            public            string
     <strong>getOriginalPattern</strong>()</code>
     </h3>
@@ -662,7 +726,7 @@
     </div>
 
                 <h3 id="method_getURL">
-        <div class="location">at line 313</div>
+        <div class="location">at line 242</div>
         <code>            public            string
     <strong>getURL</strong>(array $parameters = array())</code>
     </h3>

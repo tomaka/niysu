@@ -145,7 +145,7 @@
                     boolean
                 </td>
                 <td class="last">
-                    <a href="#method_handle">handle</a>(<a href="../Niysu/Scope.html"><abbr title="Niysu\Scope">Scope</abbr></a> $scope)
+                    <a href="#method_handle">handle</a>(<a href="../Niysu/HTTPRequestInterface.html"><abbr title="Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr></a> $request, <a href="../Niysu/HTTPResponseInterface.html"><abbr title="Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr></a> $response, <a href="../Niysu/Scope.html"><abbr title="Niysu\Scope">Scope</abbr></a> $scope = null)
                     <p>Tries to handle an HTTP request through a route of this collection or its children collections.</p>
                 </td>
                 <td></td>
@@ -157,6 +157,16 @@
                 <td class="last">
                     <a href="#method_getRouteByName">getRouteByName</a>(string $name)
                     <p>Search for a route with this name in this collection and its children.</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    array
+                </td>
+                <td class="last">
+                    <a href="#method_getBeforeFunctions">getBeforeFunctions</a>()
+                    <p>Returns the list of all before handlers that have been registered, including the parent&#039;s ones.</p>
                 </td>
                 <td></td>
             </tr>
@@ -535,7 +545,7 @@
                 <h3 id="method_handle">
         <div class="location">at line 277</div>
         <code>            public            boolean
-    <strong>handle</strong>(<a href="../Niysu/Scope.html"><abbr title="Niysu\Scope">Scope</abbr></a> $scope)</code>
+    <strong>handle</strong>(<a href="../Niysu/HTTPRequestInterface.html"><abbr title="Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr></a> $request, <a href="../Niysu/HTTPResponseInterface.html"><abbr title="Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr></a> $response, <a href="../Niysu/Scope.html"><abbr title="Niysu\Scope">Scope</abbr></a> $scope = null)</code>
     </h3>
     <div class="details">
         <p>Tries to handle an HTTP request through a route of this collection or its children collections.</p>
@@ -546,9 +556,19 @@
 
                     <table>
                     <tr>
+                <td><a href="../Niysu/HTTPRequestInterface.html"><abbr title="Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr></a></td>
+                <td>$request</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><a href="../Niysu/HTTPResponseInterface.html"><abbr title="Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr></a></td>
+                <td>$response</td>
+                <td></td>
+            </tr>
+                    <tr>
                 <td><a href="../Niysu/Scope.html"><abbr title="Niysu\Scope">Scope</abbr></a></td>
                 <td>$scope</td>
-                <td>Scope that will contain the variables accessible to the route</td>
+                <td></td>
             </tr>
             </table>
 
@@ -568,7 +588,7 @@
     </div>
 
                 <h3 id="method_getRouteByName">
-        <div class="location">at line 305</div>
+        <div class="location">at line 303</div>
         <code>            public            <a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a>
     <strong>getRouteByName</strong>(string $name)</code>
     </h3>
@@ -592,6 +612,30 @@
                     <table>
         <tr>
             <td><a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_getBeforeFunctions">
+        <div class="location">at line 318</div>
+        <code>            public            array
+    <strong>getBeforeFunctions</strong>()</code>
+    </h3>
+    <div class="details">
+        <p>Returns the list of all before handlers that have been registered, including the parent&#039;s ones.</p>
+        <p></p>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td>array</td>
             <td></td>
         </tr>
     </table>
