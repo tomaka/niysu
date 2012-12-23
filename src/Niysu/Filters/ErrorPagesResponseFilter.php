@@ -31,6 +31,7 @@ class ErrorPagesResponseFilter extends \Niysu\HTTPResponseFilterInterface {
 	}
 
 	public function setStatusCode($statusCode) {
+		$this->currentStatusCode = $statusCode;
 		if ($this->server && isset($this->errorReplacements[$statusCode]))
 			$this->currentReplacement = $this->errorReplacements[$statusCode];
 
@@ -39,7 +40,6 @@ class ErrorPagesResponseFilter extends \Niysu\HTTPResponseFilterInterface {
 
 	/**
 	 * @todo Handle multiple flushes
-	 * @todo Don't erase the existing status code
 	 */
 	public function flush() {
 		if (!$this->currentReplacement) {
@@ -48,10 +48,9 @@ class ErrorPagesResponseFilter extends \Niysu\HTTPResponseFilterInterface {
 		}
 
 		$route = $this->server->getRouteByName($this->currentReplacement);
+		$response = new StatusCodeOverwriteResponseFilter($this->getOutput(), $this->currentStatusCode);
+		$route->handleNoURLCheck($this->request, $response, $scope);
 
-		$scope = new \Niysu\Scope([ 'request' => $this->request, 'response' => $this->getOutput(), 'server' => $this->server ]);
-		$route->handleNoURLCheck($scope);
-		
 		parent::flush();
 	}
 
@@ -70,6 +69,7 @@ class ErrorPagesResponseFilter extends \Niysu\HTTPResponseFilterInterface {
 	private $server;
 	private $request;
 	private $errorReplacements = [];
+	private $currentStatusCode;
 	private $currentReplacement = null;
 	private $headersSent = false;
 }
