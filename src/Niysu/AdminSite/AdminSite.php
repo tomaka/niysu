@@ -18,8 +18,12 @@ class AdminSite {
 	 */
 	public function mainPanel($twigService, $server, $scope) {
 		$routes = [];
-		foreach ($server->getRoutesList() as $r)
-			$routes[] = [ 'route' => $r->getOriginalPattern(), 'name' => $r->getName(), 'regex' => $r->getURLRegex() ];
+		foreach ($server->getRoutesList() as $r) {
+			$pattern = [];
+			for($i = 0; $i < $r->getURLsCount(); ++$i)
+				$pattern[] = $r->getOriginalPattern($i);
+			$routes[] = [ 'patterns' => $pattern, 'name' => $r->getName() ];
+		}
 
 		$twigService->addPath(__DIR__.'/templates', 'niysuAdminSite');
 		$twigService->output('@niysuAdminSite/home.htm', [

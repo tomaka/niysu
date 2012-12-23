@@ -41,10 +41,14 @@
 
 		<dl class="routesList">
 			{% for route in routes %}
-				<dt>{{ route.name ? route.name : route.route }}</dt>
+				<dt>{{ route.name ? route.name : 'No name' }}</dt>
 				<dd>
-					<strong>Name: </strong>{{ route.name }}{% if route.name == false %}<em>no name</em>{% endif %}<br />
-					<strong>Regex: </strong>{{ route.regex }}
+					{% for p in route.patterns %}
+						<strong>Pattern: </strong>{{ p }}<br />
+					{% endfor %}
+					{% if route.patterns == null %}
+						<strong>No pattern</strong>
+					{% endif %}
 				</dd>
 			{% endfor %}
 		</dl>
