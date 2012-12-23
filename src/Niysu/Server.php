@@ -59,6 +59,8 @@ class Server {
 
 		// building filters
 		$this->setFilterProvider('jsonRequest', 'Niysu\\Filters\\JSONRequestFilter');
+		$this->setFilterProvider('postRequest', 'Niysu\\Filters\\POSTRequestFilter');
+		$this->setFilterProvider('xmlRequest', 'Niysu\\Filters\\XMLRequestFilter');
 		$this->setFilterProvider('csvResponse', 'Niysu\\Filters\\CSVResponseFilter');
 
 		// facultative service providers
