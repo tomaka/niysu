@@ -1,6 +1,8 @@
 <?php
 namespace Niysu;
 
+require_once __DIR__.'/URLPattern.php';
+
 /**
  * A route is a path that the server can follow in order to answer a request.
  *

@@ -1,6 +1,11 @@
 <?php
 namespace Niysu;
 
+require_once __DIR__.'/HTTPRequestInterface.php';
+require_once __DIR__.'/HTTPResponseInterface.php';
+require_once __DIR__.'/RoutesCollection.php';
+require_once __DIR__.'/Scope.php';
+
 /**
  *
  * @copyright 	2012 Pierre Krieger <pierre.krieger1708@gmail.com>

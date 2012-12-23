@@ -1,6 +1,8 @@
 <?php
 namespace Niysu;
 
+require_once __DIR__.'/Route.php';
+
 /**
  * @copyright 	2012 Pierre Krieger <pierre.krieger1708@gmail.com>
  * @license 	MIT http://opensource.org/licenses/MIT
