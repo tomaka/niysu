@@ -254,19 +254,19 @@ class Server {
 	 */
 	public function generateQueryScope() {
 		$handleScope = $this->scope->newChild();
-		$log = $this->getService('log');
+		//$log = $this->getService('log');
 
 		foreach($this->serviceProviders as $serviceName => $provider) {
-			$handleScope->callback($serviceName.'Service', function(Scope $s) use ($serviceName, $provider, $log) {
-				if ($log)
-					$log->debug('Building service '.$serviceName);
+			$handleScope->callback($serviceName.'Service', function(Scope $s) use ($serviceName, $provider/*, $log*/) {
+				/*if ($log)
+					$log->debug('Building service '.$serviceName);*/
 				return $s->call($provider);
 			});
 		}
 
 		foreach($this->filterProviders as $filterName => $provider) {
-			$handleScope->callback($filterName.'Filter', function(Scope $s) use ($filterName, $provider, $log) {
-				$log->debug('Building filter '.$filterName);
+			$handleScope->callback($filterName.'Filter', function(Scope $s) use ($filterName, $provider/*, $log*/) {
+				//$log->debug('Building filter '.$filterName);
 				$filter = $s->call($provider);
 
 				if (is_a($filter, 'Niysu\HTTPRequestInterface', true)) {
