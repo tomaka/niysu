@@ -77,7 +77,7 @@ class DebugPanelService {
 	private $databaseProfilingService = null;
 	
 	private static $panelTemplate =
-		'<div style="color:black; position:fixed; left:0; bottom:0; width:100%; padding:0.5em 1em; background-color:gray; border-top:3px double black;">
+		'<div style="font-size:initial; font-family:Verdana,sans-serif; color:black; position:fixed; left:0; bottom:0; width:100%; padding:0.5em 1em; background-color:gray; border-top:3px double black;">
 			<em><a style="color:darkblue; text-decoration:inherit;" href="https://github.com/Tomaka17/niysu">Niysu debug panel</a></em>
 			<span style="margin-left:2em;">
 				<span
