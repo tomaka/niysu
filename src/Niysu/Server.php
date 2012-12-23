@@ -214,10 +214,6 @@ class Server {
 
 		try {
 			$handleScope = $this->scope->newChild();
-			$handleScope->set('request', $input);
-			$handleScope->passByRef('request', true);
-			$handleScope->set('response', $output);
-			$handleScope->passByRef('response', true);
 
 			foreach($this->serviceProviders as $serviceName => $provider) {
 				$handleScope->callback($serviceName.'Service', function(Scope $s) use ($serviceName, $provider, $log) {
@@ -245,10 +241,8 @@ class Server {
 			}
 			
 
-			$localScope = $handleScope->newChild();
-
-			if ($this->routesCollection->handle($localScope)) {
-				$localScope->response->flush();
+			if ($this->routesCollection->handle($input, $output, $handleScope)) {
+				$output->flush();
 				$log->debug('Successful handling of resource', [ 'url' => $input->getURL(), 'method' => $input->getMethod() ]);
 				if ($nb = gc_collect_cycles())
 					$log->notice('gc_collect_cycles() returned non-zero value: '.$nb);

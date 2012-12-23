@@ -56,15 +56,15 @@ class Route {
 	 * @param string 	$prefix 	(optional) A prefix to append to the Route's URL
 	 * @return boolean
 	 */
-	public function handle(Scope $scope, $prefix = '') {
-		return $this->doHandle($scope, $prefix, false);
+	public function handle(HTTPRequestInterface &$request, HTTPResponseInterface &$response, Scope $scope = null, $prefix = '') {
+		return $this->doHandle($request, $response, $scope, $prefix, false);
 	}
 
 	/**
 	 * Same as handle() but continues even if wrong URL or method.
 	 */
-	public function handleNoURLCheck(Scope $scope, $prefix = '') {
-		return $this->doHandle($scope, $prefix, true);
+	public function handleNoURLCheck(HTTPRequestInterface &$request, HTTPResponseInterface &$response, Scope $scope = null, $prefix = '') {
+		return $this->doHandle($request, $response, $scope, $prefix, true);
 	}
 
 	/**
@@ -241,12 +241,11 @@ class Route {
 
 
 
-	private function doHandle(Scope $scope, $prefix, $noURLCheck) {
-		// some routine checks
-		if (!$scope->get('request'))	throw new \LogicException('The "request" variable in the scope must be defined');
-		if (!$scope->get('response'))	throw new \LogicException('The "response" variable in the scope must be defined');
+	private function doHandle(HTTPRequestInterface &$request, HTTPResponseInterface &$response, $scope, $prefix, $noURLCheck) {
+		if (!$scope)
+			$scope = new Scope();
 
-		$request = $scope->get('request');
+		// checking method
 		if (!$noURLCheck &&!preg_match_all('/'.$this->method.'/i', $request->getMethod()))
 			return false;
 
@@ -271,46 +270,53 @@ class Route {
 		// checking that the handler was defined
 		if (!$this->callback)
 			throw new \LogicException('The handler of the route '.$this->originalPattern.' has not been defined');
+
+		// creating the local scope
+		$localScope = clone $scope;
 		
 		// adding parts of the URL inside scope
 		if ($result) {
 			foreach ($result as $varName => $value)
-				$scope->set($varName, $value);
+				$localScope->set($varName, $value);
 		}
 		
-		// adding controlling variables to scope
-		$scope->set('isWrongResource', false);		// DEPRECATED
-		$scope->set('ignoreHandler', false);		// DEPRECATED
-		$scope->set('isRightResource', true);
-		$scope->set('callHandler', true);
-		$scope->set('stopRoute', false);
+		// adding controlling variables to scope.
+		$localScope->set('request', $request);
+		$localScope->passByRef('request', true);
+		$localScope->set('response', $response);
+		$localScope->passByRef('response', true);
+		$localScope->set('isWrongResource', false);		// DEPRECATED
+		$localScope->set('ignoreHandler', false);		// DEPRECATED
+		$localScope->set('isRightResource', true);
+		$localScope->set('callHandler', true);
+		$localScope->set('stopRoute', false);
 		
 		// calling befores
 		foreach ($this->before as $before) {
-			$scope->call($before);
+			$localScope->call($before);
 
 			// checking controlling variables
-			if ($scope->get('isWrongResource') === true) {		// DEPRECATED
+			if ($localScope->get('isWrongResource') === true) {		// DEPRECATED
 				if ($logService)
 					$logService->err('The isWrongResource parameter is deprecated');
 				return false;
 			}
-			if ($scope->get('ignoreHandler') === true) {			// DEPRECATED
+			if ($localScope->get('ignoreHandler') === true) {			// DEPRECATED
 				if ($logService)
 					$logService->err('The ignoreHandler parameter is deprecated');
 				return true;
 			}
-			if ($scope->get('isRightResource') === false) {
+			if ($localScope->get('isRightResource') === false) {
 				if ($logService)
 					$logService->debug('Route ignored by before handler');
 				return false;
 			}
-			if ($scope->get('callHandler') === false) {
+			if ($localScope->get('callHandler') === false) {
 				if ($logService)
 					$logService->debug('Route\'s handler won\'t get called because of before handler');
 				return true;
 			}
-			if ($scope->get('stopRoute') === true) {
+			if ($localScope->get('stopRoute') === true) {
 				if ($logService)
 					$logService->debug('Route\'s handler has been stopped by before handler');
 				return true;
@@ -320,11 +326,15 @@ class Route {
 		// calling the handler
 		if ($logService)
 			$logService->debug('Calling handler of route '.$this->getOriginalPattern());
-		$scope->call($this->callback);
+		$localScope->call($this->callback);
 		
 		// calling after
 		foreach ($this->after as $filter)
-			$scope->call($filter);
+			$localScope->call($filter);
+
+		// pushing back in variables
+		$request = $localScope->request;
+		$response = $localScope->response;
 
 		return true;
 	}

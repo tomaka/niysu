@@ -274,20 +274,18 @@ class RoutesCollection {
 	 * @param Scope 	$scope 		Scope that will contain the variables accessible to the route
 	 * @return boolean
 	 */
-	public function handle(Scope $scope) {
-		$request = $scope->get('request');
-
+	public function handle(HTTPRequestInterface &$request, HTTPResponseInterface &$response, Scope $scope = null) {
 		$fullPrefix = $this->getFullPrefix();
 		if ($fullPrefix && strpos($request->getURL(), $fullPrefix) !== 0)
 			return false;
 
 		foreach ($this->routes as $route) {
-			if ($route->handle($scope, $fullPrefix))
+			if ($route->handle($request, $response, $scope, $fullPrefix))
 				return true;
 		}
 
 		foreach ($this->children as $child) {
-			if ($child->handle($scope))
+			if ($child->handle($request, $response, $scope))
 				return true;
 		}
 
