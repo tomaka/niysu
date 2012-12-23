@@ -17,19 +17,19 @@ class TidyResponseFilter extends \Niysu\HTTPResponseFilterInterface {
 
 		// setting default configuration
 		$this->config = [
+	        'break-before-br' => false,
+	        'doctype' => '<!DOCTYPE HTML>',
 	        'hide-comments' => true,
-	        'tidy-mark' => false,
 	        'indent' => true,
 	        'indent-spaces' => 4,
 	        'new-blocklevel-tags' => 'article,header,footer,section,nav',
 	        'new-inline-tags' => 'video,audio,canvas,ruby,rt,rp',
-	        'doctype' => '<!DOCTYPE HTML>',
 	        'sort-attributes' => 'alpha',
+	        'tidy-mark' => false,
+	        'output-xhtml' => false,
 	        'vertical-space' => false,
-	        'output-xhtml' => true,
 	        'wrap' => 180,
-	        'wrap-attributes' => false,
-	        'break-before-br' => false
+	        'wrap-attributes' => false
 	    ];
 	}
 
