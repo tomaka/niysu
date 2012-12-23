@@ -22,6 +22,9 @@ class Server {
 		// building the main RoutesCollection
 		$this->routesCollection = new RoutesCollection('');
 
+		// building the monolog object
+		$this->log = new \Monolog\Logger('NiysuServer');
+
 		// loading environment
 		if ($environment) {
 			try {
@@ -38,6 +41,8 @@ class Server {
 		$this->scope->passByRef('server', false);
 		$this->scope->elapsedTime = function() { $now = microtime(true); return $now - $_SERVER['REQUEST_TIME_FLOAT']; };
 		$this->scope->passByRef('elapsedTime', false);
+		$this->scope->log = $this->log;
+		$this->scope->passByRef('log', false);
 		
 		// building default services providers
 		$this->setServiceProvider('cacheMe', 'Niysu\\Services\\CacheMeService');
@@ -51,7 +56,6 @@ class Server {
 		$this->setServiceProvider('inputJSON', 'Niysu\\Services\\InputJSONService');
 		$this->setServiceProvider('inputURLEncoded', 'Niysu\\Services\\InputURLEncodedService');
 		$this->setServiceProvider('inputXML', 'Niysu\\Services\\InputXMLService');
-		$this->setServiceProvider('log', new Services\LogServiceProvider());
 		$this->setServiceProvider('maintenanceMode', 'Niysu\\Services\\MaintenanceModeService');
 		$this->setServiceProvider('outputCSV', 'Niysu\\Services\\OutputCSVService');
 		$this->setServiceProvider('outputExcel', 'Niysu\\Services\\OutputExcelService');
@@ -208,22 +212,21 @@ class Server {
 		if (!$input)	$input = new HTTPRequestGlobal();
 		if (!$output)	$output = new HTTPResponseGlobal();
 
-		$log = $this->getService('log');
-		$log->debug('Starting handling of resource', [ 'url' => $input->getURL(), 'method' => $input->getMethod() ]);
+		$this->log->debug('Starting handling of resource', [ 'url' => $input->getURL(), 'method' => $input->getMethod() ]);
 
 		$this->currentResponsesStack[] = $output;
 
 		try {
 			if ($this->routesCollection->handle($input, $output, $this->generateQueryScope())) {
 				$output->flush();
-				$log->debug('Successful handling of resource', [ 'url' => $input->getURL(), 'method' => $input->getMethod() ]);
+				$this->log->debug('Successful handling of resource', [ 'url' => $input->getURL(), 'method' => $input->getMethod() ]);
 				if ($nb = gc_collect_cycles())
-					$log->notice('gc_collect_cycles() returned non-zero value: '.$nb);
+					$this->log->notice('gc_collect_cycles() returned non-zero value: '.$nb);
 				return;
 			}
 
 		} catch(Exception $exception) {
-			try { $this->getService('log')->err($exception->getMessage(), $exception->getTrace()); } catch(Exception $e) {}
+			try { $this->log->err($exception->getMessage(), $exception->getTrace()); } catch(\Exception $e) {}
 			if (!$output->isHeadersListSent())
 				$output->setStatusCode(500);
 			if ($this->printErrors) {
@@ -236,7 +239,7 @@ class Server {
 		}
 
 		// handling 404 if we didn't find any handler
-		$log->debug('Didn\'t find any route for request, going to the 404 route', [ 'url' => $input->getURL(), 'method' => $input->getMethod() ]);
+		$this->log->debug('Didn\'t find any route for request, going to the 404 route', [ 'url' => $input->getURL(), 'method' => $input->getMethod() ]);
 		$this->followPseudoRoute($input, $output, 404);
 		array_pop($this->currentResponsesStack);
 	}
@@ -248,25 +251,24 @@ class Server {
 	 *  - services, where each service has a "Service" suffix (eg. if you register a service named "log", it is accessed by "$logService")
 	 *  - filters, where each filter has a "Filter" suffix (eg. if you register a filter named "jsonInput", it is accessed by "$jsonInputFilter")
 	 *  - $elapsedTime, a function that returns the number of seconds between the start of the request and the moment when it was called
+	 *  - $log, the monolog logger
 	 *  - $server, the server
 	 *
 	 * @return Scope
 	 */
 	public function generateQueryScope() {
 		$handleScope = $this->scope->newChild();
-		//$log = $this->getService('log');
 
 		foreach($this->serviceProviders as $serviceName => $provider) {
 			$handleScope->callback($serviceName.'Service', function(Scope $s) use ($serviceName, $provider/*, $log*/) {
-				/*if ($log)
-					$log->debug('Building service '.$serviceName);*/
+				$this->log->debug('Building service '.$serviceName);
 				return $s->call($provider);
 			});
 		}
 
 		foreach($this->filterProviders as $filterName => $provider) {
 			$handleScope->callback($filterName.'Filter', function(Scope $s) use ($filterName, $provider/*, $log*/) {
-				//$log->debug('Building filter '.$filterName);
+				$this->log->debug('Building filter '.$filterName);
 				$filter = $s->call($provider);
 
 				if (is_a($filter, 'Niysu\HTTPRequestInterface', true)) {
@@ -341,6 +343,8 @@ class Server {
 			$this->loadEnvironmentData($val);
 		}
 
+		$this->log->debug('Configuration successfully loaded');
+
 		if ($this->handleErrors == true)
 			$this->replaceErrorHandling();
 	}
@@ -371,6 +375,11 @@ class Server {
 					throw new \LogicException('The "config" function in environment data must be callable');
 				$this->configFunctions[] = $value;
 
+			} else if ($key === 'logConfig') {
+				if (!is_callable($value))
+					throw new \LogicException('The "log" function in environment data must be callable');
+				call_user_func($value, $this->log);
+
 			} else {
 				if (is_numeric($key) && is_array($value)) {
 					$this->loadEnvironmentData($value);
@@ -399,7 +408,7 @@ class Server {
 			$error = error_get_last();
 			if ($error != null) {
 				try {
-					$this->getService('log')->crit($error['message'], $error);
+					$this->log->crit($error['message'], $error);
 					if ($this->printErrors)
 						$this->printError(new \ErrorException($error['message'], 0, $error['type'], $error['file'], $error['line']));
 
@@ -415,7 +424,9 @@ class Server {
 		// handler to be called when a PHP error is detected (like calling an unvalid function)
 		set_error_handler(function($errno, $errstr, $errfile, $errline, $errcontext) {
 			if ($errno == E_NOTICE || $errno == E_USER_NOTICE) {
-				try { $this->getService('log')->notice($errstr, [ 'file' => $errfile, 'line' => $errline, 'content' => $errcontext ]); } catch(Exception $e) {}
+				try {
+					$this->log->notice($errstr, [ 'file' => $errfile, 'line' => $errline, 'content' => $errcontext ]);
+				} catch(\Exception $e) {}
 				return true;
 			}
 
@@ -424,7 +435,7 @@ class Server {
 		
 		// changing the handler to be called when an exception is not handled
 		set_exception_handler(function($exception) {
-			try { $this->getService('log')->err($exception->getMessage(), $exception->getTrace()); } catch(Exception $e) {}
+			try { $this->log->err($exception->getMessage(), $exception->getTrace()); } catch(\Exception $e) {}
 			if ($this->printErrors)
 				$this->printError($exception);
 
@@ -481,6 +492,7 @@ class Server {
 	
 
 	private $scope;
+	private $log;
 	private $printErrors = false;
 	private $handleErrors = true;
 	private $showRoutesOn404 = false;
