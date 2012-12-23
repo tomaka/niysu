@@ -61,6 +61,9 @@ class CSVResponseFilter extends \Niysu\HTTPResponseFilterInterface {
 		$this->data = $this->toString($csv, $separator);
 	}
 
+	public function appendData($data) {
+	}
+
 	public function flush() {
 		parent::appendData($this->data);
 		parent::flush();
