@@ -93,7 +93,7 @@ class RoutesCollection {
 	 * @return Route
 	 * @see Route::__construct
 	 */
-	public function register($url, $method = '.*', $callback = null) {
+	public function register($url = null, $method = '.*', $callback = null) {
 		$registration = new Route($url, $method, $callback);
 		$registration->before(function($scope) {
 			foreach ($this->globalBefores as $b) {

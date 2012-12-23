@@ -152,7 +152,7 @@ class Server {
 	 * @return Route
 	 * @see Route::__construct
 	 */
-	public function register($url, $method = '.*', $callback = null) {
+	public function register($url = null, $method = '.*', $callback = null) {
 		return $this->routesCollection->register($url, $method, $callback);
 	}
 
