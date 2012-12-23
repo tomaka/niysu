@@ -41,7 +41,7 @@
                 </td>
                 <td class="last">
                     <a href="#method___construct">__construct</a>(<a href="../Niysu/HTTPResponseInterface.html"><abbr title="Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr></a> $output, <abbr title="Niysu\callable">callable</abbr> $contentCallback)
-                    <p></p>
+                    <p>Sets the output response.</p>
                 </td>
                 <td></td>
             </tr>
@@ -51,7 +51,7 @@
                 </td>
                 <td class="last">
                     <a href="#method_flush">flush</a>()
-                    <p>Calls the callback defined in the constructor and flushes.</p>
+                    <p>Flushes the response.</p>
                 </td>
                 <td></td>
             </tr>
@@ -136,7 +136,7 @@
     <strong>__construct</strong>(<a href="../Niysu/HTTPResponseInterface.html"><abbr title="Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr></a> $output, <abbr title="Niysu\callable">callable</abbr> $contentCallback)</code>
     </h3>
     <div class="details">
-        <p></p>
+        <p>Sets the output response.</p>
         <p></p>
         <div class="tags">
                             <h4>Parameters</h4>
@@ -166,9 +166,8 @@
     <strong>flush</strong>()</code>
     </h3>
     <div class="details">
-        <p>Calls the callback defined in the constructor and flushes.</p>
-        <p>This function will call the callback defined in the constructor with the HTTPResponseStorage as parameter.<br />
- Then it will read the HTTPResponseStorage and output it to the output response.</p>
+        <p>Flushes the response.</p>
+        <p>If some data has already been appended, then this will send all headers and the data already added.</p>
         <div class="tags">
             
             
