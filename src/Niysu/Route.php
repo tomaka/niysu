@@ -12,8 +12,17 @@ namespace Niysu;
  * @link 		http://github.com/Tomaka17/niysu
  */
 class Route {
-	public function __construct($url, $method = '.*', $callback = null) {
-		$this->urlPattern = new URLPattern($url);
+	/**
+	 * Creates a new route.
+	 *
+	 * @param mixed 	$url 	The URL to match with the route
+	 */
+	public function __construct($url = null, $method = '.*', $callback = null) {
+		if (!empty($url)) {
+			if (is_string($url))			$this->urlPatterns[] = new URLPattern($url);
+			else if (is_array($url))		foreach ($url as $u) $this->urlPatterns[] = new URLPattern($u);
+		}
+
 		$this->method = $method;
 		if ($callback)
 			$this->handler($callback);
@@ -94,9 +103,21 @@ class Route {
 	 * @param string 	$varName 		Name of the route parameter
 	 * @param string 	$regex 			Regular expression (without / /)
 	 * @return Route
+	 * @throws LogicException If none of the URLs contain $varName
 	 */
 	public function pattern($varName, $regex) {
-		$this->urlPattern->pattern($varName, $regex);
+		$anyOk = false;
+
+		foreach ($this->urlPatterns as $p) {
+			try {
+				$p->pattern($varName, $regex);
+				$anyOk = true;
+			} catch(\Exception $e) {}
+		}
+
+		if (!$anyOk)
+			throw new \LogicException('No URL contain the variable '.$varName);
+
 		return $this;
 	}
 
@@ -217,18 +238,21 @@ class Route {
 	 *
 	 * Includes / and / around the regex.
 	 *
+	 * @param integer 	$index 		0-based index of the URL to get
 	 * @return string
 	 */
-	public function getURLRegex() {
-		return $this->urlPattern->getURLRegex();
+	public function getURLRegex($index = 0) {
+		return $this->urlPatterns[$index]->getURLRegex();
 	}
 
 	/**
-	 * Returns the original pattern that was passed to the constructor.
+	 * Returns the original pattern of an URL.
+	 * 
+	 * @param integer 	$index 		0-based index of the URL to get
 	 * @return string
 	 */
-	public function getOriginalPattern() {
-		return $this->urlPattern->getOriginalPattern();
+	public function getOriginalPattern($index = 0) {
+		return $this->urlPatterns[$index]->getOriginalPattern();
 	}
 
 	/**
@@ -236,11 +260,12 @@ class Route {
 	 *
 	 * @param array 	$parameters 	An associative array of parameter => value
 	 * @return string
+	 * @param integer 	$index 		0-based index of the URL to get
 	 * @throws RuntimeException If some parameters are missing in the array
 	 * @throws RuntimeException If a parameter does not match the corresponding regex
 	 */
-	public function getURL($parameters = []) {
-		return $this->urlPattern->getURL($parameters);
+	public function getURL($parameters = [], $index = 0) {
+		return $this->urlPatterns[$index]->getURL($parameters);
 	}
 
 
@@ -262,14 +287,17 @@ class Route {
 			$url = '/';
 		
 		// checking whether the URL matches
-		$result = $this->urlPattern->testURL($url);
+		foreach ($this->urlPatterns as $p) {
+			$result = $p->testURL($url);
+			if ($result)	break;
+		}
 		if (!$noURLCheck && $result === null)
 			return false;
 		
 		// getting log service
 		$logService = $scope->logService;
-		if ($logService)
-			$logService->debug('URL '.$request->getURL().' matching route '.$this->urlPattern->getOriginalPattern().' with prefix '.$prefix.' ; regex is: '.$this->urlPattern->getURLRegex());
+		/*if ($logService)
+			$logService->debug('URL '.$request->getURL().' matching route '.$this->urlPattern->getOriginalPattern().' with prefix '.$prefix.' ; regex is: '.$this->urlPattern->getURLRegex());*/
 
 		// checking that the handler was defined
 		if (!$this->callback)
@@ -346,7 +374,7 @@ class Route {
 
 	private $before = [];						// an array of callable
 	private $after = [];						// an array of callable
-	private $urlPattern;						// contains an instance of URLPattern
+	private $urlPatterns = [];					// contains an instance of URLPattern
 	private $callback = null;					// the main function that handles the resource
 	private $method = null;
 	private $name = null;
