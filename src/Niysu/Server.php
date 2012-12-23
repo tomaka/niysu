@@ -14,8 +14,6 @@ class Server {
 	 * @param mixed 	$environment 	Either the name of a file to load or an array containing the config
 	 */
 	public function __construct($environment = null) {
-		$constructionTime = microtime(true);
-
 		// building the main RoutesCollection
 		$this->routesCollection = new RoutesCollection('');
 
@@ -33,7 +31,7 @@ class Server {
 		$this->scope = new Scope();
 		$this->scope->server = $this;
 		$this->scope->passByRef('server', false);
-		$this->scope->elapsedTime = function() use ($constructionTime) { $now = microtime(true); return round(1000 * ($now - $constructionTime)); };
+		$this->scope->elapsedTime = function() { $now = microtime(true); return $now - $_SERVER['REQUEST_TIME_FLOAT']; };
 		$this->scope->passByRef('elapsedTime', false);
 		
 		// building default services providers
@@ -244,7 +242,7 @@ class Server {
 	 * This scope includes:
 	 *  - services, where each service has a "Service" suffix (eg. if you register a service named "log", it is accessed by "$logService")
 	 *  - filters, where each filter has a "Filter" suffix (eg. if you register a filter named "jsonInput", it is accessed by "$jsonInputFilter")
-	 *  - $elapsedTime, a function that returns the number of seconds between the time the server was created and the time where it was called
+	 *  - $elapsedTime, a function that returns the number of seconds between the start of the request and the moment when it was called
 	 *  - $server, the server
 	 *
 	 * @return Scope

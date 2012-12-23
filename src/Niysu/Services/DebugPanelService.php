@@ -96,7 +96,7 @@ class DebugPanelService {
 					</div>
 				</span>
 			</span>
-			<span style="margin-left:2em;">Time to build this page: {{ timeElapsed }} ms</span>
+			<span style="margin-left:2em;">Time to build this page: {{ (1000 * timeElapsed) | number_format }} ms</span>
 			<span style="margin-left:2em;">Peak memory: {{ peakMemory }}</span>
 			<span style="margin-left:2em;">
 				<span
