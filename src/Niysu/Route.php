@@ -163,36 +163,6 @@ class Route {
 	}
 
 	/**
-	 * Adds a filter to either an request or a response.
-	 *
-	 * If the class is a derivate of HTTPRequestInterface, then it will replace the request.
-	 * If the class is a derivate of HTTPResponseInterface, then it will replace the response.
-	 *
-	 * The filter() function returns $this.
-	 *
-	 * @param string 	$className 		Name of a class derivate of HTTPRequestInterface or HTTPResponseInterface
-	 * @return Route
-	 */
-	public function filter($className) {
-			throw new \LogicException('Not yet implemented');
-		/*if (is_a($className, 'Niysu\\HTTPRequestInterface')) {
-			throw new \LogicException('Not yet implemented');
-
-		} else if (is_a($className, 'Niysu\\HTTPResponseInterface')) {
-			$this->before(function(&$response) use ($className) {
-				$ret = $scope->call($callable);
-				if (!$ret) {
-					$response->setStatusCode($statusCode);
-					$callHandler = false;
-				}
-			});
-
-		}*/
-
-		return $this;
-	}
-
-	/**
 	 * Adds a function to be called before the handler.
 	 *
 	 * Returns $this.
