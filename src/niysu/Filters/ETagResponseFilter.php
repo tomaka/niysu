@@ -2,7 +2,12 @@
 namespace Niysu\Filters;
 
 /**
- * Allows you to customize error pages.
+ * Handles everything related to ETag.
+ *
+ * You can call the "setETag" function before the headers are sent to set the etag of the current resource.
+ * If you don't call this function, the etag will automatically be calculated by hashing the data.
+ *
+ * If the HTTP request gives an If-None-Match with the same etag, this filter returns a 403 and remove all the content.
  *
  * @copyright 	2012 Pierre Krieger <pierre.krieger1708@gmail.com>
  * @license 	MIT http://opensource.org/licenses/MIT
@@ -19,7 +24,7 @@ class ETagResponseFilter extends \Niysu\HTTPResponseFilterInterface {
 	/**
 	 * Sets the ETag of the resource.
 	 *
-	 * If this function is not called, then the ETag will be computed automatically by MD5-ing the content.
+	 * If this function is not called, then the ETag will be computed automatically by hashing the content.
 	 *
 	 * @param string 	$etag 		ETag of the resource
 	 */
