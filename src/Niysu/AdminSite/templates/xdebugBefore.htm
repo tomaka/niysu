@@ -1,0 +1,35 @@
+{#
+	Copyright 2012 Pierre Krieger
+
+	This code is under MIT license. See the LICENSE file.
+#}
+
+{% extends "@niysuAdminSite/main.htm" %}
+
+{% block body %}
+	<h2>XDebug profiling</h2>
+
+	{% if xdebugInstalled == false %}
+		<p><strong>You must have the XDebug extension installed in order to use profiling.</strong></p>
+
+	{% else %}
+		<p>
+			Value of xdebug.profiler_enable: {{ xdebugProfilerEnable }}<br />
+			Value of xdebug.profiler_enable_trigger: {{ xdebugProfilerEnableTrigger }}<br />
+			Server signature: {{ serverSignature }}<br />
+
+			{% if xdebugProfilerEnable == 0 and xdebugProfilerEnableTrigger == 1 %}
+				<em>Everything ok!</em>
+			{% else %}
+				<strong>Problem: xdebug.profiler_enable must be set to 0 and xdebug.profiler_enable_trigger must be set to 1</strong>
+			{% endif %}
+		</p>
+
+		<h3>Profiling</h3>
+		<form action="xdebug-start" method="post">
+			<p>URL to test:<br /><input style="min-width:25em;" type="text" name="url" placeholder="Local URL to test" /></p>
+			<p><button type="submit">Start profiling</button></p>
+		</form>
+
+	{% endif %}
+{% endblock %}

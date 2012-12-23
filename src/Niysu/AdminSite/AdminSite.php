@@ -49,9 +49,39 @@ class AdminSite {
 	 * @url /database
 	 * @method GET
 	 */
-	public function ajaxDatabasePanel($twigService) {
+	public function databasePanel($twigService) {
 		$twigService->addPath(__DIR__.'/templates', 'niysuAdminSite');
 		$twigService->output('@niysuAdminSite/databaseAccess.htm');
+	}
+
+	/**
+	 * @name niysu-adminsite-xdebug
+	 * @url /xdebug
+	 * @method GET
+	 */
+	public function xDebugPanel($twigService) {
+		$twigService->addPath(__DIR__.'/templates', 'niysuAdminSite');
+		$twigService->output('@niysuAdminSite/xdebugBefore.htm', [
+			'xdebugInstalled' => extension_loaded('xdebug'),
+			'xdebugProfilerEnable' => ini_get('xdebug.profiler_enable'),
+			'xdebugProfilerEnableTrigger' => ini_get('xdebug.profiler_enable_trigger'),
+			'serverSignature' => $_SERVER['SERVER_SIGNATURE']
+		]);
+	}
+
+	/**
+	 * @name niysu-adminsite-xdebug-start
+	 * @url /xdebug-start
+	 * @method POST
+	 */
+	public function xDebugStart($postRequestFilter, $response) {
+		$opts = ['http' =>
+		    [
+		        'method'  => 'GET'
+		    ]
+		];
+
+		file_get_contents('http://localhost:'.$_SERVER['SERVER_PORT'].'/'.$postRequestFilter->url.'?XDEBUG_PROFILE', false, stream_context_create($opts));
 	}
 }
 
