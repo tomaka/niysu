@@ -276,10 +276,8 @@ class Route {
 		if (!$noURLCheck && $result === null)
 			return false;
 		
-		// getting log service
-		$logService = $scope->logService;
-		/*if ($logService)
-			$logService->debug('URL '.$request->getURL().' matching route '.$this->urlPattern->getOriginalPattern().' with prefix '.$prefix.' ; regex is: '.$this->urlPattern->getURLRegex());*/
+		// logging
+		//$scope->log->debug('URL '.$request->getURL().' matching route '.$this->urlPattern->getOriginalPattern().' with prefix '.$prefix.' ; regex is: '.$this->urlPattern->getURLRegex());
 
 		// checking that the handler was defined
 		if (!$this->callback)
@@ -338,8 +336,7 @@ class Route {
 		}
 		
 		// calling the handler
-		/*if ($logService)
-			$logService->debug('Calling handler of route '.$this->getOriginalPattern());*/
+		/*$scope->log->debug('Calling handler of route '.$this->getOriginalPattern());*/
 		$localScope->call($this->callback);
 		
 		// calling after
