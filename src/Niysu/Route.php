@@ -57,14 +57,14 @@ class Route {
 	 * @return boolean
 	 */
 	public function handle(Scope $scope, $prefix = '') {
-		$this->doHandle($scope, $prefix, false);
+		return $this->doHandle($scope, $prefix, false);
 	}
 
 	/**
 	 * Same as handle() but continues even if wrong URL or method.
 	 */
 	public function handleNoURLCheck(Scope $scope, $prefix = '') {
-		$this->doHandle($scope, $prefix, true);
+		return $this->doHandle($scope, $prefix, true);
 	}
 
 	/**
