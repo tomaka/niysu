@@ -52,6 +52,10 @@ class Route {
 	 * If one of the before/onlyIf/validate handlers sets the "stopRoute" variable to true, then the route is stopped and handling is considered successful. For example, the resource was loaded from cache, so there is no need to go further in this route.
 	 * If one of the before/onlyIf/validate handlers sets the "isRightResource" variable to false, then the route is stopped and handling is considered failed. For example, a route which is supposed to display a user but the user doesn't exist.
 	 *
+	 * The scope accessible to before functions and handler is the one passed as parameter, plus:
+	 *  - the "stopRoute" and "isRightResource" variables
+	 *  - the "request" and "reponse" variables
+	 *
 	 * @param Scope 	$scope 		Scope that will contain the variables accessible to the route
 	 * @param string 	$prefix 	(optional) A prefix to append to the Route's URL
 	 * @return boolean
