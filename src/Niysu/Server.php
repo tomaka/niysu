@@ -35,7 +35,7 @@ class Server {
 		$this->scope->passByRef('server', false);
 		$this->scope->elapsedTime = function() use ($constructionTime) { $now = microtime(true); return round(1000 * ($now - $constructionTime)); };
 		$this->scope->passByRef('elapsedTime', false);
-				
+		
 		// building default services providers
 		$this->setServiceProvider('cacheMe', 'Niysu\\Services\\CacheMeService');
 		$this->setServiceProvider('cache', 'Niysu\\Services\\CacheService');
@@ -196,6 +196,8 @@ class Server {
 	 * This function will go through all registered routes. All routes that match the requested URL will be called in the order of their registration.
 	 * The server passes a scope containing variables coming from it. See generateQueryScope for more infos.
 	 *
+	 * If no route is found or if an error is triggered, the server will start a pseudo-route. This will call all the before handles of the server and return a 404 or 500 code.
+	 *
 	 * @param HTTPRequestInterface 		$input		The request to handle (if null, an instance of HTTPRequestGlobal)
 	 * @param HTTPResponseInterface 	$output		The response where to write the output (if null, an instance of HTTPResponseGlobal)
 	 */
@@ -231,9 +233,8 @@ class Server {
 		}
 
 		// handling 404 if we didn't find any handler
-		$log->debug('Didn\'t find any route for request, returning 404', [ 'url' => $input->getURL(), 'method' => $input->getMethod() ]);
-		$output->setStatusCode(404);
-		$output->flush();
+		$log->debug('Didn\'t find any route for request, going to the 404 route', [ 'url' => $input->getURL(), 'method' => $input->getMethod() ]);
+		$this->followPseudoRoute($input, $output, 404);
 		array_pop($this->currentResponsesStack);
 	}
 
@@ -375,6 +376,18 @@ class Server {
 				}
 			}
 		}
+	}
+
+	private function followPseudoRoute($request, $response, $code) {
+		$localScope = $this->generateQueryScope();
+		$localScope->request = $request;
+		$localScope->response = $response;
+
+		foreach ($this->routesCollection->getBeforeFunctions() as $b)
+			$localScope->call($b);
+
+		$localScope->response->setStatusCode($code);
+		$localScope->response->flush();
 	}
 	
 	private function replaceErrorHandling() {
