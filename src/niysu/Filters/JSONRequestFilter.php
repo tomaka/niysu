@@ -36,11 +36,11 @@ class JSONRequestFilter extends \Niysu\HTTPRequestFilterInterface {
 	}
 
 	public function isValidJSON() {
-		if (!$this->isJSONContentType($request))
+		if (!$this->isJSONContentType())
 			return false;
 		
 		try {
-			$this->getJSONData($request);
+			$this->getJSONData();
 			return true;
 
 		} catch(\Exception $e) {
