@@ -187,6 +187,12 @@ class Server {
 	 *
 	 * This function will go through all registered routes. All routes that match the requested URL will be called in the order of their registration.
 	 *
+	 * The scope which routes have access to, includes:
+	 *  - services, where each service has a "Service" suffix (eg. if you register a service named "log", it is accessed by "$logService")
+	 *  - filters, where each filter has a "Filter" suffix (eg. if you register a filter named "jsonInput", it is accessed by "$jsonInputFilter")
+	 *  - $elapsedTime, a function that returns the number of seconds between the time the server was created and the time where it was called
+	 *  - $server, the server
+	 *
 	 * @param HTTPRequestInterface 		$input		The request to handle (if null, an instance of HTTPRequestGlobal)
 	 * @param HTTPResponseInterface 	$output		The response where to write the output (if null, an instance of HTTPResponseGlobal)
 	 */
