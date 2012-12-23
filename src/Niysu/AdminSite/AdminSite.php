@@ -22,7 +22,7 @@ class AdminSite {
 			$routes[] = [ 'route' => $r->getOriginalPattern(), 'name' => $r->getName(), 'regex' => $r->getURLRegex() ];
 
 		$twigService->addPath(__DIR__.'/templates', 'niysuAdminSite');
-		$twigService->output('@niysuAdminSite/home.adminsite.htm', [
+		$twigService->output('@niysuAdminSite/home.htm', [
 			'routes' => $routes,
 			'maintenanceMode' => $scope->maintenanceModeService->isMaintenanceMode()
 		]);
