@@ -65,6 +65,7 @@ class Server {
 		$this->setFilterProvider('xmlRequest', 'Niysu\\Filters\\XMLRequestFilter');
 		$this->setFilterProvider('csvResponse', 'Niysu\\Filters\\CSVResponseFilter');
 		$this->setFilterProvider('tidyResponse', 'Niysu\\Filters\\TidyResponseFilter');
+		$this->setFilterProvider('xmlResponse', 'Niysu\\Filters\\XMLResponseFilter');
 
 		// facultative service providers
 		$this->setServiceProvider('twig', function($scope) {
