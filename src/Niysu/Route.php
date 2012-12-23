@@ -204,6 +204,16 @@ class Route {
 	}
 
 	/**
+	 * Returns the number of URLs registered to this service
+	 *
+	 * @return integer
+	 */
+	public function getURLsCount() {
+		return count($this->urlPatterns);
+	}
+
+
+	/**
 	 * Returns the regular expression to match with an URL.
 	 *
 	 * Includes / and / around the regex.
