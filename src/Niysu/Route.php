@@ -43,10 +43,10 @@ class Route {
 	 * Tries to handle an HTTP request through this route.
 	 *
 	 * Returns true if the request was handled, false if the route didn't match this request.
-	 * Note that answering a 500 error, or stopping the route because $stopRoute was set to true (see below), still counts as a successful handling.
+	 * Note that for example answering a 500 error, or stopping the route because $stopRoute was set to true (see below), still counts as a successful handling.
 	 *
 	 * This function will call all before functions, all onlyIf functions, and all validate functions in the order where they have been defined.
-	 * These functions are called using a child of the scope given as parameter.
+	 * These functions are called using a normal child of the scope given as parameter.
 	 *
 	 * This scope will also contain two variables named "stopRoute" and "isRightResource".
 	 * If one of the before/onlyIf/validate handlers sets the "stopRoute" variable to true, then the route is stopped and handling is considered successful. For example, the resource was loaded from cache, so there is no need to go further in this route.
@@ -57,89 +57,14 @@ class Route {
 	 * @return boolean
 	 */
 	public function handle(Scope $scope, $prefix = '') {
-		// some routine checks
-		if (!$scope->get('request'))	throw new \LogicException('The "request" variable in the scope must be defined');
-		if (!$scope->get('response'))	throw new \LogicException('The "response" variable in the scope must be defined');
+		$this->doHandle($scope, $prefix, false);
+	}
 
-		$request = $scope->get('request');
-		if (!preg_match_all('/'.$this->method.'/i', $request->getMethod()))
-			return false;
-
-		// checking prefix
-		$url = $request->getURL();
-		if ($prefix && strpos($url, $prefix) !== 0)
-			return false;
-		$url = substr($url, strlen($prefix));
-		if ($url === false)
-			$url = '/';
-		
-		// checking whether the URL matches
-		$result = $this->urlPattern->testURL($url);
-		if ($result === null)
-			return false;
-		
-		// getting log service
-		$logService = $scope->logService;
-		if ($logService)
-			$logService->debug('URL '.$request->getURL().' matching route '.$this->urlPattern->getOriginalPattern().' with prefix '.$prefix.' ; regex is: '.$this->urlPattern->getURLRegex());
-
-		// checking that the handler was defined
-		if (!$this->callback)
-			throw new \LogicException('The handler of the route '.$this->originalPattern.' has not been defined');
-		
-		// adding parts of the URL inside scope
-		foreach ($result as $varName => $value)
-			$scope->set($varName, $value);
-		
-		// adding controlling variables to scope
-		$scope->set('isWrongResource', false);		// DEPRECATED
-		$scope->set('ignoreHandler', false);		// DEPRECATED
-		$scope->set('isRightResource', true);
-		$scope->set('callHandler', true);
-		$scope->set('stopRoute', false);
-		
-		// calling befores
-		foreach ($this->before as $before) {
-			$scope->call($before);
-
-			// checking controlling variables
-			if ($scope->get('isWrongResource') === true) {		// DEPRECATED
-				if ($logService)
-					$logService->err('The isWrongResource parameter is deprecated');
-				return false;
-			}
-			if ($scope->get('ignoreHandler') === true) {			// DEPRECATED
-				if ($logService)
-					$logService->err('The ignoreHandler parameter is deprecated');
-				return true;
-			}
-			if ($scope->get('isRightResource') === false) {
-				if ($logService)
-					$logService->debug('Route ignored by before handler');
-				return false;
-			}
-			if ($scope->get('callHandler') === false) {
-				if ($logService)
-					$logService->debug('Route\'s handler won\'t get called because of before handler');
-				return true;
-			}
-			if ($scope->get('stopRoute') === true) {
-				if ($logService)
-					$logService->debug('Route\'s handler has been stopped by before handler');
-				return true;
-			}
-		}
-		
-		// calling the handler
-		if ($logService)
-			$logService->debug('Calling handler of route '.$this->getOriginalPattern());
-		$scope->call($this->callback);
-		
-		// calling after
-		foreach ($this->after as $filter)
-			$scope->call($filter);
-
-		return true;
+	/**
+	 * Same as handle() but continues even if wrong URL or method.
+	 */
+	public function handleNoURLCheck(Scope $scope, $prefix = '') {
+		$this->doHandle($scope, $prefix, true);
 	}
 
 	/**
@@ -312,6 +237,96 @@ class Route {
 	 */
 	public function getURL($parameters = []) {
 		return $this->urlPattern->getURL($parameters);
+	}
+
+
+
+	private function doHandle(Scope $scope, $prefix, $noURLCheck) {
+		// some routine checks
+		if (!$scope->get('request'))	throw new \LogicException('The "request" variable in the scope must be defined');
+		if (!$scope->get('response'))	throw new \LogicException('The "response" variable in the scope must be defined');
+
+		$request = $scope->get('request');
+		if (!$noURLCheck &&!preg_match_all('/'.$this->method.'/i', $request->getMethod()))
+			return false;
+
+		// checking prefix
+		$url = $request->getURL();
+		if (!$noURLCheck &&$prefix && strpos($url, $prefix) !== 0)
+			return false;
+		$url = substr($url, strlen($prefix));
+		if ($url === false)
+			$url = '/';
+		
+		// checking whether the URL matches
+		$result = $this->urlPattern->testURL($url);
+		if (!$noURLCheck && $result === null)
+			return false;
+		
+		// getting log service
+		$logService = $scope->logService;
+		if ($logService)
+			$logService->debug('URL '.$request->getURL().' matching route '.$this->urlPattern->getOriginalPattern().' with prefix '.$prefix.' ; regex is: '.$this->urlPattern->getURLRegex());
+
+		// checking that the handler was defined
+		if (!$this->callback)
+			throw new \LogicException('The handler of the route '.$this->originalPattern.' has not been defined');
+		
+		// adding parts of the URL inside scope
+		if ($result) {
+			foreach ($result as $varName => $value)
+				$scope->set($varName, $value);
+		}
+		
+		// adding controlling variables to scope
+		$scope->set('isWrongResource', false);		// DEPRECATED
+		$scope->set('ignoreHandler', false);		// DEPRECATED
+		$scope->set('isRightResource', true);
+		$scope->set('callHandler', true);
+		$scope->set('stopRoute', false);
+		
+		// calling befores
+		foreach ($this->before as $before) {
+			$scope->call($before);
+
+			// checking controlling variables
+			if ($scope->get('isWrongResource') === true) {		// DEPRECATED
+				if ($logService)
+					$logService->err('The isWrongResource parameter is deprecated');
+				return false;
+			}
+			if ($scope->get('ignoreHandler') === true) {			// DEPRECATED
+				if ($logService)
+					$logService->err('The ignoreHandler parameter is deprecated');
+				return true;
+			}
+			if ($scope->get('isRightResource') === false) {
+				if ($logService)
+					$logService->debug('Route ignored by before handler');
+				return false;
+			}
+			if ($scope->get('callHandler') === false) {
+				if ($logService)
+					$logService->debug('Route\'s handler won\'t get called because of before handler');
+				return true;
+			}
+			if ($scope->get('stopRoute') === true) {
+				if ($logService)
+					$logService->debug('Route\'s handler has been stopped by before handler');
+				return true;
+			}
+		}
+		
+		// calling the handler
+		if ($logService)
+			$logService->debug('Calling handler of route '.$this->getOriginalPattern());
+		$scope->call($this->callback);
+		
+		// calling after
+		foreach ($this->after as $filter)
+			$scope->call($filter);
+
+		return true;
 	}
 
 
