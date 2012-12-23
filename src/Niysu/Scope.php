@@ -85,7 +85,7 @@ class Scope implements \Serializable {
 	 * @return mixed
 	 */
 	public function get($var) {
-		if (isset($this->variables[$var]) && $this->variables[$var] !== null)
+		if (isset($this->variables[$var]))
 			return $this->variables[$var];
 		if (isset($this->variablesCallback[$var])) {
 			$val = call_user_func($this->variablesCallback[$var], $this);
