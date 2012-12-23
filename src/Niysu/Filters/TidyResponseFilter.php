@@ -14,7 +14,23 @@ class TidyResponseFilter extends \Niysu\HTTPResponseFilterInterface {
 			throw new \LogicException('php_tidy must be installed to use this filter');
 
 		parent::__construct($next);
-		$this->setHeader('Content-Type', 'text/csv');
+
+		// setting default configuration
+		$this->config = [
+	        'hide-comments' => true,
+	        'tidy-mark' => false,
+	        'indent' => true,
+	        'indent-spaces' => 4,
+	        'new-blocklevel-tags' => 'article,header,footer,section,nav',
+	        'new-inline-tags' => 'video,audio,canvas,ruby,rt,rp',
+	        'doctype' => '<!DOCTYPE HTML>',
+	        'sort-attributes' => 'alpha',
+	        'vertical-space' => false,
+	        'output-xhtml' => true,
+	        'wrap' => 180,
+	        'wrap-attributes' => false,
+	        'break-before-br' => false
+	    ];
 	}
 
 	/**
