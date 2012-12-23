@@ -1,9 +1,9 @@
 <?php
 namespace Niysu;
-require_once __DIR__.'/HTTPResponseFilter.php';
+require_once __DIR__.'/HTTPResponseFilterInterface.php';
 
 /**
- * Implementation of HTTPResponseFilter which will store everything in a HTTPResponseStorage.
+ * Implementation of HTTPResponseFilterInterface which will store everything in a HTTPResponseStorage.
  *
  * When you flush, a callback will be called and can change the content of the HTTPResponseStorage.
  * Then the content of the HTTPResponseStorage is output to the output response.
@@ -12,7 +12,7 @@ require_once __DIR__.'/HTTPResponseFilter.php';
  * @license 	MIT http://opensource.org/licenses/MIT
  * @link 		http://github.com/Tomaka17/niysu
  */
-class HTTPResponseCustomFilter extends HTTPResponseFilter {
+class HTTPResponseCustomFilter extends HTTPResponseFilterInterface {
 	/**
 	 * 
 	 * @param HTTPResponseInterface 	$output 			The output response, where everything will be sent after filtering

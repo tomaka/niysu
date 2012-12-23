@@ -3,7 +3,7 @@ namespace Niysu;
 require_once __DIR__.'/HTTPResponseInterface.php';
 
 /**
- * Implementation of HTTPResponse which acts as a filter.
+ * Implementation of HTTPResponseInterface which acts as a filter.
  *
  * It will automatically pass anything to an output response defined in the constructor.
  * You must overload the functions you want to change if you want it to filter anything.
@@ -12,7 +12,7 @@ require_once __DIR__.'/HTTPResponseInterface.php';
  * @license 	MIT http://opensource.org/licenses/MIT
  * @link 		http://github.com/Tomaka17/niysu
  */
-class HTTPResponseFilter extends HTTPResponseInterface {
+class HTTPResponseFilterInterface extends HTTPResponseInterface {
 	/**
 	 * Sets the output response.
 	 *
