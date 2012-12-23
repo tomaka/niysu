@@ -310,6 +310,15 @@ class RoutesCollection {
 		return null;
 	}
 
+	/**
+	 * Returns the list of all before handlers that have been registered, including the parent's ones.
+	 *
+	 * @return array
+	 */
+	public function getBeforeFunctions() {
+		return $this->globalBefores;
+	}
+
 
 
 	/**
