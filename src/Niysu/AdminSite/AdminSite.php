@@ -69,7 +69,8 @@ class AdminSite {
 			'xdebugInstalled' => extension_loaded('xdebug'),
 			'xdebugProfilerEnable' => ini_get('xdebug.profiler_enable'),
 			'xdebugProfilerEnableTrigger' => ini_get('xdebug.profiler_enable_trigger'),
-			'serverSignature' => $_SERVER['SERVER_SIGNATURE']
+			'serverSoftware' => $_SERVER['SERVER_SOFTWARE'],
+			'serverSoftwareOk' => !preg_match('/^PHP .* Development Server$/i', $_SERVER['SERVER_SOFTWARE'])
 		]);
 	}
 
