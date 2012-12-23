@@ -193,12 +193,7 @@ class Server {
 	 * Handles the request described in $input.
 	 *
 	 * This function will go through all registered routes. All routes that match the requested URL will be called in the order of their registration.
-	 *
-	 * The scope which routes have access to, includes:
-	 *  - services, where each service has a "Service" suffix (eg. if you register a service named "log", it is accessed by "$logService")
-	 *  - filters, where each filter has a "Filter" suffix (eg. if you register a filter named "jsonInput", it is accessed by "$jsonInputFilter")
-	 *  - $elapsedTime, a function that returns the number of seconds between the time the server was created and the time where it was called
-	 *  - $server, the server
+	 * The server passes a scope containing variables coming from it. See generateQueryScope for more infos.
 	 *
 	 * @param HTTPRequestInterface 		$input		The request to handle (if null, an instance of HTTPRequestGlobal)
 	 * @param HTTPResponseInterface 	$output		The response where to write the output (if null, an instance of HTTPResponseGlobal)
@@ -213,42 +208,13 @@ class Server {
 		$this->currentResponsesStack[] = $output;
 
 		try {
-			$handleScope = $this->scope->newChild();
-
-			foreach($this->serviceProviders as $serviceName => $provider) {
-				$handleScope->callback($serviceName.'Service', function(Scope $s) use ($serviceName, $provider, $log) {
-					$log->debug('Building service '.$serviceName);
-					return $s->call($provider);
-				});
-			}
-
-			foreach($this->filterProviders as $filterName => $provider) {
-				$handleScope->callback($filterName.'Filter', function(Scope $s) use ($filterName, $provider, $log) {
-					$log->debug('Building filter '.$filterName);
-					$filter = $s->call($provider);
-
-					if (is_a($filter, 'Niysu\HTTPRequestInterface', true)) {
-						if (isset($s->request))
-							$s->request = $filter;
-					}
-					if (is_a($filter, 'Niysu\HTTPResponseInterface', true)) {
-						if (isset($s->response))
-							$s->response = $filter;
-					}
-
-					return $filter;
-				});
-			}
-			
-
-			if ($this->routesCollection->handle($input, $output, $handleScope)) {
+			if ($this->routesCollection->handle($input, $output, $this->generateQueryScope())) {
 				$output->flush();
 				$log->debug('Successful handling of resource', [ 'url' => $input->getURL(), 'method' => $input->getMethod() ]);
 				if ($nb = gc_collect_cycles())
 					$log->notice('gc_collect_cycles() returned non-zero value: '.$nb);
 				return;
 			}
-
 
 		} catch(Exception $exception) {
 			try { $this->getService('log')->err($exception->getMessage(), $exception->getTrace()); } catch(Exception $e) {}
@@ -268,6 +234,50 @@ class Server {
 		$output->setStatusCode(404);
 		$output->flush();
 		array_pop($this->currentResponsesStack);
+	}
+
+	/**
+	 * Generates a Scope that contains the variables provided by the server and accessible to a route.
+	 *
+	 * This scope includes:
+	 *  - services, where each service has a "Service" suffix (eg. if you register a service named "log", it is accessed by "$logService")
+	 *  - filters, where each filter has a "Filter" suffix (eg. if you register a filter named "jsonInput", it is accessed by "$jsonInputFilter")
+	 *  - $elapsedTime, a function that returns the number of seconds between the time the server was created and the time where it was called
+	 *  - $server, the server
+	 *
+	 * @return Scope
+	 */
+	public function generateQueryScope() {
+		$handleScope = $this->scope->newChild();
+		$log = $this->getService('log');
+
+		foreach($this->serviceProviders as $serviceName => $provider) {
+			$handleScope->callback($serviceName.'Service', function(Scope $s) use ($serviceName, $provider, $log) {
+				if ($log)
+					$log->debug('Building service '.$serviceName);
+				return $s->call($provider);
+			});
+		}
+
+		foreach($this->filterProviders as $filterName => $provider) {
+			$handleScope->callback($filterName.'Filter', function(Scope $s) use ($filterName, $provider, $log) {
+				$log->debug('Building filter '.$filterName);
+				$filter = $s->call($provider);
+
+				if (is_a($filter, 'Niysu\HTTPRequestInterface', true)) {
+					if (isset($s->request))
+						$s->request = $filter;
+				}
+				if (is_a($filter, 'Niysu\HTTPResponseInterface', true)) {
+					if (isset($s->response))
+						$s->response = $filter;
+				}
+
+				return $filter;
+			});
+		}
+
+		return $handleScope;
 	}
 
 	/**

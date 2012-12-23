@@ -49,14 +49,13 @@ class ErrorPagesResponseFilter extends \Niysu\HTTPResponseFilterInterface {
 
 		$route = $this->server->getRouteByName($this->currentReplacement);
 		$response = new StatusCodeOverwriteResponseFilter($this->getOutput(), $this->currentStatusCode);
-		$route->handleNoURLCheck($this->request, $response, $scope);
+		$route->handleNoURLCheck($this->request, $response, $this->server->generateQueryScope());
 
 		parent::flush();
 	}
 
 	public function appendData($data) {
 		$this->headersSent = true;
-		var_dump($this->currentReplacement);
 		if (!$this->currentReplacement)
 			parent::appendData($data);
 	}
