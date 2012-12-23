@@ -132,7 +132,7 @@ class Server {
 	 * @param mixed 	$provider 		A callable accepted by Scope::call which returns an instance of the filter
 	 */
 	public function setFilterProvider($filterName, $provider) {
-		$this->filters[$filterName] = $provider;
+		$this->filterProviders[$filterName] = $provider;
 	}
 
 	/**
@@ -213,7 +213,7 @@ class Server {
 				});
 			}
 
-			foreach($this->filters as $filterName => $provider) {
+			foreach($this->filterProviders as $filterName => $provider) {
 				$handleScope->callback($filterName.'Filter', function(Scope $s) use ($filterName, $provider, $log) {
 					$log->debug('Building filter '.$filterName);
 					$filter = $s->call($provider);
@@ -435,7 +435,7 @@ class Server {
 	private $routesCollection;					// main RoutesCollection
 	private $configFunctions = [];				// configuration functions (coming from the environment) to call
 	private $serviceProviders = [];
-	private $filters = [];
+	private $filterProviders = [];
 	private $currentResponsesStack = [];		// at every call to handle(), the response is pushed on top of this stack, and removed when the handle() is finished
 };
 
