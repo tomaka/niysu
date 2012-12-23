@@ -67,6 +67,7 @@ class Server {
 		// building filters
 		$this->setFilterProvider('csvResponse', 'Niysu\\Filters\\CSVResponseFilter');
 		$this->setFilterProvider('errorPagesResponse', 'Niysu\\Filters\\ErrorPagesResponseFilter');
+		$this->setFilterProvider('etagResponse', 'Niysu\\Filters\\ETagResponseFilter');
 		$this->setFilterProvider('excelResponse', 'Niysu\\Filters\\ExcelResponseFilter');
 		$this->setFilterProvider('jsonRequest', 'Niysu\\Filters\\JSONRequestFilter');
 		$this->setFilterProvider('jsonResponse', 'Niysu\\Filters\\JSONResponseFilter');
