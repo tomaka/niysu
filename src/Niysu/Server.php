@@ -302,6 +302,19 @@ class Server {
 		return $this->routesCollection->parseClass($className, $prefix);
 	}
 
+	/**
+	 * Search for a route with this name in the main collection and its children.
+	 *
+	 * Returns null if no route is found.
+	 *
+	 * @param string 	$name 		Name of the route to look for
+	 * @return Route
+	 */
+	public function getRouteByName($name) {
+		return $this->routesCollection->getRouteByName($name);
+	}
+
+
 
 
 	/// \brief Loads either a file or an array
