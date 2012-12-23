@@ -42,14 +42,15 @@ class ETagResponseFilter extends \Niysu\HTTPResponseFilterInterface {
 	public function flush() {
 		if (!parent::isHeadersListSent() && !isset($this->etag)) {
 			$etag = md5($this->dataBuffer);
-			if ($this->requestETag == $etag)
-				parent::setStatusCode(304);
 			parent::setHeader('ETag', $etag);
-
-		} else {
-			parent::appendData($this->dataBuffer);
-			$this->dataBuffer = '';
+			if ($this->requestETag == $etag) {
+				parent::setStatusCode(304);
+				return;
+			}
 		}
+
+		parent::appendData($this->dataBuffer);
+		$this->dataBuffer = '';
 	}
 
 	public function appendData($data) {
