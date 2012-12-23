@@ -379,15 +379,15 @@ class Server {
 	}
 
 	private function followPseudoRoute($request, $response, $code) {
-		$localScope = $this->generateQueryScope();
-		$localScope->request = $request;
-		$localScope->response = $response;
+		$route = new Route('/', '.*', function(HTTPResponseInterface $response) use ($code) {
+			$response->setStatusCode($code);
+		});
 
-		foreach ($this->routesCollection->getBeforeFunctions() as $b)
-			$localScope->call($b);
+		foreach ($this->routesCollection->getBeforeFunctions() as $r)
+			$route->before($r);
 
-		$localScope->response->setStatusCode($code);
-		$localScope->response->flush();
+		$route->handleNoURLCheck($request, $response, $this->generateQueryScope());
+		$response->flush();
 	}
 	
 	private function replaceErrorHandling() {
