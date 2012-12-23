@@ -336,8 +336,8 @@ class Route {
 		}
 		
 		// calling the handler
-		if ($logService)
-			$logService->debug('Calling handler of route '.$this->getOriginalPattern());
+		/*if ($logService)
+			$logService->debug('Calling handler of route '.$this->getOriginalPattern());*/
 		$localScope->call($this->callback);
 		
 		// calling after
