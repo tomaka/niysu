@@ -64,9 +64,9 @@ abstract class HTTPResponseInterface {
 	abstract public function appendData($data);
 
 	/**
-	 * Flushes the response.
+	 * Flushes the response at the end.
 	 *
-	 * If some data has already been appended, then this will send all headers and the data already added.
+	 * Nothing else must be modified after this call.
 	 */
 	abstract public function flush();
 
