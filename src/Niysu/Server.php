@@ -58,13 +58,13 @@ class Server {
 		$this->setServiceProvider('xslt', 'Niysu\\Services\\XSLTService');
 
 		// building filters
+		$this->setFilterProvider('csvResponse', 'Niysu\\Filters\\CSVResponseFilter');
 		$this->setFilterProvider('excelResponse', 'Niysu\\Filters\\ExcelResponseFilter');
 		$this->setFilterProvider('jsonRequest', 'Niysu\\Filters\\JSONRequestFilter');
 		$this->setFilterProvider('jsonResponse', 'Niysu\\Filters\\JSONResponseFilter');
 		$this->setFilterProvider('postRequest', 'Niysu\\Filters\\POSTRequestFilter');
-		$this->setFilterProvider('xmlRequest', 'Niysu\\Filters\\XMLRequestFilter');
-		$this->setFilterProvider('csvResponse', 'Niysu\\Filters\\CSVResponseFilter');
 		$this->setFilterProvider('tidyResponse', 'Niysu\\Filters\\TidyResponseFilter');
+		$this->setFilterProvider('xmlRequest', 'Niysu\\Filters\\XMLRequestFilter');
 		$this->setFilterProvider('xmlResponse', 'Niysu\\Filters\\XMLResponseFilter');
 
 		// facultative service providers
