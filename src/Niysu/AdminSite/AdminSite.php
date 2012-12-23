@@ -21,8 +21,8 @@ class AdminSite {
 		foreach ($server->getRoutesList() as $r)
 			$routes[] = [ 'route' => $r->getOriginalPattern(), 'name' => $r->getName(), 'regex' => $r->getURLRegex() ];
 
-		$twigService->addPath(__DIR__);
-		$twigService->output('home.adminsite.htm', [
+		$twigService->addPath(__DIR__.'/templates', 'niysuAdminSite');
+		$twigService->output('@niysuAdminSite/home.adminsite.htm', [
 			'routes' => $routes,
 			'maintenanceMode' => $scope->maintenanceModeService->isMaintenanceMode()
 		]);
@@ -34,8 +34,8 @@ class AdminSite {
 	 * @method GET
 	 */
 	public function ajaxTestPanel($twigService) {
-		$twigService->addPath(__DIR__);
-		$twigService->output('ajaxTest.htm', [
+		$twigService->addPath(__DIR__.'/templates', 'niysuAdminSite');
+		$twigService->output('@niysuAdminSite/ajaxTest.htm', [
 			'routes' => $routes
 		]);
 	}
@@ -46,8 +46,8 @@ class AdminSite {
 	 * @method GET
 	 */
 	public function ajaxDatabasePanel($twigService) {
-		$twigService->addPath(__DIR__);
-		$twigService->output('databaseAccess.htm');
+		$twigService->addPath(__DIR__.'/templates', 'niysuAdminSite');
+		$twigService->output('@niysuAdminSite/databaseAccess.htm');
 	}
 }
 
