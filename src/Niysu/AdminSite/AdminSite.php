@@ -25,10 +25,14 @@ class AdminSite {
 			$routes[] = [ 'patterns' => $pattern, 'name' => $r->getName() ];
 		}
 
+		$maintenanceMode = false;
+		try { $maintenanceMode = $scope->maintenanceModeService->isMaintenanceMode();
+		} catch(\Exception $e) {}
+
 		$twigService->addPath(__DIR__.'/templates', 'niysuAdminSite');
 		$twigService->output('@niysuAdminSite/home.htm', [
 			'routes' => $routes,
-			'maintenanceMode' => $scope->maintenanceModeService->isMaintenanceMode()
+			'maintenanceMode' => $maintenanceMode
 		]);
 	}
 
