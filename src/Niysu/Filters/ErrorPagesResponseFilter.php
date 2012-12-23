@@ -10,7 +10,7 @@ namespace Niysu\Filters;
  * @warning 	Not working yet
  * @todo 		Not working yet
  */
-class ErrorPagesResponseFilter extends \Niysu\HTTPResponseFilter {
+class ErrorPagesResponseFilter extends \Niysu\HTTPResponseFilterInterface {
 	public function __construct(\Niysu\HTTPResponseInterface $response, \Niysu\Server $server = null, \Niysu\HTTPRequestInterface $request) {
 		parent::__construct($response);
 		$this->server = $server;
@@ -42,15 +42,22 @@ class ErrorPagesResponseFilter extends \Niysu\HTTPResponseFilter {
 	 * @todo Don't erase the existing status code
 	 */
 	public function flush() {
-		parent::flush();
-		if (!$this->currentReplacement)
+		if (!$this->currentReplacement) {
+			parent::flush();
 			return;
+		}
 
-		$this->server->handle($this->request, $this->getOutput());
+		$route = $this->server->getRouteByName($this->currentReplacement);
+
+		$scope = new \Niysu\Scope([ 'request' => $this->request, 'response' => $this->getOutput(), 'server' => $this->server ]);
+		$route->handleNoURLCheck($scope);
+		
+		parent::flush();
 	}
 
 	public function appendData($data) {
 		$this->headersSent = true;
+		var_dump($this->currentReplacement);
 		if (!$this->currentReplacement)
 			parent::appendData($data);
 	}
