@@ -71,22 +71,6 @@ class ETagResponseFilter extends \Niysu\HTTPResponseFilterInterface {
 	}
 
 
-	private function checkETag() {
-		$etag = $this->etag;
-		if (!$etag) {
-			$etag = md5($this->dataBuffer);
-			$this->etag = $etag;
-		}
-
-		if ($etag == $this->requestETag) {
-			parent::setStatusCode(304);
-			return true;
-		}
-
-		return false;
-	}
-
-
 	private $requestETag = null;
 	private $etag = null;
 	private $dataBuffer = '';
