@@ -218,10 +218,14 @@ class Server {
 					$log->debug('Building filter '.$filterName);
 					$filter = $s->call($provider);
 
-					if (is_a($filter, 'Niysu\HTTPRequestInterface', true))
-						$s->request = $filter;
-					if (is_a($filter, 'Niysu\HTTPResponseInterface', true))
-						$s->response = $filter;
+					if (is_a($filter, 'Niysu\HTTPRequestInterface', true)) {
+						if (isset($s->request))
+							$s->request = $filter;
+					}
+					if (is_a($filter, 'Niysu\HTTPResponseInterface', true)) {
+						if (isset($s->response))
+							$s->response = $filter;
+					}
 
 					return $filter;
 				});
