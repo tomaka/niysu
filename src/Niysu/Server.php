@@ -57,6 +57,9 @@ class Server {
 		$this->setServiceProvider('session', 'Niysu\\Services\\SessionService');
 		$this->setServiceProvider('xslt', 'Niysu\\Services\\XSLTService');
 
+		// building filters
+		$this->setFilterProvider('jsonRequest', 'Niysu\\Filters\\JSONRequestFilter');
+
 		// facultative service providers
 		$this->setServiceProvider('twig', function($scope) {
 			if (!class_exists('Twig_Environment'))
@@ -119,6 +122,17 @@ class Server {
 
 		$val = $this->serviceProviders[$serviceName];
 		return $localScope->call($val);
+	}
+
+	/**
+	 * Registers a filter.
+	 * Overwrites any existing filter with the same name.
+	 *
+	 * @param string 	$filterName 	The name of the filter to set (without any "Filter" suffix)
+	 * @param mixed 	$provider 		A callable accepted by Scope::call which returns an instance of the filter
+	 */
+	public function setFilterProvider($filterName, $provider) {
+		$this->filters[$filterName] = $provider;
 	}
 
 	/**
@@ -196,6 +210,20 @@ class Server {
 				$handleScope->callback($serviceName.'Service', function(Scope $s) use ($serviceName, $provider, $log) {
 					$log->debug('Building service '.$serviceName);
 					return $s->call($provider);
+				});
+			}
+
+			foreach($this->filters as $filterName => $provider) {
+				$handleScope->callback($filterName.'Filter', function(Scope $s) use ($filterName, $provider, $log) {
+					$log->debug('Building filter '.$filterName);
+					$filter = $s->call($provider);
+
+					if (is_a($filter, 'Niysu\HTTPRequestInterface', true))
+						$s->request = $filter;
+					if (is_a($filter, 'Niysu\HTTPResponseInterface', true))
+						$s->response = $filter;
+
+					return $filter;
 				});
 			}
 			
@@ -407,6 +435,7 @@ class Server {
 	private $routesCollection;					// main RoutesCollection
 	private $configFunctions = [];				// configuration functions (coming from the environment) to call
 	private $serviceProviders = [];
+	private $filters = [];
 	private $currentResponsesStack = [];		// at every call to handle(), the response is pushed on top of this stack, and removed when the handle() is finished
 };
 

@@ -6,7 +6,7 @@ namespace Niysu\Filters;
  * @license 	MIT http://opensource.org/licenses/MIT
  * @link 		http://github.com/Tomaka17/niysu
  */
-class JSONRequestFilter extends \Niysu\HTTPRequestFilter {
+class JSONRequestFilter extends \Niysu\HTTPRequestFilterInterface {
 	public function __construct(\Niysu\HTTPRequestInterface $request) {
 		parent::__construct($request);
 	}
