@@ -457,6 +457,8 @@ class Server {
 
 		if (!$response->isHeadersListSent()) {
 			$response->setStatusCode(500);
+			$response->removeHeader('ETag');
+			$response->removeHeader('Content-Encoding');
 			$response->setHeader('Content-Type', 'text/html; charset=utf8');
 			$response->setHeader('Cache-Control', 'no-cache');
 		}
