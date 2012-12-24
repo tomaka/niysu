@@ -2,13 +2,20 @@
 namespace Niysu\Filters;
 
 /**
+ * This filter will add a debug panel to any HTML response.
+ *
+ * This debug panel shows:
+ *  - informations about PHP (version, extensions)
+ *  - the time it took to build the page
+ *  - memory usage
+ *  - the list of SQL queries and the time it took to execute them
  *
  * @copyright 	2012 Pierre Krieger <pierre.krieger1708@gmail.com>
  * @license 	MIT http://opensource.org/licenses/MIT
  * @link 		http://github.com/Tomaka17/niysu
  */
 class DebugPanelResponseFilter extends \Niysu\HTTPResponseFilterInterface {
-	public function __construct($response, $twigService, $scope, $databaseProfilingService) {
+	public function __construct(\Niysu\HTTPResponseInterface $response, $twigService, $scope, $databaseProfilingService) {
 		$this->twigService = $twigService;
 		$this->databaseProfilingService = $databaseProfilingService;
 		$this->scope = $scope;
