@@ -20,7 +20,7 @@ class JSONRequestFilter extends \Niysu\HTTPRequestFilterInterface {
 				$response->setStatusCode($errorStatusCode);
 				$stopRoute = true;
 			}
-		}
+		};
 	}
 
 	public function __construct(\Niysu\HTTPRequestInterface $request) {
