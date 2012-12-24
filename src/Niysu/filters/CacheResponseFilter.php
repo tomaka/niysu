@@ -27,6 +27,8 @@ class CacheResponseFilter extends \Niysu\HTTPResponseFilterInterface {
 	}*/
 	
 	public function __construct(\Niysu\HTTPRequestInterface $request, \Niysu\HTTPResponseInterface $response, $cacheService, \Monolog\Logger $log, $elapsedTime) {
+		parent::__construct($response);
+
 		$this->serverCacheResourceName = $this->requestToResourceName($request->getURL());
 
 		$this->responseStorage = new \Niysu\HTTPResponseStorage();
@@ -36,24 +38,26 @@ class CacheResponseFilter extends \Niysu\HTTPResponseFilterInterface {
 		if ($cacheService->exists($this->serverCacheResourceName)) {
 			$this->writeInCache = false;
 			$data = $cacheService->load($this->serverCacheResourceName);
-			$stream = new SplFileObject(\Niysu\HTTPResponseStream::build($this->getOutput(), true), 'w');
-			$stream->fwrite($data);
+			file_put_contents(\Niysu\HTTPResponseStream::build($this->getOutput(), true), $data);
+			var_dump('loaded from cache');
+			parent::flush();
 		}
 
 		/*if ($request->getMethod() == 'GET')
 			$this->setDuration(60);*/
 
-		parent::__construct($response);
 	}
 
 	public function flush() {
-		$data = '';
-		foreach ($this->responseStorage->getHeadersList() as $h => $v)
-			$data .= $h.':'.$v."\r\n";
-		$data .= "\r\n";
-		$data .= $this->responseStorage->getData();
+		if ($this->writeInCache) {
+			$data = '';
+			foreach ($this->responseStorage->getHeadersList() as $h => $v)
+				$data .= $h.':'.$v."\r\n";
+			$data .= "\r\n";
+			$data .= $this->responseStorage->getData();
 
-		$this->cacheService->store($this->serverCacheResourceName, $data, $this->duration);
+			$this->cacheService->store($this->serverCacheResourceName, $data, $this->duration);
+		}
 
 		parent::flush();
 	}
@@ -104,14 +108,14 @@ class CacheResponseFilter extends \Niysu\HTTPResponseFilterInterface {
 	}
 
 	/**
-	 * Returns true if the filter has loaded the resource from the cache.
+	 * Returns true if the filter didn't load the resource from the cache.
 	 *
-	 * If this function returns true, anything sent to this filter will be discarded. So you can stop the route earlier.
+	 * If this function returns false, anything sent to this filter will be discarded. So you can stop the route earlier.
 	 *
 	 * @return boolean
 	 */
-	public function isLoadedFromCache() {
-		return !$this->writeInCache;
+	public function isStale() {
+		return $this->writeInCache;
 	}
 
 
@@ -128,7 +132,7 @@ class CacheResponseFilter extends \Niysu\HTTPResponseFilterInterface {
 	private $cacheService;
 	private $serverCacheResourceName;			// identifier to pass to the cacheService
 	private $log;
-	private $duration = '1 day';				// cache duration in seconds that has been set
+	private $duration = 60;						// cache duration in seconds that has been set
 	private $clientSideEnabled = true;
 };
 
