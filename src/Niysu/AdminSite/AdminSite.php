@@ -9,15 +9,10 @@ namespace Niysu\AdminSite;
  *
  * @prefix 		/admin
  * @static 		assets
- * @before 		setUp
  */
 class AdminSite {
-	public function __construct() {
-		var_dump('testconstruct ');
-	}
-
-	private static function setUp() {
-		var_dump('testsetup ');
+	public function __construct($twigService) {
+		$twigService->addPath(__DIR__.'/templates', 'niysuAdminSite');
 	}
 
 	/**
@@ -38,7 +33,6 @@ class AdminSite {
 		try { $maintenanceMode = $scope->maintenanceModeService->isMaintenanceMode();
 		} catch(\Exception $e) {}
 
-		$twigService->addPath(__DIR__.'/templates', 'niysuAdminSite');
 		$twigService->output('@niysuAdminSite/home.htm', [
 			'routes' => $routes,
 			'maintenanceMode' => $maintenanceMode
@@ -51,7 +45,6 @@ class AdminSite {
 	 * @method GET
 	 */
 	public function ajaxTestPanel($twigService) {
-		$twigService->addPath(__DIR__.'/templates', 'niysuAdminSite');
 		$twigService->output('@niysuAdminSite/ajaxTest.htm', [
 			'routes' => $routes
 		]);
@@ -63,7 +56,6 @@ class AdminSite {
 	 * @method GET
 	 */
 	public function databasePanel($twigService) {
-		$twigService->addPath(__DIR__.'/templates', 'niysuAdminSite');
 		$twigService->output('@niysuAdminSite/databaseAccess.htm');
 	}
 
@@ -74,7 +66,6 @@ class AdminSite {
 	 * @method GET
 	 */
 	public function xhProfPanel($twigService) {
-		$twigService->addPath(__DIR__.'/templates', 'niysuAdminSite');
 		$twigService->output('@niysuAdminSite/xhprof.htm', [ 'extensionOk' => extension_loaded('xhprof') ]);
 	}
 
@@ -92,7 +83,6 @@ class AdminSite {
 		$server->handle($request, $response);
 		$data = xhprof_disable();
 
-		$twigService->addPath(__DIR__.'/templates', 'niysuAdminSite');
 		$twigService->output('@niysuAdminSite/xhprof-results.htm', [ 'data' => $data ]);
 	}
 
@@ -113,7 +103,6 @@ class AdminSite {
 			$response = $response->getOutput();
 		}
 
-		$twigService->addPath(__DIR__.'/templates', 'niysuAdminSite');
 		$twigService->output('@niysuAdminSite/xdebugBefore.htm', [
 			'xdebugInstalled' => extension_loaded('xdebug'),
 			'xdebugProfilerEnable' => ini_get('xdebug.profiler_enable'),
