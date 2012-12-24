@@ -31,7 +31,8 @@ class ContentEncodingResponseFilter extends \Niysu\HTTPResponseFilterInterface {
 	}
 
 	public function flush() {
-		parent::appendData(call_user_func($this->compressFunction, $this->data));
+		if ($this->data) 	parent::appendData(call_user_func($this->compressFunction, $this->data));
+		else 				parent::removeHeader('Content-Encoding');
 		parent::flush();
 	}
 
