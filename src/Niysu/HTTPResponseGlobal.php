@@ -18,10 +18,16 @@ class HTTPResponseGlobal extends HTTPResponseInterface {
 		}
 	}
 
+	public function __destruct() {
+		if (!$this->flushed)
+			trigger_error('HTTPResponseGlobal destroyed without flushed() being called');
+	}
+
 	/**
 	 * Calls the PHP function flush()
 	 */
 	public function flush() {
+		$this->flushed = true;
 		flush();
 	}
 
@@ -52,6 +58,9 @@ class HTTPResponseGlobal extends HTTPResponseInterface {
 	public function appendData($data) {
 		echo $data;
 	}
+
+
+	private $flushed = false;
 }
 
 ?>
