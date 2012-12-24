@@ -33,9 +33,11 @@ class CacheService {
 
 		// getting the resources list
 		$fp = fopen($this->directory.DIRECTORY_SEPARATOR.'resources.list', 'c+b');
-		$data = unserialize(stream_get_contents($fp));
+		$data = $this->readResourcesList($fp);
+		flock($fp, LOCK_SH);
 
 		if (!isset($data[$key])) {
+			flock($fp, LOCK_UN);
 			fclose($fp);
 			return false;
 		}
@@ -46,12 +48,15 @@ class CacheService {
 
 			unset($data[$key]);
 			try { unlink($this->keyToFile($key)); } catch(\Exception $e) {}
+			flock($fp, LOCK_EX);
 			fseek($fp, 0);
 			fwrite($fp, serialize($data));
+			flock($fp, LOCK_UN);
 			fclose($fp);
 			return false;
 		}
 
+		flock($fp, LOCK_UN);
 		fclose($fp);
 		return file_exists($this->keyToFile($key));
 	}
@@ -61,28 +66,19 @@ class CacheService {
 		if (!$this->activated)
 			return;
 
-		$file = $this->keyToFile($key);
-
-		$fp = fopen($file, 'wb');
-		if (!$fp) {
-			(new LogWriter())->write('Error while opening file "'.$file.'" for caching');
-			return;
-		}
-
-		if (!fwrite($fp, gzencode($data, $this->compressionLevel))) {
-			(new LogWriter())->write('Error while writing file "'.$file.'" for caching');
-			fclose($fp);
-			try { unlink($file); } catch(\Exception $e) {}
-			return;
-		}
-		fclose($fp);
-
 		// adding to the resources list
 		$fp = fopen($this->directory.DIRECTORY_SEPARATOR.'resources.list', 'c+b');
-		$data = unserialize(stream_get_contents($fp));
-		$data[$key] = round(intval(microtime(true)) + intval($ttl ? $ttl : 99999));
+		flock($fp, LOCK_SH);
+		$resourcesList = unserialize(stream_get_contents($fp));
+		$resourcesList[$key] = round(intval(microtime(true)) + intval($ttl ? $ttl : 99999));
+
+		flock($fp, LOCK_EX);
+		$file = $this->keyToFile($key);
+		file_put_contents($file, gzencode($data, $this->compressionLevel));
+
 		fseek($fp, 0);
-		fwrite($fp, serialize($data));
+		fwrite($fp, serialize($resourcesList));
+		flock($fp, LOCK_UN);
 		fclose($fp);
 
 
@@ -94,37 +90,51 @@ class CacheService {
 		if (!$this->activated)
 			throw new \LogicException('Caching is disabled');
 
+		$fp = $this->openResourcesList();
+		flock($fp, LOCK_SH);
+		$data = $this->readResourcesList($fp);
+
 		// loading file
-		if (!$this->exists($key))
+		if (!isset($data[$key])) {
+			flock($fp, LOCK_UN);
+			fclose($fp);
 			throw new \LogicException('Cache element doesn\'t exist');
+		}
 
 		$file = $this->keyToFile($key);
 		$fp = fopen($file, 'rb');
-		$data = gzdecode(stream_get_contents($fp));
+		$data = stream_get_contents($fp);
+		flock($fp, LOCK_UN);
 		fclose($fp);
 
-		if ($this->logService)
-			$this->logService->debug('Loaded element "'.$key.'" from file '.$file);
+		if ($this->log)
+			$this->log->debug('Loaded element "'.$key.'" from file '.$file);
 
-		return $data;
+		return gzdecode($data);
 	}
 	
 	public function clear($key) {
-		$file = $this->keyToFile($key);
-		try { unlink($file); } catch(\Exception $e) {}
-
 		// removing from resources list
 		$fp = $this->openResourcesList();
 		$data = $this->readResourcesList($fp);
+		flock($fp, LOCK_EX);
+
+		$file = $this->keyToFile($key);
+		try { unlink($file); } catch(\Exception $e) {}
+
 		unset($data[$key]);
+
 		$this->writeResourcesList($fp, $data);
+		flock($fp, LOCK_UN);
 		fclose($fp);
 	}
 
 	public function clearAll() {
 		$fp = $this->openResourcesList();
+		flock($fp, LOCK_SH);
 		$data = $this->readResourcesList($fp);
 
+		flock($fp, LOCK_EX);
 		foreach ($data as $k => $v) {
 			try {
 				unlink($this->keyToFile($k));
@@ -136,11 +146,12 @@ class CacheService {
 		$data = [];
 
 		$this->writeResourcesList($fp, $data);
+		flock($fp, LOCK_UN);
 		fclose($fp);
 	}
 
-	public function __construct($logService) {
-		$this->logService = $logService;
+	public function __construct($log) {
+		$this->log = $log;
 	}
 
 
@@ -172,7 +183,7 @@ class CacheService {
 	private $directory = null;
 	private $activated = true;
 	private $compressionLevel = -1;
-	private $logService = null;
+	private $log = null;
 };
 
 ?>
