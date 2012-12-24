@@ -81,6 +81,9 @@ class RoutesCollection {
 					if (count($parameters['name']) > 1)
 						throw new \LogicException('A route cannot have multiple names');
 					$route->name($parameters['name'][0]);
+
+				} else {
+					$route->name($reflectionClass->getName().'::'.$methodReflection->getName());
 				}
 				
 				// setting the method
