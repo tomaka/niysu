@@ -1,5 +1,5 @@
 <?php
-namespace Niysu\Services;
+namespace Niysu\Filters;
 
 /**
  *
@@ -7,56 +7,55 @@ namespace Niysu\Services;
  * @license 	MIT http://opensource.org/licenses/MIT
  * @link 		http://github.com/Tomaka17/niysu
  */
-class DebugPanelService {
-	public static function beforeActivate() {
-		return function($debugPanelService) {
-			$debugPanelService->activate();
-		};
-	}
-
-	public function __construct(&$response, $twigService, $scope, $databaseProfilingService) {
-		if (!$twigService)
-			throw new \LogicException('Twig must be installed in order to use the debug panel');
-
+class DebugPanelResponseFilter extends \Niysu\HTTPResponseFilterInterface {
+	public function __construct($response, $twigService, $scope, $databaseProfilingService) {
+		$this->twigService = $twigService;
 		$this->databaseProfilingService = $databaseProfilingService;
+		$this->scope = $scope;
 
-		if (!$response)
-			throw new \LogicException('DebugPanelService can\'t be used outside of a route');
-
-		$response = new \Niysu\HTTPResponseCustomFilter($response, function($data) use ($scope, $twigService) {
-			if (!$this->active)
-				return;
-			if ($data->hasHeader('Content-Type') && substr($data->getHeader('Content-Type'), 0, 9) != 'text/html' && substr($data->getHeader('Content-Type'), 0, 21) != 'application/xml+xhtml')
-				return;
-			if (!preg_match('/\\<\\/body\\>/i', $data->getData(), $matches, PREG_OFFSET_CAPTURE))
-				return;
-			
-			$evaluatedPanel = $twigService->render(self::$panelTemplate, [
-				'version' => 'PHP '.phpversion().' on '.php_uname('s'),
-				'extensions' => get_loaded_extensions(),
-				'timeElapsed' => call_user_func($scope->elapsedTime),
-				'peakMemory' => self::formatBytes(memory_get_peak_usage()),
-				'numQueries' => $this->databaseProfilingService->getNumberOfQueries(),
-				'queriesList' => $this->databaseProfilingService->getQueriesList(),
-				'queriesTime' => $this->databaseProfilingService->getQueriesTotalMilliseconds(),
-				'connectionMS' => $this->databaseProfilingService->getTotalConnectionMilliseconds(),
-				'totalDatabaseTime' => $this->databaseProfilingService->getTotalConnectionMilliseconds() + $this->databaseProfilingService->getQueriesTotalMilliseconds(),
-				'sessionID' => $scope->sessionService->getID(),
-				'sessionVariables' => $scope->sessionService->getVariables()
-			]);
-			
-			$splitOffset = $matches[0][1];
-			$newContent = substr($data->getData(), 0, $splitOffset).$evaluatedPanel.substr($data->getData(), $splitOffset);
-			$data->setData($newContent);
-		});
+		parent::__construct($response);
 	}
 
-	public function activate() {
-		$this->active = true;
+	public function setHeader($header, $value) {
+		if ($header == 'Content-Type')
+			$this->goodContentType = self::testContentType($value);
+		parent::setHeader($header, $value);
 	}
 
-	public function deactivate() {
-		$this->active = false;
+	public function addHeader($header, $value) {
+		if ($header == 'Content-Type')
+			$this->goodContentType = self::testContentType($value);
+		parent::addHeader($header, $value);
+	}
+
+	public function appendData($data) {
+		if (!$this->goodContentType) {
+			parent::appendData($data);
+			return;
+		}
+
+		if (!preg_match('/\\<\\/body\\>/i', $data, $matches, PREG_OFFSET_CAPTURE)) {
+			parent::appendData($data);
+			return;
+		}
+		
+		$evaluatedPanel = $this->twigService->render(self::$panelTemplate, [
+			'version' => 'PHP '.phpversion().' on '.php_uname('s'),
+			'extensions' => get_loaded_extensions(),
+			'timeElapsed' => call_user_func($this->scope->elapsedTime),
+			'peakMemory' => self::formatBytes(memory_get_peak_usage()),
+			'numQueries' => $this->databaseProfilingService->getNumberOfQueries(),
+			'queriesList' => $this->databaseProfilingService->getQueriesList(),
+			'queriesTime' => $this->databaseProfilingService->getQueriesTotalMilliseconds(),
+			'connectionMS' => $this->databaseProfilingService->getTotalConnectionMilliseconds(),
+			'totalDatabaseTime' => $this->databaseProfilingService->getTotalConnectionMilliseconds() + $this->databaseProfilingService->getQueriesTotalMilliseconds(),
+			/*'sessionID' => $this->scope->sessionService->getID(),
+			'sessionVariables' => $this->scope->sessionService->getVariables()*/
+		]);
+		
+		$splitOffset = $matches[0][1];
+		$data = substr($data, 0, $splitOffset).$evaluatedPanel.substr($data, $splitOffset);
+		parent::appendData($data);
 	}
 
 
@@ -71,10 +70,16 @@ class DebugPanelService {
 
 	    return round($bytes, $precision) . ' ' . $units[$pow]; 
 	}
+
+	private static function testContentType($value) {
+		return strpos('text/html', $value) === 0;
+	}
 	
 	
-	private $active = false;
-	private $databaseProfilingService = null;
+	private $goodContentType = false;
+	private $databaseProfilingService;
+	private $twigService;
+	private $scope;
 	
 	private static $panelTemplate =
 		'<div style="font-size:initial; font-family:Verdana,sans-serif; color:black; position:fixed; left:0; bottom:0; width:100%; padding:0.5em 1em; background-color:gray; border-top:3px double black;">

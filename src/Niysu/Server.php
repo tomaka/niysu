@@ -50,7 +50,6 @@ class Server {
 		$this->setServiceProvider('cookies', 'Niysu\\Services\\CookiesService');
 		$this->setServiceProvider('database', 'Niysu\\Services\\DatabaseService');
 		$this->setServiceProvider('databaseProfiling', 'Niysu\\Services\\DatabaseProfilingService');
-		$this->setServiceProvider('debugPanel', 'Niysu\\Services\\DebugPanelService');
 		$this->setServiceProvider('email', 'Niysu\\Services\\EmailService');
 		$this->setServiceProvider('httpBasicAuth', 'Niysu\\Services\\HTTPBasicAuthService');
 		$this->setServiceProvider('inputJSON', 'Niysu\\Services\\InputJSONService');
@@ -66,6 +65,7 @@ class Server {
 
 		// building filters
 		$this->setFilterProvider('csvResponse', 'Niysu\\Filters\\CSVResponseFilter');
+		$this->setFilterProvider('debugPanelResponse', 'Niysu\\Filters\\DebugPanelResponseFilter');
 		$this->setFilterProvider('errorPagesResponse', 'Niysu\\Filters\\ErrorPagesResponseFilter');
 		$this->setFilterProvider('etagResponse', 'Niysu\\Filters\\ETagResponseFilter');
 		$this->setFilterProvider('excelResponse', 'Niysu\\Filters\\ExcelResponseFilter');
