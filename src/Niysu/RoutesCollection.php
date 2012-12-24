@@ -16,34 +16,47 @@ class RoutesCollection {
 	 * The routes are created in a child RoutesCollection that is returned by this function.
 	 *
 	 * Recognized tokens are:
-	 *  - @before PHP string of something to be called before the handler (will be passed to eval)
+	 *  - @before Name of a function (method or global function) to be called before the handler
 	 *  - @method Pattern of the method to match
 	 *  - @name Name of the route
-	 *  - @prefix (class only) Adds a prefix to all URLs of this class
+	 *  - @prefix (class only) Sets the prefix of the RoutesCollection
 	 *  - @static (class only) Adds a path of static resources ; path is relative to the class location
 	 *  - @url Pattern of the URL to match, see register()
 	 *  - @uri Alias of @url
 	 *
+	 * The first "before" function of the new route collection will create an instance of the class and put it in "$scope->this".
+	 *
 	 * @param string 	$className 		Name of the class to parse
-	 * @param string 	$prefix 		(optional) Prefix to add to all URLs (the @prefix token will still be added too)
 	 * @return RoutesCollection
 	 */
-	public function parseClass($className, $prefix = '') {
+	public function parseClass($className) {
 		$reflectionClass = new \ReflectionClass($className);
+
+		// building the new collection
 		$newCollection = $this->newChild($prefix);
+		$newCollection->before(function(Scope $scope) use ($reflectionClass) { $scope->this = $scope->call($reflectionClass); });
 
 		// analyzing the doccomment of the class
 		$classDocComment = self::parseDocComment($reflectionClass->getDocComment());
 
 		// handling @before
 		if (isset($classDocComment['before'])) {
-			foreach ($classDocComment['before'] as $before)
-				;//$newCollection->before($before);
+			foreach ($classDocComment['before'] as $before) {
+				if ($reflectionClass->hasMethod($before)) {
+					$reflectionMethod = $reflectionClass->getMethod($before);
+					$newCollection->before(function(Scope $scope) use ($reflectionMethod) {
+						return $scope->call($reflectionMethod->getClosure($scope->this));
+					});
+
+				} else {
+					$newCollection->before($before);
+				}
+			}
 		}
 
 		// handling @prefix
 		if (isset($classDocComment['prefix'])) {
-			$newCollection->prefix($prefix.$classDocComment['prefix'][0]);
+			$newCollection->prefix(implode($classDocComment['prefix']));
 		}
 
 		// handling @static
@@ -59,27 +72,40 @@ class RoutesCollection {
 			$parameters = self::parseDocComment($comment);
 			
 			// now analyzing parameters
-			if (isset($parameters['url'])) {
-				if (count($parameters['url']) > 1)
-					throw new \LogicException('Multiple URLs not supported');
+			if (isset($parameters['url']) || isset($parameters['name'])) {
+				$route = $newCollection->register($parameters['url']);
+
+				// setting name of the route
+				if (isset($parameters['name'])) {
+					if (count($parameters['name']) > 1)
+						throw new \LogicException('A route cannot have multiple names');
+					$route->name($parameters['name'][0]);
+				}
 				
-				$route = $newCollection->register($parameters['url'][0]);
-				
-				$route->handler(function($scope) use ($methodReflection, $reflectionClass) {
-					$obj = null;
-					if (!$methodReflection->isStatic())
-						$obj = $scope->call($reflectionClass);
-					$closure = $methodReflection->getClosure($obj);
-					return $scope->call($closure);
-				});
-				
+				// setting the method
 				if (isset($parameters['method']))
 					$route->method($parameters['method'][0]);
-				if (isset($parameters['name']))
-					$route->name($parameters['name'][0]);
-				if (isset($parameters['before']))
-					foreach($parameters['before'] as $b)
-						$route->before($b);
+				
+				// setting the handler
+				$route->handler(function(Scope $scope) use ($methodReflection, $reflectionClass) {
+					return $scope->call($methodReflection->getClosure($scope->this));
+				});
+
+				// setting the before functions
+				if (isset($parameters['before'])) {
+					foreach($parameters['before'] as $before) {
+						if ($reflectionClass->hasMethod($before)) {
+							$reflectionMethod = $reflectionClass->getMethod($before);
+							$route->before(function(Scope $scope) use ($reflectionMethod) {
+								return $scope->call($reflectionMethod->getClosure($scope->this));
+							});
+
+						} else {
+							$route->before($before);
+						}
+					}
+				}
+
 			}
 		}
 
