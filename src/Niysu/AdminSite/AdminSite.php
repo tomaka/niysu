@@ -91,13 +91,23 @@ class AdminSite {
 	 * @method POST
 	 */
 	public function xDebugStart($postRequestFilter, $response) {
-		$opts = ['http' =>
-		    [
-		        'method'  => 'GET'
-		    ]
-		];
+		// making the HTTP request to localhost
+		$opts = ['http' => [ 'method'  => 'GET' ] ];
+		file_get_contents('http://localhost:'.$_SERVER['SERVER_PORT'].'/'.ltrim($postRequestFilter->url, '/').'?XDEBUG_PROFILE', false, stream_context_create($opts));
+		
+		// 
+		$filename = null;
+		foreach ($http_response_header as $h) {
+			if (preg_match('/^X-XDebugFilename:\\s*(.*)$/', $h, $matches)) {
+				$filename = $matches[1];
+				break;
+			}
+		}
 
-		file_get_contents('http://localhost:'.$_SERVER['SERVER_PORT'].'/'.$postRequestFilter->url.'?XDEBUG_PROFILE', false, stream_context_create($opts));
+		if ($filename == null)
+			;
+
+		var_dump($filename);
 	}
 }
 
