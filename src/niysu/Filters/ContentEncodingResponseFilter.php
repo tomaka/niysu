@@ -4,6 +4,8 @@ namespace Niysu\Filters;
 /**
  * Handles content-encoding as request by the client.
  *
+ * Supported encoding: gzip, deflate, bzip2 (if extension is installed).
+ *
  * @copyright 	2012 Pierre Krieger <pierre.krieger1708@gmail.com>
  * @license 	MIT http://opensource.org/licenses/MIT
  * @link 		http://github.com/Tomaka17/niysu
@@ -12,7 +14,13 @@ class ContentEncodingResponseFilter extends \Niysu\HTTPResponseFilterInterface {
 	public function __construct(\Niysu\HTTPResponseInterface $next, \Niysu\HTTPRequestInterface $request) {
 		parent::__construct($next);
 
-		$encodingUsed = $request->getHighestPriorityForEncoding('gzip', 'deflate', 'bzip2', 'identity');
+		// computing the list of encodings supported by the server
+		$availableEncodings = [ 'gzip', 'deflate', 'identity' ];
+		if (function_exists('bzcompress'))
+			$availableEncodings = array_splice($availableEncodings, 2, 0, 'bzip2');
+
+		// determining the encoding to use
+		$encodingUsed = call_user_func_array([ $request, 'getHighestPriorityForEncoding' ], $availableEncodings);
 		if (empty($encodingUsed))
 			$encodingUsed = 'identity';
 		$this->setEncodingToUse($encodingUsed);
