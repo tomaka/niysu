@@ -19,7 +19,7 @@ class RoutesCollection {
 	 *  - @before Name of a function (method or global function) to be called before the handler
 	 *  - @method Pattern of the method to match
 	 *  - @name Name of the route
-	 *  - @prefix (class only) Sets the prefix of the RoutesCollection
+	 *  - @prefix (class only) Sets the prefix of the RoutesCollection ; can be overwritten by calling RoutesCollection->prefix()
 	 *  - @static (class only) Adds a path of static resources ; path is relative to the class location
 	 *  - @url Pattern of the URL to match, see register()
 	 *  - @uri Alias of @url
