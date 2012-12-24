@@ -45,7 +45,6 @@ class Server {
 		$this->scope->passByRef('log', false);
 		
 		// building default services providers
-		$this->setServiceProvider('cacheMe', 'Niysu\\Services\\CacheMeService');
 		$this->setServiceProvider('cache', 'Niysu\\Services\\CacheService');
 		$this->setServiceProvider('cookies', 'Niysu\\Services\\CookiesService');
 		$this->setServiceProvider('database', 'Niysu\\Services\\DatabaseService');
@@ -64,6 +63,7 @@ class Server {
 		$this->setServiceProvider('xslt', 'Niysu\\Services\\XSLTService');
 
 		// building filters
+		$this->setFilterProvider('cacheResponse', 'Niysu\\Filters\\CacheResponseFilter');
 		$this->setFilterProvider('contentEncodingResponse', 'Niysu\\Filters\\ContentEncodingResponseFilter');
 		$this->setFilterProvider('csvResponse', 'Niysu\\Filters\\CSVResponseFilter');
 		$this->setFilterProvider('debugPanelResponse', 'Niysu\\Filters\\DebugPanelResponseFilter');
