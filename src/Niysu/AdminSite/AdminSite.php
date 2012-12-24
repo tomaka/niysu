@@ -63,14 +63,25 @@ class AdminSite {
 	 * @url /xdebug
 	 * @method GET
 	 */
-	public function xDebugPanel($twigService) {
+	public function xDebugPanel($twigService, $response) {
+		$filterOk = false;
+		while ($response instanceof \Niysu\HTTPResponseFilterInterface) {
+			if ($response instanceof XDebugProfilingFilter) {
+				$filterOk = true;
+				break;
+			}
+
+			$response = $response->getOutput();
+		}
+
 		$twigService->addPath(__DIR__.'/templates', 'niysuAdminSite');
 		$twigService->output('@niysuAdminSite/xdebugBefore.htm', [
 			'xdebugInstalled' => extension_loaded('xdebug'),
 			'xdebugProfilerEnable' => ini_get('xdebug.profiler_enable'),
 			'xdebugProfilerEnableTrigger' => ini_get('xdebug.profiler_enable_trigger'),
 			'serverSoftware' => $_SERVER['SERVER_SOFTWARE'],
-			'serverSoftwareOk' => !preg_match('/^PHP .* Development Server$/i', $_SERVER['SERVER_SOFTWARE'])
+			'serverSoftwareOk' => !preg_match('/^PHP .* Development Server$/i', $_SERVER['SERVER_SOFTWARE']),
+			'filterOk' => $filterOk
 		]);
 	}
 
