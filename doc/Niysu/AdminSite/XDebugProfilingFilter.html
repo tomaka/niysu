@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="robots" content="index, follow, all" />
-        <title>Niysu\Filters\ExcelResponseFilter | API</title>
+        <title>Niysu\AdminSite\XDebugProfilingFilter | API</title>
                     <link rel="stylesheet" type="text/css" href="../../stylesheet.css">
                             </head>
         <body id="class">
@@ -19,13 +19,13 @@
         <div id="title">API</div>
 
             <div class="type">Class</div>
-    <h1><a href="../../Niysu/Filters.html">Niysu\Filters</a>\ExcelResponseFilter</h1>
+    <h1><a href="../../Niysu/AdminSite.html">Niysu\AdminSite</a>\XDebugProfilingFilter</h1>
     </div>
         <div class="content">
-                <p>class    <strong>ExcelResponseFilter</strong>        extends <a href="../../Niysu/HTTPResponseFilterInterface.html"><abbr title="Niysu\HTTPResponseFilterInterface">HTTPResponseFilterInterface</abbr></a></p>
+                <p>class    <strong>XDebugProfilingFilter</strong>        extends <a href="../../Niysu/HTTPResponseFilterInterface.html"><abbr title="Niysu\HTTPResponseFilterInterface">HTTPResponseFilterInterface</abbr></a></p>
 
             <div class="description">
-            <p>Allows to easily send Excel documents to the response.</p>
+            <p>Filter necessary to use xdebug profiling in the AdminSite.</p>
             <p></p>
         </div>
     
@@ -39,8 +39,8 @@
                     
                 </td>
                 <td class="last">
-                    <a href="#method___construct">__construct</a>(<abbr title="Niysu\Filters\Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr> $next)
-                    <p>Sets the output response.</p>
+                    <a href="#method___construct">__construct</a>(<abbr title="Niysu\AdminSite\Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr> $response)
+                    <p>If profiling is enabled, will send back a header containing the profiling file name.</p>
                 </td>
                 <td></td>
             </tr>
@@ -52,7 +52,7 @@
                     <a href="#method_flush">flush</a>()
                     <p>Flushes the response at the end.</p>
                 </td>
-                <td></td>
+                <td><small>from&nbsp;<a href="../../Niysu/HTTPResponseFilterInterface.html#method_flush"><abbr title="Niysu\HTTPResponseFilterInterface">HTTPResponseFilterInterface</abbr></a></small></td>
             </tr>
                     <tr>
                 <td class="type">
@@ -112,27 +112,7 @@
                     <a href="#method_appendData">appendData</a>(string $data)
                     <p>Appends data to the end of the response.</p>
                 </td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td class="type">
-                    
-                </td>
-                <td class="last">
-                    <a href="#method_setCellValue">setCellValue</a>(string $cell, string $value, integer $sheet = null)
-                    <p>Changes the value inside a cell</p>
-                </td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td class="type">
-                    
-                </td>
-                <td class="last">
-                    <a href="#method_setCellStyle">setCellStyle</a>(string $cell, array $style, integer $sheet = null)
-                    <p>Changes the style of a cell</p>
-                </td>
-                <td></td>
+                <td><small>from&nbsp;<a href="../../Niysu/HTTPResponseFilterInterface.html#method_appendData"><abbr title="Niysu\HTTPResponseFilterInterface">HTTPResponseFilterInterface</abbr></a></small></td>
             </tr>
             </table>
 
@@ -140,20 +120,20 @@
         <h2>Details</h2>
 
                         <h3 id="method___construct">
-        <div class="location">at line 12</div>
+        <div class="location">at line 15</div>
         <code>            public            
-    <strong>__construct</strong>(<abbr title="Niysu\Filters\Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr> $next)</code>
+    <strong>__construct</strong>(<abbr title="Niysu\AdminSite\Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr> $response)</code>
     </h3>
     <div class="details">
-        <p>Sets the output response.</p>
+        <p>If profiling is enabled, will send back a header containing the profiling file name.</p>
         <p></p>
         <div class="tags">
                             <h4>Parameters</h4>
 
                     <table>
                     <tr>
-                <td><abbr title="Niysu\Filters\Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr></td>
-                <td>$next</td>
+                <td><abbr title="Niysu\AdminSite\Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr></td>
+                <td>$response</td>
                 <td></td>
             </tr>
             </table>
@@ -165,7 +145,7 @@
     </div>
 
                 <h3 id="method_flush">
-        <div class="location">at line 42</div>
+        <div class="location">in <a href="../../Niysu/HTTPResponseFilterInterface.html#method_flush"><abbr title="Niysu\HTTPResponseFilterInterface">HTTPResponseFilterInterface</abbr></a> at line 27</div>
         <code>            public            
     <strong>flush</strong>()</code>
     </h3>
@@ -314,7 +294,7 @@
     </div>
 
                 <h3 id="method_appendData">
-        <div class="location">at line 53</div>
+        <div class="location">in <a href="../../Niysu/HTTPResponseFilterInterface.html#method_appendData"><abbr title="Niysu\HTTPResponseFilterInterface">HTTPResponseFilterInterface</abbr></a> at line 51</div>
         <code>            public            
     <strong>appendData</strong>(string $data)</code>
     </h3>
@@ -329,76 +309,6 @@
                 <td>string</td>
                 <td>$data</td>
                 <td>Data to append</td>
-            </tr>
-            </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-                <h3 id="method_setCellValue">
-        <div class="location">at line 26</div>
-        <code>            public            
-    <strong>setCellValue</strong>(string $cell, string $value, integer $sheet = null)</code>
-    </h3>
-    <div class="details">
-        <p>Changes the value inside a cell</p>
-        <p></p>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table>
-                    <tr>
-                <td>string</td>
-                <td>$cell</td>
-                <td>The cell to change (eg. &#039;A1&#039;)</td>
-            </tr>
-                    <tr>
-                <td>string</td>
-                <td>$value</td>
-                <td>New value of the cell (formulas start by &#039;=&#039;)</td>
-            </tr>
-                    <tr>
-                <td>integer</td>
-                <td>$sheet</td>
-                <td>Numero of the sheet to modify</td>
-            </tr>
-            </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-                <h3 id="method_setCellStyle">
-        <div class="location">at line 37</div>
-        <code>            public            
-    <strong>setCellStyle</strong>(string $cell, array $style, integer $sheet = null)</code>
-    </h3>
-    <div class="details">
-        <p>Changes the style of a cell</p>
-        <p></p>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table>
-                    <tr>
-                <td>string</td>
-                <td>$cell</td>
-                <td>The cell to change (eg. &#039;A1&#039;)</td>
-            </tr>
-                    <tr>
-                <td>array</td>
-                <td>$style</td>
-                <td>New style of the cell</td>
-            </tr>
-                    <tr>
-                <td>integer</td>
-                <td>$sheet</td>
-                <td>Numero of the sheet to modify</td>
             </tr>
             </table>
 

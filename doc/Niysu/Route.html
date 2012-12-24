@@ -40,8 +40,8 @@
                     
                 </td>
                 <td class="last">
-                    <a href="#method___construct">__construct</a>($url, $method = &#039;.*&#039;, $callback = null)
-                    <p></p>
+                    <a href="#method___construct">__construct</a>($url = null, $method = &#039;.*&#039;, $callback = null)
+                    <p>Creates a new route.</p>
                 </td>
                 <td></td>
             </tr>
@@ -130,16 +130,6 @@
                     <a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a>
                 </td>
                 <td class="last">
-                    <a href="#method_filter">filter</a>(string $className)
-                    <p>Adds a filter to either an request or a response.</p>
-                </td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td class="type">
-                    <a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a>
-                </td>
-                <td class="last">
                     <a href="#method_before">before</a>($callable)
                     <p>Adds a function to be called before the handler.</p>
                 </td>
@@ -167,10 +157,20 @@
             </tr>
                     <tr>
                 <td class="type">
+                    integer
+                </td>
+                <td class="last">
+                    <a href="#method_getURLsCount">getURLsCount</a>()
+                    <p>Returns the number of URLs registered to this service</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
                     string
                 </td>
                 <td class="last">
-                    <a href="#method_getURLRegex">getURLRegex</a>()
+                    <a href="#method_getURLRegex">getURLRegex</a>(integer $index)
                     <p>Returns the regular expression to match with an URL.</p>
                 </td>
                 <td></td>
@@ -180,8 +180,8 @@
                     string
                 </td>
                 <td class="last">
-                    <a href="#method_getOriginalPattern">getOriginalPattern</a>()
-                    <p>Returns the original pattern that was passed to the constructor.</p>
+                    <a href="#method_getOriginalPattern">getOriginalPattern</a>(integer $index)
+                    <p>Returns the original pattern of an URL.</p>
                 </td>
                 <td></td>
             </tr>
@@ -190,7 +190,7 @@
                     string
                 </td>
                 <td class="last">
-                    <a href="#method_getURL">getURL</a>(array $parameters = array())
+                    <a href="#method_getURL">getURL</a>(array $parameters = array(), integer $index)
                     <p>Returns the URL of the route.</p>
                 </td>
                 <td></td>
@@ -201,12 +201,12 @@
         <h2>Details</h2>
 
                         <h3 id="method___construct">
-        <div class="location">at line 15</div>
+        <div class="location">at line 22</div>
         <code>            public            
-    <strong>__construct</strong>($url, $method = &#039;.*&#039;, $callback = null)</code>
+    <strong>__construct</strong>($url = null, $method = &#039;.*&#039;, $callback = null)</code>
     </h3>
     <div class="details">
-        <p></p>
+        <p>Creates a new route.</p>
         <p></p>
         <div class="tags">
                             <h4>Parameters</h4>
@@ -236,7 +236,7 @@
     </div>
 
                 <h3 id="method_getName">
-        <div class="location">at line 29</div>
+        <div class="location">at line 40</div>
         <code>            public            string
     <strong>getName</strong>()</code>
     </h3>
@@ -260,7 +260,7 @@
     </div>
 
                 <h3 id="method_name">
-        <div class="location">at line 38</div>
+        <div class="location">at line 49</div>
         <code>            public            
     <strong>name</strong>(string $name)</code>
     </h3>
@@ -285,7 +285,7 @@
     </div>
 
                 <h3 id="method_handle">
-        <div class="location">at line 63</div>
+        <div class="location">at line 74</div>
         <code>            public            boolean
     <strong>handle</strong>(<a href="../Niysu/HTTPRequestInterface.html"><abbr title="Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr></a> $request, <a href="../Niysu/HTTPResponseInterface.html"><abbr title="Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr></a> $response, <a href="../Niysu/Scope.html"><abbr title="Niysu\Scope">Scope</abbr></a> $scope = null, $prefix = &#039;&#039;)</code>
     </h3>
@@ -346,7 +346,7 @@
     </div>
 
                 <h3 id="method_handleNoURLCheck">
-        <div class="location">at line 70</div>
+        <div class="location">at line 81</div>
         <code>            public            
     <strong>handleNoURLCheck</strong>(<a href="../Niysu/HTTPRequestInterface.html"><abbr title="Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr></a> $request, <a href="../Niysu/HTTPResponseInterface.html"><abbr title="Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr></a> $response, <a href="../Niysu/Scope.html"><abbr title="Niysu\Scope">Scope</abbr></a> $scope = null, $prefix = &#039;&#039;)</code>
     </h3>
@@ -386,7 +386,7 @@
     </div>
 
                 <h3 id="method_method">
-        <div class="location">at line 82</div>
+        <div class="location">at line 93</div>
         <code>            public            <a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a>
     <strong>method</strong>(string $method)</code>
     </h3>
@@ -420,7 +420,7 @@
     </div>
 
                 <h3 id="method_pattern">
-        <div class="location">at line 98</div>
+        <div class="location">at line 110</div>
         <code>            public            <a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a>
     <strong>pattern</strong>(string $varName, string $regex)</code>
     </h3>
@@ -456,12 +456,21 @@
     </table>
 
             
+                            <h4>Exceptions</h4>
+
+                    <table>
+                    <tr>
+                <td><a href="http://php.net/LogicException"><abbr title="LogicException">LogicException</abbr></a></td>
+                <td>If none of the URLs contain $varName</td>
+            </tr>
+            </table>
+
             
                     </div>
     </div>
 
                 <h3 id="method_validate">
-        <div class="location">at line 115</div>
+        <div class="location">at line 138</div>
         <code>            public            <a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a>
     <strong>validate</strong>(<abbr title="Niysu\callable">callable</abbr> $callable, integer $statusCode = 500)</code>
     </h3>
@@ -503,7 +512,7 @@
     </div>
 
                 <h3 id="method_onlyIf">
-        <div class="location">at line 136</div>
+        <div class="location">at line 159</div>
         <code>            public            <a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a>
     <strong>onlyIf</strong>(<abbr title="Niysu\callable">callable</abbr> $callable)</code>
     </h3>
@@ -538,45 +547,8 @@
                     </div>
     </div>
 
-                <h3 id="method_filter">
-        <div class="location">at line 155</div>
-        <code>            public            <a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a>
-    <strong>filter</strong>(string $className)</code>
-    </h3>
-    <div class="details">
-        <p>Adds a filter to either an request or a response.</p>
-        <p>If the class is a derivate of HTTPRequestInterface, then it will replace the request.<br />
- If the class is a derivate of HTTPResponseInterface, then it will replace the response.<br />
-<br />
- The filter() function returns $this.</p>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table>
-                    <tr>
-                <td>string</td>
-                <td>$className</td>
-                <td>Name of a class derivate of HTTPRequestInterface or HTTPResponseInterface</td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table>
-        <tr>
-            <td><a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a></td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-                    </div>
-    </div>
-
                 <h3 id="method_before">
-        <div class="location">at line 182</div>
+        <div class="location">at line 175</div>
         <code>            public            <a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a>
     <strong>before</strong>($callable)</code>
     </h3>
@@ -610,7 +582,7 @@
     </div>
 
                 <h3 id="method_handler">
-        <div class="location">at line 196</div>
+        <div class="location">at line 189</div>
         <code>            public            <a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a>
     <strong>handler</strong>(<abbr title="Niysu\callable">callable</abbr> $handler)</code>
     </h3>
@@ -644,7 +616,7 @@
     </div>
 
                 <h3 id="method_after">
-        <div class="location">at line 209</div>
+        <div class="location">at line 202</div>
         <code>            public            <a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a>
     <strong>after</strong>($callable)</code>
     </h3>
@@ -677,15 +649,49 @@
                     </div>
     </div>
 
+                <h3 id="method_getURLsCount">
+        <div class="location">at line 213</div>
+        <code>            public            integer
+    <strong>getURLsCount</strong>()</code>
+    </h3>
+    <div class="details">
+        <p>Returns the number of URLs registered to this service</p>
+        <p></p>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td>integer</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
                 <h3 id="method_getURLRegex">
-        <div class="location">at line 222</div>
+        <div class="location">at line 226</div>
         <code>            public            string
-    <strong>getURLRegex</strong>()</code>
+    <strong>getURLRegex</strong>(integer $index)</code>
     </h3>
     <div class="details">
         <p>Returns the regular expression to match with an URL.</p>
         <p>Includes / and / around the regex.</p>
         <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td>integer</td>
+                <td>$index</td>
+                <td>0-based index of the URL to get</td>
+            </tr>
+            </table>
+
             
                             <h4>Return Value</h4>
 
@@ -702,14 +708,24 @@
     </div>
 
                 <h3 id="method_getOriginalPattern">
-        <div class="location">at line 230</div>
+        <div class="location">at line 236</div>
         <code>            public            string
-    <strong>getOriginalPattern</strong>()</code>
+    <strong>getOriginalPattern</strong>(integer $index)</code>
     </h3>
     <div class="details">
-        <p>Returns the original pattern that was passed to the constructor.</p>
+        <p>Returns the original pattern of an URL.</p>
         <p></p>
         <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td>integer</td>
+                <td>$index</td>
+                <td>0-based index of the URL to get</td>
+            </tr>
+            </table>
+
             
                             <h4>Return Value</h4>
 
@@ -726,9 +742,9 @@
     </div>
 
                 <h3 id="method_getURL">
-        <div class="location">at line 242</div>
+        <div class="location">at line 249</div>
         <code>            public            string
-    <strong>getURL</strong>(array $parameters = array())</code>
+    <strong>getURL</strong>(array $parameters = array(), integer $index)</code>
     </h3>
     <div class="details">
         <p>Returns the URL of the route.</p>
@@ -741,6 +757,11 @@
                 <td>array</td>
                 <td>$parameters</td>
                 <td>An associative array of parameter =&gt; value</td>
+            </tr>
+                    <tr>
+                <td>integer</td>
+                <td>$index</td>
+                <td>0-based index of the URL to get</td>
             </tr>
             </table>
 
