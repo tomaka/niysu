@@ -7,6 +7,22 @@ namespace Niysu\Filters;
  * @link 		http://github.com/Tomaka17/niysu
  */
 class JSONRequestFilter extends \Niysu\HTTPRequestFilterInterface {
+	/**
+	 * Builds a before function that will check for JSON input.
+	 *
+	 * If the input is not in JSON, will stop the route and send a status code
+	 *
+	 * @param integer 		$errorStatusCode 		Status code to send in case of wrong input
+	 */
+	public static function beforeValidateInput($errorStatusCode = 400) {
+		return function($jsonRequestFilter, $response, &$stopRoute) use ($errorStatusCode) {
+			if (!$jsonRequestFilter->isValidJSON()) {
+				$response->setStatusCode($errorStatusCode);
+				$stopRoute = true;
+			}
+		}
+	}
+
 	public function __construct(\Niysu\HTTPRequestInterface $request) {
 		parent::__construct($request);
 	}
