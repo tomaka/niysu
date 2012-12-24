@@ -9,8 +9,17 @@ namespace Niysu\AdminSite;
  *
  * @prefix 		/admin
  * @static 		assets
+ * @before 		setUp
  */
 class AdminSite {
+	public function __construct() {
+		var_dump('testconstruct ');
+	}
+
+	private static function setUp() {
+		var_dump('testsetup ');
+	}
+
 	/**
 	 * @name niysu-adminsite-home
 	 * @url /
