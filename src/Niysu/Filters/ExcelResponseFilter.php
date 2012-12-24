@@ -24,7 +24,7 @@ class ExcelResponseFilter extends \Niysu\HTTPResponseFilterInterface {
 	 * @param integer 	$sheet 		Numero of the sheet to modify
 	 */
 	public function setCellValue($cell, $value, $sheet = null) {
-		$this->getSheet($sheet)->setCellValue($cell, $infos);
+		$this->getSheet($sheet)->setCellValue($cell, $value);
 	}
 
 	/**
