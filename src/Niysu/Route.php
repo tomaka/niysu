@@ -271,7 +271,8 @@ class Route {
 		// checking whether the URL matches
 		foreach ($this->urlPatterns as $p) {
 			$result = $p->testURL($url);
-			if ($result)	break;
+			if (isset($result))
+				break;
 		}
 		if (!$noURLCheck && $result === null)
 			return false;
