@@ -1,0 +1,22 @@
+{#
+	Copyright 2012 Pierre Krieger
+
+	This code is under MIT license. See the LICENSE file.
+#}
+
+{% extends "@niysuAdminSite/main.htm" %}
+
+{% block body %}
+	<h2>XHProf profiling</h2>
+
+	{% if extensionOk == false %}
+		<p><strong>You must have the XHProf extension installed in order to use profiling.</strong></p>
+
+	{% else %}
+		<h3>Profiling</h3>
+		<form action="xhprof-handle" method="post">
+			<p>URL to test:<br /><input style="min-width:25em;" type="text" name="url" placeholder="Local URL to test" /></p>
+			<p><button type="submit">Start profiling</button></p>
+		</form>
+	{% endif %}
+{% endblock %}

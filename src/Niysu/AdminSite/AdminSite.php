@@ -59,6 +59,34 @@ class AdminSite {
 	}
 
 	/**
+	 * @name niysu-adminsite-xhprof
+	 * @url /xhprof
+	 * @method GET
+	 */
+	public function xhProfPanel($twigService) {
+		$twigService->addPath(__DIR__.'/templates', 'niysuAdminSite');
+		$twigService->output('@niysuAdminSite/xhprof.htm', [ 'extensionOk' => extension_loaded('xhprof') ]);
+	}
+
+	/**
+	 * @name niysu-adminsite-xhprof-post
+	 * @url /xhprof-handle
+	 * @method POST
+	 */
+	public function xhProfPost($twigService, $server, $postRequestFilter) {
+		$request = new \Niysu\HTTPRequestCustom($postRequestFilter->url);
+		$response = new \Niysu\HTTPResponseNull();
+
+		xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY);
+		$server->handle($request, $response);
+		$data = xhprof_disable();
+
+		var_dump($data);
+		/*$twigService->addPath(__DIR__.'/templates', 'niysuAdminSite');
+		$twigService->output('@niysuAdminSite/xhprof.htm');*/
+	}
+
+	/**
 	 * @name niysu-adminsite-xdebug
 	 * @url /xdebug
 	 * @method GET
