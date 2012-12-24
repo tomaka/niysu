@@ -58,6 +58,7 @@ class AdminSite {
 		$twigService->output('@niysuAdminSite/databaseAccess.htm');
 	}
 
+
 	/**
 	 * @name niysu-adminsite-xhprof
 	 * @url /xhprof
@@ -72,6 +73,7 @@ class AdminSite {
 	 * @name niysu-adminsite-xhprof-post
 	 * @url /xhprof-handle
 	 * @method POST
+	 * @todo Profiling should include routes registration
 	 */
 	public function xhProfPost($twigService, $server, $postRequestFilter) {
 		$request = new \Niysu\HTTPRequestCustom($postRequestFilter->url);
@@ -81,10 +83,10 @@ class AdminSite {
 		$server->handle($request, $response);
 		$data = xhprof_disable();
 
-		var_dump($data);
-		/*$twigService->addPath(__DIR__.'/templates', 'niysuAdminSite');
-		$twigService->output('@niysuAdminSite/xhprof.htm');*/
+		$twigService->addPath(__DIR__.'/templates', 'niysuAdminSite');
+		$twigService->output('@niysuAdminSite/xhprof-results.htm', [ 'data' => $data ]);
 	}
+
 
 	/**
 	 * @name niysu-adminsite-xdebug

@@ -1,0 +1,92 @@
+{#
+	Copyright 2012 Pierre Krieger
+
+	This code is under MIT license. See the LICENSE file.
+#}
+
+{% extends "@niysuAdminSite/main.htm" %}
+
+{% block head %}
+	<style type="text/css">
+		.xhprofresults {
+			border-collapse:collapse;
+		}
+
+		.xhprofresults td, .xhprofresults th {
+			border:1px solid black;
+			font-size:9px;
+			padding:0.3em 0.5em;
+		}
+
+		.xhprofresults tr td {
+			white-space:nowrap;
+			max-width:320px;
+			overflow-x:hidden;
+			text-overflow:ellipsis;
+		}
+
+		.xhprofresults tr:nth-of-type(2n) {
+			background-color:#eee;
+		}
+
+		.xhprofresults tr:nth-of-type(1) * {
+			background-color:#ddd;
+			font-size:11px;
+			font-variant:small-caps;
+		}
+	</style>
+
+	<script type="text/javascript">
+		function Controller($scope) {
+			$scope.$watch('data', function(newVal) {
+				if (!newVal) return;
+
+				$scope.sum = {};
+				for (var i in newVal) {
+					for (var e in newVal[i]) {
+						if (!$scope.sum[e])
+							$scope.sum[e] = 0;
+						$scope.sum[e] += newVal[i][e];
+					}
+				}
+			}, true);
+		}
+	</script>
+{% endblock %}
+
+{% block body %}
+	<div data-ng-app>
+		<h2>XHProf profiling results</h2>
+
+		<table data-ng-controller="Controller" class="xhprofresults" data-ng-init="data = {{ data | json_encode }}">
+			{% raw %}
+				<tr>
+					<th>Function</th>
+					<th>Caller</th>
+					<th># calls</th>
+					<th>Duration</th>
+					<th>CPU</th>
+					<th>&#916; memory</th>
+					<th>&#916; peak memory</th>
+				</tr>
+				<tr data-ng-repeat="(functions,infos) in data">
+					<td title="{{ functions.split('==>')[1] }}">{{ functions.split('==>')[1] }}</td>
+					<td title="{{ functions.split('==>')[0] }}">{{ functions.split('==>')[0] }}</td>
+					<td>{{ infos.ct }}</td>
+					<td>{{ infos.wt / 1000 | number:2 }} ms</td>
+					<td>{{ infos.cpu }}</td>
+					<td>{{ infos.mu }}</td>
+					<td>{{ infos.pmu }}</td>
+				</tr>
+				<tr>
+					<td colspan="2">Total</td>
+					<td></td>
+					<td>{{ sum.wt / 1000 | number:2 }} ms</td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+			{% endraw %}
+		</table>
+	</div>
+{% endblock %}
