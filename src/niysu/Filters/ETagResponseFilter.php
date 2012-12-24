@@ -50,12 +50,14 @@ class ETagResponseFilter extends \Niysu\HTTPResponseFilterInterface {
 			parent::setHeader('ETag', $etag);
 			if ($this->requestETag == $etag) {
 				parent::setStatusCode(304);
+				parent::flush();
 				return;
 			}
 		}
 
 		parent::appendData($this->dataBuffer);
 		$this->dataBuffer = '';
+		parent::flush();
 	}
 
 	public function appendData($data) {
