@@ -16,13 +16,14 @@ class RoutesCollection {
 	 * The routes are created in a child RoutesCollection that is returned by this function.
 	 *
 	 * Recognized tokens are:
-	 *  - @before Name of a function (method or global function) to be called before the handler
-	 *  - @method Pattern of the method to match
-	 *  - @name Name of the route
+	 *  - @before (both) Name of a function (method or global function) to be called before the handler
+	 *  - @method (route only) Pattern of the method to match
+	 *  - @name (route only) Name of the route
+	 *  - @pattern (route only) Sets the regex pattern of the part of a URL
 	 *  - @prefix (class only) Sets the prefix of the RoutesCollection ; can be overwritten by calling RoutesCollection->prefix()
 	 *  - @static (class only) Adds a path of static resources ; path is relative to the class location
-	 *  - @url Pattern of the URL to match, see register()
-	 *  - @uri Alias of @url
+	 *  - @url (route only) Pattern of the URL to match, see register()
+	 *  - @uri (route only) Alias of @url
 	 *
 	 * The first "before" function of the new route collection will create an instance of the class and put it in "$scope->this".
 	 *
@@ -85,6 +86,14 @@ class RoutesCollection {
 				// setting the method
 				if (isset($parameters['method']))
 					$route->method($parameters['method'][0]);
+				
+				// setting the pattern of the URL parts
+				if (isset($parameters['pattern'])) {
+					foreach ($parameters['pattern'] as $p => $value) {
+						list($part, $val) = explode(' ', $value, 2);
+						$route->pattern($part, $val);
+					}
+				}
 				
 				// setting the handler
 				$route->handler(function(Scope $scope) use ($methodReflection, $reflectionClass) {
