@@ -64,6 +64,7 @@ class Server {
 		$this->setServiceProvider('xslt', 'Niysu\\Services\\XSLTService');
 
 		// building filters
+		$this->setFilterProvider('contentEncodingResponse', 'Niysu\\Filters\\ContentEncodingResponseFilter');
 		$this->setFilterProvider('csvResponse', 'Niysu\\Filters\\CSVResponseFilter');
 		$this->setFilterProvider('debugPanelResponse', 'Niysu\\Filters\\DebugPanelResponseFilter');
 		$this->setFilterProvider('errorPagesResponse', 'Niysu\\Filters\\ErrorPagesResponseFilter');
