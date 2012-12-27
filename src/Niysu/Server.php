@@ -75,6 +75,7 @@ class Server {
 		$this->setFilterProvider('maintenanceModeResponse', 'Niysu\\Filters\\MaintenanceModeResponseFilter');
 		$this->setFilterProvider('postRequest', 'Niysu\\Filters\\POSTRequestFilter');
 		$this->setFilterProvider('tidyResponse', 'Niysu\\Filters\\TidyResponseFilter');
+		$this->setFilterProvider('twigResponse', 'Niysu\\Filters\\TwigResponseFilter');
 		$this->setFilterProvider('xmlRequest', 'Niysu\\Filters\\XMLRequestFilter');
 		$this->setFilterProvider('xmlResponse', 'Niysu\\Filters\\XMLResponseFilter');
 
