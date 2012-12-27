@@ -50,7 +50,7 @@
                 </td>
                 <td class="last">
                     <a href="#method_flush">flush</a>()
-                    <p>Flushes the response.</p>
+                    <p>Flushes the response at the end.</p>
                 </td>
                 <td></td>
             </tr>
@@ -180,8 +180,8 @@
     <strong>flush</strong>()</code>
     </h3>
     <div class="details">
-        <p>Flushes the response.</p>
-        <p>If some data has already been appended, then this will send all headers and the data already added.</p>
+        <p>Flushes the response at the end.</p>
+        <p>Nothing else must be modified after this call.</p>
         <div class="tags">
             
             

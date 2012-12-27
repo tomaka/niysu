@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="robots" content="index, follow, all" />
-        <title>Niysu\Filters\StatusCodeOverwriteResponseFilter | API</title>
+        <title>Niysu\Filters\MaintenanceModeResponseFilter | API</title>
                     <link rel="stylesheet" type="text/css" href="../../stylesheet.css">
                             </head>
         <body id="class">
@@ -19,13 +19,13 @@
         <div id="title">API</div>
 
             <div class="type">Class</div>
-    <h1><a href="../../Niysu/Filters.html">Niysu\Filters</a>\StatusCodeOverwriteResponseFilter</h1>
+    <h1><a href="../../Niysu/Filters.html">Niysu\Filters</a>\MaintenanceModeResponseFilter</h1>
     </div>
         <div class="content">
-                <p>class    <strong>StatusCodeOverwriteResponseFilter</strong>        extends <a href="../../Niysu/HTTPResponseFilterInterface.html"><abbr title="Niysu\HTTPResponseFilterInterface">HTTPResponseFilterInterface</abbr></a></p>
+                <p>class    <strong>MaintenanceModeResponseFilter</strong>        extends <a href="../../Niysu/HTTPResponseFilterInterface.html"><abbr title="Niysu\HTTPResponseFilterInterface">HTTPResponseFilterInterface</abbr></a></p>
 
             <div class="description">
-            <p>Doesn&#039;t do anything except replace the status code by a predefined code.</p>
+            <p>Automatically sends back an error page if the website is under maintenance.</p>
             <p></p>
         </div>
     
@@ -39,7 +39,7 @@
                     
                 </td>
                 <td class="last">
-                    <a href="#method___construct">__construct</a>(<abbr title="Niysu\Filters\Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr> $response, $code)
+                    <a href="#method___construct">__construct</a>(<abbr title="Niysu\Filters\Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr> $response, $maintenanceModeService, $stopRoute)
                     <p>Sets the output response.</p>
                 </td>
                 <td></td>
@@ -59,7 +59,7 @@
                     
                 </td>
                 <td class="last">
-                    <a href="#method_setStatusCode">setStatusCode</a>(integer $statusCode)
+                    <a href="#method_setStatusCode">setStatusCode</a>($code)
                     <p>Sets the status code to return with the headers.</p>
                 </td>
                 <td></td>
@@ -72,7 +72,7 @@
                     <a href="#method_addHeader">addHeader</a>(string $header, string $value)
                     <p>Adds a header to the headers list.</p>
                 </td>
-                <td><small>from&nbsp;<a href="../../Niysu/HTTPResponseFilterInterface.html#method_addHeader"><abbr title="Niysu\HTTPResponseFilterInterface">HTTPResponseFilterInterface</abbr></a></small></td>
+                <td></td>
             </tr>
                     <tr>
                 <td class="type">
@@ -82,7 +82,7 @@
                     <a href="#method_setHeader">setHeader</a>(string $header, string $value)
                     <p>Removes all headers of this name and adds a new one.</p>
                 </td>
-                <td><small>from&nbsp;<a href="../../Niysu/HTTPResponseFilterInterface.html#method_setHeader"><abbr title="Niysu\HTTPResponseFilterInterface">HTTPResponseFilterInterface</abbr></a></small></td>
+                <td></td>
             </tr>
                     <tr>
                 <td class="type">
@@ -102,7 +102,7 @@
                     <a href="#method_isHeadersListSent">isHeadersListSent</a>()
                     <p>Returns true if the response has already sent its headers and is now sending data.</p>
                 </td>
-                <td><small>from&nbsp;<a href="../../Niysu/HTTPResponseFilterInterface.html#method_isHeadersListSent"><abbr title="Niysu\HTTPResponseFilterInterface">HTTPResponseFilterInterface</abbr></a></small></td>
+                <td></td>
             </tr>
                     <tr>
                 <td class="type">
@@ -112,7 +112,7 @@
                     <a href="#method_appendData">appendData</a>(string $data)
                     <p>Appends data to the end of the response.</p>
                 </td>
-                <td><small>from&nbsp;<a href="../../Niysu/HTTPResponseFilterInterface.html#method_appendData"><abbr title="Niysu\HTTPResponseFilterInterface">HTTPResponseFilterInterface</abbr></a></small></td>
+                <td></td>
             </tr>
             </table>
 
@@ -122,7 +122,7 @@
                         <h3 id="method___construct">
         <div class="location">at line 12</div>
         <code>            public            
-    <strong>__construct</strong>(<abbr title="Niysu\Filters\Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr> $response, $code)</code>
+    <strong>__construct</strong>(<abbr title="Niysu\Filters\Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr> $response, $maintenanceModeService, $stopRoute)</code>
     </h3>
     <div class="details">
         <p>Sets the output response.</p>
@@ -138,7 +138,12 @@
             </tr>
                     <tr>
                 <td></td>
-                <td>$code</td>
+                <td>$maintenanceModeService</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$stopRoute</td>
                 <td></td>
             </tr>
             </table>
@@ -165,9 +170,9 @@
     </div>
 
                 <h3 id="method_setStatusCode">
-        <div class="location">at line 17</div>
+        <div class="location">at line 25</div>
         <code>            public            
-    <strong>setStatusCode</strong>(integer $statusCode)</code>
+    <strong>setStatusCode</strong>($code)</code>
     </h3>
     <div class="details">
         <p>Sets the status code to return with the headers.</p>
@@ -177,9 +182,9 @@
 
                     <table>
                     <tr>
-                <td>integer</td>
-                <td>$statusCode</td>
-                <td>The status code</td>
+                <td></td>
+                <td>$code</td>
+                <td></td>
             </tr>
             </table>
 
@@ -190,7 +195,7 @@
     </div>
 
                 <h3 id="method_addHeader">
-        <div class="location">in <a href="../../Niysu/HTTPResponseFilterInterface.html#method_addHeader"><abbr title="Niysu\HTTPResponseFilterInterface">HTTPResponseFilterInterface</abbr></a> at line 35</div>
+        <div class="location">at line 35</div>
         <code>            public            
     <strong>addHeader</strong>(string $header, string $value)</code>
     </h3>
@@ -220,7 +225,7 @@
     </div>
 
                 <h3 id="method_setHeader">
-        <div class="location">in <a href="../../Niysu/HTTPResponseFilterInterface.html#method_setHeader"><abbr title="Niysu\HTTPResponseFilterInterface">HTTPResponseFilterInterface</abbr></a> at line 39</div>
+        <div class="location">at line 30</div>
         <code>            public            
     <strong>setHeader</strong>(string $header, string $value)</code>
     </h3>
@@ -275,7 +280,7 @@
     </div>
 
                 <h3 id="method_isHeadersListSent">
-        <div class="location">in <a href="../../Niysu/HTTPResponseFilterInterface.html#method_isHeadersListSent"><abbr title="Niysu\HTTPResponseFilterInterface">HTTPResponseFilterInterface</abbr></a> at line 47</div>
+        <div class="location">at line 45</div>
         <code>            public            boolean
     <strong>isHeadersListSent</strong>()</code>
     </h3>
@@ -299,7 +304,7 @@
     </div>
 
                 <h3 id="method_appendData">
-        <div class="location">in <a href="../../Niysu/HTTPResponseFilterInterface.html#method_appendData"><abbr title="Niysu\HTTPResponseFilterInterface">HTTPResponseFilterInterface</abbr></a> at line 51</div>
+        <div class="location">at line 40</div>
         <code>            public            
     <strong>appendData</strong>(string $data)</code>
     </h3>

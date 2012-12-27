@@ -195,6 +195,36 @@
                 </td>
                 <td></td>
             </tr>
+                    <tr>
+                <td class="type">
+                    static&nbsp;<abbr title="Niysu\callable">callable</abbr>
+                </td>
+                <td class="last">
+                    <a href="#method_convertOnlyIfToBefore">convertOnlyIfToBefore</a>(mixed $onlyIf)
+                    <p>Converts a &quot;onlyIf&quot;-type function to a &quot;before&quot;-type function.</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    static&nbsp;<abbr title="Niysu\callable">callable</abbr>
+                </td>
+                <td class="last">
+                    <a href="#method_convertValidateToBefore">convertValidateToBefore</a>(mixed $validate, integer $statusCode)
+                    <p>Converts a &quot;validate&quot;-type function to a &quot;before&quot;-type function.</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    static&nbsp;<abbr title="Niysu\callable">callable</abbr>
+                </td>
+                <td class="last">
+                    <a href="#method_convertFilterToBefore">convertFilterToBefore</a>(mixed $filter)
+                    <p>Builds a &quot;before&quot;-type function that will invoke a filter.</p>
+                </td>
+                <td></td>
+            </tr>
             </table>
 
 
@@ -789,6 +819,119 @@
             </tr>
             </table>
 
+            
+                    </div>
+    </div>
+
+                <h3 id="method_convertOnlyIfToBefore">
+        <div class="location">at line 265</div>
+        <code>        static    public            <abbr title="Niysu\callable">callable</abbr>
+    <strong>convertOnlyIfToBefore</strong>(mixed $onlyIf)</code>
+    </h3>
+    <div class="details">
+        <p>Converts a &quot;onlyIf&quot;-type function to a &quot;before&quot;-type function.</p>
+        <p>The onlyIf function is called by Scope::call and should return either true or false.<br />
+ If it returns false, then the route stops and the server searches for another route.<br />
+<br />
+ This function will convert an onlyIf function to a before function.</p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td>mixed</td>
+                <td>$onlyIf</td>
+                <td>Callable by Scope::call</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td><abbr title="Niysu\callable">callable</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_convertValidateToBefore">
+        <div class="location">at line 284</div>
+        <code>        static    public            <abbr title="Niysu\callable">callable</abbr>
+    <strong>convertValidateToBefore</strong>(mixed $validate, integer $statusCode)</code>
+    </h3>
+    <div class="details">
+        <p>Converts a &quot;validate&quot;-type function to a &quot;before&quot;-type function.</p>
+        <p>The validate function is called by Scope::call and should return either true or false.<br />
+ If it returns false, then the route stops and the response status code is set to the given status code.<br />
+<br />
+ This function will convert a validate function to a before function.</p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td>mixed</td>
+                <td>$validate</td>
+                <td>Callable by Scope::call</td>
+            </tr>
+                    <tr>
+                <td>integer</td>
+                <td>$statusCode</td>
+                <td>Status code to return if $validate returns false</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td><abbr title="Niysu\callable">callable</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_convertFilterToBefore">
+        <div class="location">at line 301</div>
+        <code>        static    public            <abbr title="Niysu\callable">callable</abbr>
+    <strong>convertFilterToBefore</strong>(mixed $filter)</code>
+    </h3>
+    <div class="details">
+        <p>Builds a &quot;before&quot;-type function that will invoke a filter.</p>
+        <p>The returned before function will invoke a filter registered towards the server so that it will replace the request or response.</p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td>mixed</td>
+                <td>$filter</td>
+                <td>Name of a filter or a filter class, in both cases must have been registered towards the server</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td><abbr title="Niysu\callable">callable</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
             
                     </div>
     </div>
