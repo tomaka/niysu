@@ -8,6 +8,9 @@ namespace Niysu\Services;
  * @link 		http://github.com/Tomaka17/niysu
  */
 class DatabaseService {
+	/**
+	 * @deprecated
+	 */
 	public static function beforeConfigureDatabase($dsn, $login = null, $password = null) {
 		return function($databaseService) use ($dsn, $login, $password) {
 			$databaseService->setDatabase($dsn, $login, $password);

@@ -21,6 +21,7 @@ class MaintenanceModeService {
 	 * @param string 	$file 	If non-null, the service will be configured to this file before the check
 	 * @example $server->before(Niysu\Services\MaintenanceModeService::beforeCheckMaintenance(__DIR__.'/maintenance'));
 	 * @return callable
+	 * @deprecated Use MaintenanceModeResponseFilter
 	 */
 	public static function beforeCheckMaintenance($file = null) {
 		return function($maintenanceModeService, $response, &$stopRoute) use ($file) {

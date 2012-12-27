@@ -44,6 +44,9 @@ class TwigService {
 		return $template->render($variables);
 	}
 
+	/**
+	 * @deprecated Use TwigResponseFilter instead
+	 */
 	public function output($template, $variables = []) {
 		if (!$this->response)
 			throw new \LogicException('Response must be set to use the output function');
