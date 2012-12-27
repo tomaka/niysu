@@ -9,10 +9,10 @@ namespace Niysu\Services;
  * @link 		http://github.com/Tomaka17/niysu
  */
 class CookiesService {
-	public function __construct(&$request, &$response, &$logService) {
+	public function __construct(\Niysu\HTTPRequestInterface &$request, \Niysu\HTTPResponseInterface &$response, \Monolog\Monolog $log) {
 		$this->request =& $request;
 		$this->response =& $response;
-		$this->logService =& $logService;
+		$this->log = $log;
 		$this->refreshRequestCookies();
 	}
 
@@ -163,10 +163,9 @@ class CookiesService {
 		if ($httponly)	$header .= '; HttpOnly';
 
 		if ($this->response) {
-			if ($this->logService)
-				$this->logService->debug('Adding cookie '.$name.' set to value: '.$value);
-			if ($this->request && !$this->request->isHTTPS() && $secure && $this->logService)
-				$this->logService->notice('Setting a secure cookie not through HTTPS is pointless');
+			$this->log->debug('Sending cookie '.$name.' set to value: '.$value);
+			if ($this->request && !$this->request->isHTTPS() && $secure)
+				$this->log->notice('Setting a secure cookie not through HTTPS is pointless');
 
 			$this->response->addHeader('Set-Cookie', $header);
 		}
@@ -190,7 +189,7 @@ class CookiesService {
 
 	private $request;
 	private $response;
-	private $logService;
+	private $log;
 	private $requestCookies = [];			// cookies read from the request ; array of format name => value
 	private $updatedCookies = [];			// same format as $requestCookies but for cookies that have been set by this function
 	private $defaultLifetime = null;		// default lifetime for cookies when expires is null
