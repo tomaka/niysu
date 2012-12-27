@@ -251,6 +251,61 @@ class Route {
 	}
 
 
+	/**
+	 * Converts a "onlyIf"-type function to a "before"-type function.
+	 *
+	 * The onlyIf function is called by Scope::call and should return either true or false.
+	 * If it returns false, then the route stops and the server searches for another route.
+	 *
+	 * This function will convert an onlyIf function to a before function.
+	 *
+	 * @param mixed 	$onlyIf 	Callable by Scope::call
+	 * @return callable
+	 */
+	public static function convertOnlyIfToBefore($onlyIf) {
+		return function(Scope $scope, &$isRightResource) use ($onlyIf) {
+			if (!$scope->call($onlyIf))
+				$isRightResource = false;
+		};
+	}
+
+	/**
+	 * Converts a "validate"-type function to a "before"-type function.
+	 *
+	 * The validate function is called by Scope::call and should return either true or false.
+	 * If it returns false, then the route stops and the response status code is set to the given status code.
+	 *
+	 * This function will convert a validate function to a before function.
+	 *
+	 * @param mixed 	$validate 		Callable by Scope::call
+	 * @param integer 	$statusCode 	Status code to return if $validate returns false
+	 * @return callable
+	 */
+	public static function convertValidateToBefore($validate, $statusCode) {
+		return function(Scope $scope, &$stopRoute, $response) use ($validate, $statusCode) {
+			if (!$scope->call($validate)) {
+				$response->setStatusCode($statusCode);
+				$stopRoute = true;
+			}
+		};
+	}
+
+	/**
+	 * Builds a "before"-type function that will invoke a filter.
+	 *
+	 * The returned before function will invoke a filter registered towards the server so that it will replace the request or response.
+	 *
+	 * @param mixed 	$filter 	Name of a filter or a filter class, in both cases must have been registered towards the server
+	 * @return callable
+	 */
+	public static function convertFilterToBefore($filter) {
+		return function(Scope $scope) use ($filter) {
+			$val = $scope->get($filter.'Filter');
+			if (!$val)
+				$scope->getByType($filter);
+		};
+	}
+
 
 	private function doHandle(HTTPRequestInterface &$request, HTTPResponseInterface &$response, $scope, $prefix, $noURLCheck) {
 		if (!$scope)
