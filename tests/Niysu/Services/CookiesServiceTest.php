@@ -4,6 +4,8 @@ namespace Niysu\Services;
 class CookiesServiceTest extends \PHPUnit_Framework_TestCase {
 	public function testNoCookie() {
 		$scope = new \Niysu\Scope([
+			'log' => new \Monolog\Logger(''),
+			'response' => new \Niysu\HTTPResponseStorage(),
 			'request' => new \Niysu\HTTPRequestCustom('/', 'GET', [			// no cookies header
 			])
 		]);
@@ -16,6 +18,8 @@ class CookiesServiceTest extends \PHPUnit_Framework_TestCase {
 
 	public function testGetCookie() {
 		$scope = new \Niysu\Scope([
+			'log' => new \Monolog\Logger(''),
+			'response' => new \Niysu\HTTPResponseStorage(),
 			'request' => new \Niysu\HTTPRequestCustom('/', 'GET', [
 				'Cookie' => 'test=hello'
 			])
@@ -32,6 +36,8 @@ class CookiesServiceTest extends \PHPUnit_Framework_TestCase {
 	 */
 	public function testGetMultipleCookies() {
 		$scope = new \Niysu\Scope([
+			'log' => new \Monolog\Logger(''),
+			'response' => new \Niysu\HTTPResponseStorage(),
 			'request' => new \Niysu\HTTPRequestCustom('/', 'GET', [
 				'Cookie' => 'test1=hello; test2=world; test3=tomato'
 			])
@@ -50,6 +56,8 @@ class CookiesServiceTest extends \PHPUnit_Framework_TestCase {
 	 */
 	public function testUpdateCookie() {
 		$scope = new \Niysu\Scope([
+			'log' => new \Monolog\Logger(''),
+			'response' => new \Niysu\HTTPResponseStorage(),
 			'request' => new \Niysu\HTTPRequestCustom('/', 'GET', [
 				'Cookie' => 'test=4'
 			])
@@ -66,6 +74,8 @@ class CookiesServiceTest extends \PHPUnit_Framework_TestCase {
 
 	public function testSetCookie() {
 		$scope = new \Niysu\Scope([
+			'log' => new \Monolog\Logger(''),
+			'request' => new \Niysu\HTTPRequestCustom('/', 'GET'),
 			'response' => new \Niysu\HTTPResponseStorage()
 		]);
 
@@ -77,6 +87,8 @@ class CookiesServiceTest extends \PHPUnit_Framework_TestCase {
 
 	public function testUnsetCookie() {
 		$scope = new \Niysu\Scope([
+			'log' => new \Monolog\Logger(''),
+			'request' => new \Niysu\HTTPRequestCustom('/', 'GET'),
 			'response' => new \Niysu\HTTPResponseStorage()
 		]);
 

@@ -9,7 +9,7 @@ namespace Niysu\Services;
  * @link 		http://github.com/Tomaka17/niysu
  */
 class CookiesService {
-	public function __construct(\Niysu\HTTPRequestInterface &$request, \Niysu\HTTPResponseInterface &$response, \Monolog\Monolog $log) {
+	public function __construct(\Niysu\HTTPRequestInterface &$request, \Niysu\HTTPResponseInterface &$response, \Monolog\Logger $log) {
 		$this->request =& $request;
 		$this->response =& $response;
 		$this->log = $log;
