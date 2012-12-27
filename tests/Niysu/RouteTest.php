@@ -2,15 +2,27 @@
 namespace Niysu;
 
 class RouteTest extends \PHPUnit_Framework_TestCase {
+	/**
+	 *
+	 */
 	public function testPatternMatchSingle() {
 		$route = new Route('/{var}', 'get', function() {});
 		$response = new HTTPResponseStorage();
 		
-		$this->assertTrue($route->handle(new Scope([ 'response' => $response, 'request' => new HTTPRequestCustom('/test') ])));
-		$this->assertTrue($route->handle(new Scope([ 'response' => $response, 'request' => new HTTPRequestCustom('/1') ])));
-		$this->assertFalse($route->handle(new Scope([ 'response' => $response, 'request' => new HTTPRequestCustom('/') ])));
-		$this->assertFalse($route->handle(new Scope([ 'response' => $response, 'request' => new HTTPRequestCustom('/test-test') ])));
-		$this->assertFalse($route->handle(new Scope([ 'response' => $response, 'request' => new HTTPRequestCustom('/test/test') ])));
+		$request = new HTTPRequestCustom('/test');
+		$this->assertTrue($route->handle($request, $response, new Scope()));
+
+		$request = new HTTPRequestCustom('/1');
+		$this->assertTrue($route->handle($request, $response, new Scope()));
+
+		$request = new HTTPRequestCustom('/');
+		$this->assertFalse($route->handle($request, $response, new Scope()));
+
+		$request = new HTTPRequestCustom('/test-test');
+		$this->assertFalse($route->handle($request, $response, new Scope()));
+
+		$request = new HTTPRequestCustom('/test/test');
+		$this->assertFalse($route->handle($request, $response, new Scope()));
 	}
 
 	/**
@@ -20,65 +32,92 @@ class RouteTest extends \PHPUnit_Framework_TestCase {
 		$route = new Route('/{var1}/{var2}', 'get', function() {});
 		$response = new HTTPResponseStorage();
 		
-		$this->assertFalse($route->handle(new Scope([ 'response' => $response, 'request' => new HTTPRequestCustom('/test') ])));
-		$this->assertFalse($route->handle(new Scope([ 'response' => $response, 'request' => new HTTPRequestCustom('/1') ])));
-		$this->assertFalse($route->handle(new Scope([ 'response' => $response, 'request' => new HTTPRequestCustom('//') ])));
-		$this->assertTrue($route->handle(new Scope([ 'response' => $response, 'request' => new HTTPRequestCustom('/test/test') ])));
-		$this->assertFalse($route->handle(new Scope([ 'response' => $response, 'request' => new HTTPRequestCustom('/test/test/x') ])));
+		$request = new HTTPRequestCustom('/test');
+		$this->assertFalse($route->handle($request, $response, new Scope()));
+		
+		$request = new HTTPRequestCustom('/1');
+		$this->assertFalse($route->handle($request, $response, new Scope()));
+		
+		$request = new HTTPRequestCustom('//');
+		$this->assertFalse($route->handle($request, $response, new Scope()));
+		
+		$request = new HTTPRequestCustom('/test/test');
+		$this->assertTrue($route->handle($request, $response, new Scope()));
+		
+		$request = new HTTPRequestCustom('/test/test/x');
+		$this->assertFalse($route->handle($request, $response, new Scope()));
 	}
 
+	/**
+	 *
+	 */
 	public function testMethodMatch() {
 		$response = new HTTPResponseStorage();
-		$scope = new Scope([ 'response' => $response ]);
+		$scope = new Scope();
 		$route = new Route('/', 'test', function() {});
 
-		$scope->request = new HTTPRequestCustom('/', 'get');
-		$this->assertFalse($route->handle($scope));
-		$scope->request = new HTTPRequestCustom('/', 'post');
-		$this->assertFalse($route->handle($scope));
-		$scope->request = new HTTPRequestCustom('/', 'test');
-		$this->assertTrue($route->handle($scope));
+		$request = new HTTPRequestCustom('/', 'get');
+		$this->assertFalse($route->handle($request, $response, $scope));
+
+		$request = new HTTPRequestCustom('/', 'post');
+		$this->assertFalse($route->handle($request, $response, $scope));
+
+		$request = new HTTPRequestCustom('/', 'test');
+		$this->assertTrue($route->handle($request, $response, $scope));
 	}
 
+	/**
+	 *
+	 */
 	public function testAnyMethodMatch() {
 		$response = new HTTPResponseStorage();
-		$scope = new Scope([ 'response' => $response ]);
+		$scope = new Scope();
 		$route = new Route('/', '.*', function() {});
 
-		$scope->request = new HTTPRequestCustom('/', 'get');
-		$this->assertTrue($route->handle($scope));
-		$scope->request = new HTTPRequestCustom('/', 'post');
-		$this->assertTrue($route->handle($scope));
-		$scope->request = new HTTPRequestCustom('/', 'test-test/test@test');
-		$this->assertTrue($route->handle($scope));
+		$request = new HTTPRequestCustom('/', 'get');
+		$this->assertTrue($route->handle($request, $response, $scope));
+
+		$request = new HTTPRequestCustom('/', 'post');
+		$this->assertTrue($route->handle($request, $response, $scope));
+
+		$request = new HTTPRequestCustom('/', 'test-test/test@test');
+		$this->assertTrue($route->handle($request, $response, $scope));
 	}
 
+	/**
+	 *
+	 */
 	public function testPatternFunction() {
 		$response = new HTTPResponseStorage();
-		$scope = new Scope([ 'response' => $response ]);
+		$scope = new Scope();
 		$route = new Route('/{var}', 'get', function() {});
 		$route->pattern('var', '\\d+');
 
-		$scope->request = new HTTPRequestCustom('/', 'post');
-		$this->assertFalse($route->handle($scope));
-		$scope->request = new HTTPRequestCustom('/3', 'get');
-		$this->assertTrue($route->handle($scope));
-		$scope->request = new HTTPRequestCustom('/3x', 'post');
-		$this->assertFalse($route->handle($scope));
-		$scope->request = new HTTPRequestCustom('/x', 'test');
-		$this->assertFalse($route->handle($scope));
+		$request = new HTTPRequestCustom('/', 'post');
+		$this->assertFalse($route->handle($request, $response, $scope));
+
+		$request = new HTTPRequestCustom('/3', 'get');
+		$this->assertTrue($route->handle($request, $response, $scope));
+
+		$request = new HTTPRequestCustom('/3x', 'post');
+		$this->assertFalse($route->handle($request, $response, $scope));
+
+		$request = new HTTPRequestCustom('/x', 'test');
+		$this->assertFalse($route->handle($request, $response, $scope));
 	}
 
+	/**
+	 *
+	 */
 	public function testParenthesisInPattern() {
 		$response = new HTTPResponseStorage();
-		$scope = new Scope([ 'response' => $response ]);
 		$route = new Route('/{var}', 'get');
 		$route->pattern('var', '(\\d)+');
 
 		$route->handler(function($var) { $this->assertEquals(3, $var); });
 
-		$scope->request = new HTTPRequestCustom('/3', 'get');
-		$this->assertTrue($route->handle($scope));
+		$request = new HTTPRequestCustom('/3', 'get');
+		$this->assertTrue($route->handle($request, $response, new Scope()));
 	}
 
 	/**
@@ -86,9 +125,9 @@ class RouteTest extends \PHPUnit_Framework_TestCase {
      */
 	public function testParametersPassing() {
 		$response = new HTTPResponseStorage();
-		$scope = new Scope([ 'response' => $response, 'externalVariable' => 'externalVariableValue' ]);
+		$scope = new Scope([ 'externalVariable' => 'externalVariableValue' ]);
 
-		$route = new Route('/{var1}{var2}/{var3}', 'get', function($var1, $var2, $var3, $externalVariableValue, &$valueByRef) {
+		$route = new Route('/{var1}{var2}/{var3}', 'get', function($var1, $var2, $var3, $externalVariableValue) {
 			$valueByRef = 18;
 			$this->assertEquals($var1, 2);
 			$this->assertEquals($var2, 'hello');
@@ -96,13 +135,8 @@ class RouteTest extends \PHPUnit_Framework_TestCase {
 		});
 		$route->pattern('var1', '\\d+');
 		
-		$scope->request = new HTTPRequestCustom('/2hello/goodbye');
-		$this->assertTrue($route->handle($scope));
-
-		$this->assertEquals($scope->var1, 2);
-		$this->assertEquals($scope->var2, 'hello');
-		$this->assertEquals($scope->var3, 'goodbye');
-		$this->assertEquals($scope->valueByRef, 18);
+		$request = new HTTPRequestCustom('/2hello/goodbye');
+		$this->assertTrue($route->handle($request, $response, $scope));
 	}
 };
 
