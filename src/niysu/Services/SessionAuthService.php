@@ -9,12 +9,12 @@ namespace Niysu\Services;
  */
 class SessionAuthService {
 	public static function beforeMustBeAuthenticated($loginFormURL) {
-		return function($sessionAuthService, $response, &$callHandler) {
+		return function($sessionAuthService, $response, &$stopRoute) {
 			if ($sessionAuthService->login())
 				return;
 			$response->setStatusCode($statusOnFail);
 			$response->setHeader('Location', 'Basic realm="'.$realm.'"');
-			$callHandler = false;
+			$stopRoute = true;
 		};
 	}
 
