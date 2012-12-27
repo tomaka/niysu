@@ -9,15 +9,16 @@ namespace Niysu\Filters;
  * @link 		http://github.com/Tomaka17/niysu
  */
 class MaintenanceModeResponseFilter extends \Niysu\HTTPResponseFilterInterface {
-	public function __construct(\Niysu\HTTPResponseInterface $response, $maintenanceModeService) {
+	public function __construct(\Niysu\HTTPResponseInterface $response, $maintenanceModeService, &$stopRoute) {
 		parent::__construct($response);
 
 		$this->maintenanceMode = $maintenanceModeService->isMaintenanceMode();
 
 		if ($this->maintenanceMode) {
 			parent::setStatusCode(503);
-			parent::setHeader('Content-Type', 'text/plain');
-			parent::appendData('Website under maintenance');
+			parent::setHeader('Content-Type', 'text/html');
+			parent::appendData('<html><head><title>Maintenance</title></head><body><h1>Website under maintenance</h1></body></html>');
+			$stopRoute = true;
 		}
 	}
 
