@@ -219,6 +219,9 @@ abstract class HTTPRequestInterface {
 	}
 
 	private static function getPriorityFor($data, $myData) {
+		if (empty($data))
+			return null;
+
 		foreach($data as $element) {
 			if ($element['data'] == $myData)
 				return $element['priority'];
@@ -238,6 +241,10 @@ abstract class HTTPRequestInterface {
 	private static function getHighestPriorityFor($data, $args) {
 		if (empty($args))
 			throw new \LogicException('getHighestPriority needs at least one parameter');
+
+		if (empty($data))
+			return null;
+
 		$vals = [];
 		foreach ($args as $arg) {
 			$prio = self::getPriorityFor($data, $arg);
