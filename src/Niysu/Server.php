@@ -72,6 +72,7 @@ class Server {
 		$this->setFilterProvider('excelResponse', 'Niysu\\Filters\\ExcelResponseFilter');
 		$this->setFilterProvider('jsonRequest', 'Niysu\\Filters\\JSONRequestFilter');
 		$this->setFilterProvider('jsonResponse', 'Niysu\\Filters\\JSONResponseFilter');
+		$this->setFilterProvider('maintenanceModeResponse', 'Niysu\\Filters\\MaintenanceModeResponseFilter');
 		$this->setFilterProvider('postRequest', 'Niysu\\Filters\\POSTRequestFilter');
 		$this->setFilterProvider('tidyResponse', 'Niysu\\Filters\\TidyResponseFilter');
 		$this->setFilterProvider('xmlRequest', 'Niysu\\Filters\\XMLRequestFilter');
