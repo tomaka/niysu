@@ -6,7 +6,7 @@ class StatusCodeOverwriteResponseFilterTest extends \PHPUnit_Framework_TestCase 
 	 *
 	 */
 	public function testStatusCodeSet() {
-		$response = $this->getMock('\Niysu\HTTPResponseStorage');
+		$response = $this->getMock('\Niysu\HTTPResponseInterface');
 		$response->expects($this->atLeastOnce())
 				 ->method('setStatusCode')
 				 ->with($this->equalTo(418));
@@ -19,7 +19,7 @@ class StatusCodeOverwriteResponseFilterTest extends \PHPUnit_Framework_TestCase 
 	 * @depends testStatusCodeSet
 	 */
 	public function testStatusCodeCannotBeOverwritten() {
-		$response = $this->getMock('\Niysu\HTTPResponseStorage');
+		$response = $this->getMock('\Niysu\HTTPResponseInterface');
 		$response->expects($this->atLeastOnce())
 				 ->method('setStatusCode')
 				 ->with($this->equalTo(418));
@@ -36,7 +36,7 @@ class StatusCodeOverwriteResponseFilterTest extends \PHPUnit_Framework_TestCase 
 	 *
 	 */
 	public function testHeadersAndDataGoThrough() {
-		$response = $this->getMock('\Niysu\HTTPResponseStorage');
+		$response = $this->getMock('\Niysu\HTTPResponseInterface');
 		$response->expects($this->atLeastOnce())
 				 ->method('setStatusCode')
 				 ->with($this->equalTo(418));
