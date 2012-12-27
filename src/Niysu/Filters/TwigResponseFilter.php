@@ -2,7 +2,9 @@
 namespace Niysu\Filters;
 
 /**
- * Automatically sends back an error page if the website is under maintenance.
+ * Generates an HTML page using TwigService and sends it to the response.
+ *
+ * The actual generation is done when flushing the filter, ie. usually after the handler is called.
  *
  * @copyright 	2012 Pierre Krieger <pierre.krieger1708@gmail.com>
  * @license 	MIT http://opensource.org/licenses/MIT
@@ -21,27 +23,22 @@ class TwigResponseFilter extends \Niysu\HTTPResponseFilterInterface {
 		parent::flush();
 	}
 
+	/**
+	 * Sets the template that will be used when rendering.
+	 *
+	 * @param string 	$template 		Name of the template
+	 */
 	public function setTemplate($template) {
 		$this->template = $template;
 	}
 
+	/**
+	 * Sets the array of variables that will be used when rendering.
+	 *
+	 * @param array 	$variables 		Variables to pass to Twig
+	 */
 	public function setVariables($variables) {
 		$this->variables = $variables;
-	}
-
-	public function setStatusCode($code) {
-		if (!$this->template)
-			parent::setStatusCode($code);
-	}
-
-	public function setHeader($header, $value) {
-		if (!$this->template)
-			parent::setHeader($header, $value);
-	}
-
-	public function addHeader($header, $value) {
-		if (!$this->template)
-			parent::addHeader($header, $value);
 	}
 
 	public function appendData($data) {
