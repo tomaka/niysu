@@ -39,7 +39,6 @@ class CacheResponseFilter extends \Niysu\HTTPResponseFilterInterface {
 			$this->writeInCache = false;
 			$data = $cacheService->load($this->serverCacheResourceName);
 			file_put_contents(\Niysu\HTTPResponseStream::build($this->getOutput(), true), $data);
-			var_dump('loaded from cache');
 			parent::flush();
 		}
 
