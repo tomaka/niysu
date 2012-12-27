@@ -1,6 +1,9 @@
 {
 	"name": "tomaka17/niysu",
+    "description": "The non-annoying to use PHP framework",
     "type": "library",
+    "keywords": ["framework"],
+    "homepage": "http://github.com/Tomaka17/niysu",
     "license": "MIT",
     "authors": [
         {   "name": "Pierre Krieger",
@@ -9,15 +12,16 @@
     ],
     "require": {
         "php": ">=5.4.0",
+        "jdorn/sql-formatter": "1.1.*",
         "monolog/monolog": "1.2.*",
-        "jdorn/sql-formatter": "1.1.*"
+        "twig/twig": "1.*"
     },
     "require-dev": {
-        "twig/twig": "dev-master",
-        "phpunit/phpunit": "3.7.*",
-        "mikey179/vfsStream": "1.*",
-        "CodePlex/PHPExcel": "dev-master",
-        "sami/sami": "dev-master"
+        "CodePlex/PHPExcel": "1.*"
+    },
+    "suggest": {
+        "CodePlex/PHPExcel": "Allows ouput of Excel files",
+        "ext-xsl": "Allows XSLT transformations"
     },
     "autoload": {
     	"psr-0": {
