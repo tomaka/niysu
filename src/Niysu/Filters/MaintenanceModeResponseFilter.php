@@ -37,6 +37,11 @@ class MaintenanceModeResponseFilter extends \Niysu\HTTPResponseFilterInterface {
 			parent::addHeader($header, $value);
 	}
 
+	public function removeHeader($header) {
+		if (!$this->maintenanceMode)
+			parent::removeHeader($header);
+	}
+
 	public function appendData($data) {
 		if (!$this->maintenanceMode)
 			parent::appendData($data);
