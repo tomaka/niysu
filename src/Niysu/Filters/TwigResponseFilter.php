@@ -9,7 +9,7 @@ namespace Niysu\Filters;
  * @link 		http://github.com/Tomaka17/niysu
  */
 class TwigResponseFilter extends \Niysu\HTTPResponseFilterInterface {
-	public function __construct(\Niysu\HTTPResponseInterface $response, $twigService) {
+	public function __construct(\Niysu\HTTPResponseInterface $response, \Niysu\Services\TwigService $twigService) {
 		parent::__construct($response);
 
 		$this->twigService = $twigService;

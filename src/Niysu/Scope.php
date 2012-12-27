@@ -111,6 +111,8 @@ class Scope implements \Serializable {
 		if (!isset($this->variables[$var]) && isset($this->variablesCallback[$var])) {
 			$val = call_user_func($this->variablesCallback[$var], $this);
 			$this->variables[$var] = $val;
+			unset($this->variablesCallback[$var]);
+			unset($this->variablesTypes[$var]);
 			return $val;
 		}
 		if (isset($this->variables[$var]) && $this->variables[$var] !== null) {
@@ -128,6 +130,10 @@ class Scope implements \Serializable {
 	public function getByType($requestedType) {
 		foreach ($this->variablesTypes as $varName => $type) {
 			if (is_a($type, $requestedType, true))
+				return $this->get($varName);
+		}
+		foreach ($this->variables as $varName => $value) {
+			if (is_a($value, $requestedType, true))
 				return $this->get($varName);
 		}
 		if (!$this->parent)
@@ -164,6 +170,7 @@ class Scope implements \Serializable {
 			throw new \LogicException('The variable name "scope" is reserved');
 
 		$this->variables[$var] = $value;
+		unset($this->variablesCallback[$var]);
 		if ($type)	$this->variablesTypes[$var] = $type;
 		else 		unset($this->variablesTypes[$var]);
 	}
@@ -176,11 +183,14 @@ class Scope implements \Serializable {
 	 * @param string 	$var 		Name of the variable to set
 	 * @param callable 	$callback 	Callback to be called ; takes as parameter the Scope object
 	 * @param string 	$type 		(optional) Class name of the value returned by the callback
+	 * @throws LogicException If trying to set the value of the reserved "scope" variable
 	 */
 	public function callback($var, $callback, $type = null) {
 		if (!is_callable($callback))
 			throw new \LogicException('The callback must be callable');
-		$this->set($var, null);
+		if ($var == 'scope')
+			throw new \LogicException('The variable name "scope" is reserved');
+		unset($this->variables[$var]);
 		$this->variablesCallback[$var] = $callback;
 		$this->variablesTypes[$var] = $type;
 	}
