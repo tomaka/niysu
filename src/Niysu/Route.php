@@ -43,8 +43,11 @@ class Route {
 
 	/**
 	 * Sets the name of the route.
+	 *
+	 * This function returns $this.
 	 * 
 	 * @param string 	$name 	Name of the route
+	 * @return Route
 	 */
 	public function name($name) {
 		$this->name = $name;
