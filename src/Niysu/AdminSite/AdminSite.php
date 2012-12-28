@@ -11,7 +11,8 @@ namespace Niysu\AdminSite;
  * @static 		assets
  */
 class AdminSite {
-	public function __construct($twigService) {
+	public function __construct($twigService, $response) {
+		$response->addHeader('X-Powered-By', 'Niysu');
 		$twigService->addPath(__DIR__.'/templates', 'niysuAdminSite');
 	}
 
