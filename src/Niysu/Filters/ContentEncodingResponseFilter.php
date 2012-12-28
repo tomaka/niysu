@@ -15,7 +15,7 @@ class ContentEncodingResponseFilter extends \Niysu\HTTPResponseFilterInterface {
 		parent::__construct($next);
 
 		// computing the list of encodings supported by the server
-		$availableEncodings = [ 'gzip', 'deflate', 'x-gzip' 'identity' ];
+		$availableEncodings = [ 'gzip', 'deflate', 'x-gzip', 'identity' ];
 		if (function_exists('bzcompress'))
 			$availableEncodings = array_splice($availableEncodings, 2, 0, 'bzip2');
 
