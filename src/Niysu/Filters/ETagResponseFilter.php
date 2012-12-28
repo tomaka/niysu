@@ -16,9 +16,10 @@ namespace Niysu\Filters;
  * @todo 		Not working yet
  */
 class ETagResponseFilter extends \Niysu\HTTPResponseFilterInterface {
-	public function __construct(\Niysu\HTTPResponseInterface $response, \Niysu\HTTPRequestInterface $request) {
+	public function __construct(\Niysu\HTTPResponseInterface $response, \Niysu\HTTPRequestInterface $request, &$stopRoute) {
 		parent::__construct($response);
 		$this->requestETag = $request->getHeader('If-None-Match');
+		$this->stopRoute =& $stopRoute;
 	}
 
 	/**
@@ -35,6 +36,7 @@ class ETagResponseFilter extends \Niysu\HTTPResponseFilterInterface {
 
 			parent::setHeader('ETag', $etag);
 			parent::setStatusCode(304);
+			$this->stopRoute = true;
 		}
 
 		$this->etag = $etag;
@@ -77,4 +79,5 @@ class ETagResponseFilter extends \Niysu\HTTPResponseFilterInterface {
 	private $etag = null;
 	private $dataBuffer = '';
 	private $headersSent = false;
+	private $stopRoute;						// reference to the scope's stopRoute
 }
