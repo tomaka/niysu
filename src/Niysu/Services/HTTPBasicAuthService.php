@@ -38,7 +38,7 @@ class HTTPBasicAuthService {
 	/// \todo Give access to parent scope (eg. merge function in Scope or something)
 	public function login() {
 		//
-		if (!$this->request->isHTTPS() && $this->logService)
+		if (!$this->request->isHTTPS() && $this->logService && strtolower($this->request->getHeader('X-Forwarded-Proto')) != 'https')
 			$this->logService->warn('HTTP basic authentication is discouraged if you don\'t use HTTPS');
 		if (!$this->request->getHeader('Authorization'))
 			return false;
