@@ -22,11 +22,15 @@ class HTTPRequestGlobal extends HTTPRequestInterface {
 		return strtoupper($_SERVER['REQUEST_METHOD']);
 	}
 
-	public function getHeader($header) {
+	public function getHeader($header, $index = 0) {
 		foreach ($this->headersList as $key => $val) {
-			if (strtolower($key) == strtolower($header))
-				return $val;
+			if (strtolower($key) == strtolower($header)) {
+				if ($index-- == 0)
+					return $val;
+			}
 		}
+
+		return null;
 	}
 
 	public function getHeadersList() {

@@ -28,10 +28,13 @@ abstract class HTTPRequestInterface {
 	 *
 	 * Returns null if the header has not been set.
 	 *
+	 * If there are multiple headers with the same name, the $index parameter can specify the index of the value to retreive.
+	 *
 	 * @param string 	$header 	Header to read
+	 * @param integer 	$index 		Index of the header
 	 * @return string
 	 */
-	abstract public function getHeader($header);
+	abstract public function getHeader($header, $index = 0);
 	
 	/**
 	 * Returns an associative array of header => value

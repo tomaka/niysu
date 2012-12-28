@@ -27,8 +27,8 @@ class HTTPRequestFilterInterface extends HTTPRequestInterface {
 		return $this->source->getMethod();
 	}
 	
-	public function getHeader($header) {
-		return $this->source->getHeader($header);
+	public function getHeader($header, $index = 0) {
+		return $this->source->getHeader($header, $index);
 	}
 
 	public function getHeadersList() {
