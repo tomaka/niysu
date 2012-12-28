@@ -17,6 +17,7 @@ class MaintenanceModeResponseFilter extends \Niysu\HTTPResponseFilterInterface {
 		if ($this->maintenanceMode) {
 			parent::setStatusCode(503);
 			parent::setHeader('Content-Type', 'text/html');
+			parent::setHeader('Retry-After', 120);
 			parent::appendData('<html><head><title>Maintenance</title></head><body><h1>Website under maintenance</h1></body></html>');
 			$stopRoute = true;
 		}
