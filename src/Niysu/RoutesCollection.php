@@ -158,35 +158,22 @@ class RoutesCollection {
 	 * @param string 	$path 		The absolute path on the server which contains the files
 	 * @param string 	$prefix 	A prefix to add to the name of the static files
 	 */
-	public function registerStaticDirectory($path) {		
+	public function registerStaticDirectory($path) {
+		$path = rtrim($path, '/\\');
+
 		$this
 			->register('/{file}', 'get')
 			->pattern('file', '([^\\.]{2,}.*|.)')
+			->name('Static files in '.$path)
 			->before(function(&$file, &$isRightResource) use ($path) {
 				$file = $path.DIRECTORY_SEPARATOR.str_replace('/', DIRECTORY_SEPARATOR, $file);
-				if (file_exists($file)) {
-					if (is_dir($file))
-						$isRightResource = false;
-					return;
-				}
-
-				$checkDir = dirname($file);
-				if (!file_exists($checkDir) || !is_dir($checkDir)) {
+				if (!file_exists($file) || is_dir($file)) {
 					$isRightResource = false;
 					return;
 				}
-
-				$dirToCheck = dir($checkDir);
-				while ($entry = $dirToCheck->read()) {
-					$entryLong = $dirToCheck->path.'/'.$entry;
-					$pathinfo = pathinfo($entryLong);
-					if ($pathinfo['dirname'].DIRECTORY_SEPARATOR.$pathinfo['filename'] == $file) {
-						$file = $entryLong;
-						return;
-					}
-				}
-
-				$isRightResource = false;
+			})
+			->before(function($file, $etagResponseFilter) {
+				$etagResponseFilter->setEtag(md5($file.filemtime($file)));
 			})
 			->handler(function($file, $response, $elapsedTime) {
 				if (!extension_loaded('fileinfo'))
