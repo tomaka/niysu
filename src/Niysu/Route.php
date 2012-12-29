@@ -51,6 +51,7 @@ class Route {
 	 */
 	public function name($name) {
 		$this->name = $name;
+		return $this;
 	}
 
 	/**
