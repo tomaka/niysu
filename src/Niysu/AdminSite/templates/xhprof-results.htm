@@ -8,19 +8,28 @@
 
 {% block head %}
 	<style type="text/css">
+		.xhprofSearchInput {
+			float:right;
+			font-family:monospace;
+			font-size:0.9em;
+		}
+
 		.xhprofresults {
 			border-collapse:collapse;
+			-moz-box-sizing:border-box;
+			box-sizing:border-box;
+			width:960px;
 		}
 
 		.xhprofresults td, .xhprofresults th {
 			border:1px solid black;
-			font-size:9px;
-			padding:0.3em 0.5em;
+			font-size:10px;
+			padding:0.5em 0.7em;
 		}
 
 		.xhprofresults tr td {
 			white-space:nowrap;
-			max-width:320px;
+			max-width:300px;
 			overflow-x:hidden;
 			text-overflow:ellipsis;
 		}
@@ -38,18 +47,22 @@
 
 	<script type="text/javascript">
 		function Controller($scope) {
-			$scope.$watch('data', function(newVal) {
-				if (!newVal) return;
-
-				$scope.sum = {};
-				for (var i in newVal) {
-					for (var e in newVal[i]) {
-						if (!$scope.sum[e])
-							$scope.sum[e] = 0;
-						$scope.sum[e] += newVal[i][e];
-					}
-				}
-			}, true);
+			// reformatting the format of the data
+			var rawData = {{ data | json_encode | raw }};
+			$scope.data = [];
+			for (var i in rawData) {
+				var val = rawData[i];
+				$scope.data.push({
+					called: i.split('==>')[1],
+					caller: i.split('==>')[0],
+					callscount: val.ct,
+					timetotal: val.wt,
+					avgtimepercall: val.wt / val.ct,
+					cpu: val.cpu,
+					mem: val.mu,
+					peakmem: val.pmu
+				});
+			}
 		}
 	</script>
 {% endblock %}
@@ -58,34 +71,30 @@
 	<div data-ng-app>
 		<h2>XHProf profiling results</h2>
 
-		<table data-ng-controller="Controller" class="xhprofresults" data-ng-init="data = {{ data | json_encode }}">
+		<input class="xhprofSearchInput" type="text" placeholder="Search..." data-ng-model="filter" />
+
+		<table data-ng-controller="Controller" class="xhprofresults">
 			{% raw %}
 				<tr>
-					<th>Function</th>
-					<th>Caller</th>
-					<th># calls</th>
-					<th>Duration</th>
-					<th>CPU</th>
-					<th>&#916; memory</th>
-					<th>&#916; peak memory</th>
+					<th><a data-ng-click="orderPredicate = 'called';">&#x25b2;</a> Function <a data-ng-click="orderPredicate = '-called';">&#x25bc;</a></th>
+					<th><a data-ng-click="orderPredicate = 'caller';">&#x25b2;</a> Caller <a data-ng-click="orderPredicate = '-caller';">&#x25bc;</a></th>
+					<th><a data-ng-click="orderPredicate = 'callscount';">&#x25b2;</a> # calls <a data-ng-click="orderPredicate = '-callscount';">&#x25bc;</a></th>
+					<th><a data-ng-click="orderPredicate = 'timetotal';">&#x25b2;</a> Duration <a data-ng-click="orderPredicate = '-timetotal';">&#x25bc;</a></th>
+					<th><a data-ng-click="orderPredicate = 'avgtimepercall';">&#x25b2;</a> Avg. duration per call <a data-ng-click="orderPredicate = '-avgtimepercall';">&#x25bc;</a></th>
+					<th><a data-ng-click="orderPredicate = 'cpu';">&#x25b2;</a> CPU <a data-ng-click="orderPredicate = '-cpu';">&#x25bc;</a></th>
+					<th><a data-ng-click="orderPredicate = 'mem';">&#x25b2;</a> &#916; memory <a data-ng-click="orderPredicate = '-mem';">&#x25bc;</a></th>
+					<th><a data-ng-click="orderPredicate = 'peakmem';">&#x25b2;</a> &#916; peak memory <a data-ng-click="orderPredicate = '-peakmem';">&#x25bc;</a></th>
 				</tr>
-				<tr data-ng-repeat="(functions,infos) in data">
-					<td title="{{ functions.split('==>')[1] }}">{{ functions.split('==>')[1] }}</td>
-					<td title="{{ functions.split('==>')[0] }}">{{ functions.split('==>')[0] }}</td>
-					<td>{{ infos.ct }}</td>
-					<td>{{ infos.wt / 1000 | number:2 }} ms</td>
-					<td>{{ infos.cpu }}</td>
-					<td>{{ infos.mu }}</td>
-					<td>{{ infos.pmu }}</td>
+				<tr data-ng-repeat="entry in data | filter:filter | orderBy:orderPredicate">
+					<td title="{{ entry.called }}">{{ entry.called }}</td>
+					<td title="{{ entry.caller }}">{{ entry.caller }}</td>
+					<td>{{ entry.callscount }}</td>
+					<td>{{ entry.timetotal / 1000 | number:2 }} ms</td>
+					<td>{{ entry.avgtimepercall / 1000 | number:2 }} ms</td>
+					<td>{{ entry.cpu }}</td>
+					<td>{{ entry.mem / 1024 | number:2 }} kiB</td>
+					<td>{{ entry.peakmem / 1024 | number:2 }} kiB</td>
 				</tr>
-				<!--<tr>
-					<td colspan="2">Total</td>
-					<td></td>
-					<td>{{ sum.wt / 1000 | number:2 }} ms</td>
-					<td></td>
-					<td></td>
-					<td></td>
-				</tr>-->
 			{% endraw %}
 		</table>
 	</div>
