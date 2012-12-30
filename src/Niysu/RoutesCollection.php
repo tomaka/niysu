@@ -34,7 +34,7 @@ class RoutesCollection {
 		$reflectionClass = new \ReflectionClass($className);
 
 		// building the new collection
-		$newCollection = $this->newChild($prefix);
+		$newCollection = $this->newChild();
 		$newCollection->before(function(Scope $scope) use ($reflectionClass) { $scope->this = $scope->call($reflectionClass); });
 
 		// analyzing the doccomment of the class
