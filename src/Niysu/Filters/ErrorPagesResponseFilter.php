@@ -39,9 +39,6 @@ class ErrorPagesResponseFilter extends \Niysu\HTTPResponseFilterInterface {
 		parent::setStatusCode($statusCode);
 	}
 
-	/**
-	 * @todo Handle multiple flushes
-	 */
 	public function flush() {
 		if (!$this->currentReplacement) {
 			parent::flush();
