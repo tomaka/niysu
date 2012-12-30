@@ -12,10 +12,8 @@ require_once __DIR__.'/HTTPResponseInterface.php';
 class HTTPResponseGlobal extends HTTPResponseInterface {
 	public function __construct() {
 		// removing some headers
-		if (!$this->isHeadersListSent()) {
+		if (!$this->isHeadersListSent())
 			$this->removeHeader('X-Powered-By');
-			$this->setHeader('Content-Type', '');
-		}
 	}
 
 	public function __destruct() {
