@@ -20,7 +20,7 @@ class HTTPResponseGlobal extends HTTPResponseInterface {
 
 	public function __destruct() {
 		if (!$this->flushed)
-			trigger_error('HTTPResponseGlobal destroyed without flushed() being called', E_USER_WARNING);
+			trigger_error('HTTPResponseGlobal destroyed without flush() being called', E_USER_WARNING);
 	}
 
 	/**
