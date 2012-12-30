@@ -11,10 +11,11 @@ namespace Niysu\Filters;
  * @todo 		Not working yet
  */
 class ErrorPagesResponseFilter extends \Niysu\HTTPResponseFilterInterface {
-	public function __construct(\Niysu\HTTPResponseInterface $response, \Niysu\Server $server = null, \Niysu\HTTPRequestInterface $request) {
+	public function __construct(\Niysu\HTTPResponseInterface $response, \Niysu\Server $server = null, \Niysu\HTTPRequestInterface $request, \Monolog\Logger $log = null) {
 		parent::__construct($response);
 		$this->server = $server;
 		$this->request = $request;
+		$this->log = $log;
 	}
 
 	/**
@@ -48,9 +49,17 @@ class ErrorPagesResponseFilter extends \Niysu\HTTPResponseFilterInterface {
 		}
 
 		$route = $this->server->getRouteByName($this->currentReplacement);
-		$response = new StatusCodeOverwriteResponseFilter($this->getOutput(), $this->currentStatusCode);
-		$route->handleNoURLCheck($this->request, $response, $this->server->generateQueryScope());
-		$response->flush();
+
+		if ($route) {
+			$response = new StatusCodeOverwriteResponseFilter($this->getOutput(), $this->currentStatusCode);
+			$route->handleNoURLCheck($this->request, $response, $this->server->generateQueryScope());
+			$response->flush();
+
+		} else {
+			if ($this->log)
+				$this->log->warn('Route specified in ErrorPagesResponseFilter does not exist: '.$this->currentReplacement);
+			parent::flush();
+		}
 	}
 
 	public function appendData($data) {
@@ -66,6 +75,7 @@ class ErrorPagesResponseFilter extends \Niysu\HTTPResponseFilterInterface {
 
 	private $server;
 	private $request;
+	private $log;
 	private $errorReplacements = [];
 	private $currentStatusCode;
 	private $currentReplacement = null;
