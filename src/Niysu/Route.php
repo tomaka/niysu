@@ -369,28 +369,28 @@ class Route {
 
 			// checking controlling variables
 			if ($localScope->get('isWrongResource') === true) {		// DEPRECATED
-				if ($logService)
-					$logService->err('The isWrongResource parameter is deprecated');
+				if (isset($scope->log))
+					$scope->log->err('The isWrongResource parameter is deprecated');
 				return false;
 			}
 			if ($localScope->get('ignoreHandler') === true) {			// DEPRECATED
-				if ($logService)
-					$logService->err('The ignoreHandler parameter is deprecated');
+				if (isset($scope->log))
+					$scope->log->err('The ignoreHandler parameter is deprecated');
 				return true;
 			}
 			if ($localScope->get('isRightResource') === false) {
-				if ($logService)
-					$logService->debug('Route ignored by before handler');
+				if (isset($scope->log))
+					$scope->log->debug('Route ignored by before handler');
 				return false;
 			}
 			if ($localScope->get('callHandler') === false) {
-				if ($logService)
-					$logService->debug('Route\'s handler won\'t get called because of before handler');
+				if (isset($scope->log))
+					$scope->log->debug('Route\'s handler won\'t get called because of before handler');
 				return true;
 			}
 			if ($localScope->get('stopRoute') === true) {
-				if ($logService)
-					$logService->debug('Route\'s handler has been stopped by before handler');
+				if (isset($scope->log))
+					$scope->log->debug('Route\'s handler has been stopped by before handler');
 				return true;
 			}
 		}
