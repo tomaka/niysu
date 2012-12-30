@@ -45,6 +45,9 @@ class ErrorPagesResponseFilter extends \Niysu\HTTPResponseFilterInterface {
 			return;
 		}
 
+		if ($this->log)
+			$this->log->debug('ErrorPagesResponseFilter replaces resource by the route: '.$this->currentReplacement);
+
 		$route = $this->server->getRouteByName($this->currentReplacement);
 
 		if ($route) {
