@@ -88,6 +88,7 @@ class Scope implements \Serializable {
 		if (isset($this->variables[$var]))
 			return $this->variables[$var];
 		if (isset($this->variablesCallback[$var])) {
+			unset($this->variablesTypes[$var]);
 			$val = call_user_func($this->variablesCallback[$var], $this);
 			$this->variables[$var] = $val;
 			return $val;
@@ -128,12 +129,12 @@ class Scope implements \Serializable {
 	}
 	
 	public function getByType($requestedType) {
-		foreach ($this->variablesTypes as $varName => $type) {
-			if (is_a($type, $requestedType, true))
-				return $this->get($varName);
-		}
 		foreach ($this->variables as $varName => $value) {
 			if (is_a($value, $requestedType, true))
+				return $this->get($varName);
+		}
+		foreach ($this->variablesTypes as $varName => $type) {
+			if (is_a($type, $requestedType, true))
 				return $this->get($varName);
 		}
 		if (!$this->parent)
@@ -161,6 +162,7 @@ class Scope implements \Serializable {
 	 * @param mixed 	$value 	Value to set ; the null value means that the variable will be deleted
 	 * @param string 	$type 	(optional) Class name of the variable, or automatically detected from $value
 	 * @throws LogicException If trying to set the value of the reserved "scope" variable
+	 * @deprecated $type is deprecated
 	 */
 	public function set($var, $value, $type = null) {
 		if ($type == null && is_object($value))
