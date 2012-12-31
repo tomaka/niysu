@@ -50,6 +50,7 @@ class Server {
 		$this->setServiceProvider('database', 'Niysu\\Services\\DatabaseService');
 		$this->setServiceProvider('databaseProfiling', 'Niysu\\Services\\DatabaseProfilingService');
 		$this->setServiceProvider('email', 'Niysu\\Services\\EmailService');
+		$this->setServiceProvider('formValidation', 'Niysu\\Services\\FormValidationService');
 		$this->setServiceProvider('httpBasicAuth', 'Niysu\\Services\\HTTPBasicAuthService');
 		$this->setServiceProvider('maintenanceMode', 'Niysu\\Services\\MaintenanceModeService');
 		$this->setServiceProvider('resourcesCache', 'Niysu\\Services\\ResourcesCacheService');
