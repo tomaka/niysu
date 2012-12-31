@@ -114,7 +114,7 @@ class ResourcesCacheService {
 	public function clear($url) {
 		$path = $this->urlToFileBase($url);
 
-		foreach (glob($path.'-*.cache.txt') as $f) {
+		foreach (glob($path.'*.cache.txt') as $f) {
 			unlink($f);
 			if ($this->log)
 				$this->log->debug('Cleared cache file '.$f. ' (wildcard: '.$url.')');
