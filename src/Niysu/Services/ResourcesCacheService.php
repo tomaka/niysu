@@ -117,7 +117,7 @@ class ResourcesCacheService {
 		foreach (glob($path.'-*.cache.txt') as $f) {
 			unlink($f);
 			if ($this->log)
-				$this->log->debug('Cleared cache file '.$file. ' (wildcard: '.$url.')');
+				$this->log->debug('Cleared cache file '.$f. ' (wildcard: '.$url.')');
 		}
 	}
 
