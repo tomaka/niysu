@@ -333,7 +333,7 @@ class Route {
 			if (isset($result))
 				break;
 		}
-		if (!$noURLCheck && $result === null)
+		if (!$noURLCheck && !isset($result))
 			return false;
 		
 		// logging

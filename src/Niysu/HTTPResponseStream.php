@@ -50,6 +50,7 @@ class HTTPResponseStream {
 
 	/**
 	 * @todo Function is very messy ; I should clean it up
+	 * @todo Bug when empty headers are given (ie. writeHeaders is true and data starts with "\r\nbody")
 	 */
 	public function stream_write($data) {
 		// computing $length, that's the value that we will return
