@@ -128,7 +128,7 @@ If the client tries to access this URL, then the `Foo::homePage` function will b
 ### Services
 
 Niysu provides a lot of useful services. A service is an object which allows to easily do most of the things that a web server usually does.
-Examples of services: database, log, cookies, http authentication.
+Examples of services: database, cookies, http authentication, twig, caching.
 
 For example, let's say you want to send a cookie to the client.
 First, your handler must ask for the cookies service. To do so, simply add a `$cookiesService` parameter to the handling function.
@@ -227,6 +227,25 @@ $route->before(function(&$stopRoute, $response) {
 	}
 });
 ```
+
+
+### Filters
+
+Filters are like services except that their purpose is to directly interact with the request and responses.
+A filter class must be a derivate of either HTTPRequestInterface or HTTPResponseInterface.
+
+When a filter is invoked for the first time, it automatically replaces the current request or response. All inputs or outputs are then passed through it.
+
+For example, to add an ETag to your HTTP response, all you have to do is invoke the ETagResponseFilter once.
+
+```php
+$server->before(function($etagResponseFilter) { });
+
+$server->register('/', 'get', function($response) {
+	var_dump($response instanceof Niysu\Filters\ETagResponseFilter);	// true
+});
+```
+
 
 ### JQuery-like syntax
 
