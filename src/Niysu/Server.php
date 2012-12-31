@@ -264,7 +264,7 @@ class Server {
 			$handleScope->callback($serviceName.'Service', function(Scope $s) use ($serviceName, $provider/*, $log*/) {
 				$this->log->debug('Building service '.$serviceName);
 				return $s->call($provider);
-			});
+			}, (is_string($provider) ? $provider : null));
 		}
 
 		foreach($this->filterProviders as $filterName => $provider) {
@@ -282,7 +282,7 @@ class Server {
 				}
 
 				return $filter;
-			});
+			}, (is_string($provider) ? $provider : null));
 		}
 
 		return $handleScope;
