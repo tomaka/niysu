@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="robots" content="index, follow, all" />
-        <title>Niysu\Filters\TwigResponseFilter | API</title>
+        <title>Niysu\Filters\ServerCacheResponseFilter | API</title>
                     <link rel="stylesheet" type="text/css" href="../../stylesheet.css">
                             </head>
         <body id="class">
@@ -19,14 +19,14 @@
         <div id="title">API</div>
 
             <div class="type">Class</div>
-    <h1><a href="../../Niysu/Filters.html">Niysu\Filters</a>\TwigResponseFilter</h1>
+    <h1><a href="../../Niysu/Filters.html">Niysu\Filters</a>\ServerCacheResponseFilter</h1>
     </div>
         <div class="content">
-                <p>class    <strong>TwigResponseFilter</strong>        extends <a href="../../Niysu/HTTPResponseFilterInterface.html"><abbr title="Niysu\HTTPResponseFilterInterface">HTTPResponseFilterInterface</abbr></a></p>
+                <p>class    <strong>ServerCacheResponseFilter</strong>        extends <a href="../../Niysu/HTTPResponseFilterInterface.html"><abbr title="Niysu\HTTPResponseFilterInterface">HTTPResponseFilterInterface</abbr></a></p>
 
             <div class="description">
-            <p>Generates an HTML page using TwigService and sends it to the response.</p>
-            <p>The actual generation is done when flushing the filter, ie. usually after the handler is called.</p>
+            <p>Utility filter that uses the ResourcesCacheService.</p>
+            <p>The Vary header is automatically handled.</p>
         </div>
     
     
@@ -39,8 +39,8 @@
                     
                 </td>
                 <td class="last">
-                    <a href="#method___construct">__construct</a>(<abbr title="Niysu\Filters\Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr> $response, <abbr title="Niysu\Filters\Niysu\Services\TwigService">TwigService</abbr> $twigService)
-                    <p>Sets the output response.</p>
+                    <a href="#method___construct">__construct</a>(<abbr title="Niysu\Filters\Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr> $request, <abbr title="Niysu\Filters\Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr> $response, $resourcesCacheService, $stopRoute, <abbr title="Niysu\Filters\Monolog\Logger">Logger</abbr> $log = null)
+                    <p>Constructor.</p>
                 </td>
                 <td></td>
             </tr>
@@ -59,10 +59,10 @@
                     
                 </td>
                 <td class="last">
-                    <a href="#method_setStatusCode">setStatusCode</a>(integer $statusCode)
+                    <a href="#method_setStatusCode">setStatusCode</a>($code)
                     <p>Sets the status code to return with the headers.</p>
                 </td>
-                <td><small>from&nbsp;<a href="../../Niysu/HTTPResponseFilterInterface.html#method_setStatusCode"><abbr title="Niysu\HTTPResponseFilterInterface">HTTPResponseFilterInterface</abbr></a></small></td>
+                <td></td>
             </tr>
                     <tr>
                 <td class="type">
@@ -72,7 +72,7 @@
                     <a href="#method_addHeader">addHeader</a>(string $header, string $value)
                     <p>Adds a header to the headers list.</p>
                 </td>
-                <td><small>from&nbsp;<a href="../../Niysu/HTTPResponseFilterInterface.html#method_addHeader"><abbr title="Niysu\HTTPResponseFilterInterface">HTTPResponseFilterInterface</abbr></a></small></td>
+                <td></td>
             </tr>
                     <tr>
                 <td class="type">
@@ -82,7 +82,7 @@
                     <a href="#method_setHeader">setHeader</a>(string $header, string $value)
                     <p>Removes all headers of this name and adds a new one.</p>
                 </td>
-                <td><small>from&nbsp;<a href="../../Niysu/HTTPResponseFilterInterface.html#method_setHeader"><abbr title="Niysu\HTTPResponseFilterInterface">HTTPResponseFilterInterface</abbr></a></small></td>
+                <td></td>
             </tr>
                     <tr>
                 <td class="type">
@@ -92,7 +92,7 @@
                     <a href="#method_removeHeader">removeHeader</a>(string $header)
                     <p>Removes all headers with this name.</p>
                 </td>
-                <td><small>from&nbsp;<a href="../../Niysu/HTTPResponseFilterInterface.html#method_removeHeader"><abbr title="Niysu\HTTPResponseFilterInterface">HTTPResponseFilterInterface</abbr></a></small></td>
+                <td></td>
             </tr>
                     <tr>
                 <td class="type">
@@ -102,7 +102,7 @@
                     <a href="#method_isHeadersListSent">isHeadersListSent</a>()
                     <p>Returns true if the response has already sent its headers and is now sending data.</p>
                 </td>
-                <td></td>
+                <td><small>from&nbsp;<a href="../../Niysu/HTTPResponseFilterInterface.html#method_isHeadersListSent"><abbr title="Niysu\HTTPResponseFilterInterface">HTTPResponseFilterInterface</abbr></a></small></td>
             </tr>
                     <tr>
                 <td class="type">
@@ -119,8 +119,8 @@
                     
                 </td>
                 <td class="last">
-                    <a href="#method_setTemplate">setTemplate</a>(string $template)
-                    <p>Sets the template that will be used when rendering.</p>
+                    <a href="#method_setCacheDuration">setCacheDuration</a>(integer $seconds)
+                    <p>Sets the duration of the cache entry to be written.</p>
                 </td>
                 <td></td>
             </tr>
@@ -129,8 +129,8 @@
                     
                 </td>
                 <td class="last">
-                    <a href="#method_setVariables">setVariables</a>(array $variables)
-                    <p>Sets the array of variables that will be used when rendering.</p>
+                    <a href="#method_setWriteInCache">setWriteInCache</a>(boolean $write)
+                    <p>Sets whether an entry will be written in cache.</p>
                 </td>
                 <td></td>
             </tr>
@@ -140,25 +140,40 @@
         <h2>Details</h2>
 
                         <h3 id="method___construct">
-        <div class="location">at line 14</div>
+        <div class="location">at line 20</div>
         <code>            public            
-    <strong>__construct</strong>(<abbr title="Niysu\Filters\Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr> $response, <abbr title="Niysu\Filters\Niysu\Services\TwigService">TwigService</abbr> $twigService)</code>
+    <strong>__construct</strong>(<abbr title="Niysu\Filters\Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr> $request, <abbr title="Niysu\Filters\Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr> $response, $resourcesCacheService, $stopRoute, <abbr title="Niysu\Filters\Monolog\Logger">Logger</abbr> $log = null)</code>
     </h3>
     <div class="details">
-        <p>Sets the output response.</p>
-        <p></p>
+        <p>Constructor.</p>
+        <p>If the filter finds an existing cache entry for the given request, then it loads it and sets &quot;stopRoute&quot; to true.</p>
         <div class="tags">
                             <h4>Parameters</h4>
 
                     <table>
+                    <tr>
+                <td><abbr title="Niysu\Filters\Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr></td>
+                <td>$request</td>
+                <td></td>
+            </tr>
                     <tr>
                 <td><abbr title="Niysu\Filters\Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr></td>
                 <td>$response</td>
                 <td></td>
             </tr>
                     <tr>
-                <td><abbr title="Niysu\Filters\Niysu\Services\TwigService">TwigService</abbr></td>
-                <td>$twigService</td>
+                <td></td>
+                <td>$resourcesCacheService</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$stopRoute</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Niysu\Filters\Monolog\Logger">Logger</abbr></td>
+                <td>$log</td>
                 <td></td>
             </tr>
             </table>
@@ -170,7 +185,7 @@
     </div>
 
                 <h3 id="method_flush">
-        <div class="location">at line 20</div>
+        <div class="location">at line 77</div>
         <code>            public            
     <strong>flush</strong>()</code>
     </h3>
@@ -185,9 +200,9 @@
     </div>
 
                 <h3 id="method_setStatusCode">
-        <div class="location">in <a href="../../Niysu/HTTPResponseFilterInterface.html#method_setStatusCode"><abbr title="Niysu\HTTPResponseFilterInterface">HTTPResponseFilterInterface</abbr></a> at line 31</div>
+        <div class="location">at line 102</div>
         <code>            public            
-    <strong>setStatusCode</strong>(integer $statusCode)</code>
+    <strong>setStatusCode</strong>($code)</code>
     </h3>
     <div class="details">
         <p>Sets the status code to return with the headers.</p>
@@ -197,9 +212,9 @@
 
                     <table>
                     <tr>
-                <td>integer</td>
-                <td>$statusCode</td>
-                <td>The status code</td>
+                <td></td>
+                <td>$code</td>
+                <td></td>
             </tr>
             </table>
 
@@ -210,7 +225,7 @@
     </div>
 
                 <h3 id="method_addHeader">
-        <div class="location">in <a href="../../Niysu/HTTPResponseFilterInterface.html#method_addHeader"><abbr title="Niysu\HTTPResponseFilterInterface">HTTPResponseFilterInterface</abbr></a> at line 35</div>
+        <div class="location">at line 109</div>
         <code>            public            
     <strong>addHeader</strong>(string $header, string $value)</code>
     </h3>
@@ -240,7 +255,7 @@
     </div>
 
                 <h3 id="method_setHeader">
-        <div class="location">in <a href="../../Niysu/HTTPResponseFilterInterface.html#method_setHeader"><abbr title="Niysu\HTTPResponseFilterInterface">HTTPResponseFilterInterface</abbr></a> at line 39</div>
+        <div class="location">at line 117</div>
         <code>            public            
     <strong>setHeader</strong>(string $header, string $value)</code>
     </h3>
@@ -270,7 +285,7 @@
     </div>
 
                 <h3 id="method_removeHeader">
-        <div class="location">in <a href="../../Niysu/HTTPResponseFilterInterface.html#method_removeHeader"><abbr title="Niysu\HTTPResponseFilterInterface">HTTPResponseFilterInterface</abbr></a> at line 43</div>
+        <div class="location">at line 125</div>
         <code>            public            
     <strong>removeHeader</strong>(string $header)</code>
     </h3>
@@ -295,7 +310,7 @@
     </div>
 
                 <h3 id="method_isHeadersListSent">
-        <div class="location">at line 49</div>
+        <div class="location">in <a href="../../Niysu/HTTPResponseFilterInterface.html#method_isHeadersListSent"><abbr title="Niysu\HTTPResponseFilterInterface">HTTPResponseFilterInterface</abbr></a> at line 47</div>
         <code>            public            boolean
     <strong>isHeadersListSent</strong>()</code>
     </h3>
@@ -319,7 +334,7 @@
     </div>
 
                 <h3 id="method_appendData">
-        <div class="location">at line 44</div>
+        <div class="location">at line 133</div>
         <code>            public            
     <strong>appendData</strong>(string $data)</code>
     </h3>
@@ -343,22 +358,22 @@
                     </div>
     </div>
 
-                <h3 id="method_setTemplate">
-        <div class="location">at line 31</div>
+                <h3 id="method_setCacheDuration">
+        <div class="location">at line 54</div>
         <code>            public            
-    <strong>setTemplate</strong>(string $template)</code>
+    <strong>setCacheDuration</strong>(integer $seconds)</code>
     </h3>
     <div class="details">
-        <p>Sets the template that will be used when rendering.</p>
-        <p></p>
+        <p>Sets the duration of the cache entry to be written.</p>
+        <p>Note that this filter will not necessarly write an entry.</p>
         <div class="tags">
                             <h4>Parameters</h4>
 
                     <table>
                     <tr>
-                <td>string</td>
-                <td>$template</td>
-                <td>Name of the template</td>
+                <td>integer</td>
+                <td>$seconds</td>
+                <td>Time to live of the cache entry</td>
             </tr>
             </table>
 
@@ -368,22 +383,22 @@
                     </div>
     </div>
 
-                <h3 id="method_setVariables">
-        <div class="location">at line 40</div>
+                <h3 id="method_setWriteInCache">
+        <div class="location">at line 71</div>
         <code>            public            
-    <strong>setVariables</strong>(array $variables)</code>
+    <strong>setWriteInCache</strong>(boolean $write)</code>
     </h3>
     <div class="details">
-        <p>Sets the array of variables that will be used when rendering.</p>
-        <p></p>
+        <p>Sets whether an entry will be written in cache.</p>
+        <p>By default, it is true if the request is GET and the response status code is in range 200-399. False otherwise.</p>
         <div class="tags">
                             <h4>Parameters</h4>
 
                     <table>
                     <tr>
-                <td>array</td>
-                <td>$variables</td>
-                <td>Variables to pass to Twig</td>
+                <td>boolean</td>
+                <td>$write</td>
+                <td>Whether this filter should add an entry to the cache</td>
             </tr>
             </table>
 

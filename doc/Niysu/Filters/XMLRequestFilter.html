@@ -65,7 +65,7 @@
                     string
                 </td>
                 <td class="last">
-                    <a href="#method_getHeader">getHeader</a>(string $header)
+                    <a href="#method_getHeader">getHeader</a>(string $header, integer $index)
                     <p>Returns the value of this header.</p>
                 </td>
                 <td><small>from&nbsp;<a href="../../Niysu/HTTPRequestFilterInterface.html#method_getHeader"><abbr title="Niysu\HTTPRequestFilterInterface">HTTPRequestFilterInterface</abbr></a></small></td>
@@ -211,11 +211,13 @@
                 <h3 id="method_getHeader">
         <div class="location">in <a href="../../Niysu/HTTPRequestFilterInterface.html#method_getHeader"><abbr title="Niysu\HTTPRequestFilterInterface">HTTPRequestFilterInterface</abbr></a> at line 30</div>
         <code>            public            string
-    <strong>getHeader</strong>(string $header)</code>
+    <strong>getHeader</strong>(string $header, integer $index)</code>
     </h3>
     <div class="details">
         <p>Returns the value of this header.</p>
-        <p>Returns null if the header has not been set.</p>
+        <p>Returns null if the header has not been set.<br />
+<br />
+ If there are multiple headers with the same name, the $index parameter can specify the index of the value to retreive.</p>
         <div class="tags">
                             <h4>Parameters</h4>
 
@@ -224,6 +226,11 @@
                 <td>string</td>
                 <td>$header</td>
                 <td>Header to read</td>
+            </tr>
+                    <tr>
+                <td>integer</td>
+                <td>$index</td>
+                <td>Index of the header</td>
             </tr>
             </table>
 

@@ -59,7 +59,7 @@
                     string
                 </td>
                 <td class="last">
-                    <a href="#method_getHeader">getHeader</a>(string $header)
+                    <a href="#method_getHeader">getHeader</a>(string $header, integer $index)
                     <p>Returns the value of this header.</p>
                 </td>
                 <td></td>
@@ -360,11 +360,13 @@
                 <h3 id="method_getHeader">
         <div class="location">at line 57</div>
         <code>            public            string
-    <strong>getHeader</strong>(string $header)</code>
+    <strong>getHeader</strong>(string $header, integer $index)</code>
     </h3>
     <div class="details">
         <p>Returns the value of this header.</p>
-        <p>Returns null if the header has not been set.</p>
+        <p>Returns null if the header has not been set.<br />
+<br />
+ If there are multiple headers with the same name, the $index parameter can specify the index of the value to retreive.</p>
         <div class="tags">
                             <h4>Parameters</h4>
 
@@ -373,6 +375,11 @@
                 <td>string</td>
                 <td>$header</td>
                 <td>Header to read</td>
+            </tr>
+                    <tr>
+                <td>integer</td>
+                <td>$index</td>
+                <td>Index of the header</td>
             </tr>
             </table>
 
@@ -392,7 +399,7 @@
     </div>
 
                 <h3 id="method_getHeadersList">
-        <div class="location">at line 64</div>
+        <div class="location">at line 68</div>
         <code>            public            array
     <strong>getHeadersList</strong>()</code>
     </h3>
@@ -416,7 +423,7 @@
     </div>
 
                 <h3 id="method_getRawData">
-        <div class="location">at line 68</div>
+        <div class="location">at line 72</div>
         <code>            public            string
     <strong>getRawData</strong>()</code>
     </h3>
@@ -440,7 +447,7 @@
     </div>
 
                 <h3 id="method_isHTTPS">
-        <div class="location">at line 81</div>
+        <div class="location">at line 85</div>
         <code>            public            boolean
     <strong>isHTTPS</strong>()</code>
     </h3>
@@ -464,7 +471,7 @@
     </div>
 
                 <h3 id="method_getContentTypeHeader">
-        <div class="location">in <a href="../Niysu/HTTPRequestInterface.html#method_getContentTypeHeader"><abbr title="Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr></a> at line 63</div>
+        <div class="location">in <a href="../Niysu/HTTPRequestInterface.html#method_getContentTypeHeader"><abbr title="Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr></a> at line 66</div>
         <code>            public            string
     <strong>getContentTypeHeader</strong>()</code>
     </h3>
@@ -488,7 +495,7 @@
     </div>
 
                 <h3 id="method_isMethodGETOrHEAD">
-        <div class="location">in <a href="../Niysu/HTTPRequestInterface.html#method_isMethodGETOrHEAD"><abbr title="Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr></a> at line 73</div>
+        <div class="location">in <a href="../Niysu/HTTPRequestInterface.html#method_isMethodGETOrHEAD"><abbr title="Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr></a> at line 76</div>
         <code>            public            boolean
     <strong>isMethodGETOrHEAD</strong>()</code>
     </h3>
@@ -512,7 +519,7 @@
     </div>
 
                 <h3 id="method_isMethodPUT">
-        <div class="location">in <a href="../Niysu/HTTPRequestInterface.html#method_isMethodPUT"><abbr title="Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr></a> at line 83</div>
+        <div class="location">in <a href="../Niysu/HTTPRequestInterface.html#method_isMethodPUT"><abbr title="Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr></a> at line 86</div>
         <code>            public            boolean
     <strong>isMethodPUT</strong>()</code>
     </h3>
@@ -536,7 +543,7 @@
     </div>
 
                 <h3 id="method_isMethodPOST">
-        <div class="location">in <a href="../Niysu/HTTPRequestInterface.html#method_isMethodPOST"><abbr title="Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr></a> at line 92</div>
+        <div class="location">in <a href="../Niysu/HTTPRequestInterface.html#method_isMethodPOST"><abbr title="Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr></a> at line 95</div>
         <code>            public            boolean
     <strong>isMethodPOST</strong>()</code>
     </h3>
@@ -560,7 +567,7 @@
     </div>
 
                 <h3 id="method_isMethodDELETE">
-        <div class="location">in <a href="../Niysu/HTTPRequestInterface.html#method_isMethodDELETE"><abbr title="Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr></a> at line 101</div>
+        <div class="location">in <a href="../Niysu/HTTPRequestInterface.html#method_isMethodDELETE"><abbr title="Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr></a> at line 104</div>
         <code>            public            boolean
     <strong>isMethodDELETE</strong>()</code>
     </h3>
@@ -584,7 +591,7 @@
     </div>
 
                 <h3 id="method_isMethodOPTIONS">
-        <div class="location">in <a href="../Niysu/HTTPRequestInterface.html#method_isMethodOPTIONS"><abbr title="Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr></a> at line 110</div>
+        <div class="location">in <a href="../Niysu/HTTPRequestInterface.html#method_isMethodOPTIONS"><abbr title="Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr></a> at line 113</div>
         <code>            public            boolean
     <strong>isMethodOPTIONS</strong>()</code>
     </h3>
@@ -608,7 +615,7 @@
     </div>
 
                 <h3 id="method_isMethodTRACE">
-        <div class="location">in <a href="../Niysu/HTTPRequestInterface.html#method_isMethodTRACE"><abbr title="Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr></a> at line 119</div>
+        <div class="location">in <a href="../Niysu/HTTPRequestInterface.html#method_isMethodTRACE"><abbr title="Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr></a> at line 122</div>
         <code>            public            boolean
     <strong>isMethodTRACE</strong>()</code>
     </h3>
@@ -632,7 +639,7 @@
     </div>
 
                 <h3 id="method_isMethodCONNECT">
-        <div class="location">in <a href="../Niysu/HTTPRequestInterface.html#method_isMethodCONNECT"><abbr title="Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr></a> at line 128</div>
+        <div class="location">in <a href="../Niysu/HTTPRequestInterface.html#method_isMethodCONNECT"><abbr title="Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr></a> at line 131</div>
         <code>            public            boolean
     <strong>isMethodCONNECT</strong>()</code>
     </h3>
@@ -656,7 +663,7 @@
     </div>
 
                 <h3 id="method_isMethodPATCH">
-        <div class="location">in <a href="../Niysu/HTTPRequestInterface.html#method_isMethodPATCH"><abbr title="Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr></a> at line 137</div>
+        <div class="location">in <a href="../Niysu/HTTPRequestInterface.html#method_isMethodPATCH"><abbr title="Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr></a> at line 140</div>
         <code>            public            boolean
     <strong>isMethodPATCH</strong>()</code>
     </h3>
@@ -680,7 +687,7 @@
     </div>
 
                 <h3 id="method_getPriorityForMIME">
-        <div class="location">in <a href="../Niysu/HTTPRequestInterface.html#method_getPriorityForMIME"><abbr title="Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr></a> at line 150</div>
+        <div class="location">in <a href="../Niysu/HTTPRequestInterface.html#method_getPriorityForMIME"><abbr title="Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr></a> at line 153</div>
         <code>            public            <abbr title="Niysu\number">number</abbr>
     <strong>getPriorityForMIME</strong>(string $myMime)</code>
     </h3>
@@ -715,7 +722,7 @@
     </div>
 
                 <h3 id="method_getPriorityForLanguage">
-        <div class="location">in <a href="../Niysu/HTTPRequestInterface.html#method_getPriorityForLanguage"><abbr title="Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr></a> at line 163</div>
+        <div class="location">in <a href="../Niysu/HTTPRequestInterface.html#method_getPriorityForLanguage"><abbr title="Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr></a> at line 166</div>
         <code>            public            <abbr title="Niysu\number">number</abbr>
     <strong>getPriorityForLanguage</strong>(string $myLanguage)</code>
     </h3>
@@ -758,7 +765,7 @@
     </div>
 
                 <h3 id="method_getPriorityForEncoding">
-        <div class="location">in <a href="../Niysu/HTTPRequestInterface.html#method_getPriorityForEncoding"><abbr title="Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr></a> at line 176</div>
+        <div class="location">in <a href="../Niysu/HTTPRequestInterface.html#method_getPriorityForEncoding"><abbr title="Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr></a> at line 179</div>
         <code>            public            <abbr title="Niysu\number">number</abbr>
     <strong>getPriorityForEncoding</strong>(string $myEncoding)</code>
     </h3>
@@ -801,7 +808,7 @@
     </div>
 
                 <h3 id="method_getHighestPriorityForMIME">
-        <div class="location">in <a href="../Niysu/HTTPRequestInterface.html#method_getHighestPriorityForMIME"><abbr title="Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr></a> at line 182</div>
+        <div class="location">in <a href="../Niysu/HTTPRequestInterface.html#method_getHighestPriorityForMIME"><abbr title="Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr></a> at line 185</div>
         <code>            public            
     <strong>getHighestPriorityForMIME</strong>()</code>
     </h3>
@@ -816,7 +823,7 @@
     </div>
 
                 <h3 id="method_getHighestPriorityForLanguage">
-        <div class="location">in <a href="../Niysu/HTTPRequestInterface.html#method_getHighestPriorityForLanguage"><abbr title="Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr></a> at line 188</div>
+        <div class="location">in <a href="../Niysu/HTTPRequestInterface.html#method_getHighestPriorityForLanguage"><abbr title="Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr></a> at line 191</div>
         <code>            public            
     <strong>getHighestPriorityForLanguage</strong>()</code>
     </h3>
@@ -831,7 +838,7 @@
     </div>
 
                 <h3 id="method_getHighestPriorityForEncoding">
-        <div class="location">in <a href="../Niysu/HTTPRequestInterface.html#method_getHighestPriorityForEncoding"><abbr title="Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr></a> at line 194</div>
+        <div class="location">in <a href="../Niysu/HTTPRequestInterface.html#method_getHighestPriorityForEncoding"><abbr title="Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr></a> at line 197</div>
         <code>            public            
     <strong>getHighestPriorityForEncoding</strong>()</code>
     </h3>
@@ -975,7 +982,7 @@
     </div>
 
                 <h3 id="method_setRawData">
-        <div class="location">at line 77</div>
+        <div class="location">at line 81</div>
         <code>            public            
     <strong>setRawData</strong>(string $data)</code>
     </h3>
@@ -1000,7 +1007,7 @@
     </div>
 
                 <h3 id="method_setHTTPS">
-        <div class="location">at line 90</div>
+        <div class="location">at line 94</div>
         <code>            public            
     <strong>setHTTPS</strong>(boolean $https)</code>
     </h3>

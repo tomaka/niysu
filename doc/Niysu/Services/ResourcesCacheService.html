@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="robots" content="index, follow, all" />
+        <title>Niysu\Services\ResourcesCacheService | API</title>
+                    <link rel="stylesheet" type="text/css" href="../../stylesheet.css">
+                            </head>
+        <body id="class">
+            <div class="header">
+        <ul>
+            <li><a href="../../classes.html">Classes</a></li>
+                            <li><a href="../../namespaces.html">Namespaces</a></li>
+                        <li><a href="../../interfaces.html">Interfaces</a></li>
+            <li><a href="../../doc-index.html">Index</a></li>
+            
+        </ul>
+
+        <div id="title">API</div>
+
+            <div class="type">Class</div>
+    <h1><a href="../../Niysu/Services.html">Niysu\Services</a>\ResourcesCacheService</h1>
+    </div>
+        <div class="content">
+                <p>class    <strong>ResourcesCacheService</strong></p>
+
+            <div class="description">
+            <p>Service that manages server-side caching of resources.</p>
+            <p></p>
+        </div>
+    
+    
+    
+            <h2>Methods</h2>
+
+            <table>
+                    <tr>
+                <td class="type">
+                    
+                </td>
+                <td class="last">
+                    <a href="#method_setCacheDirectory">setCacheDirectory</a>($directory)
+                    <p>Sets the directory that this service will use to store entries.</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    string
+                </td>
+                <td class="last">
+                    <a href="#method_store">store</a>(string $url, string $data, array $varyHeaders = array(), integer $ttl = null)
+                    <p>Sets the content of the cache for this resource.</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    string
+                </td>
+                <td class="last">
+                    <a href="#method_load">load</a>(string $url, array $requestHeaders = array())
+                    <p>Returns the content of the cache for this resource.</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    
+                </td>
+                <td class="last">
+                    <a href="#method_clear">clear</a>(string $url)
+                    <p>Clears all entries with a specific wildcard.</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    
+                </td>
+                <td class="last">
+                    <a href="#method_clearAll">clearAll</a>()
+                    <p>Clears all entries created by this service.</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    
+                </td>
+                <td class="last">
+                    <a href="#method___construct">__construct</a>(<abbr title="Niysu\Services\Monolog\Logger">Logger</abbr> $log = null)
+                    <p>Constructor.</p>
+                </td>
+                <td></td>
+            </tr>
+            </table>
+
+
+        <h2>Details</h2>
+
+                        <h3 id="method_setCacheDirectory">
+        <div class="location">at line 16</div>
+        <code>            public            
+    <strong>setCacheDirectory</strong>($directory)</code>
+    </h3>
+    <div class="details">
+        <p>Sets the directory that this service will use to store entries.</p>
+        <p>All the entries will start by a prefix, so the directory doesn&#039;t necessarly need to be empty. However for safety it is really recommended to have an empty directory.</p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td></td>
+                <td>$directory</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_store">
+        <div class="location">at line 37</div>
+        <code>            public            string
+    <strong>store</strong>(string $url, string $data, array $varyHeaders = array(), integer $ttl = null)</code>
+    </h3>
+    <div class="details">
+        <p>Sets the content of the cache for this resource.</p>
+        <p>The type of data that is stored is user-defined. It&#039;s the same data that will be retreived using load().<br />
+<br />
+ Each cache entry is defined by its URL, but also by its value of &quot;$varyHeaders&quot;.<br />
+ If there is already an entry for this $url+$varyHeaders, then it is replaced.<br />
+<br />
+ If $ttl is 0 or null, it will be set to a huge amount of seconds.</p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td>string</td>
+                <td>$url</td>
+                <td>The URL of the resource</td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$data</td>
+                <td>Data to store in the cache</td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$varyHeaders</td>
+                <td>Array of headers=&gt;value that determine the cache entry</td>
+            </tr>
+                    <tr>
+                <td>integer</td>
+                <td>$ttl</td>
+                <td>Number of seconds to keep this cache entry alive</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_load">
+        <div class="location">at line 67</div>
+        <code>            public            string
+    <strong>load</strong>(string $url, array $requestHeaders = array())</code>
+    </h3>
+    <div class="details">
+        <p>Returns the content of the cache for this resource.</p>
+        <p>The $requestHeaders array contains a list of headers.<br />
+ This array must be a superset of an array set during the call to store().<br />
+<br />
+ Returns null if the cache has no entry.<br />
+ If there are multiple available entries, it is implementation-defined as for which one is chosen.</p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td>string</td>
+                <td>$url</td>
+                <td>The URL of the resource</td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$requestHeaders</td>
+                <td>Array of headers=&gt;value that determine the cache entry</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_clear">
+        <div class="location">at line 114</div>
+        <code>            public            
+    <strong>clear</strong>(string $url)</code>
+    </h3>
+    <div class="details">
+        <p>Clears all entries with a specific wildcard.</p>
+        <p>If multiple entries with different $requestVaryHeaders have been created, they are all destroyed.</p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td>string</td>
+                <td>$url</td>
+                <td>URL of the resource, with wildcards accepted</td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_clearAll">
+        <div class="location">at line 127</div>
+        <code>            public            
+    <strong>clearAll</strong>()</code>
+    </h3>
+    <div class="details">
+        <p>Clears all entries created by this service.</p>
+        <p></p>
+        <div class="tags">
+            
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method___construct">
+        <div class="location">at line 136</div>
+        <code>            public            
+    <strong>__construct</strong>(<abbr title="Niysu\Services\Monolog\Logger">Logger</abbr> $log = null)</code>
+    </h3>
+    <div class="details">
+        <p>Constructor.</p>
+        <p>You can specify a logging object that will be used to debug manipulations.</p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td><abbr title="Niysu\Services\Monolog\Logger">Logger</abbr></td>
+                <td>$log</td>
+                <td>Log object that will be used for debug entries, or null</td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+    
+            </div>
+            <div id="footer">
+        Generated by <a href="http://sami.sensiolabs.org/" target="_top">Sami, the API Documentation Generator</a>.
+    </div>
+    </body>
+</html>
