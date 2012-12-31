@@ -59,6 +59,7 @@ class Server {
 		$this->setServiceProvider('outputExcel', 'Niysu\\Services\\OutputExcelService');
 		$this->setServiceProvider('outputJSON', 'Niysu\\Services\\OutputJSONService');
 		$this->setServiceProvider('outputXML', 'Niysu\\Services\\OutputXMLService');
+		$this->setServiceProvider('resourcesCache', 'Niysu\\Services\\ResourcesCacheService');
 		$this->setServiceProvider('session', 'Niysu\\Services\\SessionService');
 		$this->setServiceProvider('xslt', 'Niysu\\Services\\XSLTService');
 
