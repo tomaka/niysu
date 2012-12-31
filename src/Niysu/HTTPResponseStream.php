@@ -15,12 +15,11 @@ namespace Niysu;
  */
 class HTTPResponseStream {
 	/**
-	 * Returns a resource opened by fopen() that will write in this response.
-	 * The resource must be closed with fclose().
+	 * Returns a SplFileObject that will write in this response.
 	 *
 	 * @param HTTPResponseInterface 	$response 			The response that will act as output
 	 * @param boolean 					$writeHeaders 		True if the stream will write headers too
-	 * @return resource
+	 * @return SplFileObject
 	 */
 	public static function build(HTTPResponseInterface $response, $writeHeaders = false) {
 		if (!self::$wrapperRegistered) {
@@ -28,7 +27,7 @@ class HTTPResponseStream {
 			self::$wrapperRegistered = true;
 		}
 
-		return fopen('httpResponseWriter://', 'w', false, stream_context_create([ 'httpResponseWriter' => [ 'response' => $response, 'headers' => false ] ]));
+		return new \SplFileObject('httpResponseWriter://response', 'w', false, stream_context_create([ 'httpResponseWriter' => [ 'response' => $response, 'headers' => $writeHeaders ] ]));
 	}
 
 	/**
@@ -37,11 +36,6 @@ class HTTPResponseStream {
 	public function stream_open($path, $mode, $options, &$opened_path) {
 		if (!preg_match('/^(w|a|x|c)b?$/', $mode))
 			return false;
-
-		/*$responseID = parse_url($path)['host'];
-
-		if (!isset(self::$responsesList[$responseID]))
-			return false;*/
 
 		$params = stream_context_get_options($this->context)[parse_url($path)['scheme']];
 		if (!$params)
@@ -122,6 +116,12 @@ class HTTPResponseStream {
 	public function stream_close() {
 		// flushes $prependOnNextWrite
 		$this->stream_write('');
+	}
+
+	public function url_stat($path, $flags) {
+		return [
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+		];
 	}
 
 
