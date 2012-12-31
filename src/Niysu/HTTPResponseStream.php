@@ -4,31 +4,31 @@ namespace Niysu;
 /**
  * This class can build a PHP filename that will act as a stream to write in a HTTPResponse.
  *
+ * Usage:
+ *	stream_wrapper_register('httpResponseWriter', 'Niysu\\HTTPResponseStream');
+ *	$fp = fopen('httpResponseWriter://response', 'w', false, stream_context_create([ 'httpResponseWriter' => [ 'response' => $response ] ]));
+ *	fputs($fp, 'body');
+ *
  * @copyright 	2012 Pierre Krieger <pierre.krieger1708@gmail.com>
  * @license 	MIT http://opensource.org/licenses/MIT
  * @link 		http://github.com/Tomaka17/niysu
  */
 class HTTPResponseStream {
 	/**
-	 * Returns a PHP filename that will write in this response.
-	 * 
+	 * Returns a resource opened by fopen() that will write in this response.
+	 * The resource must be closed with fclose().
 	 *
 	 * @param HTTPResponseInterface 	$response 			The response that will act as output
 	 * @param boolean 					$writeHeaders 		True if the stream will write headers too
-	 * @return string
+	 * @return resource
 	 */
 	public static function build(HTTPResponseInterface $response, $writeHeaders = false) {
-		self::$responsesList[] = $response;
-		self::$responsesWriteHeaders[] = $writeHeaders;
-
-		$id = count(self::$responsesList) - 1;
-
 		if (!self::$wrapperRegistered) {
 			stream_wrapper_register('httpResponseWriter', get_class());
 			self::$wrapperRegistered = true;
 		}
 
-		return 'httpResponseWriter://'.$id;
+		return fopen('httpResponseWriter://', 'w', false, stream_context_create([ 'httpResponseWriter' => [ 'response' => $response, 'headers' => false ] ]));
 	}
 
 	/**
@@ -38,13 +38,19 @@ class HTTPResponseStream {
 		if (!preg_match('/^(w|a|x|c)b?$/', $mode))
 			return false;
 
-		$responseID = parse_url($path)['host'];
+		/*$responseID = parse_url($path)['host'];
 
 		if (!isset(self::$responsesList[$responseID]))
+			return false;*/
+
+		$params = stream_context_get_options($this->context)[parse_url($path)['scheme']];
+		if (!$params)
+			return false;
+		if (!$params['response'])
 			return false;
 
-		$this->response = self::$responsesList[$responseID];
-		$this->writeHeaders = self::$responsesWriteHeaders[$responseID];
+		$this->response = $params['response'];
+		$this->writeHeaders = $params['headers'];
 		return true;
 	}
 
@@ -123,8 +129,6 @@ class HTTPResponseStream {
 	private $response = null;
 	private $writeHeaders = false;
 	static private $wrapperRegistered = false;
-	static private $responsesList = [];					// each offset is an HTTPResponseInterface
-	static private $responsesWriteHeaders = [];			// same as $responsesList
 }
 
 ?>
