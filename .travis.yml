@@ -3,7 +3,9 @@ language: php
 php:
   - "5.4"
 
-before_script: composer --dev install
+before_script:
+  - composer --dev install
+  - composer require "mikey179/vfsStream 1.*"
 
 notifications:
   email: false
