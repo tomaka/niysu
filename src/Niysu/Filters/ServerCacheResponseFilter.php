@@ -54,7 +54,7 @@ class ServerCacheResponseFilter extends \Niysu\HTTPResponseFilterInterface {
 	public function setCacheDuration($seconds) {
 		if (is_string($seconds))
 			$seconds = \DateInterval::createFromDateString($seconds);
-		if ($seconds instanceof DateInterval)
+		if ($seconds instanceof \DateInterval)
 			$seconds = (((($seconds->y * 12 + $seconds->m) * 30.4 + $seconds->d) * 24 + $seconds->h) * 60 + $seconds->i) * 60 + $seconds->s;
 
 		if (!is_numeric($seconds))
