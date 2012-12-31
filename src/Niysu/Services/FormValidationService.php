@@ -161,7 +161,7 @@ class FormValidationService {
 		$destPageName = str_replace('\\', '-', $destPageName);
 		$destPageName = $this->directory.'/form-'.ltrim($destPageName, '-').'.cache.txt';
 
-		if (filemtime($destPageName) <= time())
+		if (!file_exists($destPageName) || filemtime($destPageName) <= time())
 			return null;
 
 		return unserialize(file_get_contents($destPageName));

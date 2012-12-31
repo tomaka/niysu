@@ -65,6 +65,7 @@ class Server {
 		$this->setFilterProvider('etagResponse', 'Niysu\\Filters\\ETagResponseFilter');
 		$this->setFilterProvider('excelResponse', 'Niysu\\Filters\\ExcelResponseFilter');
 		$this->setFilterProvider('formAnalyserResponse', 'Niysu\\Filters\\FormAnalyserResponseFilter');
+		$this->setFilterProvider('formValidatorRequest', 'Niysu\\Filters\\FormValidatorRequestFilter');
 		$this->setFilterProvider('jsonRequest', 'Niysu\\Filters\\JSONRequestFilter');
 		$this->setFilterProvider('jsonResponse', 'Niysu\\Filters\\JSONResponseFilter');
 		$this->setFilterProvider('maintenanceModeResponse', 'Niysu\\Filters\\MaintenanceModeResponseFilter');
