@@ -51,14 +51,7 @@ class Server {
 		$this->setServiceProvider('databaseProfiling', 'Niysu\\Services\\DatabaseProfilingService');
 		$this->setServiceProvider('email', 'Niysu\\Services\\EmailService');
 		$this->setServiceProvider('httpBasicAuth', 'Niysu\\Services\\HTTPBasicAuthService');
-		$this->setServiceProvider('inputJSON', 'Niysu\\Services\\InputJSONService');
-		$this->setServiceProvider('inputURLEncoded', 'Niysu\\Services\\InputURLEncodedService');
-		$this->setServiceProvider('inputXML', 'Niysu\\Services\\InputXMLService');
 		$this->setServiceProvider('maintenanceMode', 'Niysu\\Services\\MaintenanceModeService');
-		$this->setServiceProvider('outputCSV', 'Niysu\\Services\\OutputCSVService');
-		$this->setServiceProvider('outputExcel', 'Niysu\\Services\\OutputExcelService');
-		$this->setServiceProvider('outputJSON', 'Niysu\\Services\\OutputJSONService');
-		$this->setServiceProvider('outputXML', 'Niysu\\Services\\OutputXMLService');
 		$this->setServiceProvider('resourcesCache', 'Niysu\\Services\\ResourcesCacheService');
 		$this->setServiceProvider('session', 'Niysu\\Services\\SessionService');
 		$this->setServiceProvider('xslt', 'Niysu\\Services\\XSLTService');
