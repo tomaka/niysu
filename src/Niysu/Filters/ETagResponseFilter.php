@@ -34,16 +34,12 @@ class ETagResponseFilter extends \Niysu\HTTPResponseFilterInterface {
 			if (parent::isHeadersListSent())
 				throw new \LogicException('Headers list is already sent');
 
-			parent::setHeader('ETag', $etag);
 			parent::setStatusCode(304);
 			$this->stopRoute = true;
 		}
 
 		$this->etag = $etag;
 		parent::setHeader('ETag', $etag);
-
-		if (!empty($this->dataBuffer))
-			parent::appendData($this->dataBuffer);
 	}
 
 	public function flush() {
@@ -57,7 +53,8 @@ class ETagResponseFilter extends \Niysu\HTTPResponseFilterInterface {
 			}
 		}
 
-		parent::appendData($this->dataBuffer);
+		if (!empty($this->dataBuffer))
+			parent::appendData($this->dataBuffer);
 		$this->dataBuffer = '';
 		parent::flush();
 	}
@@ -66,8 +63,12 @@ class ETagResponseFilter extends \Niysu\HTTPResponseFilterInterface {
 		if (empty($data))
 			return;
 
-		if (isset($this->etag))		parent::appendData($data);
-		else						$this->dataBuffer .= $data;
+		if (isset($this->etag)) {
+			if ($this->requestETag != $this->etag)
+				parent::appendData($data);
+
+		} else
+			$this->dataBuffer .= $data;
 	}
 
 	public function setStatusCode($code) {
