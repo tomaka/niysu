@@ -95,7 +95,9 @@ class FormValidationService {
 	}
 
 	/**
-	 * Generates a format array from HTML.
+	 * Generates an array of format arrays from HTML.
+	 *
+	 * Returns an array where each key is the form's action attribute, and each value is a format array.
 	 *
 	 * @param string 	$html 		String containing the HTML
 	 * @return array
@@ -109,19 +111,64 @@ class FormValidationService {
 
 		$xml = \simplexml_import_dom($doc);
 		foreach ($xml->xpath('//form') as $form) {
+			if (!$form['action'])
+				continue;
+			$format[(string)$form['action']] = [];
+
 			foreach ($form->xpath('//input') as $input) {
 				if (!$input['name'])
 					continue;
 
 				$values = [];
 				foreach ($input->attributes() as $attr => $val)
-					$values[$attr] = $val;
-				$format[(string)$input['name']] = $values;
+					$values[$attr] = (string)$val;
+				$format[(string)$form['action']][(string)$input['name']] = $values;
 			}
 		}
 
 		return $format;
 	}
+
+	/**
+	 * Sets the cache directory to store form formats.
+	 * @param string 	$dir 	The directory where to store the formats
+	 */
+	public function setCacheDirectory($dir) {
+		if (!is_dir($dir))
+			throw new \LogicException('Invalid directory');
+		$this->directory = rtrim($dir, '/');
+	}
+
+	public function storeFormat($destPageName, $format, $ttl = 31536000) {
+		if (!$this->directory)
+			throw new \LogicException('Cache directory has not been defined');
+
+		$destPageName = str_replace('.', '', $destPageName);
+		$destPageName = str_replace('/', '-', $destPageName);
+		$destPageName = str_replace('\\', '-', $destPageName);
+		$destPageName = $this->directory.'/form-'.ltrim($destPageName, '-').'.cache.txt';
+
+		file_put_contents($destPageName, serialize($format));
+		touch($destPageName, time() + $ttl);
+	}
+
+	public function loadFormat($destPageName) {
+		if (!$this->directory)
+			throw new \LogicException('Cache directory has not been defined');
+
+		$destPageName = str_replace('.', '', $destPageName);
+		$destPageName = str_replace('/', '-', $destPageName);
+		$destPageName = str_replace('\\', '-', $destPageName);
+		$destPageName = $this->directory.'/form-'.ltrim($destPageName, '-').'.cache.txt';
+
+		if (filemtime($destPageName) <= time())
+			return null;
+
+		return unserialize(file_get_contents($destPageName));
+	}
+
+
+	private $directory = null;
 };
 
 ?>
