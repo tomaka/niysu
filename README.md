@@ -243,8 +243,16 @@ $server->before(function($etagResponseFilter) { });
 
 $server->register('/', 'get', function($response) {
 	var_dump($response instanceof Niysu\Filters\ETagResponseFilter);	// true
+	
+	$response->appendData('test');		// goes to ETagResponseFilter, which in turn redirects this to the HTTPResponseGlobal
 });
 ```
+
+Technically, filters and services work exactly the same.
+The only difference is that if a filter is a derivate of HTTPRequestInterface, then it will automatically replace the current request when created.
+And if it is a derivate of HTTPResponseInterface, then it will automatically replace the current response when created.
+
+Example of filters: JSONRequestFilter, TidyResponseFilter, FormAnalyserResponseFilter, etc.
 
 
 ### JQuery-like syntax
