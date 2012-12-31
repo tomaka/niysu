@@ -11,7 +11,7 @@ namespace Niysu\Filters;
 class PlainTextResponseFilter extends \Niysu\HTTPResponseFilterInterface {
 	public function __construct(\Niysu\HTTPResponseInterface $next) {
 		parent::__construct($next);
-		$this->setHeader('Content-Type', 'text/plain');
+		$this->setHeader('Content-Type', 'text/plain; charset=utf8');
 	}
 
 	
