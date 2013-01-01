@@ -8,12 +8,14 @@ namespace Niysu\Filters;
  * @license 	MIT http://opensource.org/licenses/MIT
  * @link 		http://github.com/Tomaka17/niysu
  */
-class TidyResponseFilter extends \Niysu\HTTPResponseFilterInterface {
+class TidyResponseFilter implements \Niysu\HTTPResponseInterface {
+	use \Niysu\HTTPResponseFilterTrait;
+
 	public function __construct(\Niysu\HTTPResponseInterface $next) {
 		if (!\extension_loaded('tidy'))
 			throw new \LogicException('php_tidy must be installed to use this filter');
 
-		parent::__construct($next);
+		$this->outputResponse = $next;
 
 		// setting default configuration
 		$this->config = [
@@ -49,25 +51,25 @@ class TidyResponseFilter extends \Niysu\HTTPResponseFilterInterface {
 
 	public function appendData($data) {
 		if ($this->enabled)		$this->data .= $data;
-		else					parent::appendData($data);
+		else					$this->outputResponse->appendData($data);
 	}
 
 	public function setHeader($header, $data) {
 		if (strtolower($header) == 'content-type')
 			$this->enabled = $this->isContentTypeRelevant($data);
-		parent::setHeader($header, $data);
+		$this->outputResponse->setHeader($header, $data);
 	}
 
 	public function addHeader($header, $data) {
 		if (strtolower($header) == 'content-type')
 			$this->enabled = $this->isContentTypeRelevant($data);
-		parent::addHeader($header, $data);
+		$this->outputResponse->addHeader($header, $data);
 	}
 
 	public function flush() {
 		if ($this->enabled)
-			parent::appendData(\tidy_repair_string($this->data, $this->config, 'utf8'));
-		parent::flush();
+			$this->outputResponse->appendData(\tidy_repair_string($this->data, $this->config, 'utf8'));
+		$this->outputResponse->flush();
 
 		$dataBuffer = '';
 	}

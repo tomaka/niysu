@@ -14,35 +14,37 @@ namespace Niysu\Filters;
  * @license 	MIT http://opensource.org/licenses/MIT
  * @link 		http://github.com/Tomaka17/niysu
  */
-class DebugPanelResponseFilter extends \Niysu\HTTPResponseFilterInterface {
+class DebugPanelResponseFilter implements \Niysu\HTTPResponseInterface {
+	use \Niysu\HTTPResponseFilterTrait;
+
 	public function __construct(\Niysu\HTTPResponseInterface $response, $twigService, $scope, $databaseProfilingService) {
 		$this->twigService = $twigService;
 		$this->databaseProfilingService = $databaseProfilingService;
 		$this->scope = $scope;
 
-		parent::__construct($response);
+		$this->outputResponse = $response;
 	}
 
 	public function setHeader($header, $value) {
 		if (strtolower($header) == 'content-type')
 			$this->goodContentType = self::testContentType($value);
-		parent::setHeader($header, $value);
+		$this->outputResponse->setHeader($header, $value);
 	}
 
 	public function addHeader($header, $value) {
 		if (strtolower($header) == 'content-type')
 			$this->goodContentType = self::testContentType($value);
-		parent::addHeader($header, $value);
+		$this->outputResponse->addHeader($header, $value);
 	}
 
 	public function appendData($data) {
 		if (!$this->goodContentType) {
-			parent::appendData($data);
+			$this->outputResponse->appendData($data);
 			return;
 		}
 
 		if (!preg_match('/\\<\\/body\\>/i', $data, $matches, PREG_OFFSET_CAPTURE)) {
-			parent::appendData($data);
+			$this->outputResponse->appendData($data);
 			return;
 		}
 		
@@ -62,7 +64,7 @@ class DebugPanelResponseFilter extends \Niysu\HTTPResponseFilterInterface {
 		
 		$splitOffset = $matches[0][1];
 		$data = substr($data, 0, $splitOffset).$evaluatedPanel.substr($data, $splitOffset);
-		parent::appendData($data);
+		$this->outputResponse->appendData($data);
 	}
 
 
