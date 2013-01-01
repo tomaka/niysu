@@ -103,6 +103,9 @@ class FormValidationService {
 	 * @return array
 	 */
 	public function generateFormatFromHTML($html) {
+		if (empty($html))
+			return [];
+
 		$doc = new \DOMDocument();
 		$doc->strictErrorChecking = false;
 		$doc->loadHTML($html);
