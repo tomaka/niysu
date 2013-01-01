@@ -116,12 +116,12 @@ class Scope implements \Serializable {
 			unset($this->variablesTypes[$var]);
 			return $val;
 		}
-		if (isset($this->variables[$var]) && $this->variables[$var] !== null) {
+		if (isset($this->variables[$var])) {
 			if (!isset($this->variablesPassByRef[$var]) || $this->variablesPassByRef[$var])
 				return $this->variables[$var];
 			throw new \RuntimeException('Forbidden to pass this variable by reference');
 		}
-		if (!$this->parent || (!$this->passNewVarsToParent && !$this->parent->has($var))) {
+		if (!$this->parent || $this->noRefsFromParent || (!$this->newRefsFromParent && !$this->parent->has($var))) {
 			$this->variables[$var] = null;
 			return $this->variables[$var];
 		}
@@ -143,13 +143,17 @@ class Scope implements \Serializable {
 	}
 	
 	public function &getByTypeByRef($requestedType) {
+		foreach ($this->variables as $varName => $value) {
+			if (is_a($value, $requestedType, true))
+				return $this->getByRef($varName);
+		}
 		foreach ($this->variablesTypes as $varName => $type) {
 			if (is_a($type, $requestedType, true))
 				return $this->getByRef($varName);
 		}
-		if (!$this->parent)
+		if (!$this->parent || $this->noRefsFromParent || (!$this->newRefsFromParent && !$this->parent->has($var)))
 			throw new \RuntimeException('Variable with this type not found');
-		return $this->parent->getByType($requestedType);
+		return $this->parent->getByTypeByRef($var);
 	}
 	
 	/**
@@ -165,7 +169,10 @@ class Scope implements \Serializable {
 	 * @deprecated $type is deprecated
 	 */
 	public function set($var, $value, $type = null) {
-		if ($type == null && is_object($value))
+		if ($this->setModifiesParent)
+			$this->parent->set($var, $value, $type);
+
+		if (!isset($type) && is_object($value))
 			$type = get_class($value);
 
 		if ($var == 'scope')
@@ -246,17 +253,34 @@ class Scope implements \Serializable {
 	/**
 	 * Creates a new scope child of this one.
 	 *
-	 * - get will try to return the value from the child scope, or the value of its parent if no such variable exists
-	 * - getByRef will try to return a reference to the value from the child scope, or a reference to the value from its parent ; if the parent doesn't have this variable then the variable is created in the child scope
-	 * - set will modify the child scope only, never the parent
+	 * The "get" function of the child will try to return the value from the child scope, or the value of its parent if no such variable exists.
 	 *
-	 * You can only modify the parent through "getByRef" and "getByRefByType".
+	 * The "set" function of the child will always modify the child scope, never the parent. Except if $setModifiesParent is set to true, in which case it will always modify the parent, never the child scope.
+	 *
+	 * The "getByRef" function of the child will try to return a reference to the value from the child scope.
+	 * If the child scope has no variable of this type and $noRefsFromParent is false, then it will try searching for a value in the parent.
+	 * If neither the child nor the parent has a matching variable, then a reference to a new variable from the child scope is returned, except if $newRefsFromParent is true, in which case a reference to a new variable from the parent is returned.
+	 *
+	 * $newRefsFromParent and $noRefsFromParent shouldn't be both true.
+	 *
+	 * For example if you just want to overwrite some values for a single call but want to restore the values after the call:
+	 *  $scope->newChild([ 'var' => 'overwrite val' ], true, false, true);
+	 *
+	 * If you want to create a child that can't modify its parent:
+	 *  $scope->newChild([], false, true, false);
 	 * 
+	 * @param array 	$variables 				Variables that are added in the new child
+	 * @param boolean 	$newRefsFromParent 		See above
+	 * @param boolean 	$noRefsFromParent 		See above
+	 * @param boolean 	$setModifiesParent 		See above
 	 * @return Scope
 	 */
-	public function newChild() {
-		$c = new Scope();
+	public function newChild($variables = [], $newRefsFromParent = false, $noRefsFromParent = false, $setModifiesParent = false) {
+		$c = new Scope($variables);
 		$c->parent = $this;
+		$c->newRefsFromParent = $newRefsFromParent;
+		$c->noRefsFromParent = $noRefsFromParent;
+		$c->setModifiesParent = $setModifiesParent;
 		return $c;
 	}
 
@@ -269,12 +293,10 @@ class Scope implements \Serializable {
 	 * This is useful when you want to use "call" with just an additional value. Just create a small child, set the additional value in it, and you won't lose newly created variables from the call.
 	 * 
 	 * @return Scope
+	 * @deprecated Use newChild() instead
 	 */
 	public function newSmallChild() {
-		$c = new Scope();
-		$c->parent = $this;
-		$c->passNewVarsToParent = true;
-		return $c;
+		return $this->newChild([], true, false, false);
 	}
 
 	public function serialize() {
@@ -389,12 +411,15 @@ class Scope implements \Serializable {
 		}, null);
 	}
 
-	private $parent = null;
-	private $passNewVarsToParent = false;
 	private $variables = [];
 	private $variablesCallback = [];
 	private $variablesTypes = [];
 	private $variablesPassByRef = [];
+
+	private $parent = null;
+	private $newRefsFromParent = false;
+	private $noRefsFromParent = false;
+	private $setModifiesParent = false;
 };
 
 ?>
