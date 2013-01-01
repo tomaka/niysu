@@ -142,11 +142,11 @@ class FormValidationService {
 	}
 
 	public function storeFormat($destPageName, $format, $ttl = null) {
-		$cache->store($destPageName, serialize($format), $ttl, $this->category);
+		$this->cache->store($destPageName, serialize($format), $ttl, $this->category);
 	}
 
 	public function loadFormat($destPageName) {
-		$data = $cache->load($destPageName, $this->category);
+		$data = $this->cache->load($destPageName, $this->category);
 		return unserialize($data);
 	}
 
