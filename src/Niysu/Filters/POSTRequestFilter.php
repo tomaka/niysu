@@ -26,7 +26,12 @@ class POSTRequestFilter extends \Niysu\HTTPRequestFilterInterface {
 		if (!isset($_FILES[$fileID]))
 			return null;
 
-		return (object)$_FILES[$fileID];
+		return (object)[
+			'mime' => $_FILES[$fileID]['type'],
+			'name' => $_FILES[$fileID]['name'],
+			'size' => $_FILES[$fileID]['size'],
+			'stream' => new \SplFileObject($_FILES[$fileID]['tmp_name'], 'r')
+		];
 	}
 	
 	public function isPOSTContentType() {
@@ -64,11 +69,11 @@ class POSTRequestFilter extends \Niysu\HTTPRequestFilterInterface {
 
 
 
-	private static function isGlobalRequest(\Niyu\HTTPRequestInterface $rq) {
+	private static function isGlobalRequest(\Niysu\HTTPRequestInterface $rq) {
 		if ($rq instanceof \Niysu\HTTPRequestGlobal)
 			return true;
 		if ($rq instanceof \Niysu\HTTPRequestFilterInterface)
-			return $rq->getSource();
+			return $rq->getInput();
 		return false;
 	}
 
