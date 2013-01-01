@@ -9,7 +9,7 @@ require_once __DIR__.'/HTTPResponseInterface.php';
  * @license 	MIT http://opensource.org/licenses/MIT
  * @link 		http://github.com/Tomaka17/niysu
  */
-class HTTPResponseNull extends HTTPResponseInterface {
+class HTTPResponseNull implements HTTPResponseInterface {
 	public function flush() {
 	}
 

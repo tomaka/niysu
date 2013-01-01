@@ -9,7 +9,7 @@ require_once __DIR__.'/HTTPResponseInterface.php';
  * @license 	MIT http://opensource.org/licenses/MIT
  * @link 		http://github.com/Tomaka17/niysu
  */
-class HTTPResponseGlobal extends HTTPResponseInterface {
+class HTTPResponseGlobal implements HTTPResponseInterface {
 	public function __construct() {
 		// removing some headers
 		if (!$this->isHeadersListSent())

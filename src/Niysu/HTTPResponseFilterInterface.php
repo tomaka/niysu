@@ -12,7 +12,7 @@ require_once __DIR__.'/HTTPResponseInterface.php';
  * @license 	MIT http://opensource.org/licenses/MIT
  * @link 		http://github.com/Tomaka17/niysu
  */
-class HTTPResponseFilterInterface extends HTTPResponseInterface {
+class HTTPResponseFilterInterface implements HTTPResponseInterface {
 	/**
 	 * Sets the output response.
 	 *
