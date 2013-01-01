@@ -53,16 +53,16 @@ body > * > div {
 	header style
 */
 header > div {
-	height:10em;
+	height:8em;
 	position:relative;
 }
 
 header > div h1 {
 	position:absolute;
 	text-align:center;
-	right:10px;
-	top:40px;
-	width:700px;
+	right:0;
+	top:20px;
+	width:960px;
 }
 
 nav {

@@ -86,58 +86,6 @@ class AdminSite {
 
 		$twigService->output('@niysuAdminSite/xhprof-results.htm', [ 'data' => $data ]);
 	}
-
-
-	/**
-	 * @name niysu-adminsite-xdebug
-	 * @url /xdebug
-	 * @method GET
-	 */
-	public function xDebugPanel($twigService, $response) {
-		$filterOk = false;
-		while ($response instanceof \Niysu\HTTPResponseFilterInterface) {
-			if ($response instanceof XDebugProfilingFilter) {
-				$filterOk = true;
-				break;
-			}
-
-			$response = $response->getOutput();
-		}
-
-		$twigService->output('@niysuAdminSite/xdebugBefore.htm', [
-			'xdebugInstalled' => extension_loaded('xdebug'),
-			'xdebugProfilerEnable' => ini_get('xdebug.profiler_enable'),
-			'xdebugProfilerEnableTrigger' => ini_get('xdebug.profiler_enable_trigger'),
-			'serverSoftware' => $_SERVER['SERVER_SOFTWARE'],
-			'serverSoftwareOk' => !preg_match('/^PHP .* Development Server$/i', $_SERVER['SERVER_SOFTWARE']),
-			'filterOk' => $filterOk
-		]);
-	}
-
-	/**
-	 * @name niysu-adminsite-xdebug-start
-	 * @url /xdebug-start
-	 * @method POST
-	 */
-	public function xDebugStart($postRequestFilter, $response) {
-		// making the HTTP request to localhost
-		$opts = ['http' => [ 'method'  => 'GET' ] ];
-		file_get_contents('http://localhost:'.$_SERVER['SERVER_PORT'].'/'.ltrim($postRequestFilter->url, '/').'?XDEBUG_PROFILE', false, stream_context_create($opts));
-		
-		// 
-		$filename = null;
-		foreach ($http_response_header as $h) {
-			if (preg_match('/^X-XDebugFilename:\\s*(.*)$/', $h, $matches)) {
-				$filename = $matches[1];
-				break;
-			}
-		}
-
-		if ($filename == null)
-			;
-
-		var_dump($filename);
-	}
 }
 
 ?>
