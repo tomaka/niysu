@@ -18,6 +18,16 @@ class POSTRequestFilter extends \Niysu\HTTPRequestFilterInterface {
 	public function __isset($varName) {
 		return isset($this->getPOSTData()->$varName);
 	}
+
+	public function getFile($fileID) {
+		$g = self::isGlobalRequest($this);
+		if (!$g)
+			return null;
+		if (!isset($_FILES[$fileID]))
+			return null;
+
+		return (object)$_FILES[$fileID];
+	}
 	
 	public function isPOSTContentType() {
 		if (substr($this->getContentTypeHeader(), 0, 33) == 'application/x-www-form-urlencoded')
@@ -50,6 +60,16 @@ class POSTRequestFilter extends \Niysu\HTTPRequestFilterInterface {
 
 		$this->dataCacheStale = false;
 		return $this->dataCache;
+	}
+
+
+
+	private static function isGlobalRequest(\Niyu\HTTPRequestInterface $rq) {
+		if ($rq instanceof \Niysu\HTTPRequestGlobal)
+			return true;
+		if ($rq instanceof \Niysu\HTTPRequestFilterInterface)
+			return $rq->getSource();
+		return false;
 	}
 
 
