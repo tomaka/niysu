@@ -101,6 +101,7 @@ class FormValidationService {
 	 *
 	 * @param string 	$html 		String containing the HTML
 	 * @return array
+	 * @throws RuntimeException If HTML is malformed
 	 */
 	public function generateFormatFromHTML($html) {
 		if (empty($html))
@@ -108,7 +109,9 @@ class FormValidationService {
 
 		$doc = new \DOMDocument();
 		$doc->strictErrorChecking = false;
-		$doc->loadHTML($html);
+		
+		if (!$doc->loadHTML($html))
+			throw new \RuntimeException('Malformed HTML');
 
 		$format = [];
 

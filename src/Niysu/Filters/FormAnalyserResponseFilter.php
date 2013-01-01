@@ -16,9 +16,11 @@ class FormAnalyserResponseFilter extends \Niysu\HTTPResponseFilterInterface {
 
 	public function flush() {
 		if ($this->activated) {
-			foreach ($this->formValidationService->generateFormatFromHTML($this->dataBuffer) as $dest => $format) {
-				$this->formValidationService->storeFormat($dest, $format);
-			}
+			try {
+				foreach ($this->formValidationService->generateFormatFromHTML($this->dataBuffer) as $dest => $format) {
+					$this->formValidationService->storeFormat($dest, $format);
+				}
+			} catch(\RuntimeException $e) {}
 		}
 
 		parent::flush();
