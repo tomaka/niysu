@@ -104,6 +104,9 @@ class CacheService {
 
 		$regex = $this->regexToFile($regex);
 		$dir = $this->directory.rtrim(DIRECTORY_SEPARATOR.$category, DIRECTORY_SEPARATOR);
+		if (!file_exists($dir))
+			return null;
+
 		$chosenFile = null;
 		foreach (scandir($dir) as $f) {
 			if (preg_match($regex, $f))
@@ -144,6 +147,9 @@ class CacheService {
 
 		$transformedRegex = $this->regexToFile($regex);
 		$dir = $this->directory.rtrim(DIRECTORY_SEPARATOR.$category, DIRECTORY_SEPARATOR);
+		if (!file_exists($dir))
+			return null;
+
 		foreach (scandir($dir) as $f) {
 			try {
 				if (!preg_match($transformedRegex, $f))
@@ -183,6 +189,7 @@ class CacheService {
 		$key = str_replace('/', '-', $key);
 		$key = str_replace('\\', '-', $key);
 		$key = str_replace('{', '', $key);
+		$key = str_replace('}', '', $key);
 		return $this->directory.rtrim(DIRECTORY_SEPARATOR.$category, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$key.'.cache.txt';
 	}
 
@@ -190,7 +197,12 @@ class CacheService {
 		if (!$this->directory)
 			throw new \LogicException('The cache directory has not been configured');
 
+		$regex = preg_replace('/\\^\\\\\\//', '^', $regex);
+		$regex = preg_replace('/\\./', '', $regex);
 		$regex = preg_replace('/(.+)\\/(.+)/', '$1-$2', $regex);
+		$regex = preg_replace('/(.+)\\\\(.+)/', '$1-$2', $regex);
+		$regex = preg_replace('/\\{/', '', $regex);
+		$regex = preg_replace('/\\}/', '', $regex);
 		$regex = preg_replace('/\\$/', '\\.cache\\.txt$', $regex);
 
 		return $regex;
