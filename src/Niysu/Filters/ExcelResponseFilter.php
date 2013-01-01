@@ -8,9 +8,11 @@ namespace Niysu\Filters;
  * @license 	MIT http://opensource.org/licenses/MIT
  * @link 		http://github.com/Tomaka17/niysu
  */
-class ExcelResponseFilter extends \Niysu\HTTPResponseFilterInterface {
+class ExcelResponseFilter implements \Niysu\HTTPResponseInterface {
+	use \Niysu\HTTPResponseFilterTrait;
+
 	public function __construct(\Niysu\HTTPResponseInterface $next) {
-		parent::__construct($next);
+		$this->outputResponse = $next;
 		$this->setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 
 		$this->excelDoc = new \PHPExcel();
@@ -44,10 +46,10 @@ class ExcelResponseFilter extends \Niysu\HTTPResponseFilterInterface {
 
 		$tempFile = tempnam(sys_get_temp_dir(), 'NiysuExcel');
 		$writer->save($tempFile);
-		parent::appendData(file_get_contents($tempFile));
+		$this->outputResponse->appendData(file_get_contents($tempFile));
 		unlink($tempFile);
 
-		parent::flush();
+		$this->outputResponse->flush();
 	}
 
 	public function appendData($data) {

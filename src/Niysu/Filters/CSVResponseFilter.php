@@ -8,9 +8,11 @@ namespace Niysu\Filters;
  * @license 	MIT http://opensource.org/licenses/MIT
  * @link 		http://github.com/Tomaka17/niysu
  */
-class CSVResponseFilter extends \Niysu\HTTPResponseFilterInterface {
+class CSVResponseFilter implements \Niysu\HTTPResponseInterface {
+	use \Niysu\HTTPResponseFilterTrait;
+
 	public function __construct(\Niysu\HTTPResponseInterface $next) {
-		parent::__construct($next);
+		$this->outputResponse = $next;
 		$this->setHeader('Content-Type', 'text/csv');
 	}
 
@@ -65,8 +67,8 @@ class CSVResponseFilter extends \Niysu\HTTPResponseFilterInterface {
 	}
 
 	public function flush() {
-		parent::appendData($this->data);
-		parent::flush();
+		$this->outputResponse->appendData($this->data);
+		$this->outputResponse->flush();
 	}
 
 

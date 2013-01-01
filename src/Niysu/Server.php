@@ -46,7 +46,6 @@ class Server {
 		
 		// building default services providers
 		$this->setServiceProvider('cache', 'Niysu\\Services\\CacheService');
-		$this->setServiceProvider('cookies', 'Niysu\\Services\\CookiesService');
 		$this->setServiceProvider('database', 'Niysu\\Services\\DatabaseService');
 		$this->setServiceProvider('databaseProfiling', 'Niysu\\Services\\DatabaseProfilingService');
 		$this->setServiceProvider('email', 'Niysu\\Services\\EmailService');
@@ -59,6 +58,7 @@ class Server {
 
 		// building filters
 		$this->setFilterProvider('contentEncodingResponse', 'Niysu\\Filters\\ContentEncodingResponseFilter');
+		$this->setFilterProvider('cookies', 'Niysu\\Filters\\CookiesFilter');
 		$this->setFilterProvider('csvResponse', 'Niysu\\Filters\\CSVResponseFilter');
 		$this->setFilterProvider('debugPanelResponse', 'Niysu\\Filters\\DebugPanelResponseFilter');
 		$this->setFilterProvider('errorPagesResponse', 'Niysu\\Filters\\ErrorPagesResponseFilter');
@@ -274,11 +274,11 @@ class Server {
 				$this->log->debug('Building filter '.$filterName);
 				$filter = $s->call($provider);
 
-				if (is_a($filter, 'Niysu\HTTPRequestInterface', true)) {
+				if ($filter instanceof HTTPRequestInterface) {
 					if (isset($s->request))
 						$s->request = $filter;
 				}
-				if (is_a($filter, 'Niysu\HTTPResponseInterface', true)) {
+				if ($filter instanceof HTTPResponseInterface) {
 					if (isset($s->response))
 						$s->response = $filter;
 				}

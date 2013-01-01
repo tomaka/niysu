@@ -11,7 +11,7 @@ require_once __DIR__.'/HTTPResponseInterface.php';
  * @license 	MIT http://opensource.org/licenses/MIT
  * @link 		http://github.com/Tomaka17/niysu
  */
-class HTTPResponseStorage extends HTTPResponseInterface {
+class HTTPResponseStorage implements HTTPResponseInterface {
 	public function flush() {
 	}
 

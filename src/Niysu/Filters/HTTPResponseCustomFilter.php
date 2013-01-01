@@ -12,14 +12,16 @@ require_once __DIR__.'/HTTPResponseFilterInterface.php';
  * @license 	MIT http://opensource.org/licenses/MIT
  * @link 		http://github.com/Tomaka17/niysu
  */
-class HTTPResponseCustomFilter extends HTTPResponseFilterInterface {
+class HTTPResponseCustomFilter implements HTTPResponseInterface {
+	use \Niysu\HTTPResponseFilterTrait;
+
 	/**
 	 * 
 	 * @param HTTPResponseInterface 	$output 			The output response, where everything will be sent after filtering
 	 * @param callable 					$contentCallback 	Callback which takes as parameter a HTTPResponseStorage
 	 */
 	public function __construct(HTTPResponseInterface $output, $contentCallback) {
-		parent::__construct($output);
+		$this->outputResponse->__construct($output);
 		$this->httpStorage = new HTTPResponseStorage();
 		$this->setContentCallback($contentCallback);
 	}
@@ -45,7 +47,7 @@ class HTTPResponseCustomFilter extends HTTPResponseFilterInterface {
 		$this->httpStorage = new HTTPResponseStorage();
 
 		// 
-		parent::flush();
+		$this->outputResponse->flush();
 	}
 
 	public function appendData($data) {

@@ -15,9 +15,15 @@ namespace Niysu\Filters;
  * @warning 	Not working yet
  * @todo 		Not working yet
  */
-class ETagResponseFilter extends \Niysu\HTTPResponseFilterInterface {
+class ETagResponseFilter implements \Niysu\HTTPResponseInterface {
+	use \Niysu\HTTPResponseFilterTrait {
+		appendData as private appendDataPT;
+		setStatusCode as private setStatusCodePT;
+		flush as private flushPT;
+	}
+
 	public function __construct(\Niysu\HTTPResponseInterface $response, \Niysu\HTTPRequestInterface $request, &$stopRoute) {
-		parent::__construct($response);
+		$this->outputResponse = $response;
 		$this->requestETag = $request->getHeader('If-None-Match');
 		$this->stopRoute =& $stopRoute;
 	}
@@ -31,32 +37,32 @@ class ETagResponseFilter extends \Niysu\HTTPResponseFilterInterface {
 	 */
 	public function setETag($etag) {
 		if ($this->requestETag == $etag) {
-			if (parent::isHeadersListSent())
+			if ($this->isHeadersListSent())
 				throw new \LogicException('Headers list is already sent');
 
-			parent::setStatusCode(304);
+			$this->setStatusCodePT(304);
 			$this->stopRoute = true;
 		}
 
 		$this->etag = $etag;
-		parent::setHeader('ETag', $etag);
+		$this->setHeader('ETag', $etag);
 	}
 
 	public function flush() {
-		if (!parent::isHeadersListSent() && !isset($this->etag)) {
+		if (!$this->isHeadersListSent() && !isset($this->etag)) {
 			$etag = md5($this->dataBuffer);
-			parent::setHeader('ETag', $etag);
+			$this->setHeader('ETag', $etag);
 			if ($this->requestETag == $etag) {
-				parent::setStatusCode(304);
-				parent::flush();
+				$this->setStatusCodePT(304);
+				$this->flushPT();
 				return;
 			}
 		}
 
 		if (!empty($this->dataBuffer))
-			parent::appendData($this->dataBuffer);
+			$this->appendDataPT($this->dataBuffer);
 		$this->dataBuffer = '';
-		parent::flush();
+		$this->flushPT();
 	}
 
 	public function appendData($data) {
@@ -65,7 +71,7 @@ class ETagResponseFilter extends \Niysu\HTTPResponseFilterInterface {
 
 		if (isset($this->etag)) {
 			if ($this->requestETag != $this->etag)
-				parent::appendData($data);
+				$this->appendDataPT($data);
 
 		} else
 			$this->dataBuffer .= $data;

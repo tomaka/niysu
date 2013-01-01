@@ -1,7 +1,7 @@
 <?php
-namespace Niysu\Services;
+namespace Niysu\Filters;
 
-class CookiesServiceTest extends \PHPUnit_Framework_TestCase {
+class CookiesFilterTest extends \PHPUnit_Framework_TestCase {
 	private $logger;
 
 	protected function setUp() {
@@ -17,7 +17,7 @@ class CookiesServiceTest extends \PHPUnit_Framework_TestCase {
 			])
 		]);
 
-		$cookiesService = $scope->call(__NAMESPACE__.'\\CookiesService');
+		$cookiesService = $scope->call(__NAMESPACE__.'\\CookiesFilter');
 
 		$this->assertNull($cookiesService->test);
 		$this->assertEquals(count($cookiesService->getCookiesList()), 0);
@@ -32,7 +32,7 @@ class CookiesServiceTest extends \PHPUnit_Framework_TestCase {
 			])
 		]);
 
-		$cookiesService = $scope->call(__NAMESPACE__.'\\CookiesService');
+		$cookiesService = $scope->call(__NAMESPACE__.'\\CookiesFilter');
 
 		$this->assertEquals($cookiesService->test, 'hello');
 		$this->assertEquals(count($cookiesService->getCookiesList()), 1);
@@ -50,7 +50,7 @@ class CookiesServiceTest extends \PHPUnit_Framework_TestCase {
 			])
 		]);
 
-		$cookiesService = $scope->call(__NAMESPACE__.'\\CookiesService');
+		$cookiesService = $scope->call(__NAMESPACE__.'\\CookiesFilter');
 
 		$this->assertEquals(count($cookiesService->getCookiesList()), 3);
 		$this->assertEquals($cookiesService->test1, 'hello');
@@ -70,7 +70,7 @@ class CookiesServiceTest extends \PHPUnit_Framework_TestCase {
 			])
 		]);
 
-		$cookiesService = $scope->call(__NAMESPACE__.'\\CookiesService');
+		$cookiesService = $scope->call(__NAMESPACE__.'\\CookiesFilter');
 
 		$cookiesService->test++;
 		$this->assertEquals($cookiesService->test, 5);
@@ -86,7 +86,7 @@ class CookiesServiceTest extends \PHPUnit_Framework_TestCase {
 			'response' => new \Niysu\HTTPResponseStorage()
 		]);
 
-		$cookiesService = $scope->call(__NAMESPACE__.'\\CookiesService');
+		$cookiesService = $scope->call(__NAMESPACE__.'\\CookiesFilter');
 
 		$cookiesService->test = 10;
 		$this->assertTrue($scope->response->hasHeader('Set-Cookie'));
@@ -99,7 +99,7 @@ class CookiesServiceTest extends \PHPUnit_Framework_TestCase {
 			'response' => new \Niysu\HTTPResponseStorage()
 		]);
 
-		$cookiesService = $scope->call(__NAMESPACE__.'\\CookiesService');
+		$cookiesService = $scope->call(__NAMESPACE__.'\\CookiesFilter');
 
 		$cookiesService->test = 10;
 		unset($cookiesService->test);

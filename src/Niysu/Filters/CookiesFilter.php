@@ -1,5 +1,5 @@
 <?php
-namespace Niysu\Services;
+namespace Niysu\Filters;
 
 /**
  * Reads and/or writes cookies from the request or to the response.
@@ -8,10 +8,12 @@ namespace Niysu\Services;
  * @license 	MIT http://opensource.org/licenses/MIT
  * @link 		http://github.com/Tomaka17/niysu
  */
-class CookiesService {
-	public function __construct(\Niysu\HTTPRequestInterface &$request, \Niysu\HTTPResponseInterface &$response, \Monolog\Logger $log) {
-		$this->request =& $request;
-		$this->response =& $response;
+class CookiesFilter extends \Niysu\HTTPRequestFilterInterface implements \Niysu\HTTPResponseInterface {
+	use \Niysu\HTTPResponseFilterTrait;
+
+	public function __construct(\Niysu\HTTPRequestInterface $request, \Niysu\HTTPResponseInterface $response, \Monolog\Logger $log = null) {
+		parent::__construct($request);
+		$this->outputResponse = $response;
 		$this->log = $log;
 		$this->refreshRequestCookies();
 	}
@@ -58,7 +60,7 @@ class CookiesService {
 	}
 
 	/**
-	 * Returns true if this cookie exists in the request or has previously been set.
+	 * Returns true if this cookie exists in the getInput() or has previously been set.
 	 *
 	 * @param string 	$varName 	Name of the cookie to check
 	 * @return boolean
@@ -84,7 +86,7 @@ class CookiesService {
 	/**
 	 * Reads a cookie.
 	 *
-	 * This function reads a cookie from the request.
+	 * This function reads a cookie from the getInput().
 	 * Returns null if the cookie doesn't exist.
 	 *
 	 * If a cookie of this name has been set using add(), then its value is returned instead.
@@ -106,7 +108,7 @@ class CookiesService {
 	/**
 	 * Destroys a cookie.
 	 *
-	 * This function will destroy a cookie by sending to the request a expiration date in the past.
+	 * This function will destroy a cookie by sending to the getInput() a expiration date in the past.
 	 * Further attempts to get this cookie using get() will return null.
 	 *
 	 * @param string 	$cookieName 	Name of the cookie to destroy
@@ -119,7 +121,7 @@ class CookiesService {
 	 * Sets the value of a cookie.
 	 *
 	 * This function will send a Set-Cookie header to the response containing the informations about this cookie.
-	 * It will also add the cookie to an internal array. Any attempt to get the value of the cookie will return the value set here, even if there is already a cookie in the request.
+	 * It will also add the cookie to an internal array. Any attempt to get the value of the cookie will return the value set here, even if there is already a cookie in the getInput().
 	 *
 	 * The $expires parameter can be:
 	 *  - a string passable to DateInterval::createFromDateString ; example: '1 day', '2 hours', etc.
@@ -162,12 +164,12 @@ class CookiesService {
 		if ($secure)	$header .= '; Secure';
 		if ($httponly)	$header .= '; HttpOnly';
 
-		if ($this->response) {
+		if ($this->outputResponse) {
 			$this->log->debug('Sending cookie '.$name.' set to value: '.$value);
-			if ($this->request && !$this->request->isHTTPS() && $secure)
+			if ($this->getInput() && !$this->getInput()->isHTTPS() && $secure)
 				$this->log->notice('Setting a secure cookie not through HTTPS is pointless');
 
-			$this->response->addHeader('Set-Cookie', $header);
+			$this->outputResponse->addHeader('Set-Cookie', $header);
 		}
 	}
 
@@ -176,8 +178,8 @@ class CookiesService {
 	private function refreshRequestCookies() {
 		$this->requestCookies = [];
 
-		if (!$this->request) return;
-		$header = $this->request->getHeader('Cookie');
+		if (!$this->getInput()) return;
+		$header = $this->getInput()->getHeader('Cookie');
 		if (!$header) return;
 
 		foreach (explode(';', $header) as $cookie) {
@@ -187,10 +189,8 @@ class CookiesService {
 	}
 
 
-	private $request;
-	private $response;
 	private $log;
-	private $requestCookies = [];			// cookies read from the request ; array of format name => value
+	private $requestCookies = [];			// cookies read from the getInput() ; array of format name => value
 	private $updatedCookies = [];			// same format as $requestCookies but for cookies that have been set by this function
 	private $defaultLifetime = null;		// default lifetime for cookies when expires is null
 };

@@ -8,9 +8,11 @@ namespace Niysu\Filters;
  * @license 	MIT http://opensource.org/licenses/MIT
  * @link 		http://github.com/Tomaka17/niysu
  */
-class StatusCodeOverwriteResponseFilter extends \Niysu\HTTPResponseFilterInterface {
+class StatusCodeOverwriteResponseFilter implements \Niysu\HTTPResponseInterface {
+	use \Niysu\HTTPResponseFilterTrait;
+
 	public function __construct(\Niysu\HTTPResponseInterface $response, $code) {
-		parent::__construct($response);
+		$this->outputResponse = $response;
 		$response->setStatusCode($code);
 	}
 	
