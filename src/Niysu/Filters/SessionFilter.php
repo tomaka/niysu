@@ -8,15 +8,18 @@ namespace Niysu\Filters;
  * @license 	MIT http://opensource.org/licenses/MIT
  * @link 		http://github.com/Tomaka17/niysu
  */
-class SessionRequestFilter extends \Niysu\HTTPRequestFilterInterface {
+class SessionFilter extends \Niysu\HTTPRequestFilterInterface implements \Niysu\HTTPResponseInterface {
+	use \Niysu\HTTPResponseFilterTrait;
+
 	/**
 	 * Constructor.
 	 */
-	public function __construct(\Niysu\HTTPRequestInterface $request, \Niysu\Services\SessionService $sessionService, \Niysu\Services\CookiesService $cookiesService, \Monolog\Logger $log = null) {
+	public function __construct(\Niysu\HTTPRequestInterface $request, \Niysu\HTTPResponseInterface $response, \Niysu\Services\SessionService $sessionService, \Niysu\Filters\CookiesFilter $cookiesFilter, \Monolog\Logger $log = null) {
 		parent::__construct($request);
+		$this->outputResponse = $response;
 
 		$this->sessionService = $sessionService;
-		$this->cookiesService = $cookiesService;
+		$this->cookiesFilter = $cookiesFilter;
 		$this->log = $log;
 	}
 
@@ -32,7 +35,7 @@ class SessionRequestFilter extends \Niysu\HTTPRequestFilterInterface {
 
 	public function __set($varName, $value) {
 		if (!$this->getSessionID())
-			$this->cookiesService->{$this->cookieName} = $this->sessionService->generateSessionID();
+			$this->cookiesFilter->{$this->cookieName} = $this->sessionService->generateSessionID();
 
 		$v = $this->sessionService[$this->getSessionID()];
 		if (!$v) $v = [];
@@ -50,13 +53,13 @@ class SessionRequestFilter extends \Niysu\HTTPRequestFilterInterface {
 	}
 
 	public function getSessionID() {
-		return $this->cookiesService->{$this->cookieName};
+		return $this->cookiesFilter->{$this->cookieName};
 	}
 
 
 	private $cookieName = 'session';
 	private $sessionService;
-	private $cookiesService;
+	private $cookiesFilter;
 	private $log;
 };
 
