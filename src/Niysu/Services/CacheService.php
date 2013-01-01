@@ -8,149 +8,154 @@ namespace Niysu\Services;
  * @link 		http://github.com/Tomaka17/niysu
  */
 class CacheService {
+	/**
+	 * Sets the directory that this service will use to store entries.
+	 * It is strongly encouraged that the directory be empty.
+	 */
 	public function setCacheDirectory($directory) {
 		if (!is_dir($directory))
 			throw new \RuntimeException('The cache directory doesn\'t exist: '.$directory);
 		$this->directory = $directory;
 	}
 
-	public function setCompressionLevel($level) {
-		$this->compressionLevel = $level;
-	}
 
-	/// \brief Activates all caching, this is the default value
+	/**
+	 * Activates all caching, this is the default value
+	 */
 	public function activate() {
 		$this->activated = true;
 	}
 
+	/**
+	 * Deactivates all caching.
+	 * Clear and store will have no effect. Load will always return null.
+	 */
 	public function deactivate() {
 		$this->activated = false;
 	}
 	
-	public function exists($key) {
-		if (!$this->activated)
-			return false;
-
-		// getting the resources list
-		$fp = fopen($this->directory.DIRECTORY_SEPARATOR.'resources.list', 'c+b');
-		$data = $this->readResourcesList($fp);
-		flock($fp, LOCK_SH);
-
-		if (!isset($data[$key])) {
-			flock($fp, LOCK_UN);
-			fclose($fp);
-			return false;
-		}
-
-		if (intval($data[$key]) < intval(microtime(true))) {
-			if ($this->logService)
-				$this->logService->debug('Element is stale: '.$key);
-
-			unset($data[$key]);
-			try { unlink($this->keyToFile($key)); } catch(\Exception $e) {}
-			flock($fp, LOCK_EX);
-			fseek($fp, 0);
-			fwrite($fp, serialize($data));
-			flock($fp, LOCK_UN);
-			fclose($fp);
-			return false;
-		}
-
-		flock($fp, LOCK_UN);
-		fclose($fp);
-		return file_exists($this->keyToFile($key));
-	}
-	
-	/// \param $ttl Time in seconds until the element is automatically cleared, or null if no TTL
+	/**
+	 * Sets the content of the cache for this key.
+	 * The type of data that is stored is user-defined. It's the same data that will be retreived using load().
+	 *
+	 * If there is already an entry for this key, then it is replaced.
+	 *
+	 * If $ttl is 0 or null, it will be set to a huge amount of seconds.
+	 *
+	 * @param string 	$key 				The key that will be used to load the resource again
+	 * @param string 	$data				Data to store in the cache
+	 * @param integer 	$ttl				Number of seconds to keep this cache entry alive
+	 * @return string
+	 */
 	public function store($key, $data, $ttl = null) {
 		if (!$this->activated)
 			return;
 
-		// adding to the resources list
-		$fp = fopen($this->directory.DIRECTORY_SEPARATOR.'resources.list', 'c+b');
-		flock($fp, LOCK_SH);
-		$resourcesList = unserialize(stream_get_contents($fp));
-		$resourcesList[$key] = round(intval(microtime(true)) + intval($ttl ? $ttl : 99999));
+		if ($ttl == 0)
+			$ttl = 3600 * 24 * 365 * 20;
 
-		flock($fp, LOCK_EX);
-		$file = $this->keyToFile($key);
-		file_put_contents($file, gzencode($data, $this->compressionLevel));
-
-		fseek($fp, 0);
-		fwrite($fp, serialize($resourcesList));
-		flock($fp, LOCK_UN);
-		fclose($fp);
-
-
-		if ($this->logService)
-			$this->logService->debug('Stored element "'.$key.'", TTL = '.$ttl.' seconds');
-	}
-
-	public function load($key) {
-		if (!$this->activated)
-			throw new \LogicException('Caching is disabled');
-
-		$fp = $this->openResourcesList();
-		flock($fp, LOCK_SH);
-		$data = $this->readResourcesList($fp);
-
-		// loading file
-		if (!isset($data[$key])) {
-			flock($fp, LOCK_UN);
-			fclose($fp);
-			throw new \LogicException('Cache element doesn\'t exist');
-		}
-
-		$file = $this->keyToFile($key);
-		$fp = fopen($file, 'rb');
-		$data = stream_get_contents($fp);
-		flock($fp, LOCK_UN);
-		fclose($fp);
+		$path = $this->keyToFile($key);
+		file_put_contents($path, $data);
+		touch($path, time() + intval($ttl));
 
 		if ($this->log)
-			$this->log->debug('Loaded element "'.$key.'" from file '.$file);
-
-		return gzdecode($data);
+			$this->log->debug('Stored element "'.$key.'" into "'.$path.'", TTL = '.$ttl.' seconds');
 	}
-	
-	public function clear($key) {
-		// removing from resources list
-		$fp = $this->openResourcesList();
-		$data = $this->readResourcesList($fp);
-		flock($fp, LOCK_EX);
+
+	/**
+	 * Returns the content of the cache for this key.
+	 *
+	 * Returns null if the cache has no matching entry.
+	 *
+	 * @param string 	$key		The key to load
+	 * @return string
+	 */
+	public function load($key) {
+		if (!$this->activated)
+			return null;
 
 		$file = $this->keyToFile($key);
-		try { unlink($file); } catch(\Exception $e) {}
-
-		unset($data[$key]);
-
-		$this->writeResourcesList($fp, $data);
-		flock($fp, LOCK_UN);
-		fclose($fp);
+		if (!file_exists($file))
+			return null;
+		return $this->loadFile($file, $key);
 	}
 
-	public function clearAll() {
-		$fp = $this->openResourcesList();
-		flock($fp, LOCK_SH);
-		$data = $this->readResourcesList($fp);
+	/**
+	 * Returns the content of the cache for this key that matches a regex.
+	 *
+	 * Returns null if the cache has no matching entry.
+	 * If there are multiple available entries, it is undefined which one is chosen.
+	 *
+	 * @param string 	$key		The regex of the key to load
+	 * @return string
+	 */
+	public function loadMatch($regex) {
+		if (!$this->activated)
+			return null;
 
-		flock($fp, LOCK_EX);
-		foreach ($data as $k => $v) {
-			try {
-				unlink($this->keyToFile($k));
-			} catch(\Exception $e) {
-				if ($this->logService)
-					$this->logService->warn($e->getMessage());
-			}
+		$regex = $this->regexToFile($regex);
+		var_dump($regex);
+		$chosenFile = null;
+		foreach (scandir($this->directory) as $f) {
+			if (preg_match($regex, $f))
+				$chosenFile = $f;
 		}
-		$data = [];
+		if (!$chosenFile)
+			return null;
 
-		$this->writeResourcesList($fp, $data);
-		flock($fp, LOCK_UN);
-		fclose($fp);
+		return $this->loadFile($this->directory.DIRECTORY_SEPARATOR.$chosenFile, $key);
+	}
+	
+	/**
+	 * Clears the entry with a specific key.
+	 * @param string 	$key 		Key of the entry
+	 */
+	public function clear($key) {
+		if (!$this->activated)
+			return;
+
+		$file = $this->keyToFile($key);
+		try {
+			unlink($file);
+			if ($this->log)
+				$this->log->debug('Cleared cache file '.$f. ' (key: '.$key.')');
+		} catch(\Exception $e) {}
+	}
+	
+	/**
+	 * Clears all entries that match a regex.
+	 *
+	 * @param string 	$key 	Regex of the key to remove
+	 */
+	public function clearMatch($regex) {
+		if (!$this->activated)
+			return;
+
+		$transformedRegex = $this->regexToFile($regex);
+		foreach (scandir($this->directory) as $f) {
+			try {
+				if (!preg_match($transformedRegex, $f))
+					continue;
+				unlink($this->directory.DIRECTORY_SEPARATOR.$f);
+				if ($this->log)
+					$this->log->debug('Cleared cache file '.$f. ' (regex: '.$regex.')');
+			} catch(\Exception $e) {}
+		}
 	}
 
-	public function __construct($log) {
+	/**
+	 * Clears all entries created by this service.
+	 */
+	public function clearAll() {
+		$this->clearMatch('.*');
+	}
+
+	/**
+	 * Constructor.
+	 * You can specify a logging object that will be used to debug manipulations.
+	 * @param \Monolog\Logger 	$log 		Log object that will be used for debug entries, or null
+	 */
+	public function __construct(\Monolog\Logger $log = null) {
 		$this->log = $log;
 	}
 
@@ -159,24 +164,45 @@ class CacheService {
 	private function keyToFile($key) {
 		if (!$this->directory)
 			throw new \LogicException('The cache directory has not been configured');
-		return $this->directory.DIRECTORY_SEPARATOR.md5(serialize($key)).'.cache.gz';
+
+		$key = ltrim($key, '/\\');
+		$key = str_replace('.', '', $key);
+		$key = str_replace('/', '-', $key);
+		$key = str_replace('\\', '-', $key);
+		$key = str_replace('{', '', $key);
+		return $this->directory.DIRECTORY_SEPARATOR.$key.'.cache.txt';
 	}
 
-	private function openResourcesList() {
-		return fopen($this->directory.DIRECTORY_SEPARATOR.'resources.list', 'c+b');
+	private function regexToFile($regex) {
+		if (!$this->directory)
+			throw new \LogicException('The cache directory has not been configured');
+
+		$regex = preg_replace('/(.+)\\/(.+)/', '$1-$2', $regex);
+		$regex = preg_replace('/\\$/', '\\.cache\\.txt$', $regex);
+
+		return $regex;
 	}
 
-	private function readResourcesList($fp) {
-		fseek($fp, 0);
-		$val = unserialize(stream_get_contents($fp));
-		if (!$val) $val = [];
-		return $val;
-	}
+	private function loadFile($file, $key = '') {
+		$fp = fopen($file, 'rb');
+		if (!$fp)
+			return null;
 
-	private function writeResourcesList($fp, $data) {
-		fseek($fp, 0);
-		ftruncate($fp, 0);
-		fwrite($fp, serialize($data));
+		// checking whether file is stale
+		if (fstat($fp)['mtime'] <= time()) {
+			if ($this->log)
+				$this->log->debug('Found stale element "'.$key.'" in file '.$file);
+			fclose($fp);
+			unlink($file);
+			return null;
+		}
+
+		// reading content
+		$data = stream_get_contents($fp);
+		fclose($fp);
+		if ($this->log)
+			$this->log->debug('Loaded element "'.$key.'" from file '.$file);
+		return $data;
 	}
 
 
