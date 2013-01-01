@@ -19,6 +19,14 @@ class HTTPRequestFilterInterface extends HTTPRequestInterface {
 		$this->source = $source;
 	}
 
+	/**
+	 * Returns the HTTPRequestInterface that was passed to the constructor.
+	 * @return HTTPRequestInterface
+	 */
+	public function getInput() {
+		return $this->source;
+	}
+
 	public function getURL() {
 		return $this->source->getURL();
 	}
