@@ -27,7 +27,9 @@ class SessionService implements \ArrayAccess {
 
 	public function offsetGet($id) {
 		$data = $this->cacheService->load($id, $this->category);
-		return (object)unserialize($data);
+		if ($data === null)
+			return null;
+		return unserialize($data);
 	}
 
 	public function offsetSet($id, $value) {

@@ -72,6 +72,7 @@ class Server {
 		$this->setFilterProvider('plainTextResponse', 'Niysu\\Filters\\PlainTextResponseFilter');
 		$this->setFilterProvider('postRequest', 'Niysu\\Filters\\POSTRequestFilter');
 		$this->setFilterProvider('serverCacheResponse', 'Niysu\\Filters\\ServerCacheResponseFilter');
+		$this->setFilterProvider('sessionRequest', 'Niysu\\Filters\\SessionRequestFilter');
 		$this->setFilterProvider('tidyResponse', 'Niysu\\Filters\\TidyResponseFilter');
 		$this->setFilterProvider('twigResponse', 'Niysu\\Filters\\TwigResponseFilter');
 		$this->setFilterProvider('xmlRequest', 'Niysu\\Filters\\XMLRequestFilter');
