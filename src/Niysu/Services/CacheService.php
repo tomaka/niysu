@@ -45,16 +45,23 @@ class CacheService {
 	 * @param string 	$key 				The key that will be used to load the resource again
 	 * @param string 	$data				Data to store in the cache
 	 * @param integer 	$ttl				Number of seconds to keep this cache entry alive
+	 * @param string 	$category 			The category where to store the element
 	 * @return string
 	 */
-	public function store($key, $data, $ttl = null) {
+	public function store($key, $data, $ttl = null, $category = '') {
 		if (!$this->activated)
 			return;
 
 		if ($ttl == 0)
 			$ttl = 3600 * 24 * 365 * 20;
 
-		$path = $this->keyToFile($key);
+		$dir = $this->directory.rtrim(DIRECTORY_SEPARATOR.$category, DIRECTORY_SEPARATOR);
+		if (!file_exists($dir)) {
+			if (!mkdir($dir, 0755, true))
+				throw new \RuntimeException('Impossible to create directory '.$dir);
+		}
+
+		$path = $this->keyToFile($key, $category);
 		file_put_contents($path, $data);
 		touch($path, time() + intval($ttl));
 
@@ -68,13 +75,14 @@ class CacheService {
 	 * Returns null if the cache has no matching entry.
 	 *
 	 * @param string 	$key		The key to load
+	 * @param string 	$category 	The category where the element belongs
 	 * @return string
 	 */
-	public function load($key) {
+	public function load($key, $category = '') {
 		if (!$this->activated)
 			return null;
 
-		$file = $this->keyToFile($key);
+		$file = $this->keyToFile($key, $category);
 		if (!file_exists($file))
 			return null;
 		return $this->loadFile($file, $key);
@@ -87,34 +95,36 @@ class CacheService {
 	 * If there are multiple available entries, it is undefined which one is chosen.
 	 *
 	 * @param string 	$key		The regex of the key to load
+	 * @param string 	$category 	The category where the element belongs
 	 * @return string
 	 */
-	public function loadMatch($regex) {
+	public function loadMatch($regex, $category = '') {
 		if (!$this->activated)
 			return null;
 
 		$regex = $this->regexToFile($regex);
-		var_dump($regex);
+		$dir = $this->directory.rtrim(DIRECTORY_SEPARATOR.$category, DIRECTORY_SEPARATOR);
 		$chosenFile = null;
-		foreach (scandir($this->directory) as $f) {
+		foreach (scandir($dir) as $f) {
 			if (preg_match($regex, $f))
 				$chosenFile = $f;
 		}
 		if (!$chosenFile)
 			return null;
 
-		return $this->loadFile($this->directory.DIRECTORY_SEPARATOR.$chosenFile, $key);
+		return $this->loadFile($dir.DIRECTORY_SEPARATOR.$chosenFile, $key);
 	}
 	
 	/**
 	 * Clears the entry with a specific key.
 	 * @param string 	$key 		Key of the entry
+	 * @param string 	$category 	The category where the element belongs
 	 */
-	public function clear($key) {
+	public function clear($key, $category = '') {
 		if (!$this->activated)
 			return;
 
-		$file = $this->keyToFile($key);
+		$file = $this->keyToFile($key, $category);
 		try {
 			unlink($file);
 			if ($this->log)
@@ -125,18 +135,20 @@ class CacheService {
 	/**
 	 * Clears all entries that match a regex.
 	 *
-	 * @param string 	$key 	Regex of the key to remove
+	 * @param string 	$key 		Regex of the key to remove
+	 * @param string 	$category 	The category where the element belongs
 	 */
-	public function clearMatch($regex) {
+	public function clearMatch($regex, $category = '') {
 		if (!$this->activated)
 			return;
 
 		$transformedRegex = $this->regexToFile($regex);
-		foreach (scandir($this->directory) as $f) {
+		$dir = $this->directory.rtrim(DIRECTORY_SEPARATOR.$category, DIRECTORY_SEPARATOR);
+		foreach (scandir($dir) as $f) {
 			try {
 				if (!preg_match($transformedRegex, $f))
 					continue;
-				unlink($this->directory.DIRECTORY_SEPARATOR.$f);
+				unlink($dir.DIRECTORY_SEPARATOR.$f);
 				if ($this->log)
 					$this->log->debug('Cleared cache file '.$f. ' (regex: '.$regex.')');
 			} catch(\Exception $e) {}
@@ -145,9 +157,10 @@ class CacheService {
 
 	/**
 	 * Clears all entries created by this service.
+	 * @param string 	$category 	The category where the elements belongs
 	 */
-	public function clearAll() {
-		$this->clearMatch('.*');
+	public function clearAll($category) {
+		$this->clearMatch('.*', $category);
 	}
 
 	/**
@@ -161,7 +174,7 @@ class CacheService {
 
 
 
-	private function keyToFile($key) {
+	private function keyToFile($key, $category) {
 		if (!$this->directory)
 			throw new \LogicException('The cache directory has not been configured');
 
@@ -170,7 +183,7 @@ class CacheService {
 		$key = str_replace('/', '-', $key);
 		$key = str_replace('\\', '-', $key);
 		$key = str_replace('{', '', $key);
-		return $this->directory.DIRECTORY_SEPARATOR.$key.'.cache.txt';
+		return $this->directory.rtrim(DIRECTORY_SEPARATOR.$category, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$key.'.cache.txt';
 	}
 
 	private function regexToFile($regex) {
