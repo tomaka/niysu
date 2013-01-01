@@ -17,6 +17,7 @@ class RoutesCollection {
 	 *
 	 * Recognized tokens are:
 	 *  - @before (both) Name of a function (method or global function) to be called before the handler
+	 *  - @disabled (route only) This route is not created
 	 *  - @method (route only) Pattern of the method to match
 	 *  - @name (route only) Name of the route
 	 *  - @pattern (route only) Sets the regex pattern of the part of a URL
@@ -74,6 +75,9 @@ class RoutesCollection {
 			
 			// now analyzing parameters
 			if (isset($parameters['url']) || isset($parameters['name'])) {
+				if (isset($parameters['disabled']))
+					continue;
+
 				$route = $newCollection->register($parameters['url']);
 
 				// setting name of the route

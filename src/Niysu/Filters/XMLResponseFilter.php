@@ -8,9 +8,11 @@ namespace Niysu\Filters;
  * @license 	MIT http://opensource.org/licenses/MIT
  * @link 		http://github.com/Tomaka17/niysu
  */
-class XMLResponseFilter extends \Niysu\HTTPResponseFilterInterface {
+class XMLResponseFilter implements \Niysu\HTTPResponseInterface {
+	use \Niysu\HTTPResponseFilterTrait;
+
 	public function __construct(\Niysu\HTTPResponseInterface $next) {
-		parent::__construct($next);
+		$this->outputResponse = $next;
 		$this->setHeader('Content-Type', 'application/xml');
 	}
 
@@ -31,8 +33,8 @@ class XMLResponseFilter extends \Niysu\HTTPResponseFilterInterface {
 	}
 
 	public function flush() {
-		parent::appendData($this->data);
-		parent::flush();
+		$this->outputResponse->appendData($this->data);
+		$this->outputResponse->flush();
 	}
 
 	public function appendData($data) {

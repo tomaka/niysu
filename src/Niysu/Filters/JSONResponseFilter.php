@@ -8,9 +8,14 @@ namespace Niysu\Filters;
  * @license 	MIT http://opensource.org/licenses/MIT
  * @link 		http://github.com/Tomaka17/niysu
  */
-class JSONResponseFilter extends \Niysu\HTTPResponseFilterInterface {
+class JSONResponseFilter implements \Niysu\HTTPResponseInterface {
+	use \Niysu\HTTPResponseFilterTrait {
+		appendData as private appendDataPT;
+		flush as private flushPT;
+	}
+
 	public function __construct(\Niysu\HTTPResponseInterface $next) {
-		parent::__construct($next);
+		$this->outputResponse = $next;
 		$this->setHeader('Content-Type', 'application/json');
 	}
 
@@ -37,8 +42,8 @@ class JSONResponseFilter extends \Niysu\HTTPResponseFilterInterface {
 			}
 		}
 
-		parent::appendData($data);
-		parent::flush();
+		$this->appendDataPT($data);
+		$this->flushPT();
 	}
 
 	public function appendData($data) {

@@ -10,9 +10,11 @@ namespace Niysu\Filters;
  * @warning 	Not working yet
  * @todo 		Not working yet
  */
-class ErrorPagesResponseFilter extends \Niysu\HTTPResponseFilterInterface {
+class ErrorPagesResponseFilter implements \Niysu\HTTPResponseInterface {
+	use \Niysu\HTTPResponseFilterTrait;
+	
 	public function __construct(\Niysu\HTTPResponseInterface $response, \Niysu\Server $server = null, \Niysu\HTTPRequestInterface $request, \Monolog\Logger $log = null) {
-		parent::__construct($response);
+		$this->outputResponse = $response;
 		$this->server = $server;
 		$this->request = $request;
 		$this->log = $log;
@@ -36,12 +38,12 @@ class ErrorPagesResponseFilter extends \Niysu\HTTPResponseFilterInterface {
 		if ($this->server && isset($this->errorReplacements[$statusCode]))
 			$this->currentReplacement = $this->errorReplacements[$statusCode];
 
-		parent::setStatusCode($statusCode);
+		$this->outputResponse->setStatusCode($statusCode);
 	}
 
 	public function flush() {
 		if (!$this->currentReplacement) {
-			parent::flush();
+			$this->outputResponse->flush();
 			return;
 		}
 
@@ -58,14 +60,14 @@ class ErrorPagesResponseFilter extends \Niysu\HTTPResponseFilterInterface {
 		} else {
 			if ($this->log)
 				$this->log->warn('Route specified in ErrorPagesResponseFilter does not exist: '.$this->currentReplacement);
-			parent::flush();
+			$this->outputResponse->flush();
 		}
 	}
 
 	public function appendData($data) {
 		$this->headersSent = true;
 		if (!$this->currentReplacement)
-			parent::appendData($data);
+			$this->outputResponse->appendData($data);
 	}
 
 	public function isHeadersListSent() {

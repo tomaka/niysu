@@ -10,17 +10,19 @@ namespace Niysu\Filters;
  * @license 	MIT http://opensource.org/licenses/MIT
  * @link 		http://github.com/Tomaka17/niysu
  */
-class TwigResponseFilter extends \Niysu\HTTPResponseFilterInterface {
+class TwigResponseFilter implements \Niysu\HTTPResponseInterface {
+	use \Niysu\HTTPResponseFilterTrait;
+	
 	public function __construct(\Niysu\HTTPResponseInterface $response, \Niysu\Services\TwigService $twigService) {
-		parent::__construct($response);
+		$this->outputResponse = $response;
 
 		$this->twigService = $twigService;
 	}
 
 	public function flush() {
 		if ($this->template)
-			parent::appendData($this->twigService->render($this->template, $this->variables));
-		parent::flush();
+			$this->outputResponse->appendData($this->twigService->render($this->template, $this->variables));
+		$this->outputResponse->flush();
 	}
 
 	/**
@@ -43,11 +45,11 @@ class TwigResponseFilter extends \Niysu\HTTPResponseFilterInterface {
 
 	public function appendData($data) {
 		if (!$this->template)
-			parent::appendData($data);
+			$this->outputResponse->appendData($data);
 	}
 
 	public function isHeadersListSent() {
-		return !$this->template && parent::isHeadersListSent();
+		return !$this->template && $this->outputResponse->isHeadersListSent();
 	}
 
 

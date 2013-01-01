@@ -8,14 +8,14 @@ namespace Niysu;
  * @license 	MIT http://opensource.org/licenses/MIT
  * @link 		http://github.com/Tomaka17/niysu
  */
-abstract class HTTPResponseInterface {
+interface HTTPResponseInterface {
 	/**
 	 * Sets the status code to return with the headers.
 	 *
 	 * @pre !isHeadersListSent()
 	 * @param integer 	$statusCode 	The status code
 	 */
-	abstract public function setStatusCode($statusCode);
+	public function setStatusCode($statusCode);
 
 	/**
 	 * Adds a header to the headers list.
@@ -24,7 +24,7 @@ abstract class HTTPResponseInterface {
 	 * @param string 	$header 	Header to add
 	 * @param string 	$value 		Value of the header
 	 */
-	abstract public function addHeader($header, $value);
+	public function addHeader($header, $value);
 
 	/**
 	 * Removes all headers of this name and adds a new one.
@@ -35,7 +35,7 @@ abstract class HTTPResponseInterface {
 	 * @param string 	$header 	Header to add
 	 * @param string 	$value 		Value of the header
 	 */
-	abstract public function setHeader($header, $value);
+	public function setHeader($header, $value);
 
 	/**
 	 * Removes all headers with this name.
@@ -43,7 +43,7 @@ abstract class HTTPResponseInterface {
 	 * @pre !isHeadersListSent()
 	 * @param string 	$header 	Name of the headers to remove
 	 */
-	abstract public function removeHeader($header);
+	public function removeHeader($header);
 
 	/**
 	 * Returns true if the response has already sent its headers and is now sending data.
@@ -52,7 +52,7 @@ abstract class HTTPResponseInterface {
 	 *
 	 * @return boolean
 	 */
-	abstract public function isHeadersListSent();
+	public function isHeadersListSent();
 
 	/**
 	 * Appends data to the end of the response.
@@ -61,14 +61,14 @@ abstract class HTTPResponseInterface {
 	 *
 	 * @param string 	$data 		Data to append
 	 */
-	abstract public function appendData($data);
+	public function appendData($data);
 
 	/**
 	 * Flushes the response at the end.
 	 *
 	 * Nothing else must be modified after this call.
 	 */
-	abstract public function flush();
+	public function flush();
 };
 
 ?>

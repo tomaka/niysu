@@ -67,19 +67,45 @@ class ScopeTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals($scope2->test, 4);
 	}
 	
-	public function testSmallChild() {
+	/**
+	 * @depends testChild
+	 */
+	public function testChildNewRefsFromParent() {
 		$scope1 = new Scope();
-		$scope2 = $scope1->newSmallChild();
+		$scope2 = $scope1->newChild([], true, false, false);
 
-		$scope1->test = 1;
-		$this->assertEquals($scope1->test, 1);
-		$this->assertEquals($scope2->test, 1);
-
-		$a =& $scope2->getByRef('test2');
+		$a =& $scope2->getByRef('test');
 		$a = 12;
 		
-		$this->assertEquals($scope1->test2, 12);
-		$this->assertEquals($scope2->test2, 12);
+		$this->assertEquals(12, $scope1->test);
+		$this->assertEquals(12, $scope2->test);
+	}
+	
+	/**
+	 * @depends testChild
+	 */
+	public function testChildNoRefsFromParent() {
+		$scope1 = new Scope();
+		$scope2 = $scope1->newChild([], false, true, false);
+
+		$a =& $scope2->getByRef('test');
+		$a = 12;
+		
+		$this->assertNull($scope1->test);
+		$this->assertEquals(12, $scope2->test);
+	}
+	
+	/**
+	 * @depends testChild
+	 */
+	public function testChildSetModifiesParent() {
+		$scope1 = new Scope();
+		$scope2 = $scope1->newChild([], false, false, true);
+
+		$scope2->test = 5;
+		
+		$this->assertEquals(5, $scope1->test);
+		$this->assertEquals(5, $scope2->test);
 	}
 
 	/**

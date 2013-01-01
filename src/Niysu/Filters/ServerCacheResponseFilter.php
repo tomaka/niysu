@@ -10,7 +10,9 @@ namespace Niysu\Filters;
  * @license 	MIT http://opensource.org/licenses/MIT
  * @link 		http://github.com/Tomaka17/niysu
  */
-class ServerCacheResponseFilter extends \Niysu\HTTPResponseFilterInterface {
+class ServerCacheResponseFilter implements \Niysu\HTTPResponseInterface {
+	use \Niysu\HTTPResponseFilterTrait;
+	
 	/**
 	 * Constructor.
 	 *
@@ -18,7 +20,7 @@ class ServerCacheResponseFilter extends \Niysu\HTTPResponseFilterInterface {
 	 * @todo Add \Niysu\Services\ResourcesCacheService  for third parameter
 	 */
 	public function __construct(\Niysu\HTTPRequestInterface $request, \Niysu\HTTPResponseInterface $response, $resourcesCacheService, &$stopRoute, \Monolog\Logger $log = null) {
-		parent::__construct($response);
+		$this->outputResponse = $response;
 
 		$this->request = $request;
 		$this->responseStorage = new \Niysu\HTTPResponseStorage();
@@ -96,14 +98,14 @@ class ServerCacheResponseFilter extends \Niysu\HTTPResponseFilterInterface {
 			$this->cacheService->store($this->request->getURL(), $data, $varyingFields, $this->ttl);
 		}
 
-		parent::flush();
+		$this->outputResponse->flush();
 	}
 
 	public function setStatusCode($code) {
 		if ($code >= 400 && !$this->writeInCacheAuthoritative)
 			$this->writeInCache = false;
 
-		parent::setStatusCode($code);
+		$this->outputResponse->setStatusCode($code);
 	}
 
 	public function addHeader($header, $value) {
@@ -111,7 +113,7 @@ class ServerCacheResponseFilter extends \Niysu\HTTPResponseFilterInterface {
 			$this->responseStorage->addHeader($header, $value);
 
 		if ($this->transmitToParent)
-			parent::addHeader($header, $value);
+			$this->outputResponse->addHeader($header, $value);
 	}
 
 	public function setHeader($header, $value) {
@@ -119,7 +121,7 @@ class ServerCacheResponseFilter extends \Niysu\HTTPResponseFilterInterface {
 			$this->responseStorage->setHeader($header, $value);
 
 		if ($this->transmitToParent)
-		parent::setHeader($header, $value);
+		$this->outputResponse->setHeader($header, $value);
 	}
 
 	public function removeHeader($header) {
@@ -127,7 +129,7 @@ class ServerCacheResponseFilter extends \Niysu\HTTPResponseFilterInterface {
 			$this->responseStorage->removeHeader($header);
 
 		if ($this->transmitToParent)
-			parent::removeHeader($header);
+			$this->outputResponse->removeHeader($header);
 	}
 
 	public function appendData($data) {
@@ -135,7 +137,7 @@ class ServerCacheResponseFilter extends \Niysu\HTTPResponseFilterInterface {
 			$this->responseStorage->appendData($data);
 
 		if ($this->transmitToParent)
-			parent::appendData($data);
+			$this->outputResponse->appendData($data);
 	}
 
 

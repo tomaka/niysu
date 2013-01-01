@@ -55,10 +55,7 @@ class HTTPBasicAuthService {
 			throw new \LogicException('Auth function has not been set');
 
 		// calling auth function
-		$localScope = $this->scope->newSmallChild();
-		$localScope->login = $login;
-		$localScope->password = $password;
-		$retValue = $localScope->call($this->authFunction);
+		$retValue = $this->scope->newChild(['login' => $login, 'password' => $password], true, false, false)->call($this->authFunction);
 
 		if ($this->logService)
 			$this->logService->info('Successful user login by basic HTTP authentication');

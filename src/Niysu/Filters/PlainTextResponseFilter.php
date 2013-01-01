@@ -8,9 +8,11 @@ namespace Niysu\Filters;
  * @license 	MIT http://opensource.org/licenses/MIT
  * @link 		http://github.com/Tomaka17/niysu
  */
-class PlainTextResponseFilter extends \Niysu\HTTPResponseFilterInterface {
+class PlainTextResponseFilter implements \Niysu\HTTPResponseInterface {
+	use \Niysu\HTTPResponseFilterTrait;
+
 	public function __construct(\Niysu\HTTPResponseInterface $next) {
-		parent::__construct($next);
+		$this->outputResponse = $next;
 		$this->setHeader('Content-Type', 'text/plain; charset=utf8');
 	}
 
@@ -21,7 +23,7 @@ class PlainTextResponseFilter extends \Niysu\HTTPResponseFilterInterface {
 	 * @param string 	$text 		Plain-text data
 	 */
 	public function setText($text) {
-		parent::appendData($text);
+		$this->outputResponse->appendData($text);
 	}
 
 	public function appendData($data) {
