@@ -284,21 +284,6 @@ class Scope implements \Serializable {
 		return $c;
 	}
 
-	/**
-	 * Creates a new scope child of this one.
-	 *
-	 * This function is the same as "newChild", except that "getByRef" will create a new variable in the parent if no such variable exists.
-	 * The "set" function still writes the child scope, or it would be kind of useless.
-	 *
-	 * This is useful when you want to use "call" with just an additional value. Just create a small child, set the additional value in it, and you won't lose newly created variables from the call.
-	 * 
-	 * @return Scope
-	 * @deprecated Use newChild() instead
-	 */
-	public function newSmallChild() {
-		return $this->newChild([], true, false, false);
-	}
-
 	public function serialize() {
 		return serialize([
 			'variables' => $this->variables,
