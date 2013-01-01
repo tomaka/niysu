@@ -57,7 +57,7 @@ $server = new Niysu\Server();
 $server->register('/', 'get', function($response) {
 
 	// this function will only be called if the client asks for '/'
-	$response->setPlainTextData('Hello world!');
+	$response->appendData('Hello world!');
 
 });
 
@@ -110,7 +110,7 @@ class Foo {
 	 * @url /home
 	 */
 	public function homePage($response) {
-		$response->setPlainTextData('Hello world!');
+		$response->appendData('Hello world!');
 	}
 }
 
@@ -135,7 +135,7 @@ First, your handler must ask for the cookies service. To do so, simply add a `$c
 
 ```php
 $server->register('/', 'get', function($response, $cookiesService) {
-	$response->setPlainTextData('The cookie\'s value is: '.$cookiesService->cookieName);
+	$response->appendData('The cookie\'s value is: '.$cookiesService->cookieName);
 
 	$cookiesService->add('cookieName', 'value', '2 days');
 });
@@ -156,7 +156,7 @@ Example:
 ```php
 // this will work for /users/john, /users/18, etc. but not /users/john/doe
 $server->register('/users/{userID}', 'get', function($userID, $response) {
-	$response->setPlainTextData('Hi, '.$userID.'!');
+	$response->appendData('Hi, '.$userID.'!');
 });
 ```
 
@@ -165,7 +165,7 @@ You can also change what the variable part will match by setting a regular expre
 Example:
 ```php
 $route = $server->register('/users/{userID}', 'get', function($userID, $response) {
-	$response->setPlainTextData('Hi, '.$userID.'!');
+	$response->appendData('Hi, '.$userID.'!');
 });
 
 // now {userID} only accepts numbers
@@ -199,7 +199,7 @@ Even better: they can pass values to the handler by requesting a value by refere
 
 ```php
 $route = $server->register('/', 'get', function($response, $value) {
-	$response->setPlainTextData('Value is: '.$value);
+	$response->appendData('Value is: '.$value);
 });
 
 $route->before(function(&$value) {
@@ -216,13 +216,13 @@ If one of the before functions sets the value of `stopRoute` to true, then Niysu
 Example:
 ```php
 $route = $server->register('/private', 'get', function($response) {
-	$response->setPlainTextData('Welcome to the private room!');
+	$response->appendData('Welcome to the private room!');
 });
 
 $route->before(function(&$stopRoute, $response) {
 	if (...) {
 		$response->setStatusCode(403);
-		$response->setPlainTextData('You don\'t have the right to access this page');
+		$response->appendData('You don\'t have the right to access this page');
 		$stopRoute = true;		// the handler (and the following before functions if there were any) won't get called
 	}
 });
