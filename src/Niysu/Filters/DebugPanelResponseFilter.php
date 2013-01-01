@@ -24,13 +24,13 @@ class DebugPanelResponseFilter extends \Niysu\HTTPResponseFilterInterface {
 	}
 
 	public function setHeader($header, $value) {
-		if ($header == 'Content-Type')
+		if (strtolower($header) == 'content-type')
 			$this->goodContentType = self::testContentType($value);
 		parent::setHeader($header, $value);
 	}
 
 	public function addHeader($header, $value) {
-		if ($header == 'Content-Type')
+		if (strtolower($header) == 'content-type')
 			$this->goodContentType = self::testContentType($value);
 		parent::addHeader($header, $value);
 	}
@@ -79,7 +79,7 @@ class DebugPanelResponseFilter extends \Niysu\HTTPResponseFilterInterface {
 	}
 
 	private static function testContentType($value) {
-		return strpos('text/html', $value) === 0;
+		return strpos($value, 'text/html') === 0;
 	}
 	
 	
