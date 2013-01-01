@@ -133,45 +133,30 @@ class FormValidationService {
 	}
 
 	/**
-	 * Sets the cache directory to store form formats.
-	 * @param string 	$dir 	The directory where to store the formats
+	 * Sets the category that will be passed to the CacheService.
+	 * By default, this is "forms"
+	 * @param string 	$category 		The category
 	 */
-	public function setCacheDirectory($dir) {
-		if (!is_dir($dir))
-			throw new \LogicException('Invalid directory');
-		$this->directory = rtrim($dir, '/');
+	public function setCategory($category) {
+		$this->category = $category;
 	}
 
-	public function storeFormat($destPageName, $format, $ttl = 31536000) {
-		if (!$this->directory)
-			throw new \LogicException('Cache directory has not been defined');
-
-		$destPageName = str_replace('.', '', $destPageName);
-		$destPageName = str_replace('/', '-', $destPageName);
-		$destPageName = str_replace('\\', '-', $destPageName);
-		$destPageName = $this->directory.'/form-'.ltrim($destPageName, '-').'.cache.txt';
-
-		file_put_contents($destPageName, serialize($format));
-		touch($destPageName, time() + $ttl);
+	public function storeFormat($destPageName, $format, $ttl = null) {
+		$cache->store($destPageName, serialize($format), $ttl, $this->category);
 	}
 
 	public function loadFormat($destPageName) {
-		if (!$this->directory)
-			throw new \LogicException('Cache directory has not been defined');
+		$data = $cache->load($destPageName, $this->category);
+		return unserialize($data);
+	}
 
-		$destPageName = str_replace('.', '', $destPageName);
-		$destPageName = str_replace('/', '-', $destPageName);
-		$destPageName = str_replace('\\', '-', $destPageName);
-		$destPageName = $this->directory.'/form-'.ltrim($destPageName, '-').'.cache.txt';
-
-		if (!file_exists($destPageName) || filemtime($destPageName) <= time())
-			return null;
-
-		return unserialize(file_get_contents($destPageName));
+	public function __construct(CacheService $cacheService) {
+		$this->cache = $cacheService;
 	}
 
 
-	private $directory = null;
+	private $cache;
+	private $category = 'forms';
 };
 
 ?>
