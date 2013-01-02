@@ -53,7 +53,7 @@ class ErrorPagesResponseFilter implements \Niysu\HTTPResponseInterface {
 		$route = $this->server->getRouteByName($this->currentReplacement);
 
 		if ($route) {
-			$response = new StatusCodeOverwriteResponseFilter($this->getOutput(), $this->currentStatusCode);
+			$response = new StatusCodeOverwriteResponseFilter($this->outputResponse, $this->currentStatusCode);
 			$route->handleNoURLCheck($this->request, $response, $this->server->generateQueryScope());
 			$response->flush();
 
