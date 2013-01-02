@@ -198,7 +198,7 @@ class DatabaseService {
 		$this->databasePDO->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 
 		if ($this->databaseProfilingService)
-			$this->databaseProfilingService->signalConnection($thsi->dsn, round(1000 * (microtime(true) - $before)));
+			$this->databaseProfilingService->signalConnection($this->dsn, round(1000 * (microtime(true) - $before)));
 
 		try {
 			if ($this->logService)
