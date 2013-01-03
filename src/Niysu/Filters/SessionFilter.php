@@ -23,16 +23,36 @@ class SessionFilter extends \Niysu\HTTPRequestFilterInterface implements \Niysu\
 		$this->log = $log;
 	}
 
+	/**
+	 * Returns true if the current session has a variable.
+	 * @param string 	$varName 	Name of the variable to check
+	 * @return boolean
+	 */
 	public function __isset($varName) {
 		return $this->__get($varName) !== null;
 	}
 
+	/**
+	 * Returns the value of a variable in the current session.
+	 * @param string 	$varName 	Name of the variable to retreive
+	 * @return mixed
+	 * @throws RuntimException If the variable doesn't exist
+	 */
 	public function __get($varName) {
 		if (!$this->getSessionID())
 			return null;
-		return $this->sessionService[$this->getSessionID()][$varName];
+		$val = $this->sessionService[$this->getSessionID()];
+		if (!isset($val[$varName]))
+			throw new \RuntimeException('Variable doesn\'t exist in the current session');
+		return $val[$varName];
 	}
 
+	/**
+	 * Sets the value of a variable in the current session.
+	 * This also starts a session if no session currently exists.
+	 * @param string 	$varName 	Name of the variable to set
+	 * @param mixed 	$value 		Value
+	 */
 	public function __set($varName, $value) {
 		if (!$this->getSessionID())
 			$this->cookiesFilter->{$this->cookieName} = $this->sessionService->generateSessionID();
@@ -44,15 +64,30 @@ class SessionFilter extends \Niysu\HTTPRequestFilterInterface implements \Niysu\
 		$this->sessionService[$this->getSessionID()] = $v;
 	}
 
+	/**
+	 * Destroys a variable in the current session.
+	 * @param string 	$varName 	Name of the variable to destroy
+	 */
 	public function __unset($varName) {
 		$this->__set($varName, null);
 	}
 
+	/**
+	 * Returns true if a session is currently started.
+	 * @return boolean
+	 */
 	public function hasSessionLoaded() {
-		return $this->getSessionID() !== null;
+		return isset($this->cookiesFilter->{$this->cookieName});
 	}
 
+	/**
+	 * Returns the ID of the current session.
+	 * @return string
+	 * @throws RuntimException If no session is currently in progress
+	 */
 	public function getSessionID() {
+		if (!$this->hasSessionLoaded())
+			throw new \RuntimeException('No session loaded');
 		return $this->cookiesFilter->{$this->cookieName};
 	}
 
