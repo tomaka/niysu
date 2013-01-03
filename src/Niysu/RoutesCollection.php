@@ -366,7 +366,7 @@ class RoutesCollection {
 
 		$parameters = [];		// will contain the result
 
-		foreach (preg_split('/\\r\\n/', $docComment, -1, PREG_SPLIT_NO_EMPTY) as $line) {
+		foreach (preg_split('/[\\r\\n]+/', $docComment, -1, PREG_SPLIT_NO_EMPTY) as $line) {
 			if (!preg_match('/\\s*\\*?\\s*@(\\w+)(.*)/', $line, $matches))
 				continue;
 

@@ -4,6 +4,13 @@ namespace Niysu\Filters;
 /**
  * Allows you to customize error pages.
  *
+ * By default this filter will replace any response whose status code is 400 or more by a route whose name is the status code.
+ * For example if your server returns a 404 response and there exists a route named "404", then this route will be called and will replace the response.
+ *
+ * You can overwrite this behavior by calling "setErrorRoute".
+ *
+ * Note that the status code of the final response will always be the same that triggered the filter.
+ *
  * @copyright 	2012 Pierre Krieger <pierre.krieger1708@gmail.com>
  * @license 	MIT http://opensource.org/licenses/MIT
  * @link 		http://github.com/Tomaka17/niysu
@@ -43,24 +50,29 @@ class ErrorPagesResponseFilter implements \Niysu\HTTPResponseInterface {
 
 	public function flush() {
 		if (!$this->currentReplacement) {
-			$this->outputResponse->flush();
-			return;
+			if ($this->currentStatusCode >= 400)
+				$route = $this->server->getRouteByName($this->currentStatusCode);
+
+		} else {
+			$route = $this->server->getRouteByName($this->currentReplacement);
+
+			if (!$route) {
+				if ($this->log)
+					$this->log->warn('Route specified in ErrorPagesResponseFilter does not exist: '.$this->currentReplacement);
+			}
 		}
 
-		if ($this->log)
-			$this->log->debug('ErrorPagesResponseFilter replaces resource by the route: '.$this->currentReplacement);
-
-		$route = $this->server->getRouteByName($this->currentReplacement);
-
 		if ($route) {
-			$response = new StatusCodeOverwriteResponseFilter($this->getOutput(), $this->currentStatusCode);
+			if ($this->log)
+				$this->log->debug('ErrorPagesResponseFilter will now replace the response by the route: '.$route->getName());
+
+			$response = new StatusCodeOverwriteResponseFilter($this->outputResponse, $this->currentStatusCode);
 			$route->handleNoURLCheck($this->request, $response, $this->server->generateQueryScope());
 			$response->flush();
 
 		} else {
-			if ($this->log)
-				$this->log->warn('Route specified in ErrorPagesResponseFilter does not exist: '.$this->currentReplacement);
 			$this->outputResponse->flush();
+			return;
 		}
 	}
 

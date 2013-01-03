@@ -20,17 +20,17 @@ class CacheService {
 
 
 	/**
-	 * Activates all caching, this is the default value
+	 * Enables all caching, this is the default value
 	 */
-	public function activate() {
+	public function enable() {
 		$this->activated = true;
 	}
 
 	/**
-	 * Deactivates all caching.
+	 * Disables all caching.
 	 * Clear and store will have no effect. Load will always return null.
 	 */
-	public function deactivate() {
+	public function disable() {
 		$this->activated = false;
 	}
 	

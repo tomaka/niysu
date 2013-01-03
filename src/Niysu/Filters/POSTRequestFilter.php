@@ -81,3 +81,5 @@ class POSTRequestFilter extends \Niysu\HTTPRequestFilterInterface {
 	private $dataCache;
 	private $dataCacheStale = true;
 }
+
+?>

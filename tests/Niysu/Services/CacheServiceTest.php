@@ -18,8 +18,8 @@ class CacheServiceTest extends \PHPUnit_Framework_TestCase {
 		$this->cacheService->setCacheDirectory(vfsStream::url('nonexistingDirectory'));
 	}
 
-	public function testDeactivate() {
-		$this->cacheService->deactivate();
+	public function testDisable() {
+		$this->cacheService->disable();
 		$this->cacheService->setCacheDirectory(vfsStream::url('exampleDir'));
 
 		$this->cacheService->store('test', 'test');

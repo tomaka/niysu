@@ -55,9 +55,9 @@ class DebugPanelResponseFilter implements \Niysu\HTTPResponseInterface {
 			'peakMemory' => self::formatBytes(memory_get_peak_usage()),
 			'numQueries' => $this->databaseProfilingService->getNumberOfQueries(),
 			'queriesList' => $this->databaseProfilingService->getQueriesList(),
-			'queriesTime' => $this->databaseProfilingService->getQueriesTotalMilliseconds(),
-			'connectionMS' => $this->databaseProfilingService->getTotalConnectionMilliseconds(),
-			'totalDatabaseTime' => $this->databaseProfilingService->getTotalConnectionMilliseconds() + $this->databaseProfilingService->getQueriesTotalMilliseconds(),
+			'queriesTime' => $this->databaseProfilingService->getQueriesTotalDuration(),
+			'connectionMS' => $this->databaseProfilingService->getTotalConnectionDuration(),
+			'totalDatabaseTime' => $this->databaseProfilingService->getTotalConnectionDuration() + $this->databaseProfilingService->getQueriesTotalDuration(),
 			/*'sessionID' => $this->scope->sessionService->getID(),
 			'sessionVariables' => $this->scope->sessionService->getVariables()*/
 		]);
