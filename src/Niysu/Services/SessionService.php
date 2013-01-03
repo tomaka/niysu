@@ -7,126 +7,93 @@ namespace Niysu\Services;
  * @license 	MIT http://opensource.org/licenses/MIT
  * @link 		http://github.com/Tomaka17/niysu
  */
-class SessionService {
-	public static function beforeSetToCacheFilesStorage() {
-		return function($sessionService) {
-			$sessionService->setToCacheFilesStorage();
-		};
+class SessionService implements \ArrayAccess {
+	/**
+	 * Sets the category that will be passed to the CacheService.
+	 * By default, this is "sessions"
+	 * @param string 	$category 		The category in the CacheService
+	 */
+	public function setCategory($category) {
+		$this->category = $category;
 	}
 
-	public function setToCacheFilesStorage() {
-		$this->writeFunction = function($sessionID, $sessionData) {
-			$this->scope->cacheService->store('sessions/'.$sessionID, $sessionData);
-		};
-
-		$this->readFunction = function($sessionID) {
-			$service = $this->scope->cacheService;
-			if (!$service->exists('sessions/'.$sessionID))
-				return null;
-			return $service->load('sessions/'.$sessionID);
-		};
-
-		$this->storeSession();
-		$this->currentSessionID = null;
+	/**
+	 * Sets the duration of session written with "offsetSet".
+	 * @param integer 		$duration 		Number of seconds until the session expires
+	 */
+	public function setSessionsDuration($duration) {
+		$this->ttl = $duration;
 	}
 
-	/*public function setToDatabaseStorage() {
-
-	}*/
-
-	public function __isset($var) {
-		$this->loadSession();
-		return isset($this->currentSessionData[$var]);
+	/**
+	 * Returns true if the session with this ID exists.
+	 * @param string 	$id 	Session ID
+	 * @return boolean
+	 */
+	public function offsetExists($id) {
+		$data = $this->cacheService->load($id, $this->category);
+		return $data !== null;
 	}
 
-	public function __unset($var) {
-		$this->loadSession();
-		unset($this->currentSessionData[$var]);
-		$this->flushRequired = true;
-		$this->scope->cookiesService->add('sessionID', $this->currentSessionID, $this->sessionDuration);
+	/**
+	 * Returns the content of the session with this ID.
+	 * Returns an associative array with variables => values
+	 * @param string 	$id 	Session ID
+	 * @return array
+	 * @throws RuntimeException If no session exists with this ID
+	 */
+	public function offsetGet($id) {
+		$data = $this->cacheService->load($id, $this->category);
+		if ($data === null)
+			throw new \RuntimeException('Trying to access a non-existing session: '.$id);
+		return unserialize($data);
 	}
 
-	public function __get($var) {
-		$this->loadSession();
-		return $this->currentSessionData[$var];
+	/**
+	 * Sets the content of the session with this ID.
+	 * $value must be an associative array with variables => values
+	 * @param string 	$id 		Session ID
+	 * @param array 	$value 		Array containing the session variables
+	 */
+	public function offsetSet($id, $value) {
+		if (!is_array($value))
+			throw new \LogicException('Value must be an array');
+		if (!$id)
+			$id = self::generateSessionID();
+		$this->cacheService->store($id, serialize($value), $this->ttl, $this->category);
 	}
 
-	public function __set($var, $value) {
-		$this->loadSession();
-		$this->currentSessionData[$var] = $value;
-		$this->flushRequired = true;
-		$this->scope->cookiesService->add('sessionID', $this->currentSessionID, $this->sessionDuration);
+	/**
+	 * Deletes the session with this ID.
+	 * @param string 	$id 	Session ID
+	 */
+	public function offsetUnset($id) {
+		$this->cacheService->clear($id, $this->category);
 	}
 
-	public function __construct($scope) {
-		$this->scope = $scope;
+	/**
+	 * Constructor.
+	 * @param CacheService 		$cacheService 		The cache service to use
+	 */
+	public function __construct(CacheService $cacheService) {
+		$this->cacheService = $cacheService;
 	}
 
-	public function __destruct() {
-		$this->storeSession();
-	}
-
-	public function getID() {
-		$this->loadSession();
-		return $this->currentSessionID;
-	}
-
-	public function getVariables() {
-		$this->loadSession();
-		return $this->currentSessionData;
-	}
-
-
-
-	private function loadSession() {
-		if ($this->currentSessionID)
-			return;
-
-		if (!$this->readFunction)
-			throw new \LogicException('Session storage mode not defined');
-
-		try {
-			$this->currentSessionID = $this->scope->cookiesService->sessionID;
-		} catch(\Exception $e) {
-			$this->currentSessionID = null;
-		}
-
-		$this->currentSessionData = [];
-
-		if ($this->currentSessionID) {
-			if ($val = call_user_func($this->readFunction, $this->currentSessionID))
-				$this->currentSessionData = unserialize($val);
-
-		} else {
-			if (!$this->currentSessionID)
-				$this->currentSessionID = self::generateSessionID();
-			// TODO: check collision with existing session
-		}
-	}
-
-	private function storeSession() {
-		if (!$this->currentSessionID)
-			return;
-		if (!$this->flushRequired)
-			return;
-		$this->flushRequired = false;
-
-		call_user_func($this->writeFunction, $this->currentSessionID, serialize($this->currentSessionData));
-	}
-
-	static private function generateSessionID() {
+	/**
+	 * Generates a new session ID.
+	 * This function does nothing except build an ID.
+	 * @return string
+	 */
+	static public function generateSessionID() {
 		if (function_exists('openssl_random_pseudo_bytes'))
 			return bin2hex(openssl_random_pseudo_bytes(32, true));
 		return sha1(mt_rand());
 	}
 
-	private $scope;
-	private $currentSessionID = null;
-	private $currentSessionData = [];
-	private $readFunction = null;
-	private $writeFunction = null;
-	private $flushRequired = false;
-	private $sessionDuration = '2 hours';
+
+	private $cacheService;							// CacheService
+	private $category = 'sessions';
+	private $ttl = null;
 };
 
 ?>
