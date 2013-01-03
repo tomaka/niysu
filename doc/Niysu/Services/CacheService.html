@@ -36,7 +36,7 @@
                 </td>
                 <td class="last">
                     <a href="#method_setCacheDirectory">setCacheDirectory</a>($directory)
-                    <p></p>
+                    <p>Sets the directory that this service will use to store entries.</p>
                 </td>
                 <td></td>
             </tr>
@@ -45,8 +45,8 @@
                     
                 </td>
                 <td class="last">
-                    <a href="#method_setCompressionLevel">setCompressionLevel</a>($level)
-                    <p></p>
+                    <a href="#method_enable">enable</a>()
+                    <p>Enables all caching, this is the default value</p>
                 </td>
                 <td></td>
             </tr>
@@ -55,8 +55,38 @@
                     
                 </td>
                 <td class="last">
-                    <a href="#method_activate">activate</a>()
-                    <p></p>
+                    <a href="#method_disable">disable</a>()
+                    <p>Disables all caching.</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    string
+                </td>
+                <td class="last">
+                    <a href="#method_store">store</a>(string $key, string $data, integer $ttl = null, string $category = &#039;&#039;)
+                    <p>Sets the content of the cache for this key.</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    string
+                </td>
+                <td class="last">
+                    <a href="#method_load">load</a>(string $key, string $category = &#039;&#039;)
+                    <p>Returns the content of the cache for this key.</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    string
+                </td>
+                <td class="last">
+                    <a href="#method_loadMatch">loadMatch</a>($regex, $category = &#039;&#039;)
+                    <p>Returns the content of the cache for this key that matches a regex.</p>
                 </td>
                 <td></td>
             </tr>
@@ -65,8 +95,8 @@
                     
                 </td>
                 <td class="last">
-                    <a href="#method_deactivate">deactivate</a>()
-                    <p></p>
+                    <a href="#method_clear">clear</a>(string $key, string $category = &#039;&#039;)
+                    <p>Clears the entry with a specific key.</p>
                 </td>
                 <td></td>
             </tr>
@@ -75,8 +105,8 @@
                     
                 </td>
                 <td class="last">
-                    <a href="#method_exists">exists</a>($key)
-                    <p></p>
+                    <a href="#method_clearMatch">clearMatch</a>($regex, $category = &#039;&#039;)
+                    <p>Clears all entries that match a regex.</p>
                 </td>
                 <td></td>
             </tr>
@@ -85,8 +115,8 @@
                     
                 </td>
                 <td class="last">
-                    <a href="#method_store">store</a>($key, $data, $ttl = null)
-                    <p></p>
+                    <a href="#method_clearAll">clearAll</a>(string $category = &#039;&#039;)
+                    <p>Clears all entries created by this service.</p>
                 </td>
                 <td></td>
             </tr>
@@ -95,38 +125,8 @@
                     
                 </td>
                 <td class="last">
-                    <a href="#method_load">load</a>($key)
-                    <p></p>
-                </td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td class="type">
-                    
-                </td>
-                <td class="last">
-                    <a href="#method_clear">clear</a>($key)
-                    <p></p>
-                </td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td class="type">
-                    
-                </td>
-                <td class="last">
-                    <a href="#method_clearAll">clearAll</a>()
-                    <p></p>
-                </td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td class="type">
-                    
-                </td>
-                <td class="last">
-                    <a href="#method___construct">__construct</a>($log)
-                    <p></p>
+                    <a href="#method___construct">__construct</a>(<abbr title="Niysu\Services\Monolog\Logger">Logger</abbr> $log = null)
+                    <p>Constructor.</p>
                 </td>
                 <td></td>
             </tr>
@@ -136,13 +136,13 @@
         <h2>Details</h2>
 
                         <h3 id="method_setCacheDirectory">
-        <div class="location">at line 11</div>
+        <div class="location">at line 15</div>
         <code>            public            
     <strong>setCacheDirectory</strong>($directory)</code>
     </h3>
     <div class="details">
-        <p></p>
-        <p></p>
+        <p>Sets the directory that this service will use to store entries.</p>
+        <p>It is strongly encouraged that the directory be empty.</p>
         <div class="tags">
                             <h4>Parameters</h4>
 
@@ -160,38 +160,13 @@
                     </div>
     </div>
 
-                <h3 id="method_setCompressionLevel">
-        <div class="location">at line 17</div>
+                <h3 id="method_enable">
+        <div class="location">at line 25</div>
         <code>            public            
-    <strong>setCompressionLevel</strong>($level)</code>
+    <strong>enable</strong>()</code>
     </h3>
     <div class="details">
-        <p></p>
-        <p></p>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table>
-                    <tr>
-                <td></td>
-                <td>$level</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-                <h3 id="method_activate">
-        <div class="location">at line 22</div>
-        <code>            public            
-    <strong>activate</strong>()</code>
-    </h3>
-    <div class="details">
-        <p></p>
+        <p>Enables all caching, this is the default value</p>
         <p></p>
         <div class="tags">
             
@@ -200,40 +175,15 @@
                     </div>
     </div>
 
-                <h3 id="method_deactivate">
-        <div class="location">at line 26</div>
+                <h3 id="method_disable">
+        <div class="location">at line 33</div>
         <code>            public            
-    <strong>deactivate</strong>()</code>
+    <strong>disable</strong>()</code>
     </h3>
     <div class="details">
-        <p></p>
-        <p></p>
+        <p>Disables all caching.</p>
+        <p>Clear and store will have no effect. Load will always return null.</p>
         <div class="tags">
-            
-            
-            
-                    </div>
-    </div>
-
-                <h3 id="method_exists">
-        <div class="location">at line 30</div>
-        <code>            public            
-    <strong>exists</strong>($key)</code>
-    </h3>
-    <div class="details">
-        <p></p>
-        <p></p>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table>
-                    <tr>
-                <td></td>
-                <td>$key</td>
-                <td></td>
-            </tr>
-            </table>
-
             
             
             
@@ -241,56 +191,158 @@
     </div>
 
                 <h3 id="method_store">
-        <div class="location">at line 65</div>
-        <code>            public            
-    <strong>store</strong>($key, $data, $ttl = null)</code>
+        <div class="location">at line 51</div>
+        <code>            public            string
+    <strong>store</strong>(string $key, string $data, integer $ttl = null, string $category = &#039;&#039;)</code>
     </h3>
     <div class="details">
-        <p></p>
-        <p></p>
+        <p>Sets the content of the cache for this key.</p>
+        <p>The type of data that is stored is user-defined. It&#039;s the same data that will be retreived using load().<br />
+<br />
+ If there is already an entry for this key, then it is replaced.<br />
+<br />
+ If $ttl is 0 or null, it will be set to a huge amount of seconds.</p>
         <div class="tags">
                             <h4>Parameters</h4>
 
                     <table>
                     <tr>
-                <td></td>
+                <td>string</td>
                 <td>$key</td>
-                <td></td>
+                <td>The key that will be used to load the resource again</td>
             </tr>
                     <tr>
-                <td></td>
+                <td>string</td>
                 <td>$data</td>
-                <td></td>
+                <td>Data to store in the cache</td>
             </tr>
                     <tr>
-                <td></td>
+                <td>integer</td>
                 <td>$ttl</td>
-                <td></td>
+                <td>Number of seconds to keep this cache entry alive</td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$category</td>
+                <td>The category where to store the element</td>
             </tr>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
                     </div>
     </div>
 
                 <h3 id="method_load">
-        <div class="location">at line 89</div>
-        <code>            public            
-    <strong>load</strong>($key)</code>
+        <div class="location">at line 81</div>
+        <code>            public            string
+    <strong>load</strong>(string $key, string $category = &#039;&#039;)</code>
     </h3>
     <div class="details">
-        <p></p>
-        <p></p>
+        <p>Returns the content of the cache for this key.</p>
+        <p>Returns null if the cache has no matching entry.</p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td>string</td>
+                <td>$key</td>
+                <td>The key to load</td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$category</td>
+                <td>The category where the element belongs</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_loadMatch">
+        <div class="location">at line 101</div>
+        <code>            public            string
+    <strong>loadMatch</strong>($regex, $category = &#039;&#039;)</code>
+    </h3>
+    <div class="details">
+        <p>Returns the content of the cache for this key that matches a regex.</p>
+        <p>Returns null if the cache has no matching entry.<br />
+ If there are multiple available entries, it is undefined which one is chosen.</p>
         <div class="tags">
                             <h4>Parameters</h4>
 
                     <table>
                     <tr>
                 <td></td>
-                <td>$key</td>
+                <td>$regex</td>
                 <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$category</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_clear">
+        <div class="location">at line 126</div>
+        <code>            public            
+    <strong>clear</strong>(string $key, string $category = &#039;&#039;)</code>
+    </h3>
+    <div class="details">
+        <p>Clears the entry with a specific key.</p>
+        <p></p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td>string</td>
+                <td>$key</td>
+                <td>Key of the entry</td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$category</td>
+                <td>The category where the element belongs</td>
             </tr>
             </table>
 
@@ -300,13 +352,13 @@
                     </div>
     </div>
 
-                <h3 id="method_clear">
-        <div class="location">at line 116</div>
+                <h3 id="method_clearMatch">
+        <div class="location">at line 144</div>
         <code>            public            
-    <strong>clear</strong>($key)</code>
+    <strong>clearMatch</strong>($regex, $category = &#039;&#039;)</code>
     </h3>
     <div class="details">
-        <p></p>
+        <p>Clears all entries that match a regex.</p>
         <p></p>
         <div class="tags">
                             <h4>Parameters</h4>
@@ -314,7 +366,12 @@
                     <table>
                     <tr>
                 <td></td>
-                <td>$key</td>
+                <td>$regex</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$category</td>
                 <td></td>
             </tr>
             </table>
@@ -326,14 +383,24 @@
     </div>
 
                 <h3 id="method_clearAll">
-        <div class="location">at line 132</div>
+        <div class="location">at line 168</div>
         <code>            public            
-    <strong>clearAll</strong>()</code>
+    <strong>clearAll</strong>(string $category = &#039;&#039;)</code>
     </h3>
     <div class="details">
-        <p></p>
+        <p>Clears all entries created by this service.</p>
         <p></p>
         <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td>string</td>
+                <td>$category</td>
+                <td>The category where the elements belongs</td>
+            </tr>
+            </table>
+
             
             
             
@@ -341,21 +408,21 @@
     </div>
 
                 <h3 id="method___construct">
-        <div class="location">at line 153</div>
+        <div class="location">at line 177</div>
         <code>            public            
-    <strong>__construct</strong>($log)</code>
+    <strong>__construct</strong>(<abbr title="Niysu\Services\Monolog\Logger">Logger</abbr> $log = null)</code>
     </h3>
     <div class="details">
-        <p></p>
-        <p></p>
+        <p>Constructor.</p>
+        <p>You can specify a logging object that will be used to debug manipulations.</p>
         <div class="tags">
                             <h4>Parameters</h4>
 
                     <table>
                     <tr>
-                <td></td>
+                <td><abbr title="Niysu\Services\Monolog\Logger">Logger</abbr></td>
                 <td>$log</td>
-                <td></td>
+                <td>Log object that will be used for debug entries, or null</td>
             </tr>
             </table>
 

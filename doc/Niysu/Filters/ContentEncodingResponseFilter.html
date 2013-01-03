@@ -22,7 +22,8 @@
     <h1><a href="../../Niysu/Filters.html">Niysu\Filters</a>\ContentEncodingResponseFilter</h1>
     </div>
         <div class="content">
-                <p>class    <strong>ContentEncodingResponseFilter</strong>        extends <a href="../../Niysu/HTTPResponseFilterInterface.html"><abbr title="Niysu\HTTPResponseFilterInterface">HTTPResponseFilterInterface</abbr></a></p>
+                <p>class    <strong>ContentEncodingResponseFilter</strong>        implements
+        <a href="../../Niysu/HTTPResponseInterface.html"><abbr title="Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr></a></p>
 
             <div class="description">
             <p>Handles content-encoding as request by the client.</p>
@@ -40,7 +41,17 @@
                 </td>
                 <td class="last">
                     <a href="#method___construct">__construct</a>(<abbr title="Niysu\Filters\Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr> $next, <abbr title="Niysu\Filters\Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr> $request)
-                    <p>Sets the output response.</p>
+                    <p></p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    
+                </td>
+                <td class="last">
+                    <a href="#method_appendData">appendData</a>(string $data)
+                    <p>Appends data to the end of the response.</p>
                 </td>
                 <td></td>
             </tr>
@@ -59,10 +70,10 @@
                     
                 </td>
                 <td class="last">
-                    <a href="#method_setStatusCode">setStatusCode</a>(integer $statusCode)
-                    <p>Sets the status code to return with the headers.</p>
+                    <a href="#method_setHeader">setHeader</a>(string $header, string $value)
+                    <p>Removes all headers of this name and adds a new one.</p>
                 </td>
-                <td><small>from&nbsp;<a href="../../Niysu/HTTPResponseFilterInterface.html#method_setStatusCode"><abbr title="Niysu\HTTPResponseFilterInterface">HTTPResponseFilterInterface</abbr></a></small></td>
+                <td></td>
             </tr>
                     <tr>
                 <td class="type">
@@ -79,38 +90,8 @@
                     
                 </td>
                 <td class="last">
-                    <a href="#method_setHeader">setHeader</a>(string $header, string $value)
-                    <p>Removes all headers of this name and adds a new one.</p>
-                </td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td class="type">
-                    
-                </td>
-                <td class="last">
                     <a href="#method_removeHeader">removeHeader</a>(string $header)
                     <p>Removes all headers with this name.</p>
-                </td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td class="type">
-                    boolean
-                </td>
-                <td class="last">
-                    <a href="#method_isHeadersListSent">isHeadersListSent</a>()
-                    <p>Returns true if the response has already sent its headers and is now sending data.</p>
-                </td>
-                <td><small>from&nbsp;<a href="../../Niysu/HTTPResponseFilterInterface.html#method_isHeadersListSent"><abbr title="Niysu\HTTPResponseFilterInterface">HTTPResponseFilterInterface</abbr></a></small></td>
-            </tr>
-                    <tr>
-                <td class="type">
-                    
-                </td>
-                <td class="last">
-                    <a href="#method_appendData">appendData</a>(string $data)
-                    <p>Appends data to the end of the response.</p>
                 </td>
                 <td></td>
             </tr>
@@ -120,12 +101,12 @@
         <h2>Details</h2>
 
                         <h3 id="method___construct">
-        <div class="location">at line 14</div>
+        <div class="location">at line 16</div>
         <code>            public            
     <strong>__construct</strong>(<abbr title="Niysu\Filters\Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr> $next, <abbr title="Niysu\Filters\Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr> $request)</code>
     </h3>
     <div class="details">
-        <p>Sets the output response.</p>
+        <p></p>
         <p></p>
         <div class="tags">
                             <h4>Parameters</h4>
@@ -149,8 +130,33 @@
                     </div>
     </div>
 
+                <h3 id="method_appendData">
+        <div class="location">at line 31</div>
+        <code>            public            
+    <strong>appendData</strong>(string $data)</code>
+    </h3>
+    <div class="details">
+        <p>Appends data to the end of the response.</p>
+        <p>Note that this doesn&#039;t trigger a headers sending.</p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td>string</td>
+                <td>$data</td>
+                <td>Data to append</td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
                 <h3 id="method_flush">
-        <div class="location">at line 33</div>
+        <div class="location">at line 35</div>
         <code>            public            
     <strong>flush</strong>()</code>
     </h3>
@@ -164,63 +170,8 @@
                     </div>
     </div>
 
-                <h3 id="method_setStatusCode">
-        <div class="location">in <a href="../../Niysu/HTTPResponseFilterInterface.html#method_setStatusCode"><abbr title="Niysu\HTTPResponseFilterInterface">HTTPResponseFilterInterface</abbr></a> at line 31</div>
-        <code>            public            
-    <strong>setStatusCode</strong>(integer $statusCode)</code>
-    </h3>
-    <div class="details">
-        <p>Sets the status code to return with the headers.</p>
-        <p></p>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table>
-                    <tr>
-                <td>integer</td>
-                <td>$statusCode</td>
-                <td>The status code</td>
-            </tr>
-            </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-                <h3 id="method_addHeader">
-        <div class="location">at line 45</div>
-        <code>            public            
-    <strong>addHeader</strong>(string $header, string $value)</code>
-    </h3>
-    <div class="details">
-        <p>Adds a header to the headers list.</p>
-        <p></p>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table>
-                    <tr>
-                <td>string</td>
-                <td>$header</td>
-                <td>Header to add</td>
-            </tr>
-                    <tr>
-                <td>string</td>
-                <td>$value</td>
-                <td>Value of the header</td>
-            </tr>
-            </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
                 <h3 id="method_setHeader">
-        <div class="location">at line 39</div>
+        <div class="location">at line 41</div>
         <code>            public            
     <strong>setHeader</strong>(string $header, string $value)</code>
     </h3>
@@ -249,8 +200,38 @@
                     </div>
     </div>
 
+                <h3 id="method_addHeader">
+        <div class="location">at line 47</div>
+        <code>            public            
+    <strong>addHeader</strong>(string $header, string $value)</code>
+    </h3>
+    <div class="details">
+        <p>Adds a header to the headers list.</p>
+        <p></p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td>string</td>
+                <td>$header</td>
+                <td>Header to add</td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$value</td>
+                <td>Value of the header</td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
                 <h3 id="method_removeHeader">
-        <div class="location">at line 51</div>
+        <div class="location">at line 53</div>
         <code>            public            
     <strong>removeHeader</strong>(string $header)</code>
     </h3>
@@ -265,55 +246,6 @@
                 <td>string</td>
                 <td>$header</td>
                 <td>Name of the headers to remove</td>
-            </tr>
-            </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-                <h3 id="method_isHeadersListSent">
-        <div class="location">in <a href="../../Niysu/HTTPResponseFilterInterface.html#method_isHeadersListSent"><abbr title="Niysu\HTTPResponseFilterInterface">HTTPResponseFilterInterface</abbr></a> at line 47</div>
-        <code>            public            boolean
-    <strong>isHeadersListSent</strong>()</code>
-    </h3>
-    <div class="details">
-        <p>Returns true if the response has already sent its headers and is now sending data.</p>
-        <p>If true, then you can&#039;t modify headers anymore.</p>
-        <div class="tags">
-            
-                            <h4>Return Value</h4>
-
-                    <table>
-        <tr>
-            <td>boolean</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-                    </div>
-    </div>
-
-                <h3 id="method_appendData">
-        <div class="location">at line 29</div>
-        <code>            public            
-    <strong>appendData</strong>(string $data)</code>
-    </h3>
-    <div class="details">
-        <p>Appends data to the end of the response.</p>
-        <p>Note that this doesn&#039;t trigger a headers sending.</p>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table>
-                    <tr>
-                <td>string</td>
-                <td>$data</td>
-                <td>Data to append</td>
             </tr>
             </table>
 

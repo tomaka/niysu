@@ -176,7 +176,7 @@
         <h2>Details</h2>
 
                         <h3 id="method_parseClass">
-        <div class="location">at line 33</div>
+        <div class="location">at line 34</div>
         <code>            public            <a href="../Niysu/RoutesCollection.html"><abbr title="Niysu\RoutesCollection">RoutesCollection</abbr></a>
     <strong>parseClass</strong>(string $className)</code>
     </h3>
@@ -187,6 +187,7 @@
 <br />
  Recognized tokens are:<br />
   - @before (both) Name of a function (method or global function) to be called before the handler<br />
+  - @disabled (route only) This route is not created<br />
   - @method (route only) Pattern of the method to match<br />
   - @name (route only) Name of the route<br />
   - @pattern (route only) Sets the regex pattern of the part of a URL<br />
@@ -223,7 +224,7 @@
     </div>
 
                 <h3 id="method_register">
-        <div class="location">at line 136</div>
+        <div class="location">at line 140</div>
         <code>            public            <a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a>
     <strong>register</strong>(string $url = null, string $method = &#039;.*&#039;, <abbr title="Niysu\callable">callable</abbr> $callback = null)</code>
     </h3>
@@ -276,7 +277,7 @@
     </div>
 
                 <h3 id="method_registerStaticDirectory">
-        <div class="location">at line 161</div>
+        <div class="location">at line 165</div>
         <code>            public            
     <strong>registerStaticDirectory</strong>($path)</code>
     </h3>
@@ -301,7 +302,7 @@
     </div>
 
                 <h3 id="method_redirect">
-        <div class="location">at line 199</div>
+        <div class="location">at line 203</div>
         <code>            public            
     <strong>redirect</strong>($url, $method, $target, $statusCode = 301)</code>
     </h3>
@@ -341,7 +342,7 @@
     </div>
 
                 <h3 id="method___construct">
-        <div class="location">at line 205</div>
+        <div class="location">at line 209</div>
         <code>            public            
     <strong>__construct</strong>($prefix = &#039;&#039;)</code>
     </h3>
@@ -366,7 +367,7 @@
     </div>
 
                 <h3 id="method_prefix">
-        <div class="location">at line 217</div>
+        <div class="location">at line 221</div>
         <code>            public            <a href="../Niysu/RoutesCollection.html"><abbr title="Niysu\RoutesCollection">RoutesCollection</abbr></a>
     <strong>prefix</strong>(string $prefix)</code>
     </h3>
@@ -400,7 +401,7 @@
     </div>
 
                 <h3 id="method_getLocalPrefix">
-        <div class="location">at line 227</div>
+        <div class="location">at line 231</div>
         <code>            public            string
     <strong>getLocalPrefix</strong>()</code>
     </h3>
@@ -424,7 +425,7 @@
     </div>
 
                 <h3 id="method_getFullPrefix">
-        <div class="location">at line 236</div>
+        <div class="location">at line 240</div>
         <code>            public            string
     <strong>getFullPrefix</strong>()</code>
     </h3>
@@ -448,7 +449,7 @@
     </div>
 
                 <h3 id="method_before">
-        <div class="location">at line 251</div>
+        <div class="location">at line 255</div>
         <code>            public            <a href="../Niysu/RoutesCollection.html"><abbr title="Niysu\RoutesCollection">RoutesCollection</abbr></a>
     <strong>before</strong>(<abbr title="Niysu\callable">callable</abbr> $f)</code>
     </h3>
@@ -482,7 +483,7 @@
     </div>
 
                 <h3 id="method_getRoutesList">
-        <div class="location">at line 261</div>
+        <div class="location">at line 265</div>
         <code>            public            array
     <strong>getRoutesList</strong>()</code>
     </h3>
@@ -506,7 +507,7 @@
     </div>
 
                 <h3 id="method_newChild">
-        <div class="location">at line 276</div>
+        <div class="location">at line 280</div>
         <code>            public            <a href="../Niysu/RoutesCollection.html"><abbr title="Niysu\RoutesCollection">RoutesCollection</abbr></a>
     <strong>newChild</strong>($prefix = &#039;&#039;)</code>
     </h3>
@@ -541,7 +542,7 @@
     </div>
 
                 <h3 id="method_handle">
-        <div class="location">at line 304</div>
+        <div class="location">at line 308</div>
         <code>            public            boolean
     <strong>handle</strong>(<a href="../Niysu/HTTPRequestInterface.html"><abbr title="Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr></a> $request, <a href="../Niysu/HTTPResponseInterface.html"><abbr title="Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr></a> $response, <a href="../Niysu/Scope.html"><abbr title="Niysu\Scope">Scope</abbr></a> $scope = null)</code>
     </h3>
@@ -586,7 +587,7 @@
     </div>
 
                 <h3 id="method_getRouteByName">
-        <div class="location">at line 330</div>
+        <div class="location">at line 334</div>
         <code>            public            <a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a>
     <strong>getRouteByName</strong>(string $name)</code>
     </h3>
@@ -620,7 +621,7 @@
     </div>
 
                 <h3 id="method_getBeforeFunctions">
-        <div class="location">at line 345</div>
+        <div class="location">at line 349</div>
         <code>            public            array
     <strong>getBeforeFunctions</strong>()</code>
     </h3>

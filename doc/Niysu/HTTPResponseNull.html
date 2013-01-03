@@ -22,7 +22,8 @@
     <h1><a href="../Niysu.html">Niysu</a>\HTTPResponseNull</h1>
     </div>
         <div class="content">
-                <p>class    <strong>HTTPResponseNull</strong>        extends <a href="../Niysu/HTTPResponseInterface.html"><abbr title="Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr></a></p>
+                <p>class    <strong>HTTPResponseNull</strong>        implements
+        <a href="../Niysu/HTTPResponseInterface.html"><abbr title="Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr></a></p>
 
             <div class="description">
             <p>Implementation of HTTPResponseInterface which doesn&#039;t do anything.</p>
@@ -34,6 +35,16 @@
             <h2>Methods</h2>
 
             <table>
+                    <tr>
+                <td class="type">
+                    
+                </td>
+                <td class="last">
+                    <a href="#method_flush">flush</a>()
+                    <p>Flushes the response at the end.</p>
+                </td>
+                <td></td>
+            </tr>
                     <tr>
                 <td class="type">
                     
@@ -94,92 +105,27 @@
                 </td>
                 <td></td>
             </tr>
-                    <tr>
-                <td class="type">
-                    
-                </td>
-                <td class="last">
-                    <a href="#method_flush">flush</a>()
-                    <p>Flushes the response at the end.</p>
-                </td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td class="type">
-                    
-                </td>
-                <td class="last">
-                    <a href="#method_redirect">redirect</a>($target, $statusCode = 302)
-                    <p>Deprecated.</p>
-                </td>
-                <td><small>from&nbsp;<a href="../Niysu/HTTPResponseInterface.html#method_redirect"><abbr title="Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr></a></small></td>
-            </tr>
-                    <tr>
-                <td class="type">
-                    
-                </td>
-                <td class="last">
-                    <a href="#method_setCache">setCache</a>($value)
-                    <p>Deprecated.</p>
-                </td>
-                <td><small>from&nbsp;<a href="../Niysu/HTTPResponseInterface.html#method_setCache"><abbr title="Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr></a></small></td>
-            </tr>
-                    <tr>
-                <td class="type">
-                    
-                </td>
-                <td class="last">
-                    <a href="#method_setHTMLData">setHTMLData</a>($data)
-                    <p>Deprecated.</p>
-                </td>
-                <td><small>from&nbsp;<a href="../Niysu/HTTPResponseInterface.html#method_setHTMLData"><abbr title="Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr></a></small></td>
-            </tr>
-                    <tr>
-                <td class="type">
-                    
-                </td>
-                <td class="last">
-                    <a href="#method_setCSVData">setCSVData</a>($data)
-                    <p>Deprecated.</p>
-                </td>
-                <td><small>from&nbsp;<a href="../Niysu/HTTPResponseInterface.html#method_setCSVData"><abbr title="Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr></a></small></td>
-            </tr>
-                    <tr>
-                <td class="type">
-                    
-                </td>
-                <td class="last">
-                    <a href="#method_setJSONData">setJSONData</a>($data)
-                    <p>Deprecated.</p>
-                </td>
-                <td><small>from&nbsp;<a href="../Niysu/HTTPResponseInterface.html#method_setJSONData"><abbr title="Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr></a></small></td>
-            </tr>
-                    <tr>
-                <td class="type">
-                    
-                </td>
-                <td class="last">
-                    <a href="#method_setXMLData">setXMLData</a>($data)
-                    <p>Deprecated.</p>
-                </td>
-                <td><small>from&nbsp;<a href="../Niysu/HTTPResponseInterface.html#method_setXMLData"><abbr title="Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr></a></small></td>
-            </tr>
-                    <tr>
-                <td class="type">
-                    
-                </td>
-                <td class="last">
-                    <a href="#method_setPlainTextData">setPlainTextData</a>($data)
-                    <p>Deprecated.</p>
-                </td>
-                <td><small>from&nbsp;<a href="../Niysu/HTTPResponseInterface.html#method_setPlainTextData"><abbr title="Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr></a></small></td>
-            </tr>
             </table>
 
 
         <h2>Details</h2>
 
-                        <h3 id="method_setStatusCode">
+                        <h3 id="method_flush">
+        <div class="location">at line 13</div>
+        <code>            public            
+    <strong>flush</strong>()</code>
+    </h3>
+    <div class="details">
+        <p>Flushes the response at the end.</p>
+        <p>Nothing else must be modified after this call.</p>
+        <div class="tags">
+            
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_setStatusCode">
         <div class="location">at line 16</div>
         <code>            public            
     <strong>setStatusCode</strong>(integer $statusCode)</code>
@@ -329,201 +275,6 @@
                 <td>string</td>
                 <td>$data</td>
                 <td>Data to append</td>
-            </tr>
-            </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-                <h3 id="method_flush">
-        <div class="location">at line 13</div>
-        <code>            public            
-    <strong>flush</strong>()</code>
-    </h3>
-    <div class="details">
-        <p>Flushes the response at the end.</p>
-        <p>Nothing else must be modified after this call.</p>
-        <div class="tags">
-            
-            
-            
-                    </div>
-    </div>
-
-                <h3 id="method_redirect">
-        <div class="location">in <a href="../Niysu/HTTPResponseInterface.html#method_redirect"><abbr title="Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr></a> at line 78</div>
-        <code>            public            
-    <strong>redirect</strong>($target, $statusCode = 302)</code>
-    </h3>
-    <div class="details">
-        <p>Deprecated.</p>
-        <p></p>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table>
-                    <tr>
-                <td></td>
-                <td>$target</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td></td>
-                <td>$statusCode</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-                <h3 id="method_setCache">
-        <div class="location">in <a href="../Niysu/HTTPResponseInterface.html#method_setCache"><abbr title="Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr></a> at line 87</div>
-        <code>            public            
-    <strong>setCache</strong>($value)</code>
-    </h3>
-    <div class="details">
-        <p>Deprecated.</p>
-        <p></p>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table>
-                    <tr>
-                <td></td>
-                <td>$value</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-                <h3 id="method_setHTMLData">
-        <div class="location">in <a href="../Niysu/HTTPResponseInterface.html#method_setHTMLData"><abbr title="Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr></a> at line 111</div>
-        <code>            public            
-    <strong>setHTMLData</strong>($data)</code>
-    </h3>
-    <div class="details">
-        <p>Deprecated.</p>
-        <p></p>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table>
-                    <tr>
-                <td></td>
-                <td>$data</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-                <h3 id="method_setCSVData">
-        <div class="location">in <a href="../Niysu/HTTPResponseInterface.html#method_setCSVData"><abbr title="Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr></a> at line 120</div>
-        <code>            public            
-    <strong>setCSVData</strong>($data)</code>
-    </h3>
-    <div class="details">
-        <p>Deprecated.</p>
-        <p></p>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table>
-                    <tr>
-                <td></td>
-                <td>$data</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-                <h3 id="method_setJSONData">
-        <div class="location">in <a href="../Niysu/HTTPResponseInterface.html#method_setJSONData"><abbr title="Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr></a> at line 135</div>
-        <code>            public            
-    <strong>setJSONData</strong>($data)</code>
-    </h3>
-    <div class="details">
-        <p>Deprecated.</p>
-        <p></p>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table>
-                    <tr>
-                <td></td>
-                <td>$data</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-                <h3 id="method_setXMLData">
-        <div class="location">in <a href="../Niysu/HTTPResponseInterface.html#method_setXMLData"><abbr title="Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr></a> at line 144</div>
-        <code>            public            
-    <strong>setXMLData</strong>($data)</code>
-    </h3>
-    <div class="details">
-        <p>Deprecated.</p>
-        <p></p>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table>
-                    <tr>
-                <td></td>
-                <td>$data</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-                <h3 id="method_setPlainTextData">
-        <div class="location">in <a href="../Niysu/HTTPResponseInterface.html#method_setPlainTextData"><abbr title="Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr></a> at line 161</div>
-        <code>            public            
-    <strong>setPlainTextData</strong>($data)</code>
-    </h3>
-    <div class="details">
-        <p>Deprecated.</p>
-        <p></p>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table>
-                    <tr>
-                <td></td>
-                <td>$data</td>
-                <td></td>
             </tr>
             </table>
 

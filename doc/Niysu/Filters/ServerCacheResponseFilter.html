@@ -22,7 +22,8 @@
     <h1><a href="../../Niysu/Filters.html">Niysu\Filters</a>\ServerCacheResponseFilter</h1>
     </div>
         <div class="content">
-                <p>class    <strong>ServerCacheResponseFilter</strong>        extends <a href="../../Niysu/HTTPResponseFilterInterface.html"><abbr title="Niysu\HTTPResponseFilterInterface">HTTPResponseFilterInterface</abbr></a></p>
+                <p>class    <strong>ServerCacheResponseFilter</strong>        implements
+        <a href="../../Niysu/HTTPResponseInterface.html"><abbr title="Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr></a></p>
 
             <div class="description">
             <p>Utility filter that uses the ResourcesCacheService.</p>
@@ -41,6 +42,26 @@
                 <td class="last">
                     <a href="#method___construct">__construct</a>(<abbr title="Niysu\Filters\Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr> $request, <abbr title="Niysu\Filters\Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr> $response, $resourcesCacheService, $stopRoute, <abbr title="Niysu\Filters\Monolog\Logger">Logger</abbr> $log = null)
                     <p>Constructor.</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    
+                </td>
+                <td class="last">
+                    <a href="#method_setCacheDuration">setCacheDuration</a>(integer $seconds)
+                    <p>Sets the duration of the cache entry to be written.</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    
+                </td>
+                <td class="last">
+                    <a href="#method_setWriteInCache">setWriteInCache</a>(boolean $write)
+                    <p>Sets whether an entry will be written in cache.</p>
                 </td>
                 <td></td>
             </tr>
@@ -96,41 +117,11 @@
             </tr>
                     <tr>
                 <td class="type">
-                    boolean
-                </td>
-                <td class="last">
-                    <a href="#method_isHeadersListSent">isHeadersListSent</a>()
-                    <p>Returns true if the response has already sent its headers and is now sending data.</p>
-                </td>
-                <td><small>from&nbsp;<a href="../../Niysu/HTTPResponseFilterInterface.html#method_isHeadersListSent"><abbr title="Niysu\HTTPResponseFilterInterface">HTTPResponseFilterInterface</abbr></a></small></td>
-            </tr>
-                    <tr>
-                <td class="type">
                     
                 </td>
                 <td class="last">
                     <a href="#method_appendData">appendData</a>(string $data)
                     <p>Appends data to the end of the response.</p>
-                </td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td class="type">
-                    
-                </td>
-                <td class="last">
-                    <a href="#method_setCacheDuration">setCacheDuration</a>(integer $seconds)
-                    <p>Sets the duration of the cache entry to be written.</p>
-                </td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td class="type">
-                    
-                </td>
-                <td class="last">
-                    <a href="#method_setWriteInCache">setWriteInCache</a>(boolean $write)
-                    <p>Sets whether an entry will be written in cache.</p>
                 </td>
                 <td></td>
             </tr>
@@ -140,7 +131,7 @@
         <h2>Details</h2>
 
                         <h3 id="method___construct">
-        <div class="location">at line 20</div>
+        <div class="location">at line 22</div>
         <code>            public            
     <strong>__construct</strong>(<abbr title="Niysu\Filters\Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr> $request, <abbr title="Niysu\Filters\Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr> $response, $resourcesCacheService, $stopRoute, <abbr title="Niysu\Filters\Monolog\Logger">Logger</abbr> $log = null)</code>
     </h3>
@@ -184,8 +175,58 @@
                     </div>
     </div>
 
+                <h3 id="method_setCacheDuration">
+        <div class="location">at line 56</div>
+        <code>            public            
+    <strong>setCacheDuration</strong>(integer $seconds)</code>
+    </h3>
+    <div class="details">
+        <p>Sets the duration of the cache entry to be written.</p>
+        <p>Note that this filter will not necessarly write an entry.</p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td>integer</td>
+                <td>$seconds</td>
+                <td>Time to live of the cache entry</td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_setWriteInCache">
+        <div class="location">at line 73</div>
+        <code>            public            
+    <strong>setWriteInCache</strong>(boolean $write)</code>
+    </h3>
+    <div class="details">
+        <p>Sets whether an entry will be written in cache.</p>
+        <p>By default, it is true if the request is GET and the response status code is in range 200-399. False otherwise.</p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td>boolean</td>
+                <td>$write</td>
+                <td>Whether this filter should add an entry to the cache</td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
                 <h3 id="method_flush">
-        <div class="location">at line 77</div>
+        <div class="location">at line 79</div>
         <code>            public            
     <strong>flush</strong>()</code>
     </h3>
@@ -200,7 +241,7 @@
     </div>
 
                 <h3 id="method_setStatusCode">
-        <div class="location">at line 102</div>
+        <div class="location">at line 104</div>
         <code>            public            
     <strong>setStatusCode</strong>($code)</code>
     </h3>
@@ -225,7 +266,7 @@
     </div>
 
                 <h3 id="method_addHeader">
-        <div class="location">at line 109</div>
+        <div class="location">at line 111</div>
         <code>            public            
     <strong>addHeader</strong>(string $header, string $value)</code>
     </h3>
@@ -255,7 +296,7 @@
     </div>
 
                 <h3 id="method_setHeader">
-        <div class="location">at line 117</div>
+        <div class="location">at line 119</div>
         <code>            public            
     <strong>setHeader</strong>(string $header, string $value)</code>
     </h3>
@@ -285,7 +326,7 @@
     </div>
 
                 <h3 id="method_removeHeader">
-        <div class="location">at line 125</div>
+        <div class="location">at line 127</div>
         <code>            public            
     <strong>removeHeader</strong>(string $header)</code>
     </h3>
@@ -309,32 +350,8 @@
                     </div>
     </div>
 
-                <h3 id="method_isHeadersListSent">
-        <div class="location">in <a href="../../Niysu/HTTPResponseFilterInterface.html#method_isHeadersListSent"><abbr title="Niysu\HTTPResponseFilterInterface">HTTPResponseFilterInterface</abbr></a> at line 47</div>
-        <code>            public            boolean
-    <strong>isHeadersListSent</strong>()</code>
-    </h3>
-    <div class="details">
-        <p>Returns true if the response has already sent its headers and is now sending data.</p>
-        <p>If true, then you can&#039;t modify headers anymore.</p>
-        <div class="tags">
-            
-                            <h4>Return Value</h4>
-
-                    <table>
-        <tr>
-            <td>boolean</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-                    </div>
-    </div>
-
                 <h3 id="method_appendData">
-        <div class="location">at line 133</div>
+        <div class="location">at line 135</div>
         <code>            public            
     <strong>appendData</strong>(string $data)</code>
     </h3>
@@ -349,56 +366,6 @@
                 <td>string</td>
                 <td>$data</td>
                 <td>Data to append</td>
-            </tr>
-            </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-                <h3 id="method_setCacheDuration">
-        <div class="location">at line 54</div>
-        <code>            public            
-    <strong>setCacheDuration</strong>(integer $seconds)</code>
-    </h3>
-    <div class="details">
-        <p>Sets the duration of the cache entry to be written.</p>
-        <p>Note that this filter will not necessarly write an entry.</p>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table>
-                    <tr>
-                <td>integer</td>
-                <td>$seconds</td>
-                <td>Time to live of the cache entry</td>
-            </tr>
-            </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-                <h3 id="method_setWriteInCache">
-        <div class="location">at line 71</div>
-        <code>            public            
-    <strong>setWriteInCache</strong>(boolean $write)</code>
-    </h3>
-    <div class="details">
-        <p>Sets whether an entry will be written in cache.</p>
-        <p>By default, it is true if the request is GET and the response status code is in range 200-399. False otherwise.</p>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table>
-                    <tr>
-                <td>boolean</td>
-                <td>$write</td>
-                <td>Whether this filter should add an entry to the cache</td>
             </tr>
             </table>
 

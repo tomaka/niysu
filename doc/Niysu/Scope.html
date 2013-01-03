@@ -173,17 +173,7 @@
                     <a href="../Niysu/Scope.html"><abbr title="Niysu\Scope">Scope</abbr></a>
                 </td>
                 <td class="last">
-                    <a href="#method_newChild">newChild</a>()
-                    <p>Creates a new scope child of this one.</p>
-                </td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td class="type">
-                    <a href="../Niysu/Scope.html"><abbr title="Niysu\Scope">Scope</abbr></a>
-                </td>
-                <td class="last">
-                    <a href="#method_newSmallChild">newSmallChild</a>()
+                    <a href="#method_newChild">newChild</a>(array $variables = array(), boolean $newRefsFromParent = false, boolean $noRefsFromParent = false, boolean $setModifiesParent = false)
                     <p>Creates a new scope child of this one.</p>
                 </td>
                 <td></td>
@@ -560,7 +550,7 @@
     </div>
 
                 <h3 id="method_set">
-        <div class="location">at line 167</div>
+        <div class="location">at line 171</div>
         <code>            public            
     <strong>set</strong>(string $var, mixed $value, string $type = null)</code>
     </h3>
@@ -605,7 +595,7 @@
     </div>
 
                 <h3 id="method_callback">
-        <div class="location">at line 190</div>
+        <div class="location">at line 197</div>
         <code>            public            
     <strong>callback</strong>(string $var, <abbr title="Niysu\callable">callable</abbr> $callback, string $type = null)</code>
     </h3>
@@ -649,7 +639,7 @@
     </div>
 
                 <h3 id="method_passByRef">
-        <div class="location">at line 210</div>
+        <div class="location">at line 217</div>
         <code>            public            
     <strong>passByRef</strong>(string $var, boolean $byRef = true)</code>
     </h3>
@@ -689,7 +679,7 @@
     </div>
 
                 <h3 id="method_call">
-        <div class="location">at line 241</div>
+        <div class="location">at line 248</div>
         <code>            public            mixed
     <strong>call</strong>(mixed $function)</code>
     </h3>
@@ -738,45 +728,53 @@
     </div>
 
                 <h3 id="method_newChild">
-        <div class="location">at line 257</div>
+        <div class="location">at line 278</div>
         <code>            public            <a href="../Niysu/Scope.html"><abbr title="Niysu\Scope">Scope</abbr></a>
-    <strong>newChild</strong>()</code>
+    <strong>newChild</strong>(array $variables = array(), boolean $newRefsFromParent = false, boolean $noRefsFromParent = false, boolean $setModifiesParent = false)</code>
     </h3>
     <div class="details">
         <p>Creates a new scope child of this one.</p>
-        <p>- get will try to return the value from the child scope, or the value of its parent if no such variable exists<br />
- - getByRef will try to return a reference to the value from the child scope, or a reference to the value from its parent ; if the parent doesn&#039;t have this variable then the variable is created in the child scope<br />
- - set will modify the child scope only, never the parent<br />
+        <p>The &quot;get&quot; function of the child will try to return the value from the child scope, or the value of its parent if no such variable exists.<br />
 <br />
- You can only modify the parent through &quot;getByRef&quot; and &quot;getByRefByType&quot;.</p>
+ The &quot;set&quot; function of the child will always modify the child scope, never the parent. Except if $setModifiesParent is set to true, in which case it will always modify the parent, never the child scope.<br />
+<br />
+ The &quot;getByRef&quot; function of the child will try to return a reference to the value from the child scope.<br />
+ If the child scope has no variable of this type and $noRefsFromParent is false, then it will try searching for a value in the parent.<br />
+ If neither the child nor the parent has a matching variable, then a reference to a new variable from the child scope is returned, except if $newRefsFromParent is true, in which case a reference to a new variable from the parent is returned.<br />
+<br />
+ $newRefsFromParent and $noRefsFromParent shouldn&#039;t be both true.<br />
+<br />
+ For example if you just want to overwrite some values for a single call but want to restore the values after the call:<br />
+  $scope-&gt;newChild([ &#039;var&#039; =&gt; &#039;overwrite val&#039; ], true, false, true);<br />
+<br />
+ If you want to create a child that can&#039;t modify its parent:<br />
+  $scope-&gt;newChild([], false, true, false);</p>
         <div class="tags">
-            
-                            <h4>Return Value</h4>
+                            <h4>Parameters</h4>
 
                     <table>
-        <tr>
-            <td><a href="../Niysu/Scope.html"><abbr title="Niysu\Scope">Scope</abbr></a></td>
-            <td></td>
-        </tr>
-    </table>
+                    <tr>
+                <td>array</td>
+                <td>$variables</td>
+                <td>Variables that are added in the new child</td>
+            </tr>
+                    <tr>
+                <td>boolean</td>
+                <td>$newRefsFromParent</td>
+                <td>See above</td>
+            </tr>
+                    <tr>
+                <td>boolean</td>
+                <td>$noRefsFromParent</td>
+                <td>See above</td>
+            </tr>
+                    <tr>
+                <td>boolean</td>
+                <td>$setModifiesParent</td>
+                <td>See above</td>
+            </tr>
+            </table>
 
-            
-            
-                    </div>
-    </div>
-
-                <h3 id="method_newSmallChild">
-        <div class="location">at line 273</div>
-        <code>            public            <a href="../Niysu/Scope.html"><abbr title="Niysu\Scope">Scope</abbr></a>
-    <strong>newSmallChild</strong>()</code>
-    </h3>
-    <div class="details">
-        <p>Creates a new scope child of this one.</p>
-        <p>This function is the same as &quot;newChild&quot;, except that &quot;getByRef&quot; will create a new variable in the parent if no such variable exists.<br />
- The &quot;set&quot; function still writes the child scope, or it would be kind of useless.<br />
-<br />
- This is useful when you want to use &quot;call&quot; with just an additional value. Just create a small child, set the additional value in it, and you won&#039;t lose newly created variables from the call.</p>
-        <div class="tags">
             
                             <h4>Return Value</h4>
 
@@ -793,7 +791,7 @@
     </div>
 
                 <h3 id="method_serialize">
-        <div class="location">at line 280</div>
+        <div class="location">at line 287</div>
         <code>            public            
     <strong>serialize</strong>()</code>
     </h3>
@@ -808,7 +806,7 @@
     </div>
 
                 <h3 id="method_unserialize">
-        <div class="location">at line 290</div>
+        <div class="location">at line 297</div>
         <code>            public            
     <strong>unserialize</strong>($serialized)</code>
     </h3>
@@ -833,7 +831,7 @@
     </div>
 
                 <h3 id="method___construct">
-        <div class="location">at line 304</div>
+        <div class="location">at line 311</div>
         <code>            public            
     <strong>__construct</strong>($variables = array())</code>
     </h3>
@@ -858,7 +856,7 @@
     </div>
 
                 <h3 id="method___clone">
-        <div class="location">at line 313</div>
+        <div class="location">at line 320</div>
         <code>            public            
     <strong>__clone</strong>()</code>
     </h3>
