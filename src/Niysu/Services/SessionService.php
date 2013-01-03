@@ -31,7 +31,8 @@ class SessionService implements \ArrayAccess {
 	 * @return boolean
 	 */
 	public function offsetExists($id) {
-		return null !== $this->cacheService->load($id, $this->category);
+		$data = $this->cacheService->load($id, $this->category);
+		return $data !== null;
 	}
 
 	/**
@@ -39,11 +40,12 @@ class SessionService implements \ArrayAccess {
 	 * Returns an associative array with variables => values
 	 * @param string 	$id 	Session ID
 	 * @return array
+	 * @throws RuntimeException If no session exists with this ID
 	 */
 	public function offsetGet($id) {
 		$data = $this->cacheService->load($id, $this->category);
 		if ($data === null)
-			return null;
+			throw new \RuntimeException('Trying to access a non-existing session: '.$id);
 		return unserialize($data);
 	}
 

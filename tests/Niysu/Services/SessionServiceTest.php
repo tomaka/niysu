@@ -20,6 +20,18 @@ class SessionServiceTest extends \PHPUnit_Framework_TestCase {
 		$this->assertFalse(isset($sessionService['testID']));
 	}
 
+	/**
+	 * @expectedException Exception
+	 */
+	public function testLoadNonExisting() {
+		vfsStream::setup('exampleDir');
+		$cacheService = new CacheService(null);
+		$cacheService->setCacheDirectory(vfsStream::url('exampleDir'));
+
+		$sessionService1 = new SessionService($cacheService);
+		$a = $sessionService1['testID'];
+	}
+
 	public function testStoreThenLoad() {
 		vfsStream::setup('exampleDir');
 		$cacheService = new CacheService(null);
