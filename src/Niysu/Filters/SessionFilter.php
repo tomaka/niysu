@@ -36,10 +36,10 @@ class SessionFilter extends \Niysu\HTTPRequestFilterInterface implements \Niysu\
 	 * Returns the value of a variable in the current session.
 	 * @param string 	$varName 	Name of the variable to retreive
 	 * @return mixed
-	 * @throws RuntimException If the variable doesn't exist
+	 * @throws RuntimeException If the variable doesn't exist or if no session is loaded
 	 */
 	public function __get($varName) {
-		if (!$this->getSessionID())
+		if (!$this->hasSessionLoaded())
 			return null;
 		$val = $this->sessionService[$this->getSessionID()];
 		if (!isset($val[$varName]))
@@ -83,12 +83,20 @@ class SessionFilter extends \Niysu\HTTPRequestFilterInterface implements \Niysu\
 	/**
 	 * Returns the ID of the current session.
 	 * @return string
-	 * @throws RuntimException If no session is currently in progress
+	 * @throws RuntimeException If no session is currently in progress
 	 */
 	public function getSessionID() {
 		if (!$this->hasSessionLoaded())
 			throw new \RuntimeException('No session loaded');
 		return $this->cookiesFilter->{$this->cookieName};
+	}
+
+	/**
+	 * Changes the name of the cookie to look for.
+	 * @param string 	$name 		Name of the cookie
+	 */
+	public function setCookieName($name) {
+		$this->cookieName = $name;
 	}
 
 
