@@ -30,6 +30,7 @@ class URLPattern {
 
 			$currentOffset = $matchBeginOffset + strlen($match[0][0]);
 		}
+		$this->patternRegexOriginal[count($this->patternRegex)] = substr($pattern, $currentOffset);
 		$this->patternRegex[] = str_replace('/', '\/', preg_quote(substr($pattern, $currentOffset)));
 
 		$this->patternRegex[0] = '/^'.$this->patternRegex[0];
@@ -124,7 +125,7 @@ class URLPattern {
 
 		foreach ($this->patternRegexOriginal as $offset => $val)
 			$patternRegex[$offset] = $val;
-		
+
 		return implode($patternRegex);
 	}
 
