@@ -61,6 +61,30 @@ class AdminSite {
 
 
 	/**
+	 * @url /git
+	 * @method GET
+	 */
+	public function gitPanel($twigResponseFilter) {
+		$twigResponseFilter->setTemplate('@niysuAdminSite/git.htm');
+		
+		$dir = dirname(dirname(dirname(dirname(dirname(dirname(__DIR__))))));
+		
+		$gitBranches = null;
+		$gitLog = null;
+		
+		if (is_dir($dir.DIRECTORY_SEPARATOR.'.git')) {
+			$prevDir = getcwd();
+			chdir($dir);
+			exec('git branch', $gitBranches);
+			exec('git log', $gitLog);
+			chdir($prevDir);
+		}
+		
+		$twigResponseFilter->setVariables([ 'branches' => $gitBranches, 'log' => $gitLog ]);
+	}
+
+
+	/**
 	 * @url /xhprof
 	 * @method GET
 	 */
