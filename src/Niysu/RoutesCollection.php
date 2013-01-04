@@ -168,7 +168,7 @@ class RoutesCollection {
 		$this
 			->register('/{file}', 'get')
 			->pattern('file', '([^\\.]{2,}.*|.)')
-			->name('Static files in '.$path)
+			->name($path)
 			->before(function(&$file, &$isRightResource) use ($path) {
 				$file = $path.DIRECTORY_SEPARATOR.str_replace('/', DIRECTORY_SEPARATOR, $file);
 				if (!file_exists($file) || is_dir($file)) {
