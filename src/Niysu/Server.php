@@ -236,7 +236,7 @@ class Server {
 				$this->printError($exception);
 
 			} else {
-				$output->setPlainTextData('A server-side error occured. Please try again later.');
+				$output->appendData('A server-side error occured. Please try again later.');
 				$output->flush();
 			}
 		}
