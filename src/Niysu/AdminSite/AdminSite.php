@@ -21,7 +21,7 @@ class AdminSite {
 	 * @url /
 	 * @method GET
 	 */
-	public function mainPanel($twigService, $server, $scope) {
+	public function mainPanel($twigResponseFilter, $server, $scope) {
 		$routes = [];
 		foreach ($server->getRoutesList() as $r) {
 			$pattern = [];
@@ -34,7 +34,8 @@ class AdminSite {
 		try { $maintenanceMode = $scope->maintenanceModeService->isMaintenanceMode();
 		} catch(\Exception $e) {}
 
-		$twigService->output('@niysuAdminSite/home.htm', [
+		$twigResponseFilter->setTemplate('@niysuAdminSite/home.htm');
+		$twigResponseFilter->setVariables([
 			'routes' => $routes,
 			'maintenanceMode' => $maintenanceMode
 		]);
@@ -45,8 +46,9 @@ class AdminSite {
 	 * @url /ajax-test
 	 * @method GET
 	 */
-	public function ajaxTestPanel($twigService) {
-		$twigService->output('@niysuAdminSite/ajaxTest.htm', [
+	public function ajaxTestPanel($twigResponseFilter) {
+		$twigResponseFilter->setTemplate('@niysuAdminSite/ajaxTest.htm');
+		$twigResponseFilter->setVariables([
 			'routes' => $routes
 		]);
 	}
@@ -56,8 +58,8 @@ class AdminSite {
 	 * @url /database
 	 * @method GET
 	 */
-	public function databasePanel($twigService) {
-		$twigService->output('@niysuAdminSite/databaseAccess.htm');
+	public function databasePanel($twigResponseFilter) {
+		$twigResponseFilter->setTemplate('@niysuAdminSite/databaseAccess.htm');
 	}
 
 
@@ -66,8 +68,9 @@ class AdminSite {
 	 * @url /xhprof
 	 * @method GET
 	 */
-	public function xhProfPanel($twigService) {
-		$twigService->output('@niysuAdminSite/xhprof.htm', [ 'extensionOk' => extension_loaded('xhprof') ]);
+	public function xhProfPanel($twigResponseFilter) {
+		$twigResponseFilter->setTemplate('@niysuAdminSite/xhprof.htm');
+		$twigResponseFilter->setVariables([ 'extensionOk' => extension_loaded('xhprof') ]);
 	}
 
 	/**
@@ -76,7 +79,7 @@ class AdminSite {
 	 * @method POST
 	 * @todo Profiling should include routes registration
 	 */
-	public function xhProfPost($twigService, $server, $postRequestFilter) {
+	public function xhProfPost($twigResponseFilter, $server, $postRequestFilter) {
 		$request = new \Niysu\HTTPRequestCustom($postRequestFilter->url);
 		$response = new \Niysu\HTTPResponseNull();
 
@@ -84,7 +87,8 @@ class AdminSite {
 		$server->handle($request, $response);
 		$data = xhprof_disable();
 
-		$twigService->output('@niysuAdminSite/xhprof-results.htm', [ 'data' => $data ]);
+		$twigResponseFilter->setTemplate('@niysuAdminSite/xhprof-results.htm');
+		$twigResponseFilter->setVariables([ 'data' => $data ]);
 	}
 }
 
