@@ -17,9 +17,12 @@ class Route {
 	/**
 	 * Creates a new route.
 	 *
-	 * @param mixed 	$url 	The URL to match with the route
+	 * @param mixed 	$url 				The URL to match with the route
+	 * @param string 	$method 			Regex that the method must match
+	 * @param callable 	$callback 			The handler
+	 * @param callable 	$prefixCallback		Function that returns the prefix of the route
 	 */
-	public function __construct($url = null, $method = '.*', $callback = null) {
+	public function __construct($url = null, $method = '.*', $callback = null, $prefixCallback = null) {
 		if (!empty($url)) {
 			if (is_string($url))			$this->urlPatterns[] = new URLPattern($url);
 			else if (is_array($url))		foreach ($url as $u) $this->urlPatterns[] = new URLPattern($u);
@@ -28,6 +31,8 @@ class Route {
 		$this->method = $method;
 		if ($callback)
 			$this->handler($callback);
+
+		$this->prefixCallback = $prefixCallback;
 	}
 
 	/**
@@ -72,17 +77,22 @@ class Route {
 	 *  - the "request" and "reponse" variables
 	 *
 	 * @param Scope 	$scope 		Scope that will contain the variables accessible to the route
-	 * @param string 	$prefix 	(optional) A prefix to append to the Route's URL
 	 * @return boolean
 	 */
-	public function handle(HTTPRequestInterface &$request, HTTPResponseInterface &$response, Scope $scope = null, $prefix = '') {
+	public function handle(HTTPRequestInterface &$request, HTTPResponseInterface &$response, Scope $scope = null) {
+		$prefix = '';
+		if ($this->prefixCallback)
+			$prefix = call_user_func($this->prefixCallback);;
 		return $this->doHandle($request, $response, $scope, $prefix, false);
 	}
 
 	/**
 	 * Same as handle() but continues even if wrong URL or method.
 	 */
-	public function handleNoURLCheck(HTTPRequestInterface &$request, HTTPResponseInterface &$response, Scope $scope = null, $prefix = '') {
+	public function handleNoURLCheck(HTTPRequestInterface &$request, HTTPResponseInterface &$response, Scope $scope = null) {
+		$prefix = '';
+		if ($this->prefixCallback)
+			$prefix = call_user_func($this->prefixCallback);;
 		return $this->doHandle($request, $response, $scope, $prefix, true);
 	}
 
@@ -225,20 +235,30 @@ class Route {
 	 * Includes / and / around the regex.
 	 *
 	 * @param integer 	$index 		0-based index of the URL to get
+	 * @param boolean 	$includePrefix 		True if the prefix should be prepended
 	 * @return string
 	 */
-	public function getURLRegex($index = 0) {
+	public function getURLRegex($index = 0, $includePrefix = true) {
+		$prefix = '';
+		if ($this->prefixCallback)
+			$prefix = call_user_func($this->prefixCallback);;
+
 		return $this->urlPatterns[$index]->getURLRegex();
 	}
 
 	/**
 	 * Returns the original pattern of an URL.
 	 * 
-	 * @param integer 	$index 		0-based index of the URL to get
+	 * @param integer 	$index 				0-based index of the URL to get
+	 * @param boolean 	$includePrefix 		True if the prefix should be prepended
 	 * @return string
 	 */
-	public function getOriginalPattern($index = 0) {
-		return $this->urlPatterns[$index]->getOriginalPattern();
+	public function getOriginalPattern($index = 0, $includePrefix = true) {
+		$prefix = '';
+		if ($includePrefix && $this->prefixCallback)
+			$prefix = call_user_func($this->prefixCallback);;
+
+		return $prefix.$this->urlPatterns[$index]->getOriginalPattern();
 	}
 
 	/**
@@ -251,7 +271,11 @@ class Route {
 	 * @throws RuntimeException If a parameter does not match the corresponding regex
 	 */
 	public function getURL($parameters = [], $index = 0) {
-		return $this->urlPatterns[$index]->getURL($parameters);
+		$prefix = '';
+		if ($this->prefixCallback)
+			$prefix = call_user_func($this->prefixCallback);;
+
+		return $prefix.$this->urlPatterns[$index]->getURL($parameters);
 	}
 
 
@@ -417,6 +441,7 @@ class Route {
 	private $callback = null;					// the main function that handles the resource
 	private $method = null;
 	private $name = null;
+	private $prefixCallback = null;				// callback function that returns the prefix
 };
 
 ?>

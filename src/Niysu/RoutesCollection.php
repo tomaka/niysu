@@ -138,7 +138,7 @@ class RoutesCollection {
 	 * @see Route::__construct
 	 */
 	public function register($url = null, $method = '.*', $callback = null) {
-		$registration = new Route($url, $method, $callback);
+		$registration = new Route($url, $method, $callback, function() { return $this->getFullPrefix(); });
 		$registration->before(function($scope) {
 			foreach ($this->globalBefores as $b) {
 				$scope->call($b);
@@ -306,12 +306,11 @@ class RoutesCollection {
 	 * @return boolean
 	 */
 	public function handle(HTTPRequestInterface &$request, HTTPResponseInterface &$response, Scope $scope = null) {
-		$fullPrefix = $this->getFullPrefix();
-		if ($fullPrefix && strpos($request->getURL(), $fullPrefix) !== 0)
+		if ($fullPrefix && strpos($request->getURL()) !== 0)
 			return false;
 
 		foreach ($this->routes as $route) {
-			if ($route->handle($request, $response, $scope, $fullPrefix))
+			if ($route->handle($request, $response, $scope))
 				return true;
 		}
 
