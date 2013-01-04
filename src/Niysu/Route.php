@@ -269,13 +269,20 @@ class Route {
 	 * @param integer 	$index 		0-based index of the URL to get
 	 * @throws RuntimeException If some parameters are missing in the array
 	 * @throws RuntimeException If a parameter does not match the corresponding regex
+	 * @throws RuntimeException If the route has no associated URL pattern
 	 */
 	public function getURL($parameters = [], $index = 0) {
 		$prefix = '';
 		if ($this->prefixCallback)
-			$prefix = call_user_func($this->prefixCallback);;
+			$prefix = call_user_func($this->prefixCallback);
 
-		return $prefix.$this->urlPatterns[$index]->getURL($parameters);
+		if (!isset($this->urlPatterns[$index]))
+			throw new \RuntimeException('Route has no associated pattern');
+
+		$val = $prefix.$this->urlPatterns[$index]->getURL($parameters);
+		if (strlen($val) >= 2)
+			$val = rtrim($val, '/');
+		return $val;
 	}
 
 

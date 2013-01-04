@@ -64,7 +64,7 @@ class RoutesCollection {
 		// handling @static
 		if (isset($classDocComment['static'])) {
 			foreach ($classDocComment['static'] as $path)
-				$newCollection->registerStaticDirectory(dirname($reflectionClass->getFileName()).DIRECTORY_SEPARATOR.$path);
+				$newCollection->registerStaticDirectory(dirname($reflectionClass->getFileName()).DIRECTORY_SEPARATOR.$path)->name($reflectionClass->getName());
 		}
 
 		// looping through each method of the class
@@ -161,11 +161,12 @@ class RoutesCollection {
 	 *
 	 * @param string 	$path 		The absolute path on the server which contains the files
 	 * @param string 	$prefix 	A prefix to add to the name of the static files
+	 * @return Route
 	 */
 	public function registerStaticDirectory($path) {
 		$path = rtrim($path, '/\\');
 
-		$this
+		return $this
 			->register('/{file}', 'get')
 			->pattern('file', '([^\\.]{2,}.*|.)')
 			->name($path)

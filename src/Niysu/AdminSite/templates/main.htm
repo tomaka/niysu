@@ -8,8 +8,8 @@
 <head>
 	<title>Niysu admin site</title>
 
-	<link rel="stylesheet" href="/niysu-admin/main.css" />
-	<script type="text/javascript" src="/niysu-admin/jquery-1.8.3.min.js"></script>
+	<link rel="stylesheet" href="{{ path('Niysu\\AdminSite\\AdminSite', { 'file': 'main.css' }) }}" />
+	<script type="text/javascript" src="{{ path('Niysu\\AdminSite\\AdminSite', { 'file': 'jquery-1.8.3.min.js' }) }}"></script>
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.3/angular.min.js"></script>
 
 	{% block head %}{% endblock %}
@@ -23,10 +23,10 @@
 	</header>
 	<nav>
 		<ul>
-			<li><a href="/niysu-admin">Home</a></li>
-			<li><a href="/niysu-admin/ajax-test">Ajax tester</a></li>
-			<li><a href="/niysu-admin/database">Database</a></li>
-			<li><a href="/niysu-admin/xhprof">XHProf</a></li>
+			<li><a href="{{ path('Niysu\\AdminSite\\AdminSite::mainPanel') }}">Home</a></li>
+			<li><a href="{{ path('Niysu\\AdminSite\\AdminSite::ajaxTestPanel') }}">Ajax tester</a></li>
+			<li><a href="{{ path('Niysu\\AdminSite\\AdminSite::databasePanel') }}">Database</a></li>
+			<li><a href="{{ path('Niysu\\AdminSite\\AdminSite::xhProfPanel') }}">XHProf</a></li>
 		</ul>
 	</nav>
 	<section>

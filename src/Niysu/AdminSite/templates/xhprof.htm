@@ -14,7 +14,7 @@
 
 	{% else %}
 		<h3>Profiling</h3>
-		<form action="xhprof-handle" method="post">
+		<form action="{{ path('Niysu\\AdminSite\\AdminSite::xhProfPost') }}" method="post">
 			<p>URL to test:<br /><input style="min-width:25em;" type="text" name="url" placeholder="Local URL to test" /></p>
 			<p><button type="submit">Start profiling</button></p>
 		</form>
