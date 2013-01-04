@@ -64,18 +64,18 @@ class HTTPResponseStorage implements HTTPResponseInterface {
 	
 	public function addHeader($header, $value) {
 		if (!isset($this->headers[$header])) {
-			$this->headers[$header] = $value;
+			$this->headers[$header] = trim($value);
 
 		} else if (is_array($this->headers[$header])) {
-			$this->headers[$header][] = $value;
+			$this->headers[$header][] = trim($value);
 
 		} else {
-			$this->headers[$header] = [ $this->headers[$header], $value ];
+			$this->headers[$header] = [ $this->headers[$header], trim($value) ];
 		}
 	}
 
 	public function setHeader($header, $value) {
-		$this->headers[$header] = $value;
+		$this->headers[$header] = trim($value);
 	}
 
 	public function removeHeader($header) {

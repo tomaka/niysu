@@ -49,69 +49,52 @@ class HTTPResponseStream {
 	}
 
 	/**
-	 * @todo Function is very messy ; I should clean it up
-	 * @todo Bug when empty headers are given (ie. writeHeaders is true and data starts with "\r\nbody")
 	 */
 	public function stream_write($data) {
 		// computing $length, that's the value that we will return
-		$length = strlen($data);
+		$initialLength = strlen($data);
 
 		// adding $this->prependOnNextWrite
 		$data = $this->prependOnNextWrite.$data;
 		$this->prependOnNextWrite = '';
 
-		// parsing headers
-		if ($this->writeHeaders) {
-			list($headersRaw, $data) = explode("\r\n\r\n", $data, 2);
+		// if we are not writing headers anymore, just appending
+		if (!$this->writeHeaders) {
+			if ($data)
+				$this->response->appendData($data);
+			return $initialLength;
+		}
 
-			// if we have found the delimiter '\r\n\r\n', then it's the last time that we write headers
-			if ($data !== null) {
-				$headersRaw .= "\r\n";
-				$this->writeHeaders = false;
+		// getting first header of the data
+		$currentHeader = explode("\r\n", $data, 2);
+		if (!isset($currentHeader[1])) {
+			$this->prependOnNextWrite = $data;
+			return $initialLength;
+		}
 
-			} else {
-				// we rtrim $headersRaw
-				// the string that has been trimmed is added to $prependOnNextWrite
-				// so for example if you write "Content-Type: text/html\r\n", prependOnNextWrite will have the value "\r\n"
-				//    and if you write "\r\ndata start", then it will in fact write "\r\n\r\ndata start" and detect the delimiter
-				$newHeadersRaw = rtrim($headersRaw);
-				if ($headersRaw != $newHeadersRaw) {
-					$trimmedPart = substr($headersRaw, strlen($newHeadersRaw) - strlen($headersRaw));
-					$this->prependOnNextWrite = $trimmedPart;
-				}
-				$headersRaw = $newHeadersRaw;
-			}
+		// if the header to process is empty, this means that we are in fact at the start of the data
+		if (empty($currentHeader[0])) {
+			$this->writeHeaders = false;
+			$this->response->appendData($currentHeader[1]);
+			return $initialLength;
+		}
 
-			// looping through each header
-			$headersList = explode("\r\n", $headersRaw);
-			foreach ($headersList as $key => $header) {
-				// we ignore the last header because it didn't end with \r\n and add its value to prependOnNextWrite
-				if ($key == count($headersList) - 1) {
-					$this->prependOnNextWrite = $header.$this->prependOnNextWrite;
-					continue;
-				}
+		// if we have "HTTP/1.1 200 OK", then we setStatusCode instead of addHeader
+		if (preg_match('/^HTTP.* (\d{3}) .*$/', $currentHeader[0], $matches)) {
+			$this->response->setStatusCode(intval($matches[1]));
 
-				// if we have "HTTP/1.1 200 OK", then we setStatusCode instead of addHeader
-				if (preg_match('/^HTTP.* (\d{3}) .*$/', $header, $matches)) {
-					$this->response->setStatusCode(intval($matches[1]));
-
-				} else {
-					// writing header
-					list($name, $value) = explode(':', $header, 2);
-					if ($value) {
-						if ($name == 'Status')		$this->response->setStatusCode(intval($value));
-						else						$this->response->addHeader($name, $value);
-					}
-				}
+		} else {
+			// writing header
+			$split = explode(':', $currentHeader[0], 2);
+			if (isset($split[1])) {
+				if ($split[0] == 'Status')		$this->response->setStatusCode(intval($split[1]));
+				else							$this->response->addHeader($split[0], $split[1]);
 			}
 		}
 
-		// appending data
-		// if $this->writeHeaders was true, then data may be null
-		if ($data)
-			$this->response->appendData($data);
-
-		return $length;
+		// writing the rest of the data
+		$this->stream_write($currentHeader[1]);
+		return $initialLength;
 	}
 
 	public function stream_close() {
