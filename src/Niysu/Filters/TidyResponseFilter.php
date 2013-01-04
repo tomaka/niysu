@@ -76,9 +76,9 @@ class TidyResponseFilter implements \Niysu\HTTPResponseInterface {
 
 
 	private function isContentTypeRelevant($value) {
-		if (strpos('text/html', $value) === 0)
+		if (strpos($value, 'text/html') === 0)
 			return true;
-		if (strpos('application/xhtml', $value) === 0)
+		if (strpos($value, 'application/xhtml') === 0)
 			return true;
 		return false;
 	}
