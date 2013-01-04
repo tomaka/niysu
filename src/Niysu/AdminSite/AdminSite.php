@@ -17,7 +17,6 @@ class AdminSite {
 	}
 
 	/**
-	 * @name niysu-adminsite-home
 	 * @url /
 	 * @method GET
 	 */
@@ -42,7 +41,6 @@ class AdminSite {
 	}
 
 	/**
-	 * @name niysu-adminsite-ajaxtest
 	 * @url /ajax-test
 	 * @method GET
 	 */
@@ -54,7 +52,6 @@ class AdminSite {
 	}
 
 	/**
-	 * @name niysu-adminsite-database
 	 * @url /database
 	 * @method GET
 	 */
@@ -64,7 +61,6 @@ class AdminSite {
 
 
 	/**
-	 * @name niysu-adminsite-xhprof
 	 * @url /xhprof
 	 * @method GET
 	 */
@@ -74,7 +70,6 @@ class AdminSite {
 	}
 
 	/**
-	 * @name niysu-adminsite-xhprof-post
 	 * @url /xhprof-handle
 	 * @method POST
 	 * @todo Profiling should include routes registration
