@@ -20,8 +20,11 @@ class TwigResponseFilter implements \Niysu\HTTPResponseInterface {
 	}
 
 	public function flush() {
-		if ($this->template)
+		if ($this->template) {
+			if (!$this->contentTypeSet)
+				$this->outputResponse->setHeader('Content-Type', 'text/html; charset=utf8');
 			$this->outputResponse->appendData($this->twigService->render($this->template, $this->variables));
+		}
 		$this->outputResponse->flush();
 	}
 
@@ -48,6 +51,24 @@ class TwigResponseFilter implements \Niysu\HTTPResponseInterface {
 			$this->outputResponse->appendData($data);
 	}
 
+	public function setHeader($header, $value) {
+		if (strtolower($header) == 'content-type')
+			$this->contentTypeSet = true;
+		$this->outputResponse->setHeader($header, $value);
+	}
+
+	public function addHeader($header, $value) {
+		if (strtolower($header) == 'content-type')
+			$this->contentTypeSet = true;
+		$this->outputResponse->addHeader($header, $value);
+	}
+
+	public function removeHeader($header) {
+		if (strtolower($header) == 'content-type')
+			$this->contentTypeSet = false;
+		$this->outputResponse->removeHeader($header);
+	}
+
 	public function isHeadersListSent() {
 		return !$this->template && $this->outputResponse->isHeadersListSent();
 	}
@@ -55,6 +76,7 @@ class TwigResponseFilter implements \Niysu\HTTPResponseInterface {
 
 	private $template = null;				// if null, then the filter is deactivated
 	private $variables = [];
+	private $contentTypeSet = false;
 	private $twigService;
 }
 
