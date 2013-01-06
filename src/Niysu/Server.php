@@ -66,7 +66,6 @@ class Server {
 		$this->setFilterProvider('formValidatorRequest', 'Niysu\\Filters\\FormValidatorRequestFilter');
 		$this->setFilterProvider('jsonRequest', 'Niysu\\Filters\\JSONRequestFilter');
 		$this->setFilterProvider('maintenanceModeResponse', 'Niysu\\Filters\\MaintenanceModeResponseFilter');
-		$this->setFilterProvider('plainTextResponse', 'Niysu\\Filters\\PlainTextResponseFilter');
 		$this->setFilterProvider('postRequest', 'Niysu\\Filters\\POSTRequestFilter');
 		$this->setFilterProvider('serverCacheResponse', 'Niysu\\Filters\\ServerCacheResponseFilter');
 		$this->setFilterProvider('session', 'Niysu\\Filters\\SessionFilter');
@@ -74,11 +73,12 @@ class Server {
 		$this->setFilterProvider('xmlRequest', 'Niysu\\Filters\\XMLRequestFilter');
 
 		// other providers
-		$this->providers['jsonOutput'] = 'Niysu\\Output\\JSONOutput';
 		$this->providers['csvOutput'] = 'Niysu\\Output\\CSVOutput';
 		$this->providers['excelOutput'] = 'Niysu\\Output\\ExcelOutput';
-		$this->providers['xmlOutput'] = 'Niysu\\Output\\XMLOutput';
+		$this->providers['jsonOutput'] = 'Niysu\\Output\\JSONOutput';
+		$this->providers['plainTextOutput'] = 'Niysu\\Output\\PlainTextOutput';
 		$this->providers['twigOutput'] = 'Niysu\\Output\\TwigOutput';
+		$this->providers['xmlOutput'] = 'Niysu\\Output\\XMLOutput';
 
 		// facultative service providers
 		$this->setServiceProvider('twig', function($scope) {
