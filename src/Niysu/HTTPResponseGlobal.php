@@ -55,6 +55,7 @@ class HTTPResponseGlobal implements HTTPResponseInterface {
 
 	public function appendData($data) {
 		echo $data;
+		flush();
 	}
 
 
