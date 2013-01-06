@@ -8,11 +8,15 @@ namespace Niysu;
  * @link 		http://github.com/Tomaka17/niysu
  */
 class IPCClient {
+	public function __construct($address) {
+		$this->bindAddress = $address;
+	}
+
 	public function handle(HTTPRequestInterface $httpRequest = null, HTTPResponseInterface $httpResponse = null) {
 		if (!$httpRequest)		$httpRequest = new HTTPRequestGlobal();
 		if (!$httpResponse)		$httpResponse = new HTTPResponseGlobal();
 
-		if (($this->socket = stream_socket_client(IPCServer::getTransport(), $errNo, $errString)) === false)
+		if (($this->socket = stream_socket_client($this->bindAddress, $errNo, $errString)) === false)
 			throw new \RuntimeException('Could not create client socket: '.$errString);
 
 		// writing request line
@@ -42,10 +46,7 @@ class IPCClient {
 	}
 
 
-
-
-	private $niysuServer;		// Niysu\Server
-	private $socket;		// socket
+	private $socket;			// socket
 }
 
 ?>

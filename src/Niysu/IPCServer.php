@@ -17,7 +17,7 @@ class IPCServer {
 		if (ini_get('max_execution_time') != 0)
 			throw new \LogicException('PHP must have no max_execution_time in order to start a server');
 
-		if (($this->socket = stream_socket_server(self::getTransport(), $errNo, $errString)) === false)
+		if (($this->socket = stream_socket_server($this->bindAddress, $errNo, $errString)) === false)
 			throw new \RuntimeException('Could not create listening socket: '.$errString);
 
 		do {
@@ -52,17 +52,9 @@ class IPCServer {
 	}
 
 
-	public static function getTransport() {
-		$transport = 'unix://'.__DIR__.'/socket';
-		if (array_search('unix', stream_get_transports()) === false)
-			$transport = 'tcp://127.0.0.1:80';
-		return $transport;
-	}
-
-
 	private $niysuServer;			// Niysu\Server
 	private $socket;				// socket
-	private $bindAddress = null;
+	private $bindAddress;
 }
 
 ?>
