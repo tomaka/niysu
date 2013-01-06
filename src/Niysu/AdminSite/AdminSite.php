@@ -20,7 +20,7 @@ class AdminSite {
 	 * @url /
 	 * @method GET
 	 */
-	public function mainPanel($twigResponseFilter, $server, $scope) {
+	public function mainPanel($twigOutput, $server, $scope) {
 		$routes = [];
 		foreach ($server->getRoutesList() as $r) {
 			$pattern = [];
@@ -33,8 +33,8 @@ class AdminSite {
 		try { $maintenanceMode = $scope->maintenanceModeService->isMaintenanceMode();
 		} catch(\Exception $e) {}
 
-		$twigResponseFilter->setTemplate('@niysuAdminSite/home.htm');
-		$twigResponseFilter->setVariables([
+		$twigOutput->setTemplate('@niysuAdminSite/home.htm');
+		$twigOutput->setVariables([
 			'routes' => $routes,
 			'maintenanceMode' => $maintenanceMode
 		]);
@@ -44,9 +44,9 @@ class AdminSite {
 	 * @url /ajax-test
 	 * @method GET
 	 */
-	public function ajaxTestPanel($twigResponseFilter) {
-		$twigResponseFilter->setTemplate('@niysuAdminSite/ajaxTest.htm');
-		$twigResponseFilter->setVariables([
+	public function ajaxTestPanel($twigOutput) {
+		$twigOutput->setTemplate('@niysuAdminSite/ajaxTest.htm');
+		$twigOutput->setVariables([
 			'routes' => $routes
 		]);
 	}
@@ -55,8 +55,8 @@ class AdminSite {
 	 * @url /database
 	 * @method GET
 	 */
-	public function databasePanel($twigResponseFilter) {
-		$twigResponseFilter->setTemplate('@niysuAdminSite/databaseAccess.htm');
+	public function databasePanel($twigOutput) {
+		$twigOutput->setTemplate('@niysuAdminSite/databaseAccess.htm');
 	}
 
 
@@ -64,8 +64,8 @@ class AdminSite {
 	 * @url /git
 	 * @method GET
 	 */
-	public function gitPanel($twigResponseFilter) {
-		$twigResponseFilter->setTemplate('@niysuAdminSite/git.htm');
+	public function gitPanel($twigOutput) {
+		$twigOutput->setTemplate('@niysuAdminSite/git.htm');
 		
 		$dir = dirname(dirname(dirname(dirname(dirname(dirname(__DIR__))))));
 		
@@ -80,7 +80,7 @@ class AdminSite {
 			chdir($prevDir);
 		}
 		
-		$twigResponseFilter->setVariables([ 'branches' => $gitBranches, 'log' => $gitLog ]);
+		$twigOutput->setVariables([ 'branches' => $gitBranches, 'log' => $gitLog ]);
 	}
 
 
@@ -88,9 +88,9 @@ class AdminSite {
 	 * @url /xhprof
 	 * @method GET
 	 */
-	public function xhProfPanel($twigResponseFilter) {
-		$twigResponseFilter->setTemplate('@niysuAdminSite/xhprof.htm');
-		$twigResponseFilter->setVariables([ 'extensionOk' => extension_loaded('xhprof') ]);
+	public function xhProfPanel($twigOutput) {
+		$twigOutput->setTemplate('@niysuAdminSite/xhprof.htm');
+		$twigOutput->setVariables([ 'extensionOk' => extension_loaded('xhprof') ]);
 	}
 
 	/**
@@ -98,7 +98,7 @@ class AdminSite {
 	 * @method POST
 	 * @todo Profiling should include routes registration
 	 */
-	public function xhProfPost($twigResponseFilter, $server, $postRequestFilter) {
+	public function xhProfPost($twigOutput, $server, $postRequestFilter) {
 		$request = new \Niysu\HTTPRequestCustom($postRequestFilter->url);
 		$response = new \Niysu\HTTPResponseNull();
 
@@ -106,8 +106,8 @@ class AdminSite {
 		$server->handle($request, $response);
 		$data = xhprof_disable();
 
-		$twigResponseFilter->setTemplate('@niysuAdminSite/xhprof-results.htm');
-		$twigResponseFilter->setVariables([ 'data' => $data ]);
+		$twigOutput->setTemplate('@niysuAdminSite/xhprof-results.htm');
+		$twigOutput->setVariables([ 'data' => $data ]);
 	}
 }
 
