@@ -59,27 +59,26 @@ class Server {
 		// building filters
 		$this->setFilterProvider('contentEncodingResponse', 'Niysu\\Filters\\ContentEncodingResponseFilter');
 		$this->setFilterProvider('cookies', 'Niysu\\Filters\\CookiesFilter');
-		$this->setFilterProvider('csvResponse', 'Niysu\\Filters\\CSVResponseFilter');
 		$this->setFilterProvider('debugPanelResponse', 'Niysu\\Filters\\DebugPanelResponseFilter');
 		$this->setFilterProvider('errorPagesResponse', 'Niysu\\Filters\\ErrorPagesResponseFilter');
 		$this->setFilterProvider('etagResponse', 'Niysu\\Filters\\ETagResponseFilter');
-		$this->setFilterProvider('excelResponse', 'Niysu\\Filters\\ExcelResponseFilter');
 		$this->setFilterProvider('formAnalyserResponse', 'Niysu\\Filters\\FormAnalyserResponseFilter');
 		$this->setFilterProvider('formValidatorRequest', 'Niysu\\Filters\\FormValidatorRequestFilter');
 		$this->setFilterProvider('jsonRequest', 'Niysu\\Filters\\JSONRequestFilter');
-		$this->setFilterProvider('jsonResponse', 'Niysu\\Filters\\JSONResponseFilter');
 		$this->setFilterProvider('maintenanceModeResponse', 'Niysu\\Filters\\MaintenanceModeResponseFilter');
 		$this->setFilterProvider('plainTextResponse', 'Niysu\\Filters\\PlainTextResponseFilter');
 		$this->setFilterProvider('postRequest', 'Niysu\\Filters\\POSTRequestFilter');
 		$this->setFilterProvider('serverCacheResponse', 'Niysu\\Filters\\ServerCacheResponseFilter');
 		$this->setFilterProvider('session', 'Niysu\\Filters\\SessionFilter');
 		$this->setFilterProvider('tidyResponse', 'Niysu\\Filters\\TidyResponseFilter');
-		$this->setFilterProvider('twigResponse', 'Niysu\\Filters\\TwigResponseFilter');
 		$this->setFilterProvider('xmlRequest', 'Niysu\\Filters\\XMLRequestFilter');
-		$this->setFilterProvider('xmlResponse', 'Niysu\\Filters\\XMLResponseFilter');
 
 		// other providers
 		$this->providers['jsonOutput'] = 'Niysu\\Output\\JSONOutput';
+		$this->providers['csvOutput'] = 'Niysu\\Output\\CSVOutput';
+		$this->providers['excelOutput'] = 'Niysu\\Output\\ExcelOutput';
+		$this->providers['xmlOutput'] = 'Niysu\\Output\\XMLOutput';
+		$this->providers['twigOutput'] = 'Niysu\\Output\\TwigOutput';
 
 		// facultative service providers
 		$this->setServiceProvider('twig', function($scope) {
