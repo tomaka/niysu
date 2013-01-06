@@ -39,7 +39,7 @@ class Server {
 		$this->scope = new Scope();
 		$this->scope->server = $this;
 		$this->scope->passByRef('server', false);
-		$this->scope->elapsedTime = function() { $now = microtime(true); return $now - $_SERVER['REQUEST_TIME_FLOAT']; };
+		$this->scope->elapsedTime = function() { return 0; };
 		$this->scope->passByRef('elapsedTime', false);
 		$this->scope->log = $this->log;
 		$this->scope->passByRef('log', false);
@@ -200,10 +200,17 @@ class Server {
 
 		$this->log->debug('Starting handling of resource', [ 'url' => $input->getURL(), 'method' => $input->getMethod() ]);
 
-		try {
-			$localScope = $this->generateQueryScope();
+		$localScope = $this->generateQueryScope();
 
+		// updating $elapsedTime
+		$atResourceHandlingStart = microtime(true);
+		$localScope->elapsedTime = function() use ($atResourceHandlingStart) { return microtime(true) - $atResourceHandlingStart; };
+
+		$this->currentResponsesStack[] = $output;
+
+		try {
 			if ($this->routesCollection->handle($input, $output, $localScope)) {
+				$output->flush();
 				$this->log->debug('Successful handling of resource', [ 'url' => $input->getURL(), 'method' => $input->getMethod() ]);
 
 			} else {
