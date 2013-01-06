@@ -55,8 +55,22 @@ class HTTPRequestFromStream extends HTTPRequestInterface {
 		if (!$this->headersList)
 			$this->readHeaders();
 
-		return '';		// TODO: 
-		//return stream_get_contents($this->stream);
+		$length = $this->getHeader('Content-Length');
+		if ($length == null)
+			throw new \RuntimeException('Could not determine input length');
+
+		do {
+			$lengthRemaining = $length - strlen($data);
+			if (!$lengthRemaining)
+				break;
+
+			$this->data .= fread($this->stream, $lengthRemaining);
+			if (strlen($this->data) == $length)
+				break;
+
+		} while (true);
+
+		return $this->data;
 	}
 
 	public function isHTTPS() {
@@ -99,6 +113,7 @@ class HTTPRequestFromStream extends HTTPRequestInterface {
 	private $headersList = null;
 	private $method = null;
 	private $url = null;
+	private $data = '';
 }
 
 ?>
