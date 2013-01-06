@@ -32,12 +32,13 @@ class IPCClient {
 		// writing data
 		$toWrite = "\r\n".$httpRequest->getRawData();
 		fwrite($this->socket, $toWrite);
-		stream_socket_shutdown($this->socket, STREAM_SHUT_RD);
+		stream_socket_shutdown($this->socket, STREAM_SHUT_WR);
 		fflush($this->socket);
 
 		// reading response
 		$response = HTTPResponseStream::build($httpResponse, true);
 		$response->fwrite(stream_get_contents($this->socket));
+		$response->fflush();
 		unset($response);
 
 		stream_socket_shutdown($this->socket, STREAM_SHUT_RDWR);
