@@ -78,6 +78,9 @@ class Server {
 		$this->setFilterProvider('xmlRequest', 'Niysu\\Filters\\XMLRequestFilter');
 		$this->setFilterProvider('xmlResponse', 'Niysu\\Filters\\XMLResponseFilter');
 
+		// other providers
+		$this->providers['jsonOutput'] = 'Niysu\\Output\\JSONOutput';
+
 		// facultative service providers
 		$this->setServiceProvider('twig', function($scope) {
 			if (!class_exists('Twig_Environment'))
@@ -284,6 +287,29 @@ class Server {
 				}
 
 				return $filter;
+			}, (is_string($provider) ? $provider : null));
+		}
+
+		foreach($this->providers as $name => $provider) {
+			$handleScope->callback($name, function(Scope $s) use ($name, $provider) {
+				$this->log->debug('Calling provider for '.$name);
+				$obj = $s->call($provider);
+
+				if ($obj instanceof HTTPRequestInterface) {
+					if (isset($s->request))
+						$s->request = $filter;
+				}
+				if ($obj instanceof HTTPResponseInterface) {
+					if (isset($s->response))
+						$s->response = $filter;
+				}
+				if ($obj instanceof OutputInterface) {
+					if (isset($s->output))
+						throw new \RuntimeException('Only one output object can be active at any time');
+					$s->output = $obj;
+				}
+
+				return $obj;
 			}, (is_string($provider) ? $provider : null));
 		}
 
@@ -505,6 +531,7 @@ class Server {
 	private $configFunctions = [];				// configuration functions (coming from the environment) to call
 	private $serviceProviders = [];
 	private $filterProviders = [];
+	private $providers = [];					// all providers
 	private $currentResponsesStack = [];		// at every call to handle(), the response is pushed on top of this stack, and removed when the handle() is finished
 };
 

@@ -434,6 +434,10 @@ class Route {
 		foreach ($this->after as $filter)
 			$localScope->call($filter);
 
+		// flushing output
+		if ($localScope->output && $localScope->output instanceof \Niysu\OutputInterface)
+			$localScope->output->flush();
+
 		// pushing back in variables
 		$request = $localScope->request;
 		$response = $localScope->response;
