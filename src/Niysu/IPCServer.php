@@ -15,7 +15,7 @@ class IPCServer {
 
 	public function run() {
 		if (ini_get('max_execution_time') != 0)
-			throw new \LogicException('php must be executed from cli in order to start a server');
+			throw new \LogicException('PHP must have no max_execution_time in order to start a server');
 
 		if (($this->socket = stream_socket_server(self::getTransport(), $errNo, $errString)) === false)
 			throw new \RuntimeException('Could not create listening socket: '.$errString);
@@ -33,11 +33,14 @@ class IPCServer {
 					try {
 						$request = new HTTPRequestFromStream($newSocket);
 						$response = new HTTPResponseToStream($newSocket);
+						$response->setHeader('Server', 'Niysu IPC server');
+						$response->setHeader('Connection', 'close');
 						$this->niysuServer->handle($request, $response);
 						stream_socket_shutdown($newSocket, STREAM_SHUT_RDWR);
 
 					} catch(\Exception $e) {
-						fwrite($newSocket, 'HTTP/1.1 500 Internal Server Error'."\r\n\r\n");
+						fwrite($newSocket, 'HTTP/1.1 500 Internal Server Error'."\r\n");
+						fwrite($newSocket, 'Server: Niysu IPC server'."\r\n\r\n");
 						fflush($newSocket);
 						stream_socket_shutdown($newSocket, STREAM_SHUT_RDWR);
 					}
