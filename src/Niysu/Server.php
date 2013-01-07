@@ -195,11 +195,19 @@ class Server {
 		$this->currentResponsesStack[] = $output;
 
 		try {
-			if ($this->routesCollection->handle($input, $output, $this->generateQueryScope())) {
+			$localScope = $this->generateQueryScope();
+			if ($this->routesCollection->handle($input, $output, $localScope)) {
+				// flushing output
+				if ($localScope->output && $localScope->output instanceof \Niysu\OutputInterface)
+					$localScope->output->flush();
+
+				// flush response
 				$output->flush();
+
 				$this->log->debug('Successful handling of resource', [ 'url' => $input->getURL(), 'method' => $input->getMethod() ]);
 				if ($nb = gc_collect_cycles())
 					$this->log->notice('gc_collect_cycles() returned non-zero value: '.$nb);
+
 				return;
 			}
 
@@ -238,7 +246,7 @@ class Server {
 		$handleScope = $this->scope->newChild();
 
 		foreach($this->providers as $name => $provider) {
-			$handleScope->callback($name, function(Scope $s) use ($name, $provider) {
+			$handleScope->callback($name, function(Scope $s) use ($handleScope, $name, $provider) {
 				$this->log->debug('Calling provider for '.$name);
 				$obj = $s->call($provider);
 
@@ -251,9 +259,9 @@ class Server {
 						$s->response = $obj;
 				}
 				if ($obj instanceof OutputInterface) {
-					if (isset($s->output))
+					if (isset($handleScope->output))
 						throw new \RuntimeException('Only one output object can be active at any time');
-					$s->output = $obj;
+					$handleScope->output = $obj;
 				}
 
 				return $obj;
