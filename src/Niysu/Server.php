@@ -77,6 +77,7 @@ class Server {
 		$this->providers['excelOutput'] = 'Niysu\\Output\\ExcelOutput';
 		$this->providers['jsonOutput'] = 'Niysu\\Output\\JSONOutput';
 		$this->providers['plainTextOutput'] = 'Niysu\\Output\\PlainTextOutput';
+		$this->providers['tcpdfOutput'] = 'Niysu\\Output\\TCPDFOutput';
 		$this->providers['twigOutput'] = 'Niysu\\Output\\TwigOutput';
 		$this->providers['xmlOutput'] = 'Niysu\\Output\\XMLOutput';
 
