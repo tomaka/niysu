@@ -15,6 +15,13 @@
 		<p>This page allows you to show various informations about the current branch of a web project.</p>
 
 	{% else %}
+		<h2>Operations</h2>
+
+		<p>
+			<form action="{{ path('Niysu\\AdminSite\\AdminSite::composerInstall') }}" method="POST"><button type="submit">composer install</button></form>
+			<form action="{{ path('Niysu\\AdminSite\\AdminSite::gitPull') }}" method="POST"><button type="submit">git pull</button></form>
+		</p>
+
 		<h2>Branches</h2>
 
 		<ul>

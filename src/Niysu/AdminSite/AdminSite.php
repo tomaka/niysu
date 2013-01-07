@@ -83,6 +83,34 @@ class AdminSite {
 		$twigOutput->setVariables([ 'branches' => $gitBranches, 'log' => $gitLog ]);
 	}
 
+	/**
+	 * @url /git/composer-install
+	 * @method POST
+	 */
+	public function composerInstall($redirectionOutput) {
+		$dir = dirname(dirname(dirname(dirname(dirname(dirname(__DIR__))))));
+
+		$process = new \Symfony\Component\Process\Process\Process('composer install', $dir);
+		$process->setTimeout(60);
+		$process->run();
+
+		$redirectOutput->setLocationToRoute(get_class().'::gitPanel');
+	}
+
+	/**
+	 * @url /git/git-pull
+	 * @method POST
+	 */
+	public function gitPull($redirectionOutput) {
+		$dir = dirname(dirname(dirname(dirname(dirname(dirname(__DIR__))))));
+
+		$process = new \Symfony\Component\Process\Process\Process('git pull', $dir);
+		$process->setTimeout(60);
+		$process->run();
+
+		$redirectOutput->setLocationToRoute(get_class().'::gitPanel');
+	}
+
 
 	/**
 	 * @url /xhprof

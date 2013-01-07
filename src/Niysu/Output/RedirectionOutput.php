@@ -9,8 +9,9 @@ namespace Niysu\Output;
  * @link 		http://github.com/Tomaka17/niysu
  */
 class RedirectionOutput implements \Niysu\OutputInterface {
-	public function __construct(\Niysu\HTTPResponseInterface $response) {
+	public function __construct(\Niysu\HTTPResponseInterface $response, \Niysu\Server $server = null) {
 		$this->outputResponse = $response;
+		$this->server = $server;
 	}
 
 	/**
@@ -24,6 +25,28 @@ class RedirectionOutput implements \Niysu\OutputInterface {
 		if ($statusCode)
 			$this->setStatusCode($statusCode);
 	}
+
+
+	/**
+	 * Sets the location to a route of the server.
+	 * @param string 	$routeName 		The name of the route
+	 * @param array 	$routeParams 	Parameters used to build the route's URL
+	 * @param integer 	$statusCode 	(optional) The status code
+	 */
+	public function setLocationToRoute($routeName, $routeParams = [], $statusCode = null) {
+		if (!$this->server)
+			throw new \LogicException('No server was passed to constructor');
+		
+		$route = $this->server->getRouteByName($routeName);
+		if (!$route)
+			throw new \RuntimeException('This route doesn\'t exist: '.$routeName);
+		
+		$this->location = $route->getURL($routeParams);
+		
+		if ($statusCode)
+			$this->setStatusCode($statusCode);
+	}
+
 
 	/**
 	 * Sets the status code to send to the response.
@@ -46,6 +69,7 @@ class RedirectionOutput implements \Niysu\OutputInterface {
 
 
 	private $outputResponse;
+	private $server;
 	private $statusCode = 302;
 	private $location = '/';
 };
