@@ -225,7 +225,7 @@ class Server {
 			if ($nb = gc_collect_cycles())
 				$this->log->notice('gc_collect_cycles() returned non-zero value: '.$nb);
 
-		} catch(Exception $exception) {
+		} catch(\Exception $exception) {
 			try { $this->log->err($exception->getMessage(), $exception->getTrace()); } catch(\Exception $e) {}
 			if (!$output->isHeadersListSent())
 				$output->setStatusCode(500);
