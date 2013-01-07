@@ -1,5 +1,5 @@
 <?php
-namespace Niysu\Filters;
+namespace Niysu\Input;
 
 /**
  * Allows to check whether the POST data matches the form format of this URL.
@@ -12,23 +12,19 @@ namespace Niysu\Filters;
  * @license 	MIT http://opensource.org/licenses/MIT
  * @link 		http://github.com/Tomaka17/niysu
  */
-class FormValidatorRequestFilter extends \Niysu\HTTPRequestFilterInterface {
-	public function __construct(\Niysu\Filters\POSTRequestFilter $request, \Niysu\Services\FormValidationService $formValidationService) {
-		parent::__construct($request);
+class FormInput implements \Niysu\InputInterface {
+	public function __construct(\Niysu\HTTPRequestInterface $request, \Niysu\Services\FormValidationService $formValidationService) {
+		$this->postInput = new \Niysu\Input\POSTInput($request);		
 
 		$format = $formValidationService->loadFormat($this->getURL());
 		if ($format) {
 			$this->validated = true;
-			$this->isValid = $formValidationService->validate((array)$request->getPOSTData(), $format);
+			$this->isValid = $formValidationService->validate((array)$this->postInput->getPOSTData(), $format);
 		}
 	}
 
-	/**
-	 * Returns true if the data is valid according to the format, or if the format has not been found.
-	 * @return boolean
-	 */
 	public function isValid() {
-		return $this->isValid;
+		return $this->isValid && $this->validated;
 	}
 
 	/**

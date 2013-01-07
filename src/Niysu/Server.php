@@ -63,14 +63,15 @@ class Server {
 		$this->setProvider('errorPagesResponseFilter', 'Niysu\\Filters\\ErrorPagesResponseFilter');
 		$this->setProvider('etagResponseFilter', 'Niysu\\Filters\\ETagResponseFilter');
 		$this->setProvider('formAnalyserResponseFilter', 'Niysu\\Filters\\FormAnalyserResponseFilter');
-		$this->setProvider('formValidatorRequestFilter', 'Niysu\\Filters\\FormValidatorRequestFilter');
-		$this->setProvider('jsonRequestFilter', 'Niysu\\Filters\\JSONRequestFilter');
 		$this->setProvider('maintenanceModeResponseFilter', 'Niysu\\Filters\\MaintenanceModeResponseFilter');
-		$this->setProvider('postRequestFilter', 'Niysu\\Filters\\POSTRequestFilter');
 		$this->setProvider('serverCacheResponseFilter', 'Niysu\\Filters\\ServerCacheResponseFilter');
 		$this->setProvider('sessionFilter', 'Niysu\\Filters\\SessionFilter');
 		$this->setProvider('tidyResponseFilter', 'Niysu\\Filters\\TidyResponseFilter');
-		$this->setProvider('xmlRequestFilter', 'Niysu\\Filters\\XMLRequestFilter');
+
+		$this->setProvider('formInput', 'Niysu\\Input\\FormInput');
+		$this->setProvider('jsonInput', 'Niysu\\Input\\JSONInput');
+		$this->setProvider('postInput', 'Niysu\\Input\\POSTInput');
+		$this->setProvider('xmlInput', 'Niysu\\Input\\XMLInput');
 
 		// other providers
 		$this->setProvider('csvOutput', 'Niysu\\Output\\CSVOutput');
@@ -237,6 +238,7 @@ class Server {
 	 * This scope includes:
 	 *  - providers, where each provider is accessible by its name
 	 *  - $output, initially null but will be set to the first derivate of OutputInterface returned by any provider
+	 *  - $input, initially null but wlil be set to the first derivate of InputInterface whose isValid() function returns true
 	 *  - $elapsedTime, a function that returns the number of seconds between the start of the request and the moment when it was called
 	 *  - $log, the monolog logger
 	 *  - $server, the server
@@ -258,6 +260,10 @@ class Server {
 				if ($obj instanceof HTTPResponseInterface) {
 					if (isset($s->response))
 						$s->response = $obj;
+				}
+				if ($obj instanceof InputInterface) {
+					if ($obj->isValid())
+						$handleScope->input = $obj;
 				}
 				if ($obj instanceof OutputInterface) {
 					if (isset($handleScope->output))
