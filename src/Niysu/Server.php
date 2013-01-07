@@ -73,13 +73,13 @@ class Server {
 		$this->setProvider('xmlRequestFilter', 'Niysu\\Filters\\XMLRequestFilter');
 
 		// other providers
-		$this->providers['csvOutput'] = 'Niysu\\Output\\CSVOutput';
-		$this->providers['phpExcelOutput'] = 'Niysu\\Output\\PHPExcelOutput';
-		$this->providers['jsonOutput'] = 'Niysu\\Output\\JSONOutput';
-		$this->providers['plainTextOutput'] = 'Niysu\\Output\\PlainTextOutput';
-		$this->providers['tcpdfOutput'] = 'Niysu\\Output\\TCPDFOutput';
-		$this->providers['twigOutput'] = 'Niysu\\Output\\TwigOutput';
-		$this->providers['xmlOutput'] = 'Niysu\\Output\\XMLOutput';
+		$this->setProvider('csvOutput', 'Niysu\\Output\\CSVOutput');
+		$this->setProvider('phpExcelOutput', 'Niysu\\Output\\PHPExcelOutput');
+		$this->setProvider('jsonOutput', 'Niysu\\Output\\JSONOutput');
+		$this->setProvider('plainTextOutput', 'Niysu\\Output\\PlainTextOutput');
+		$this->setProvider('tcpdfOutput', 'Niysu\\Output\\TCPDFOutput');
+		$this->setProvider('twigOutput', 'Niysu\\Output\\TwigOutput');
+		$this->setProvider('xmlOutput', 'Niysu\\Output\\XMLOutput');
 
 		// facultative service providers
 		$this->setProvider('twigService', function($scope) {
