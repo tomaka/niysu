@@ -2,13 +2,13 @@
 namespace Niysu\Output;
 
 /**
- * Allows to easily send Excel documents to the response.
+ * Allows to easily send Excel documents to the response using PHPExcel.
  *
  * @copyright 	2012 Pierre Krieger <pierre.krieger1708@gmail.com>
  * @license 	MIT http://opensource.org/licenses/MIT
  * @link 		http://github.com/Tomaka17/niysu
  */
-class ExcelOutput implements \Niysu\OutputInterface {
+class PHPExcelOutput implements \Niysu\OutputInterface {
 	public function __construct(\Niysu\HTTPResponseInterface $next) {
 		$this->outputResponse = $next;
 
