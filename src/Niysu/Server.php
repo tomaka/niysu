@@ -74,13 +74,14 @@ class Server {
 		$this->setProvider('xmlInput', 'Niysu\\Input\\XMLInput');
 
 		// other providers
-		$this->providers['csvOutput'] = 'Niysu\\Output\\CSVOutput';
-		$this->providers['excelOutput'] = 'Niysu\\Output\\ExcelOutput';
-		$this->providers['jsonOutput'] = 'Niysu\\Output\\JSONOutput';
-		$this->providers['plainTextOutput'] = 'Niysu\\Output\\PlainTextOutput';
-		$this->providers['tcpdfOutput'] = 'Niysu\\Output\\TCPDFOutput';
-		$this->providers['twigOutput'] = 'Niysu\\Output\\TwigOutput';
-		$this->providers['xmlOutput'] = 'Niysu\\Output\\XMLOutput';
+		$this->setProvider('csvOutput', 'Niysu\\Output\\CSVOutput');
+		$this->setProvider('phpExcelOutput', 'Niysu\\Output\\PHPExcelOutput');
+		$this->setProvider('jsonOutput', 'Niysu\\Output\\JSONOutput');
+		$this->setProvider('plainTextOutput', 'Niysu\\Output\\PlainTextOutput');
+		$this->setProvider('redirectionOutput', 'Niysu\\Output\\RedirectionOutput');
+		$this->setProvider('tcpdfOutput', 'Niysu\\Output\\TCPDFOutput');
+		$this->setProvider('twigOutput', 'Niysu\\Output\\TwigOutput');
+		$this->setProvider('xmlOutput', 'Niysu\\Output\\XMLOutput');
 
 		// facultative service providers
 		$this->setProvider('twigService', function($scope) {
@@ -237,6 +238,7 @@ class Server {
 	 * This scope includes:
 	 *  - providers, where each provider is accessible by its name
 	 *  - $output, initially null but will be set to the first derivate of OutputInterface returned by any provider
+	 *  - $input, initially null but wlil be set to the first derivate of InputInterface whose isValid() function returns true
 	 *  - $elapsedTime, a function that returns the number of seconds between the start of the request and the moment when it was called
 	 *  - $log, the monolog logger
 	 *  - $server, the server
@@ -258,6 +260,10 @@ class Server {
 				if ($obj instanceof HTTPResponseInterface) {
 					if (isset($s->response))
 						$s->response = $obj;
+				}
+				if ($obj instanceof InputInterface) {
+					if ($obj->isValid())
+						$handleScope->input = $obj;
 				}
 				if ($obj instanceof OutputInterface) {
 					if (isset($handleScope->output))
