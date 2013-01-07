@@ -1,5 +1,5 @@
 <?php
-namespace Niysu\Filters;
+namespace Niysu\Output;
 
 /**
  * Allows to easily send Excel documents to the response.
@@ -8,12 +8,9 @@ namespace Niysu\Filters;
  * @license 	MIT http://opensource.org/licenses/MIT
  * @link 		http://github.com/Tomaka17/niysu
  */
-class ExcelResponseFilter implements \Niysu\HTTPResponseInterface {
-	use \Niysu\HTTPResponseFilterTrait;
-
+class ExcelOutput implements \Niysu\OutputInterface {
 	public function __construct(\Niysu\HTTPResponseInterface $next) {
 		$this->outputResponse = $next;
-		$this->setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 
 		$this->excelDoc = new \PHPExcel();
 	}
@@ -42,17 +39,14 @@ class ExcelResponseFilter implements \Niysu\HTTPResponseInterface {
 
 
 	public function flush() {
+		$this->outputResponse->setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+
 		$writer = new \PHPExcel_Writer_Excel2007($this->excelDoc);
 
 		$tempFile = tempnam(sys_get_temp_dir(), 'NiysuExcel');
 		$writer->save($tempFile);
 		$this->outputResponse->appendData(file_get_contents($tempFile));
 		unlink($tempFile);
-
-		$this->outputResponse->flush();
-	}
-
-	public function appendData($data) {
 	}
 
 
@@ -64,6 +58,7 @@ class ExcelResponseFilter implements \Niysu\HTTPResponseInterface {
 	}
 
 	private $excelDoc;
+	private $outputResponse;
 };
 
 ?>

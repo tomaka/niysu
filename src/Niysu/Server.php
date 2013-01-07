@@ -45,41 +45,45 @@ class Server {
 		$this->scope->passByRef('log', false);
 		
 		// building default services providers
-		$this->setServiceProvider('cache', 'Niysu\\Services\\CacheService');
-		$this->setServiceProvider('database', 'Niysu\\Services\\DatabaseService');
-		$this->setServiceProvider('databaseProfiling', 'Niysu\\Services\\DatabaseProfilingService');
-		$this->setServiceProvider('email', 'Niysu\\Services\\EmailService');
-		$this->setServiceProvider('formValidation', 'Niysu\\Services\\FormValidationService');
-		$this->setServiceProvider('httpBasicAuth', 'Niysu\\Services\\HTTPBasicAuthService');
-		$this->setServiceProvider('maintenanceMode', 'Niysu\\Services\\MaintenanceModeService');
-		$this->setServiceProvider('resourcesCache', 'Niysu\\Services\\ResourcesCacheService');
-		$this->setServiceProvider('session', 'Niysu\\Services\\SessionService');
-		$this->setServiceProvider('xslt', 'Niysu\\Services\\XSLTService');
+		$this->setProvider('cacheService', 'Niysu\\Services\\CacheService');
+		$this->setProvider('databaseService', 'Niysu\\Services\\DatabaseService');
+		$this->setProvider('databaseProfilingService', 'Niysu\\Services\\DatabaseProfilingService');
+		$this->setProvider('emailService', 'Niysu\\Services\\EmailService');
+		$this->setProvider('formValidationService', 'Niysu\\Services\\FormValidationService');
+		$this->setProvider('httpBasicAuthService', 'Niysu\\Services\\HTTPBasicAuthService');
+		$this->setProvider('maintenanceModeService', 'Niysu\\Services\\MaintenanceModeService');
+		$this->setProvider('resourcesCacheService', 'Niysu\\Services\\ResourcesCacheService');
+		$this->setProvider('sessionService', 'Niysu\\Services\\SessionService');
+		$this->setProvider('xsltService', 'Niysu\\Services\\XSLTService');
 
 		// building filters
-		$this->setFilterProvider('contentEncodingResponse', 'Niysu\\Filters\\ContentEncodingResponseFilter');
-		$this->setFilterProvider('cookies', 'Niysu\\Filters\\CookiesFilter');
-		$this->setFilterProvider('csvResponse', 'Niysu\\Filters\\CSVResponseFilter');
-		$this->setFilterProvider('debugPanelResponse', 'Niysu\\Filters\\DebugPanelResponseFilter');
-		$this->setFilterProvider('errorPagesResponse', 'Niysu\\Filters\\ErrorPagesResponseFilter');
-		$this->setFilterProvider('etagResponse', 'Niysu\\Filters\\ETagResponseFilter');
-		$this->setFilterProvider('excelResponse', 'Niysu\\Filters\\ExcelResponseFilter');
-		$this->setFilterProvider('formAnalyserResponse', 'Niysu\\Filters\\FormAnalyserResponseFilter');
-		$this->setFilterProvider('formValidatorRequest', 'Niysu\\Filters\\FormValidatorRequestFilter');
-		$this->setFilterProvider('jsonRequest', 'Niysu\\Filters\\JSONRequestFilter');
-		$this->setFilterProvider('jsonResponse', 'Niysu\\Filters\\JSONResponseFilter');
-		$this->setFilterProvider('maintenanceModeResponse', 'Niysu\\Filters\\MaintenanceModeResponseFilter');
-		$this->setFilterProvider('plainTextResponse', 'Niysu\\Filters\\PlainTextResponseFilter');
-		$this->setFilterProvider('postRequest', 'Niysu\\Filters\\POSTRequestFilter');
-		$this->setFilterProvider('serverCacheResponse', 'Niysu\\Filters\\ServerCacheResponseFilter');
-		$this->setFilterProvider('session', 'Niysu\\Filters\\SessionFilter');
-		$this->setFilterProvider('tidyResponse', 'Niysu\\Filters\\TidyResponseFilter');
-		$this->setFilterProvider('twigResponse', 'Niysu\\Filters\\TwigResponseFilter');
-		$this->setFilterProvider('xmlRequest', 'Niysu\\Filters\\XMLRequestFilter');
-		$this->setFilterProvider('xmlResponse', 'Niysu\\Filters\\XMLResponseFilter');
+		$this->setProvider('contentEncodingResponseFilter', 'Niysu\\Filters\\ContentEncodingResponseFilter');
+		$this->setProvider('cookiesFilter', 'Niysu\\Filters\\CookiesFilter');
+		$this->setProvider('debugPanelResponseFilter', 'Niysu\\Filters\\DebugPanelResponseFilter');
+		$this->setProvider('errorPagesResponseFilter', 'Niysu\\Filters\\ErrorPagesResponseFilter');
+		$this->setProvider('etagResponseFilter', 'Niysu\\Filters\\ETagResponseFilter');
+		$this->setProvider('formAnalyserResponseFilter', 'Niysu\\Filters\\FormAnalyserResponseFilter');
+		$this->setProvider('maintenanceModeResponseFilter', 'Niysu\\Filters\\MaintenanceModeResponseFilter');
+		$this->setProvider('serverCacheResponseFilter', 'Niysu\\Filters\\ServerCacheResponseFilter');
+		$this->setProvider('sessionFilter', 'Niysu\\Filters\\SessionFilter');
+		$this->setProvider('tidyResponseFilter', 'Niysu\\Filters\\TidyResponseFilter');
+
+		$this->setProvider('formInput', 'Niysu\\Input\\FormInput');
+		$this->setProvider('jsonInput', 'Niysu\\Input\\JSONInput');
+		$this->setProvider('postInput', 'Niysu\\Input\\POSTInput');
+		$this->setProvider('xmlInput', 'Niysu\\Input\\XMLInput');
+
+		// other providers
+		$this->providers['csvOutput'] = 'Niysu\\Output\\CSVOutput';
+		$this->providers['excelOutput'] = 'Niysu\\Output\\ExcelOutput';
+		$this->providers['jsonOutput'] = 'Niysu\\Output\\JSONOutput';
+		$this->providers['plainTextOutput'] = 'Niysu\\Output\\PlainTextOutput';
+		$this->providers['tcpdfOutput'] = 'Niysu\\Output\\TCPDFOutput';
+		$this->providers['twigOutput'] = 'Niysu\\Output\\TwigOutput';
+		$this->providers['xmlOutput'] = 'Niysu\\Output\\XMLOutput';
 
 		// facultative service providers
-		$this->setServiceProvider('twig', function($scope) {
+		$this->setProvider('twigService', function($scope) {
 			if (!class_exists('Twig_Environment'))
 				throw new \LogicException('Can only use $twigService if twig is installed');
 			return $scope->call('Niysu\\Services\\TwigService');
@@ -97,62 +101,33 @@ class Server {
 	}
 
 	/**
-	 * Returns the object previously registered by setServiceProvider
+	 * Returns the object previously registered by setProvider
 	 *
-	 * @param string 	$serviceName 	The name of the service previously registered
+	 * @param string 	$name 	The name of the provider previously registered
 	 * @return mixed
-	 * @throws LogicException If no service of this name has been registered
+	 * @throws LogicException If no provider of this name has been registered
 	 */
-	public function getServiceProvider($serviceName) {
-		if (!$this->serviceProviders[$serviceName])
-			throw new \LogicException('Service "'.$serviceName.'" doesn\'t exist');
-		return $this->serviceProviders[$serviceName];
+	public function getProvider($name) {
+		if (!$this->providers[$name])
+			throw new \LogicException('Provider "'.$name.'" doesn\'t exist');
+		return $this->providers[$name];
 	}
 
 	/**
-	 * Registers a service.
+	 * Registers a provider.
 	 * Overwrites any existing service with the same name.
 	 *
-	 * @param string 	$serviceName 	The name of the service to set (without any "Service" suffix)
-	 * @param mixed 	$provider 		A callable accepted by Scope::call which returns an instance of the service
+	 * A provider is an object that is called when it is being accessed by a route.
+	 * If the object returned by the provider is a derivate of HTTPRequestInterface and/or HTTPResponseInterface, then it will replace the current request and/or response when being accessed for the first time.
+	 * If the object returned by the provider is a derivate of OutputInterface, then the "output" variable of the scope will be set to this object. If a derivate of OutputInterface has already been accessed, then the route is invalid and an exception will be thrown.
+	 *
+	 * @param string 	$name 			The name of the service to set (without any "Service" suffix)
+	 * @param mixed 	$provider 		A callable accepted by Scope::call which returns an instance of the object
 	 */
-	public function setServiceProvider($serviceName, $provider) {
-		$this->serviceProviders[$serviceName] = $provider;
+	public function setProvider($name, $provider) {
+		$this->providers[$name] = $provider;
 	}
 	
-	/**
-	 * Builds a new instance of a service.
-	 * A new instance will always be created, even if an instance exists somewhere.
-	 *
-	 * @param string 	$serviceName 	The name of the service to get (without any "Service" suffix)
-	 * @return mixed
-	 */
-	public function getService($serviceName) {
-		if (!isset($this->serviceProviders[$serviceName]))
-			throw new \LogicException('Service "'.$serviceName.'" doesn\'t exist');
-
-		$localScope = $this->scope->newChild();
-		foreach($this->serviceProviders as $sNameIter => $provider) {
-			$localScope->callback($sNameIter.'Service', function(Scope $s) use ($provider) {
-				return $s->call($provider);
-			});
-		}
-
-		$val = $this->serviceProviders[$serviceName];
-		return $localScope->call($val);
-	}
-
-	/**
-	 * Registers a filter.
-	 * Overwrites any existing filter with the same name.
-	 *
-	 * @param string 	$filterName 	The name of the filter to set (without any "Filter" suffix)
-	 * @param mixed 	$provider 		A callable accepted by Scope::call which returns an instance of the filter
-	 */
-	public function setFilterProvider($filterName, $provider) {
-		$this->filterProviders[$filterName] = $provider;
-	}
-
 	/**
 	 * Creates a new route in the main collection.
 	 *
@@ -210,6 +185,7 @@ class Server {
 	 *
 	 * @param HTTPRequestInterface 		$input		The request to handle (if null, an instance of HTTPRequestGlobal)
 	 * @param HTTPResponseInterface 	$output		The response where to write the output (if null, an instance of HTTPResponseGlobal)
+	 * @see generateQueryScope
 	 */
 	public function handle(HTTPRequestInterface $input = null, HTTPResponseInterface $output = null) {
 		if (!$input)	$input = new HTTPRequestGlobal();
@@ -220,11 +196,19 @@ class Server {
 		$this->currentResponsesStack[] = $output;
 
 		try {
-			if ($this->routesCollection->handle($input, $output, $this->generateQueryScope())) {
+			$localScope = $this->generateQueryScope();
+			if ($this->routesCollection->handle($input, $output, $localScope)) {
+				// flushing output
+				if ($localScope->output && $localScope->output instanceof \Niysu\OutputInterface)
+					$localScope->output->flush();
+
+				// flush response
 				$output->flush();
+
 				$this->log->debug('Successful handling of resource', [ 'url' => $input->getURL(), 'method' => $input->getMethod() ]);
 				if ($nb = gc_collect_cycles())
 					$this->log->notice('gc_collect_cycles() returned non-zero value: '.$nb);
+
 				return;
 			}
 
@@ -236,7 +220,7 @@ class Server {
 				$this->printError($exception);
 
 			} else {
-				$output->setPlainTextData('A server-side error occured. Please try again later.');
+				$output->appendData('A server-side error occured. Please try again later.');
 				$output->flush();
 			}
 		}
@@ -251,8 +235,8 @@ class Server {
 	 * Generates a Scope that contains the variables provided by the server and accessible to a route.
 	 *
 	 * This scope includes:
-	 *  - services, where each service has a "Service" suffix (eg. if you register a service named "log", it is accessed by "$logService")
-	 *  - filters, where each filter has a "Filter" suffix (eg. if you register a filter named "jsonInput", it is accessed by "$jsonInputFilter")
+	 *  - providers, where each provider is accessible by its name
+	 *  - $output, initially null but will be set to the first derivate of OutputInterface returned by any provider
 	 *  - $elapsedTime, a function that returns the number of seconds between the start of the request and the moment when it was called
 	 *  - $log, the monolog logger
 	 *  - $server, the server
@@ -262,28 +246,26 @@ class Server {
 	public function generateQueryScope() {
 		$handleScope = $this->scope->newChild();
 
-		foreach($this->serviceProviders as $serviceName => $provider) {
-			$handleScope->callback($serviceName.'Service', function(Scope $s) use ($serviceName, $provider/*, $log*/) {
-				$this->log->debug('Building service '.$serviceName);
-				return $s->call($provider);
-			}, (is_string($provider) ? $provider : null));
-		}
+		foreach($this->providers as $name => $provider) {
+			$handleScope->callback($name, function(Scope $s) use ($handleScope, $name, $provider) {
+				$this->log->debug('Calling provider for '.$name);
+				$obj = $s->call($provider);
 
-		foreach($this->filterProviders as $filterName => $provider) {
-			$handleScope->callback($filterName.'Filter', function(Scope $s) use ($filterName, $provider/*, $log*/) {
-				$this->log->debug('Building filter '.$filterName);
-				$filter = $s->call($provider);
-
-				if ($filter instanceof HTTPRequestInterface) {
+				if ($obj instanceof HTTPRequestInterface) {
 					if (isset($s->request))
-						$s->request = $filter;
+						$s->request = $obj;
 				}
-				if ($filter instanceof HTTPResponseInterface) {
+				if ($obj instanceof HTTPResponseInterface) {
 					if (isset($s->response))
-						$s->response = $filter;
+						$s->response = $obj;
+				}
+				if ($obj instanceof OutputInterface) {
+					if (isset($handleScope->output))
+						throw new \RuntimeException('Only one output object can be active at any time');
+					$handleScope->output = $obj;
 				}
 
-				return $filter;
+				return $obj;
 			}, (is_string($provider) ? $provider : null));
 		}
 
@@ -503,8 +485,7 @@ class Server {
 	private $showRoutesOn404 = false;
 	private $routesCollection;					// main RoutesCollection
 	private $configFunctions = [];				// configuration functions (coming from the environment) to call
-	private $serviceProviders = [];
-	private $filterProviders = [];
+	private $providers = [];					// all providers
 	private $currentResponsesStack = [];		// at every call to handle(), the response is pushed on top of this stack, and removed when the handle() is finished
 };
 

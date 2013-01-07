@@ -21,6 +21,7 @@
     },
     "suggest": {
         "CodePlex/PHPExcel": "Allows ouput of Excel files",
+        "tcpdf/tcpdf": "Allows output of PDF files",
         "ext-xsl": "Allows XSLT transformations"
     },
     "autoload": {

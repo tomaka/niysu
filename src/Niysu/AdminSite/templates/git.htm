@@ -1,0 +1,36 @@
+{#
+	Copyright 2012 Pierre Krieger
+
+	This code is under MIT license. See the LICENSE file.
+#}
+
+{% extends "@niysuAdminSite/main.htm" %}
+
+{% block body %}
+	{% if branches == null %}
+		<h2>Problem</h2>
+
+		<em>Could not find Git.</em>
+
+		<p>This page allows you to show various informations about the current branch of a web project.</p>
+
+	{% else %}
+		<h2>Branches</h2>
+
+		<ul>
+			{% for b in branches %}
+				<li>
+					{% if (b | slice(0,1)) == '*' %}
+						<strong>{{ b | slice(2) }}</strong>
+					{% else %}
+						{{ b | slice(2) }}
+					{% endif %}
+				</li>
+			{% endfor %}
+		</ul>
+
+		<h2>Current branch log</h2>
+
+		<pre>{{ log | join("\r\n") }}</pre>
+	{% endif %}
+{% endblock %}

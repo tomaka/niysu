@@ -64,7 +64,7 @@ class RoutesCollection {
 		// handling @static
 		if (isset($classDocComment['static'])) {
 			foreach ($classDocComment['static'] as $path)
-				$newCollection->registerStaticDirectory(dirname($reflectionClass->getFileName()).DIRECTORY_SEPARATOR.$path);
+				$newCollection->registerStaticDirectory(dirname($reflectionClass->getFileName()).DIRECTORY_SEPARATOR.$path)->name($reflectionClass->getName());
 		}
 
 		// looping through each method of the class
@@ -138,7 +138,7 @@ class RoutesCollection {
 	 * @see Route::__construct
 	 */
 	public function register($url = null, $method = '.*', $callback = null) {
-		$registration = new Route($url, $method, $callback);
+		$registration = new Route($url, $method, $callback, function() { return $this->getFullPrefix(); });
 		$registration->before(function($scope) {
 			foreach ($this->globalBefores as $b) {
 				$scope->call($b);
@@ -161,14 +161,15 @@ class RoutesCollection {
 	 *
 	 * @param string 	$path 		The absolute path on the server which contains the files
 	 * @param string 	$prefix 	A prefix to add to the name of the static files
+	 * @return Route
 	 */
 	public function registerStaticDirectory($path) {
 		$path = rtrim($path, '/\\');
 
-		$this
+		return $this
 			->register('/{file}', 'get')
 			->pattern('file', '([^\\.]{2,}.*|.)')
-			->name('Static files in '.$path)
+			->name($path)
 			->before(function(&$file, &$isRightResource) use ($path) {
 				$file = $path.DIRECTORY_SEPARATOR.str_replace('/', DIRECTORY_SEPARATOR, $file);
 				if (!file_exists($file) || is_dir($file)) {
@@ -306,12 +307,11 @@ class RoutesCollection {
 	 * @return boolean
 	 */
 	public function handle(HTTPRequestInterface &$request, HTTPResponseInterface &$response, Scope $scope = null) {
-		$fullPrefix = $this->getFullPrefix();
-		if ($fullPrefix && strpos($request->getURL(), $fullPrefix) !== 0)
+		if ($fullPrefix && strpos($request->getURL()) !== 0)
 			return false;
 
 		foreach ($this->routes as $route) {
-			if ($route->handle($request, $response, $scope, $fullPrefix))
+			if ($route->handle($request, $response, $scope))
 				return true;
 		}
 

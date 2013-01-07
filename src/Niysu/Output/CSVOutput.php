@@ -1,5 +1,5 @@
 <?php
-namespace Niysu\Filters;
+namespace Niysu\Output;
 
 /**
  * Send CSV data to the response.
@@ -8,12 +8,9 @@ namespace Niysu\Filters;
  * @license 	MIT http://opensource.org/licenses/MIT
  * @link 		http://github.com/Tomaka17/niysu
  */
-class CSVResponseFilter implements \Niysu\HTTPResponseInterface {
-	use \Niysu\HTTPResponseFilterTrait;
-
+class CSVOutput implements \Niysu\OutputInterface {
 	public function __construct(\Niysu\HTTPResponseInterface $next) {
 		$this->outputResponse = $next;
-		$this->setHeader('Content-Type', 'text/csv');
 	}
 
 	/**
@@ -63,15 +60,15 @@ class CSVResponseFilter implements \Niysu\HTTPResponseInterface {
 		$this->data = $this->toString($csv, $separator);
 	}
 
-	public function appendData($data) {
-	}
+
 
 	public function flush() {
+		$this->outputResponse->setHeader('Content-Type', 'text/csv');
 		$this->outputResponse->appendData($this->data);
-		$this->outputResponse->flush();
 	}
 
 
+	private $outputResponse;
 	private $data;
 };
 

@@ -57,7 +57,7 @@ interface HTTPResponseInterface {
 	/**
 	 * Appends data to the end of the response.
 	 *
-	 * Note that this doesn't trigger a headers sending.
+	 * Note that this may trigger a headers sending if $data is not empty.
 	 *
 	 * @param string 	$data 		Data to append
 	 */

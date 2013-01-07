@@ -35,13 +35,13 @@ class HTTPResponseGlobal implements HTTPResponseInterface {
 
 	public function addHeader($header, $value) {
 		$code = http_response_code();
-		header($header.':'.$value, false);
+		header($header.': '.$value, false);
 		http_response_code($code);
 	}
 
 	public function setHeader($header, $value) {
 		$code = http_response_code();
-		header($header.':'.$value, true);
+		header($header.': '.$value, true);
 		http_response_code($code);
 	}
 

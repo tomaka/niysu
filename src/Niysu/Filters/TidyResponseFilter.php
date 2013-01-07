@@ -24,8 +24,8 @@ class TidyResponseFilter implements \Niysu\HTTPResponseInterface {
 	        'hide-comments' => true,
 	        'indent' => true,
 	        'indent-spaces' => 4,
-	        'new-blocklevel-tags' => 'article,header,footer,section,nav',
-	        'new-inline-tags' => 'video,audio,canvas,ruby,rt,rp',
+	        'new-blocklevel-tags' => 'article,header,footer,section,nav,figure,figcaption,aside,hgroup',
+	        'new-inline-tags' => 'video,audio,canvas,ruby,rt,rp,svg,canvas,datalist,keygen,wbr,source,summary,progress,meter,mark,details',
 	        'sort-attributes' => 'alpha',
 	        'tidy-mark' => false,
 	        'output-xhtml' => false,
@@ -76,9 +76,9 @@ class TidyResponseFilter implements \Niysu\HTTPResponseInterface {
 
 
 	private function isContentTypeRelevant($value) {
-		if (strpos('text/html', $value) === 0)
+		if (strpos($value, 'text/html') === 0)
 			return true;
-		if (strpos('application/xhtml', $value) === 0)
+		if (strpos($value, 'application/xhtml') === 0)
 			return true;
 		return false;
 	}

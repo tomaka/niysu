@@ -1,5 +1,5 @@
 <?php
-namespace Niysu\Filters;
+namespace Niysu\Output;
 
 /**
  * Send CSV data to the response.
@@ -8,15 +8,9 @@ namespace Niysu\Filters;
  * @license 	MIT http://opensource.org/licenses/MIT
  * @link 		http://github.com/Tomaka17/niysu
  */
-class JSONResponseFilter implements \Niysu\HTTPResponseInterface {
-	use \Niysu\HTTPResponseFilterTrait {
-		appendData as private appendDataPT;
-		flush as private flushPT;
-	}
-
-	public function __construct(\Niysu\HTTPResponseInterface $next) {
-		$this->outputResponse = $next;
-		$this->setHeader('Content-Type', 'application/json');
+class JSONOutput implements \Niysu\OutputInterface {
+	public function __construct(\Niysu\HTTPResponseInterface $response) {
+		$this->response = $response;
 	}
 
 	
@@ -26,14 +20,9 @@ class JSONResponseFilter implements \Niysu\HTTPResponseInterface {
 	 * @param mixed 	$json 		Data representing JSON
 	 */
 	public function setData($json) {
-		$this->jsonData = $json;
-	}
-
-	public function flush() {
-		$data = json_encode($this->jsonData);
-		if ($data == null) {
+		$this->data = json_encode($json);
+		if ($this->data === null) {
 			switch (json_last_error()) {
-				case JSON_ERROR_NONE:				break;		// the input data is the null value	; this is legitimate
 				case JSON_ERROR_DEPTH:				throw new \RuntimeException('json_encode() returned JSON_ERROR_DEPTH');
 				case JSON_ERROR_STATE_MISMATCH:		throw new \RuntimeException('json_encode() returned JSON_ERROR_STATE_MISMATCH');
 				case JSON_ERROR_CTRL_CHAR:			throw new \RuntimeException('json_encode() returned JSON_ERROR_CTRL_CHAR');
@@ -41,16 +30,17 @@ class JSONResponseFilter implements \Niysu\HTTPResponseInterface {
 				case JSON_ERROR_UTF8:				throw new \RuntimeException('json_encode() returned JSON_ERROR_UTF8');
 			}
 		}
-
-		$this->appendDataPT($data);
-		$this->flushPT();
 	}
 
-	public function appendData($data) {
+	public function flush() {
+		if (!$this->response->isHeadersListSent())
+			$this->response->setHeader('Content-Type', 'application/json');
+		$this->response->appendData($this->data);
 	}
 
 
-	private $jsonData;
+	private $data;
+	private $response;
 };
 
 ?>

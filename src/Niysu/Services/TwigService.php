@@ -2,87 +2,86 @@
 namespace Niysu\Services;
 
 /**
+ * Service which allows easy usage of Twig with Niysu.
+ *
+ * The service automatically creates the following:
+ *  - the path() function, alias of url()
+ *  - the url(route, { params => value, ... }) function which calls $server->getRouteByName(route)->getURL([ params => value, ... ])
  *
  * @copyright 	2012 Pierre Krieger <pierre.krieger1708@gmail.com>
  * @license 	MIT http://opensource.org/licenses/MIT
  * @link 		http://github.com/Tomaka17/niysu
  */
 class TwigService {
-	public function __construct(&$response) {
-		$this->response =& $response;
+	public function __construct(\Niysu\Server $server) {
+		$this->server = $server;
+
 		$this->filesystemLoader = new \Twig_Loader_Filesystem([]);
-	}
-
-	public function setCachePath($directory) {
-		if (!is_dir($directory))
-			throw new \LogicException('Cache directory for TwigService doesn\'t exist');
-		$this->cachePath = $directory;
-		$this->twig = null;
-	}
-
-	public function addPath($templateDir, $namespace = null) {
-		if ($namespace)		$this->filesystemLoader->addPath($templateDir, $namespace);
-		else				$this->filesystemLoader->addPath($templateDir);
-		$this->twig = null;
-	}
-
-	public function prependPath($templateDir, $namespace = null) {
-		if ($namespace)		$this->filesystemLoader->prependPath($templateDir, $namespace);
-		else				$this->filesystemLoader->prependPath($templateDir);
-		$this->twig = null;
-	}
-
-	public function addGlobal($variable, $value) {
-		$this->globals[$variable] = $value;
-		if ($this->twig)
-			$this->twig->addGlobal($variable, $value);
-	}
-
-	public function render($template, $variables = []) {
-		$this->buildTwig();
-		$template = $this->twig->loadTemplate($template);
-		return $template->render($variables);
-	}
-
-	/**
-	 * @deprecated Use TwigResponseFilter instead
-	 */
-	public function output($template, $variables = []) {
-		if (!$this->response)
-			throw new \LogicException('Response must be set to use the output function');
-
-		$this->buildTwig();
-		$template = $this->twig->loadTemplate($template);
-		$output = $template->render($variables);
-		
-		$this->response->setHeader('Content-Type', 'text/html; charset=utf8');
-		$this->response->appendData($output);
-	}
-
-
-
-	private function buildTwig() {
-		if ($this->twig)
-			return;
 
 		$loader = new \Twig_Loader_Chain([
 			$this->filesystemLoader,
 			new \Twig_Loader_String()
 		]);
 
-		$this->twig = new \Twig_Environment($loader, [
-			'cache' => $this->cachePath
-		]);
+		$this->twig = new \Twig_Environment($loader, [ ]);
 
-		foreach($this->globals as $k => $v)
-			$this->twig->addGlobal($k, $v);
+		$this->twig->addFunction('path', new \Twig_Function_Function(get_class().'::url'));
+		$this->twig->addFunction('url', new \Twig_Function_Function(get_class().'::url'));
 	}
 
-	private $twig = null;
-	private $response = null;
+	public function setCachePath($directory) {
+		if (!is_dir($directory))
+			throw new \LogicException('Cache directory for TwigService doesn\'t exist');
+		$this->twig->setCache($directory);
+	}
+
+	public function addPath($templateDir, $namespace = null) {
+		if ($namespace)		$this->filesystemLoader->addPath($templateDir, $namespace);
+		else				$this->filesystemLoader->addPath($templateDir);
+	}
+
+	public function prependPath($templateDir, $namespace = null) {
+		if ($namespace)		$this->filesystemLoader->prependPath($templateDir, $namespace);
+		else				$this->filesystemLoader->prependPath($templateDir);
+	}
+
+	public function addGlobal($variable, $value) {
+		$this->twig->addGlobal($variable, $value);
+	}
+
+	public function render($template, $variables = []) {
+		$template = $this->twig->loadTemplate($template);
+
+		self::$currentServer = $this->server;
+		$result = $template->render($variables);
+		self::$currentServer = null;
+
+		return $result;
+	}
+
+	/**
+	 * @todo Log when something wrong happens
+	 */
+	public static function url($name, $params = null) {
+		$route = self::$currentServer->getRouteByName($name);
+		if (!$route)	return '';
+
+		if (!isset($params) || !is_array($params))
+			$params = [];
+
+		try {
+			return $route->getURL($params);
+		} catch(\Exception $e) {
+			return '';
+		}
+	}
+
+
+	private $twig;
 	private $filesystemLoader;
-	private $globals = [];
-	private $cachePath = false;
+	private $server;
+
+	private static $currentServer = null;
 };
 
 ?>

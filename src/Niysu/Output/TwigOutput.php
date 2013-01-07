@@ -1,5 +1,5 @@
 <?php
-namespace Niysu\Filters;
+namespace Niysu\Output;
 
 /**
  * Generates an HTML page using TwigService and sends it to the response.
@@ -10,9 +10,7 @@ namespace Niysu\Filters;
  * @license 	MIT http://opensource.org/licenses/MIT
  * @link 		http://github.com/Tomaka17/niysu
  */
-class TwigResponseFilter implements \Niysu\HTTPResponseInterface {
-	use \Niysu\HTTPResponseFilterTrait;
-	
+class TwigOutput implements \Niysu\OutputInterface {	
 	public function __construct(\Niysu\HTTPResponseInterface $response, \Niysu\Services\TwigService $twigService) {
 		$this->outputResponse = $response;
 
@@ -20,9 +18,11 @@ class TwigResponseFilter implements \Niysu\HTTPResponseInterface {
 	}
 
 	public function flush() {
-		if ($this->template)
-			$this->outputResponse->appendData($this->twigService->render($this->template, $this->variables));
-		$this->outputResponse->flush();
+		if (!$this->template)
+			throw new \LogicException('The Twig template to use has not been set');
+
+		$this->outputResponse->setHeader('Content-Type', 'text/html; charset=utf8');
+		$this->outputResponse->appendData($this->twigService->render($this->template, $this->variables));
 	}
 
 	/**
@@ -43,17 +43,9 @@ class TwigResponseFilter implements \Niysu\HTTPResponseInterface {
 		$this->variables = $variables;
 	}
 
-	public function appendData($data) {
-		if (!$this->template)
-			$this->outputResponse->appendData($data);
-	}
 
-	public function isHeadersListSent() {
-		return !$this->template && $this->outputResponse->isHeadersListSent();
-	}
-
-
-	private $template = null;				// if null, then the filter is deactivated
+	private $outputResponse;
+	private $template = null;
 	private $variables = [];
 	private $twigService;
 }

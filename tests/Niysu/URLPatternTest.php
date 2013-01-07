@@ -105,6 +105,14 @@ class URLPatternTest extends \PHPUnit_Framework_TestCase {
 
 	/**
 	 */
+	public function testGetURLConstant() {
+		$pattern = new URLPattern('/const');
+
+		$this->assertEquals('/const', $pattern->getURL([]));
+	}
+
+	/**
+	 */
 	public function testGetURL() {
 		$pattern = new URLPattern('/{var1}/{var2}');
 

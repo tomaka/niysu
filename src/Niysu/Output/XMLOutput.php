@@ -1,5 +1,5 @@
 <?php
-namespace Niysu\Filters;
+namespace Niysu\Output;
 
 /**
  * Send XML data to the response.
@@ -8,19 +8,17 @@ namespace Niysu\Filters;
  * @license 	MIT http://opensource.org/licenses/MIT
  * @link 		http://github.com/Tomaka17/niysu
  */
-class XMLResponseFilter implements \Niysu\HTTPResponseInterface {
-	use \Niysu\HTTPResponseFilterTrait;
-
+class XMLOutput implements \Niysu\OutputInterface {
 	public function __construct(\Niysu\HTTPResponseInterface $next) {
 		$this->outputResponse = $next;
-		$this->setHeader('Content-Type', 'application/xml');
+		$this->contentType = 'application/xml';
 	}
 
 	public function setContentType($contentType) {
 		if (!preg_match('/^.*?\\/(\w+\\+)?xml($|\W.*)$/', $contentType))
 			throw new \LogicException('Wrong content type: '.$contentType);
 
-		$this->setHeader('Content-Type', $contentType);
+		$this->contentType = $contentType;
 	}
 
 	/**
@@ -33,11 +31,8 @@ class XMLResponseFilter implements \Niysu\HTTPResponseInterface {
 	}
 
 	public function flush() {
+		$this->outputResponse->setHeader('Content-Type', $contentType);
 		$this->outputResponse->appendData($this->data);
-		$this->outputResponse->flush();
-	}
-
-	public function appendData($data) {
 	}
 
 	/**
@@ -151,6 +146,8 @@ class XMLResponseFilter implements \Niysu\HTTPResponseInterface {
 	}
 
 
+	private $contentType;
+	private $outputResponse;
 	private $data;
 };
 
