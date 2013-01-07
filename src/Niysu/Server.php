@@ -415,8 +415,8 @@ class Server {
 						if (!$response->isHeadersListSent())
 							$response->setStatusCode(500);
 					}
-					
-				} catch(Exception $e) { }
+
+				} catch(\Exception $e) { }
 			}
 		});
 		
