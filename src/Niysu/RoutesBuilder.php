@@ -145,7 +145,7 @@ class RoutesBuilder {
 				throw new \RuntimeException('Invalid status code after "validate"');
 
 			$subFunc = self::buildBeforeFunction($reflectionClass, implode(' ', array_splice($parts, 2)));
-			return function(Scope $scope, &$stopRoute, $response) use ($subFunc, $code) {
+			return function(Scope $scope, &$stopRoute, &$response) use ($subFunc, $code) {
 				if (!$scope->call($subFunc)) {
 					$response->setStatusCode($code);
 					$stopRoute = true;
