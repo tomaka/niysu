@@ -194,8 +194,6 @@ class Server {
 
 		$this->log->debug('Starting handling of resource', [ 'url' => $input->getURL(), 'method' => $input->getMethod() ]);
 
-		$this->currentResponsesStack[] = $output;
-
 		try {
 			$localScope = $this->generateQueryScope();
 
@@ -237,8 +235,6 @@ class Server {
 				$output->flush();
 			}
 		}
-
-		array_pop($this->currentResponsesStack);
 	}
 
 	/**
@@ -410,14 +406,16 @@ class Server {
 			if ($error != null) {
 				try {
 					$this->log->crit($error['message'], $error);
-					if ($this->printErrors)
-						$this->printError(new \ErrorException($error['message'], 0, $error['type'], $error['file'], $error['line']));
 
-					if (count($this->currentResponsesStack) >= 1) {
-						$response = $this->currentResponsesStack[count($this->currentResponsesStack) - 1];
+					if ($this->printErrors) {
+						$this->printError(new \ErrorException($error['message'], 0, $error['type'], $error['file'], $error['line']));
+						
+					} else {
+						$response = new HTTPResponseGlobal();
 						if (!$response->isHeadersListSent())
 							$response->setStatusCode(500);
 					}
+					
 				} catch(Exception $e) { }
 			}
 		});
@@ -437,11 +435,12 @@ class Server {
 		// changing the handler to be called when an exception is not handled
 		set_exception_handler(function($exception) {
 			try { $this->log->err($exception->getMessage(), $exception->getTrace()); } catch(\Exception $e) {}
-			if ($this->printErrors)
+
+			if ($this->printErrors) {
 				$this->printError($exception);
 
-			if (count($this->currentResponsesStack) >= 1) {
-				$response = $this->currentResponsesStack[count($this->currentResponsesStack) - 1];
+			} else {
+				$response = new HTTPResponseGlobal();
 				if (!$response->isHeadersListSent())
 					$response->setStatusCode(500);
 			}
@@ -502,7 +501,6 @@ class Server {
 	private $routesCollection;					// main RoutesCollection
 	private $configFunctions = [];				// configuration functions (coming from the environment) to call
 	private $providers = [];					// all providers
-	private $currentResponsesStack = [];		// at every call to handle(), the response is pushed on top of this stack, and removed when the handle() is finished
 };
 
 ?>
