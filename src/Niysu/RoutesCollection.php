@@ -36,8 +36,6 @@ class RoutesCollection {
 
 				if ($scope->isRightResource === false)
 					return;
-				if ($scope->callHandler === false)
-					return;
 				if ($scope->stopRoute === true)
 					return;
 			}
