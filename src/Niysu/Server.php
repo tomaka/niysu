@@ -237,6 +237,7 @@ class Server {
 	 * This scope includes:
 	 *  - providers, where each provider is accessible by its name
 	 *  - $output, initially null but will be set to the first derivate of OutputInterface returned by any provider
+	 *  - $input, initially null but wlil be set to the first derivate of InputInterface whose isValid() function returns true
 	 *  - $elapsedTime, a function that returns the number of seconds between the start of the request and the moment when it was called
 	 *  - $log, the monolog logger
 	 *  - $server, the server
@@ -258,6 +259,10 @@ class Server {
 				if ($obj instanceof HTTPResponseInterface) {
 					if (isset($s->response))
 						$s->response = $obj;
+				}
+				if ($obj instanceof InputInterface) {
+					if ($obj->isValid())
+						$handleScope->input = $obj;
 				}
 				if ($obj instanceof OutputInterface) {
 					if (isset($handleScope->output))
