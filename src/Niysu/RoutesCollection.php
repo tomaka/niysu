@@ -307,7 +307,8 @@ class RoutesCollection {
 	 * @return boolean
 	 */
 	public function handle(HTTPRequestInterface &$request, HTTPResponseInterface &$response, Scope $scope = null) {
-		if ($fullPrefix && strpos($request->getURL()) !== 0)
+		$fullPrefix = $this->getFullPrefix();
+		if (strlen(trim($fullPrefix, '/')) && strpos($request->getURL(), $fullPrefix) !== 0)
 			return false;
 
 		foreach ($this->routes as $route) {
