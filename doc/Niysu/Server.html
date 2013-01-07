@@ -45,8 +45,8 @@
                     mixed
                 </td>
                 <td class="last">
-                    <a href="#method_getServiceProvider">getServiceProvider</a>(string $serviceName)
-                    <p>Returns the object previously registered by setServiceProvider</p>
+                    <a href="#method_getProvider">getProvider</a>(string $name)
+                    <p>Returns the object previously registered by setProvider</p>
                 </td>
                 <td></td>
             </tr>
@@ -55,28 +55,8 @@
                     
                 </td>
                 <td class="last">
-                    <a href="#method_setServiceProvider">setServiceProvider</a>(string $serviceName, mixed $provider)
-                    <p>Registers a service.</p>
-                </td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td class="type">
-                    mixed
-                </td>
-                <td class="last">
-                    <a href="#method_getService">getService</a>(string $serviceName)
-                    <p>Builds a new instance of a service.</p>
-                </td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td class="type">
-                    
-                </td>
-                <td class="last">
-                    <a href="#method_setFilterProvider">setFilterProvider</a>(string $filterName, mixed $provider)
-                    <p>Registers a filter.</p>
+                    <a href="#method_setProvider">setProvider</a>(string $name, mixed $provider)
+                    <p>Registers a provider.</p>
                 </td>
                 <td></td>
             </tr>
@@ -210,13 +190,13 @@
                     </div>
     </div>
 
-                <h3 id="method_getServiceProvider">
-        <div class="location">at line 106</div>
+                <h3 id="method_getProvider">
+        <div class="location">at line 111</div>
         <code>            public            mixed
-    <strong>getServiceProvider</strong>(string $serviceName)</code>
+    <strong>getProvider</strong>(string $name)</code>
     </h3>
     <div class="details">
-        <p>Returns the object previously registered by setServiceProvider</p>
+        <p>Returns the object previously registered by setProvider</p>
         <p></p>
         <div class="tags">
                             <h4>Parameters</h4>
@@ -224,8 +204,8 @@
                     <table>
                     <tr>
                 <td>string</td>
-                <td>$serviceName</td>
-                <td>The name of the service previously registered</td>
+                <td>$name</td>
+                <td>The name of the provider previously registered</td>
             </tr>
             </table>
 
@@ -245,7 +225,7 @@
                     <table>
                     <tr>
                 <td><a href="http://php.net/LogicException"><abbr title="LogicException">LogicException</abbr></a></td>
-                <td>If no service of this name has been registered</td>
+                <td>If no provider of this name has been registered</td>
             </tr>
             </table>
 
@@ -253,91 +233,31 @@
                     </div>
     </div>
 
-                <h3 id="method_setServiceProvider">
-        <div class="location">at line 119</div>
+                <h3 id="method_setProvider">
+        <div class="location">at line 128</div>
         <code>            public            
-    <strong>setServiceProvider</strong>(string $serviceName, mixed $provider)</code>
+    <strong>setProvider</strong>(string $name, mixed $provider)</code>
     </h3>
     <div class="details">
-        <p>Registers a service.</p>
-        <p>Overwrites any existing service with the same name.</p>
+        <p>Registers a provider.</p>
+        <p>Overwrites any existing service with the same name.<br />
+<br />
+ A provider is an object that is called when it is being accessed by a route.<br />
+ If the object returned by the provider is a derivate of HTTPRequestInterface and/or HTTPResponseInterface, then it will replace the current request and/or response when being accessed for the first time.<br />
+ If the object returned by the provider is a derivate of OutputInterface, then the &quot;output&quot; variable of the scope will be set to this object. If a derivate of OutputInterface has already been accessed, then the route is invalid and an exception will be thrown.</p>
         <div class="tags">
                             <h4>Parameters</h4>
 
                     <table>
                     <tr>
                 <td>string</td>
-                <td>$serviceName</td>
+                <td>$name</td>
                 <td>The name of the service to set (without any &quot;Service&quot; suffix)</td>
             </tr>
                     <tr>
                 <td>mixed</td>
                 <td>$provider</td>
-                <td>A callable accepted by Scope::call which returns an instance of the service</td>
-            </tr>
-            </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-                <h3 id="method_getService">
-        <div class="location">at line 130</div>
-        <code>            public            mixed
-    <strong>getService</strong>(string $serviceName)</code>
-    </h3>
-    <div class="details">
-        <p>Builds a new instance of a service.</p>
-        <p>A new instance will always be created, even if an instance exists somewhere.</p>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table>
-                    <tr>
-                <td>string</td>
-                <td>$serviceName</td>
-                <td>The name of the service to get (without any &quot;Service&quot; suffix)</td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table>
-        <tr>
-            <td>mixed</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-                    </div>
-    </div>
-
-                <h3 id="method_setFilterProvider">
-        <div class="location">at line 152</div>
-        <code>            public            
-    <strong>setFilterProvider</strong>(string $filterName, mixed $provider)</code>
-    </h3>
-    <div class="details">
-        <p>Registers a filter.</p>
-        <p>Overwrites any existing filter with the same name.</p>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table>
-                    <tr>
-                <td>string</td>
-                <td>$filterName</td>
-                <td>The name of the filter to set (without any &quot;Filter&quot; suffix)</td>
-            </tr>
-                    <tr>
-                <td>mixed</td>
-                <td>$provider</td>
-                <td>A callable accepted by Scope::call which returns an instance of the filter</td>
+                <td>A callable accepted by Scope::call which returns an instance of the object</td>
             </tr>
             </table>
 
@@ -348,7 +268,7 @@
     </div>
 
                 <h3 id="method_register">
-        <div class="location">at line 165</div>
+        <div class="location">at line 141</div>
         <code>            public            <a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a>
     <strong>register</strong>(string $url = null, string $method = &#039;.*&#039;, <abbr title="Niysu\callable">callable</abbr> $callback = null)</code>
     </h3>
@@ -401,7 +321,7 @@
     </div>
 
                 <h3 id="method_registerStaticDirectory">
-        <div class="location">at line 176</div>
+        <div class="location">at line 152</div>
         <code>            public            
     <strong>registerStaticDirectory</strong>($path)</code>
     </h3>
@@ -435,7 +355,7 @@
     </div>
 
                 <h3 id="method_redirect">
-        <div class="location">at line 191</div>
+        <div class="location">at line 167</div>
         <code>            public            <a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a>
     <strong>redirect</strong>(string $url, string $method, string $target, <abbr title="Niysu\number">number</abbr> $statusCode = 301)</code>
     </h3>
@@ -484,7 +404,7 @@
     </div>
 
                 <h3 id="method_before">
-        <div class="location">at line 195</div>
+        <div class="location">at line 171</div>
         <code>            public            
     <strong>before</strong>($callable)</code>
     </h3>
@@ -509,7 +429,7 @@
     </div>
 
                 <h3 id="method_buildCollection">
-        <div class="location">at line 199</div>
+        <div class="location">at line 175</div>
         <code>            public            
     <strong>buildCollection</strong>($prefix = &#039;&#039;)</code>
     </h3>
@@ -534,7 +454,7 @@
     </div>
 
                 <h3 id="method_handle">
-        <div class="location">at line 214</div>
+        <div class="location">at line 191</div>
         <code>            public            
     <strong>handle</strong>(<a href="../Niysu/HTTPRequestInterface.html"><abbr title="Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr></a> $input = null, <a href="../Niysu/HTTPResponseInterface.html"><abbr title="Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr></a> $output = null)</code>
     </h3>
@@ -563,19 +483,29 @@
             
             
             
+                            <h4>See also</h4>
+
+                    <table>
+                    <tr>
+                <td>generateQueryScope</td>
+                <td></td>
+            </tr>
+            </table>
+
                     </div>
     </div>
 
                 <h3 id="method_generateQueryScope">
-        <div class="location">at line 262</div>
+        <div class="location">at line 253</div>
         <code>            public            <a href="../Niysu/Scope.html"><abbr title="Niysu\Scope">Scope</abbr></a>
     <strong>generateQueryScope</strong>()</code>
     </h3>
     <div class="details">
         <p>Generates a Scope that contains the variables provided by the server and accessible to a route.</p>
         <p>This scope includes:<br />
-  - services, where each service has a &quot;Service&quot; suffix (eg. if you register a service named &quot;log&quot;, it is accessed by &quot;$logService&quot;)<br />
-  - filters, where each filter has a &quot;Filter&quot; suffix (eg. if you register a filter named &quot;jsonInput&quot;, it is accessed by &quot;$jsonInputFilter&quot;)<br />
+  - providers, where each provider is accessible by its name<br />
+  - $output, initially null but will be set to the first derivate of OutputInterface returned by any provider<br />
+  - $input, initially null but wlil be set to the first derivate of InputInterface whose isValid() function returns true<br />
   - $elapsedTime, a function that returns the number of seconds between the start of the request and the moment when it was called<br />
   - $log, the monolog logger<br />
   - $server, the server</p>
@@ -596,7 +526,7 @@
     </div>
 
                 <h3 id="method_getRoutesList">
-        <div class="location">at line 300</div>
+        <div class="location">at line 293</div>
         <code>            public            array
     <strong>getRoutesList</strong>()</code>
     </h3>
@@ -620,7 +550,7 @@
     </div>
 
                 <h3 id="method_parseClass">
-        <div class="location">at line 316</div>
+        <div class="location">at line 309</div>
         <code>            public            <a href="../Niysu/RoutesCollection.html"><abbr title="Niysu\RoutesCollection">RoutesCollection</abbr></a>
     <strong>parseClass</strong>(string $className, string $prefix = &#039;&#039;)</code>
     </h3>
@@ -662,7 +592,7 @@
     </div>
 
                 <h3 id="method_getRouteByName">
-        <div class="location">at line 328</div>
+        <div class="location">at line 321</div>
         <code>            public            <a href="../Niysu/Route.html"><abbr title="Niysu\Route">Route</abbr></a>
     <strong>getRouteByName</strong>(string $name)</code>
     </h3>
