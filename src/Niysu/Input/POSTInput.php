@@ -1,14 +1,14 @@
 <?php
-namespace Niysu\Filters;
+namespace Niysu\Input;
 
 /**
  * @copyright 	2012 Pierre Krieger <pierre.krieger1708@gmail.com>
  * @license 	MIT http://opensource.org/licenses/MIT
  * @link 		http://github.com/Tomaka17/niysu
  */
-class POSTRequestFilter extends \Niysu\HTTPRequestFilterInterface {
+class POSTInput implements \Niysu\InputInterface {
 	public function __construct(\Niysu\HTTPRequestInterface $request) {
-		parent::__construct($request);
+		$this->request = $request;
 	}
 
 	public function __get($varName) {
@@ -20,14 +20,15 @@ class POSTRequestFilter extends \Niysu\HTTPRequestFilterInterface {
 	}
 	
 	public function isPOSTContentType() {
-		if (substr($this->getContentTypeHeader(), 0, 33) == 'application/x-www-form-urlencoded')
+		$contentType = $this->request->getHeader('Content-Type');
+		if (substr($contentType, 0, 33) == 'application/x-www-form-urlencoded')
 			return true;
 		/*if (substr($this->getContentTypeHeader(), 0, 19) == 'multipart/form-data')
 			return true;*/
 		return false;
 	}
 
-	public function isValidPOSTData() {
+	public function isValid() {
 		if (!$this->isPOSTContentType())
 			return false;
 		
@@ -41,18 +42,11 @@ class POSTRequestFilter extends \Niysu\HTTPRequestFilterInterface {
 	}
 
 	public function getPOSTData() {
-		if (!$this->dataCacheStale)
-			return $this->dataCache;
-
 		$array = [];
-		parse_str($this->getRawData(), $array);
+		parse_str($this->request->getRawData(), $array);
 		return (object)$array;
-
-		$this->dataCacheStale = false;
-		return $this->dataCache;
 	}
 
 
-	private $dataCache;
-	private $dataCacheStale = true;
+	private $request;
 }

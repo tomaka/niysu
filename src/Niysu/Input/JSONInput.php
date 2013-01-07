@@ -1,30 +1,14 @@
 <?php
-namespace Niysu\Filters;
+namespace Niysu\Input;
 
 /**
  * @copyright 	2012 Pierre Krieger <pierre.krieger1708@gmail.com>
  * @license 	MIT http://opensource.org/licenses/MIT
  * @link 		http://github.com/Tomaka17/niysu
  */
-class JSONRequestFilter extends \Niysu\HTTPRequestFilterInterface {
-	/**
-	 * Builds a before function that will check for JSON input.
-	 *
-	 * If the input is not in JSON, will stop the route and send a status code
-	 *
-	 * @param integer 		$errorStatusCode 		Status code to send in case of wrong input
-	 */
-	public static function beforeValidateInput($errorStatusCode = 400) {
-		return function($jsonRequestFilter, $response, &$stopRoute) use ($errorStatusCode) {
-			if (!$jsonRequestFilter->isValidJSON()) {
-				$response->setStatusCode($errorStatusCode);
-				$stopRoute = true;
-			}
-		};
-	}
-
+class JSONInput implements \Niysu\InputInterface {
 	public function __construct(\Niysu\HTTPRequestInterface $request) {
-		parent::__construct($request);
+		$this->request = $request;
 	}
 
 	public function __get($varName) {
@@ -36,7 +20,7 @@ class JSONRequestFilter extends \Niysu\HTTPRequestFilterInterface {
 	}
 	
 	public function isJSONContentType() {
-		$contentType = $this->getContentTypeHeader();
+		$contentType = $this->request->getHeader('Content-Type');
 
 		if (substr($contentType, 0, 16) == 'application/json')
 			return true;
@@ -51,10 +35,7 @@ class JSONRequestFilter extends \Niysu\HTTPRequestFilterInterface {
 		return false;
 	}
 
-	public function isValidJSON() {
-		if (!$this->isJSONContentType())
-			return false;
-		
+	public function isValid() {
 		try {
 			$this->getJSONData();
 			return true;
@@ -65,11 +46,11 @@ class JSONRequestFilter extends \Niysu\HTTPRequestFilterInterface {
 	}
 
 	public function getJSONData() {
-		if (!$this->dataCacheStale)
-			return $this->dataCache;
+		if (!$this->isJSONContentType())
+			throw new \RuntimeException('Content-Type is not JSON');
 
-		$this->dataCache = json_decode($this->getRawData());
-		if ($this->dataCache == null) {
+		$data = json_decode($this->request->getRawData());
+		if ($data == null) {
 			switch (json_last_error()) {
 				case JSON_ERROR_NONE:				break;		// the input data is the null value	; this is legitimate
 				case JSON_ERROR_DEPTH:				throw new \RuntimeException('json_decode() returned JSON_ERROR_DEPTH');
@@ -79,12 +60,10 @@ class JSONRequestFilter extends \Niysu\HTTPRequestFilterInterface {
 				case JSON_ERROR_UTF8:				throw new \RuntimeException('json_decode() returned JSON_ERROR_UTF8');
 			}
 		}
-
-		$this->dataCacheStale = false;
-		return $this->dataCache;
+		
+		return $data;
 	}
 
 
-	private $dataCache;
-	private $dataCacheStale = true;
+	private $request;
 }
