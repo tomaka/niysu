@@ -64,8 +64,8 @@ class TidyResponseFilter implements \Niysu\HTTPResponseInterface {
 	}
 
 	public function appendData($data) {
-		if ($this->enabled)		$this->data .= $data;
-		else					$this->outputResponse->appendData($data);
+		if ($this->enabled && $this->userEnabled)		$this->data .= $data;
+		else											$this->outputResponse->appendData($data);
 	}
 
 	public function setHeader($header, $data) {
