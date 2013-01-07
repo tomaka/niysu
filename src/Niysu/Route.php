@@ -359,6 +359,7 @@ class Route {
 			$url = '/';
 		
 		// checking whether the URL matches
+		$result = null;
 		foreach ($this->urlPatterns as $p) {
 			$result = $p->testURL($url);
 			if (isset($result))
@@ -378,7 +379,7 @@ class Route {
 		$localScope = clone $scope;
 		
 		// adding parts of the URL inside scope
-		if ($result) {
+		if (isset($result)) {
 			foreach ($result as $varName => $value)
 				$localScope->set($varName, $value);
 		}

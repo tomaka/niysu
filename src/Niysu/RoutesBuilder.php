@@ -14,7 +14,7 @@ class RoutesBuilder {
 	 * The routes are created in a child RoutesCollection that is returned by this function.
 	 *
 	 * Recognized tokens are:
-	 *  - @before (both) Name of a function (method or global function) to be called before the handler
+	 *  - @before (both) See description below
 	 *  - @disabled (route only) This route is not created
 	 *  - @method (route only) Pattern of the method to match
 	 *  - @name (route only) Name of the route
@@ -24,7 +24,22 @@ class RoutesBuilder {
 	 *  - @url (route only) Pattern of the URL to match, see register()
 	 *  - @uri (route only) Alias of @url
 	 *
-	 * The first "before" function of the new route collection will create an instance of the class and put it in "$scope->this".
+	 * The first before function of the new route collection will create an instance of the class and put it in $scope->this.
+	 * 
+	 * The @before token has several possible syntaxes:
+	 *  - @before {global_function} {params}
+	 *		where {global_function} is the name of a global function to be called before the handler, and {params} is a JSON array
+	 *  - @before {method} {params}
+	 *		where {method} is the name of a method of the current class to be called before the handler, and {params} is a JSON array
+	 *  - @before {class}::{method} {params}
+	 *		where {class} is a class name, {method} is the name of a method of the class, and {params} is a JSON array
+	 *		the before function will try to find an object whose type is the class, and call the method on it
+	 *  - @before onlyif {anything}
+	 *		where {anything} can be any of the other syntaxes above, and {code} is a status code
+	 *		if the before function returns false, then the route is considered not to match and another route will be tried (isRightResource is set to false)
+	 *  - @before validate {code} {anything}
+	 *		where {anything} can be any of the other syntaxes above, and {code} is a status code
+	 *		if the before function returns false, then the route is stopped and the status code is set to the response (stopRoute is set to true)
 	 *
 	 * @param ReflectionClass 	$reflectionClass 		The class to parse
 	 * @param RoutesCollection 	$parent 				The parent of the collection that will be created
@@ -40,17 +55,8 @@ class RoutesBuilder {
 
 		// handling @before
 		if (isset($classDocComment['before'])) {
-			foreach ($classDocComment['before'] as $before) {
-				if ($reflectionClass->hasMethod($before)) {
-					$reflectionMethod = $reflectionClass->getMethod($before);
-					$newCollection->before(function(Scope $scope) use ($reflectionMethod) {
-						return $scope->call($reflectionMethod->getClosure($scope->this));
-					});
-
-				} else {
-					$newCollection->before($before);
-				}
-			}
+			foreach ($classDocComment['before'] as $before)
+				$newCollection->before(self::buildBeforeFunction($reflectionClass, $before));
 		}
 
 		// handling @prefix
@@ -106,17 +112,8 @@ class RoutesBuilder {
 
 				// setting the before functions
 				if (isset($parameters['before'])) {
-					foreach($parameters['before'] as $before) {
-						if ($reflectionClass->hasMethod($before)) {
-							$reflectionMethod = $reflectionClass->getMethod($before);
-							$route->before(function(Scope $scope) use ($reflectionMethod) {
-								return $scope->call($reflectionMethod->getClosure($scope->this));
-							});
-
-						} else {
-							$route->before($before);
-						}
-					}
+					foreach($parameters['before'] as $before)
+						$route->before(self::buildBeforeFunction($reflectionClass, $before));
 				}
 
 			}
@@ -127,7 +124,61 @@ class RoutesBuilder {
 
 
 
-	
+	/**
+	 */
+	private static function buildBeforeFunction($reflectionClass, $beforeText) {
+		$parts = preg_split('/\\s+/', $beforeText);
+
+		// handling the "onlyif" syntax
+		if ($parts[0] == 'onlyif') {
+			$subFunc = self::buildBeforeFunction($reflectionClass, implode(' ', array_splice($parts, 1)));
+			return function(Scope $scope, &$isRightResource) use ($subFunc) {
+				if (!$scope->call($subFunc))
+					$isRightResource = false;
+			};
+		}
+
+		// handling the "onlyif" syntax
+		if ($parts[0] == 'validate') {
+			$code = $parts[1];
+			if (!is_numeric($code) || $code < 100 || $code >= 1000)
+				throw new \RuntimeException('Invalid status code after "validate"');
+
+			$subFunc = self::buildBeforeFunction($reflectionClass, implode(' ', array_splice($parts, 2)));
+			return function(Scope $scope, &$stopRoute, $response) use ($subFunc, $code) {
+				if (!$scope->call($subFunc)) {
+					$response->setStatusCode($code);
+					$stopRoute = true;
+				}
+			};
+		}
+
+		// handling parameters
+		$parameters = [];
+		if (count($parts) >= 2)
+			$parameters = json_decode($parts[1]);
+
+		// now we are sure that parts[0] is a function name
+		if ($reflectionClass->hasMethod($parts[0])) {
+			// handling method of the class
+			$reflectionMethod = $reflectionClass->getMethod($beforeText);
+			return function(Scope $scope) use ($reflectionMethod) {
+				return $scope->call($reflectionMethod->getClosure($scope->this));
+			};
+
+		} else if (function_exists($parts[0])) {
+			// handling global function case
+			return $beforeText;
+
+		} else if (preg_match('/^(\w+)::(\w+)$/', $parts[0], $matches)) {
+			$matches[1];
+
+		} else {
+			return $beforeText;
+		}
+	}
+
+
 	/**
 	 * Parses a DocComment
 	 *
