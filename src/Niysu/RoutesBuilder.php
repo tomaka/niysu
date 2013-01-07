@@ -39,10 +39,13 @@ class RoutesBuilder {
 	 *		the before function will try to find an object whose type is the class, and call the method on it
 	 *  - @before onlyif {anything}
 	 *		where {anything} can be any of the other syntaxes above, and {code} is a status code
-	 *		if the before function returns false, then the route is considered not to match and another route will be tried (isRightResource is set to false)
+	 *		if the "anything part" returns false, then the route is considered not to match and another route will be tried (isRightResource is set to false)
 	 *  - @before validate {code} {anything}
 	 *		where {anything} can be any of the other syntaxes above, and {code} is a status code
-	 *		if the before function returns false, then the route is stopped and the status code is set to the response (stopRoute is set to true)
+	 *		if the "anything part" returns false, then the route is stopped and the status code is set to the response (stopRoute is set to true)
+	 *  - @before ${varName} = {anything}
+	 *		where {anything} can be any of the other syntaxes above, and {varName} is a status code
+	 *		the variable $varName of the scope will be set to the return value of the "anything part"
 	 *
 	 * @param ReflectionClass 	$reflectionClass 		The class to parse
 	 * @param RoutesCollection 	$parent 				The parent of the collection that will be created
@@ -153,6 +156,15 @@ class RoutesBuilder {
 					$response->setStatusCode($code);
 					$stopRoute = true;
 				}
+			};
+		}
+
+		// handling the "varName = " syntax
+		if (count($parts) >= 2 && $parts[1] == '=' && substr($parts[0], 0, 1) == '$') {
+			$varName = substr($parts[0], 1);
+			$subFunc = self::buildBeforeFunction($reflectionClass, implode(' ', array_splice($parts, 2)));
+			return function(Scope $scope) use ($subFunc, $varName) {
+				$scope->$varName = $scope->call($subFunc);
 			};
 		}
 
