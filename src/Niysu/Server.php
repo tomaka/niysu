@@ -77,6 +77,7 @@ class Server {
 		$this->setProvider('phpExcelOutput', 'Niysu\\Output\\PHPExcelOutput');
 		$this->setProvider('jsonOutput', 'Niysu\\Output\\JSONOutput');
 		$this->setProvider('plainTextOutput', 'Niysu\\Output\\PlainTextOutput');
+		$this->setProvider('redirectionOutput', 'Niysu\\Output\\RedirectionOutput');
 		$this->setProvider('tcpdfOutput', 'Niysu\\Output\\TCPDFOutput');
 		$this->setProvider('twigOutput', 'Niysu\\Output\\TwigOutput');
 		$this->setProvider('xmlOutput', 'Niysu\\Output\\XMLOutput');
