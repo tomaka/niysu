@@ -95,8 +95,8 @@ class Server {
 		foreach ($this->configFunctions as $f) {
 			// building scope for configuration
 			$configScope = $this->scope->newChild();
-			foreach ($this->serviceProviders as $serviceName => $provider)
-				$configScope->set($serviceName.'Provider', $provider);
+			foreach ($this->providers as $name => $provider)
+				$configScope->set($name.'Provider', $provider);
 			$configScope->call($f);
 		}
 	}
