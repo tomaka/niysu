@@ -1,5 +1,5 @@
 <?php
-namespace Niysu\Services;
+namespace Niysu\Filters;
 
 /**
  *
@@ -7,7 +7,7 @@ namespace Niysu\Services;
  * @license 	MIT http://opensource.org/licenses/MIT
  * @link 		http://github.com/Tomaka17/niysu
  */
-class HTTPBasicAuthService {
+class HTTPBasicAuthFilter {
 	public static function beforeMustBeAuthenticated($realm = 'private') {
 		return function($httpBasicAuthService, $request, $response, &$stopRoute) use ($realm) {
 			$statusOnFail = $request->getHeader('X-StatusOnLoginFail');
