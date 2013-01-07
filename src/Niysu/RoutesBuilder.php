@@ -31,6 +31,9 @@ class RoutesBuilder {
 	 *		where {global_function} is the name of a global function to be called before the handler, and {params} is a JSON array
 	 *  - @before {method} {params}
 	 *		where {method} is the name of a method of the current class to be called before the handler, and {params} is a JSON array
+	 *  - @before {class}
+	 *		where {class} is a class name
+	 *		the before function will simply invoke the given class and do nothing
 	 *  - @before {class}::{method} {params}
 	 *		where {class} is a class name, {method} is the name of a method of the class, and {params} is a JSON array
 	 *		the before function will try to find an object whose type is the class, and call the method on it
@@ -169,6 +172,13 @@ class RoutesBuilder {
 		} else if (function_exists($parts[0])) {
 			// handling global function case
 			return $beforeText;
+
+		} else if (class_exists($parts[0])) {
+			// handling single class case
+			$class = $parts[0];
+			return function(Scope $scope) use ($class) {
+				$obj = $scope->getByType($class);
+			};
 
 		} else if (preg_match('/^(\\S+)::(\\w+).*$/', $parts[0], $matches)) {
 			// handling class::method syntax
