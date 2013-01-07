@@ -400,11 +400,19 @@ class Route {
 			if ($localScope->get('isRightResource') === false) {
 				if (isset($scope->log))
 					$scope->log->debug('Route ignored by before function');
+				
+				// pushing back in variables
+				$request = $localScope->request;
+				$response = $localScope->response;
 				return false;
 			}
 			if ($localScope->get('stopRoute') === true) {
 				if (isset($scope->log))
 					$scope->log->debug('Route\'s handler has been stopped by before function');
+
+				// pushing back in variables
+				$request = $localScope->request;
+				$response = $localScope->response;
 				return true;
 			}
 		}
