@@ -138,7 +138,7 @@ class RoutesBuilder {
 			};
 		}
 
-		// handling the "onlyif" syntax
+		// handling the "validate" syntax
 		if ($parts[0] == 'validate') {
 			$code = $parts[1];
 			if (!is_numeric($code) || $code < 100 || $code >= 1000)
