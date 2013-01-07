@@ -156,7 +156,7 @@ class RoutesBuilder {
 		// handling parameters
 		$parameters = [];
 		if (count($parts) >= 2)
-			$parameters = json_decode($parts[1]);
+			$parameters = json_decode(implode(' ', array_splice($parts, 1)));
 
 		// now we are sure that parts[0] is a function name
 		if ($reflectionClass->hasMethod($parts[0])) {
@@ -170,8 +170,15 @@ class RoutesBuilder {
 			// handling global function case
 			return $beforeText;
 
-		} else if (preg_match('/^(\w+)::(\w+)$/', $parts[0], $matches)) {
-			$matches[1];
+		} else if (preg_match('/^(\\S+)::(\\w+).*$/', $parts[0], $matches)) {
+			// handling class::method syntax
+			if (!class_exists($matches[1]))
+				throw new \LogicException('Wrong class name in @before parameter: '.$matches[1]);
+
+			return function(Scope $scope) use ($matches, $parameters) {
+				$obj = $scope->getByType($matches[1]);
+				return call_user_func_array([ $obj, $matches[2] ], $parameters);
+			};
 
 		} else {
 			return $beforeText;
