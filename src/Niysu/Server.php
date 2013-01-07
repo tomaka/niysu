@@ -198,20 +198,32 @@ class Server {
 
 		try {
 			$localScope = $this->generateQueryScope();
+
 			if ($this->routesCollection->handle($input, $output, $localScope)) {
-				// flushing output
-				if ($localScope->output && $localScope->output instanceof \Niysu\OutputInterface)
-					$localScope->output->flush();
-
-				// flush response
-				$output->flush();
-
 				$this->log->debug('Successful handling of resource', [ 'url' => $input->getURL(), 'method' => $input->getMethod() ]);
-				if ($nb = gc_collect_cycles())
-					$this->log->notice('gc_collect_cycles() returned non-zero value: '.$nb);
 
-				return;
+			} else {
+				// handling 404 if we didn't find any handler
+				$this->log->debug('Didn\'t find any route for request', [ 'url' => $input->getURL(), 'method' => $input->getMethod() ]);
+				$this->followPseudoRoute($input, $output, 404, $localScope);
 			}
+
+			// flushing output
+			if (isset($localScope->output) && $localScope->output instanceof OutputInterface) {
+				$this->log->debug('Flushing the OutputInterface object');
+				$localScope->output->flush();
+
+			} else {
+				$this->log->debug('No OutputInterface object has been found');
+			}
+
+			// flush response
+			$this->log->debug('Flushing the updated HTTPResponseInterface (with filters)');
+			$output->flush();
+
+			// gc_collect
+			if ($nb = gc_collect_cycles())
+				$this->log->notice('gc_collect_cycles() returned non-zero value: '.$nb);
 
 		} catch(Exception $exception) {
 			try { $this->log->err($exception->getMessage(), $exception->getTrace()); } catch(\Exception $e) {}
@@ -226,9 +238,6 @@ class Server {
 			}
 		}
 
-		// handling 404 if we didn't find any handler
-		$this->log->debug('Didn\'t find any route for request, going to the 404 route', [ 'url' => $input->getURL(), 'method' => $input->getMethod() ]);
-		$this->followPseudoRoute($input, $output, 404);
 		array_pop($this->currentResponsesStack);
 	}
 
@@ -381,7 +390,7 @@ class Server {
 		}
 	}
 
-	private function followPseudoRoute($request, $response, $code) {
+	private function followPseudoRoute(&$request, &$response, $code, $scope) {
 		$route = new Route('/', '.*', function(HTTPResponseInterface $response) use ($code) {
 			$response->setStatusCode($code);
 		});
@@ -389,8 +398,9 @@ class Server {
 		foreach ($this->routesCollection->getBeforeFunctions() as $r)
 			$route->before($r);
 
-		$route->handleNoURLCheck($request, $response, $this->generateQueryScope());
-		$response->flush();
+		$this->log->debug('Following a pseudo-route that will return a '.$code.' status code');
+
+		$route->handleNoURLCheck($request, $response, $scope);
 	}
 	
 	private function replaceErrorHandling() {
