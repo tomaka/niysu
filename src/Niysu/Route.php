@@ -359,6 +359,7 @@ class Route {
 			$url = '/';
 		
 		// checking whether the URL matches
+		$result = null;
 		foreach ($this->urlPatterns as $p) {
 			$result = $p->testURL($url);
 			if (isset($result))
@@ -378,7 +379,7 @@ class Route {
 		$localScope = clone $scope;
 		
 		// adding parts of the URL inside scope
-		if ($result) {
+		if (isset($result)) {
 			foreach ($result as $varName => $value)
 				$localScope->set($varName, $value);
 		}
@@ -399,11 +400,19 @@ class Route {
 			if ($localScope->get('isRightResource') === false) {
 				if (isset($scope->log))
 					$scope->log->debug('Route ignored by before function');
+				
+				// pushing back in variables
+				$request = $localScope->request;
+				$response = $localScope->response;
 				return false;
 			}
 			if ($localScope->get('stopRoute') === true) {
 				if (isset($scope->log))
 					$scope->log->debug('Route\'s handler has been stopped by before function');
+
+				// pushing back in variables
+				$request = $localScope->request;
+				$response = $localScope->response;
 				return true;
 			}
 		}

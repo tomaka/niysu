@@ -2,7 +2,7 @@
 namespace Niysu\Output;
 
 /**
- * Send CSV data to the response.
+ * Send JSON data to the response.
  *
  * @copyright 	2012 Pierre Krieger <pierre.krieger1708@gmail.com>
  * @license 	MIT http://opensource.org/licenses/MIT
