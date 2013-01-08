@@ -139,8 +139,10 @@ class RoutesBuilder {
 		if ($parts[0] == 'onlyif') {
 			$subFunc = self::buildBeforeFunction($reflectionClass, implode(' ', array_splice($parts, 1)));
 			return function(Scope $scope, &$isRightResource) use ($subFunc) {
-				if (!$scope->call($subFunc))
+				$val = $scope->call($subFunc);
+				if (!$val)
 					$isRightResource = false;
+				return $val;
 			};
 		}
 
@@ -152,10 +154,12 @@ class RoutesBuilder {
 
 			$subFunc = self::buildBeforeFunction($reflectionClass, implode(' ', array_splice($parts, 2)));
 			return function(Scope $scope, &$stopRoute, &$response) use ($subFunc, $code) {
-				if (!$scope->call($subFunc)) {
+				$val = $scope->call($subFunc);
+				if (!$val) {
 					$response->setStatusCode($code);
 					$stopRoute = true;
 				}
+				return $val;
 			};
 		}
 
@@ -164,7 +168,9 @@ class RoutesBuilder {
 			$varName = substr($parts[0], 1);
 			$subFunc = self::buildBeforeFunction($reflectionClass, implode(' ', array_splice($parts, 2)));
 			return function(Scope $scope) use ($subFunc, $varName) {
-				$scope->$varName = $scope->call($subFunc);
+				$val = $scope->call($subFunc);
+				$scope->$varName = $val;
+				return $val;
 			};
 		}
 
