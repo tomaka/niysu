@@ -42,7 +42,8 @@ class AuthService {
 	 * 
 	 * This callback will have access to the scope passed to the constructor.
 	 * It will also have access to the variables "userID" and "access", which are the parameters to test for.
-	 *
+	 * If "userID" is false, this means the guest user.
+	 * 
 	 * The callback should return true if the user has the specified access, or false if it has not.
 	 *
 	 * @param callable 		$callback 		Callback function
@@ -72,7 +73,8 @@ class AuthService {
 	 * 
 	 * This function calls the callback previously set with setAccessTestCallback.
 	 * 
-	 * It is recommended to use URI-like access, eg. "read:/users/1"
+	 * The userID is a value that the login callback returned, or false for the guest user.
+	 * The access can be any string. It is recommended to use URI-like access, eg. "read:/users/1".
 	 * 
 	 * @param mixed 	$userID 	Identifier of the user
 	 * @param string 	$access 	The access to test
