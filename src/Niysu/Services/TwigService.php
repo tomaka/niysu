@@ -13,7 +13,7 @@ namespace Niysu\Services;
  * @link 		http://github.com/Tomaka17/niysu
  */
 class TwigService {
-	public function __construct(\Niysu\Server $server) {
+	public function __construct(\Niysu\Server $server, \Monolog\Logger $log = null) {
 		// creating the loader
 		$this->filesystemLoader = new \Twig_Loader_Filesystem([]);
 		$loader = new \Twig_Loader_Chain([
@@ -26,16 +26,21 @@ class TwigService {
 
 		// the "path" function
 	 	// TODO: log when something wrong happens
-	 	$pathFunction = function($name) use ($server) {
+	 	$pathFunction = function($name, $params = []) use ($server, $log) {
 			$route = $server->getRouteByName($name);
-			if (!$route)	return '';
+			if (!$route) {
+				$log->err('Unable to find route named '.$name.' in Twig template');
+				return '';
+			}
 
 			if (!isset($params) || !is_array($params))
 				$params = [];
 
 			try {
 				return $route->getURL($params);
+
 			} catch(\Exception $e) {
+				$log->err('Unable to build route URL for '.$name.' in Twig template', [ 'params' => $params ]);
 				return '';
 			}
 		};
