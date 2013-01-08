@@ -68,6 +68,7 @@ class Server {
 		$this->setProvider('serverCacheResponseFilter', 'Niysu\\Filters\\ServerCacheResponseFilter');
 		$this->setProvider('sessionFilter', 'Niysu\\Filters\\SessionFilter');
 		$this->setProvider('tidyResponseFilter', 'Niysu\\Filters\\TidyResponseFilter');
+		$this->setProvider('wwwAuthenticateResponseFilter', 'Niysu\\Filters\\WWWAuthenticateResponseFilter');
 
 		$this->setProvider('formInput', 'Niysu\\Input\\FormInput');
 		$this->setProvider('jsonInput', 'Niysu\\Input\\JSONInput');
