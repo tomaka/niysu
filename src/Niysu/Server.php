@@ -45,12 +45,12 @@ class Server {
 		$this->scope->passByRef('log', false);
 		
 		// building default services providers
+		$this->setProvider('authService', 'Niysu\\Services\\AuthService');
 		$this->setProvider('cacheService', 'Niysu\\Services\\CacheService');
 		$this->setProvider('databaseService', 'Niysu\\Services\\DatabaseService');
 		$this->setProvider('databaseProfilingService', 'Niysu\\Services\\DatabaseProfilingService');
 		$this->setProvider('emailService', 'Niysu\\Services\\EmailService');
 		$this->setProvider('formValidationService', 'Niysu\\Services\\FormValidationService');
-		$this->setProvider('httpBasicAuthService', 'Niysu\\Services\\HTTPBasicAuthService');
 		$this->setProvider('maintenanceModeService', 'Niysu\\Services\\MaintenanceModeService');
 		$this->setProvider('resourcesCacheService', 'Niysu\\Services\\ResourcesCacheService');
 		$this->setProvider('sessionService', 'Niysu\\Services\\SessionService');
@@ -63,6 +63,7 @@ class Server {
 		$this->setProvider('errorPagesResponseFilter', 'Niysu\\Filters\\ErrorPagesResponseFilter');
 		$this->setProvider('etagResponseFilter', 'Niysu\\Filters\\ETagResponseFilter');
 		$this->setProvider('formAnalyserResponseFilter', 'Niysu\\Filters\\FormAnalyserResponseFilter');
+		$this->setProvider('httpBasicAuthFilter', 'Niysu\\Filters\\HTTPBasicAuthFilter');
 		$this->setProvider('maintenanceModeResponseFilter', 'Niysu\\Filters\\MaintenanceModeResponseFilter');
 		$this->setProvider('serverCacheResponseFilter', 'Niysu\\Filters\\ServerCacheResponseFilter');
 		$this->setProvider('sessionFilter', 'Niysu\\Filters\\SessionFilter');
