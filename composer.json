@@ -15,7 +15,7 @@
         "jdorn/sql-formatter": "1.1.*",
         "monolog/monolog": "1.2.*",
         "symfony/process": "2.1.*",
-        "twig/twig": "1.*"
+        "twig/twig": "1.12.*"
     },
     "require-dev": {
         "CodePlex/PHPExcel": "1.*"
