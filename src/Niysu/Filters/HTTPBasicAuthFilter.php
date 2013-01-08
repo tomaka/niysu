@@ -8,7 +8,7 @@ namespace Niysu\Filters;
  * @link 		http://github.com/Tomaka17/niysu
  */
 class HTTPBasicAuthFilter extends \Niysu\HTTPRequestFilterInterface {
-	public function __construct(\Niysu\HTTPRequestInterface $request, \Niysu\AuthService $authService, \Monolog\Logger $log = null) {
+	public function __construct(\Niysu\HTTPRequestInterface $request, \Niysu\Services\AuthService $authService, \Monolog\Logger $log = null) {
 		parent::__construct($request);
 		$this->authService = $authService;
 		$this->log = $log;
