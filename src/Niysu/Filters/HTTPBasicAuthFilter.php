@@ -42,6 +42,13 @@ class HTTPBasicAuthFilter extends \Niysu\HTTPRequestFilterInterface {
 		return $this->authService->login([ 'login' => $login, 'password' => $password ]);
 	}
 
+	/**
+	 * Returns whether the current user has the given access.
+	 */
+	public function hasAccess($access) {
+		return $this->authService->hasAccess($this->login(), $access);
+	}
+
 	private $authService;
 	private $log;
 };
