@@ -1,0 +1,28 @@
+{#
+	Copyright 2012 Pierre Krieger
+
+	This code is under MIT license. See the LICENSE file.
+#}
+
+{% extends "@niysuAdminSite/main.htm" %}
+
+{% block body %}
+	{% if route == null %}
+		<h2>Error</h2>
+
+		<em>Could not find route.</em>
+
+	{% else %}
+		<h2>Route analysis</h2>
+
+		<p>Name: {{ route.getName() }}</p>
+
+		{% if route.getURLsCount() >= 1 %}
+			<ul>
+				{% for url in 1..route.getURLsCount() %}
+					<li>{{ route.getOriginalPattern(loop.index0) }}</li>
+				{% endfor %}
+			</ul>
+		{% endif %}
+	{% endif %}
+{% endblock %}
