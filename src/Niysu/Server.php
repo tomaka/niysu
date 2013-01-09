@@ -47,6 +47,7 @@ class Server {
 		// building default services providers
 		$this->setProvider('authService', 'Niysu\\Services\\AuthService');
 		$this->setProvider('cacheService', 'Niysu\\Services\\CacheService');
+		$this->setProvider('databaseSchemaService', 'Niysu\\Services\\DatabaseSchemaService');
 		$this->setProvider('databaseService', 'Niysu\\Services\\DatabaseService');
 		$this->setProvider('databaseProfilingService', 'Niysu\\Services\\DatabaseProfilingService');
 		$this->setProvider('emailService', 'Niysu\\Services\\EmailService');
