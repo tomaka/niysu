@@ -81,7 +81,7 @@ class AuthService {
 	 * @return boolean
 	 */
 	public function hasAccess($userID, $access) {
-		return $this->scope->newChild([ 'userID' => $userID, 'access' => $access ], true, false, true)->call($this->loginCallback);
+		return $this->scope->newChild([ 'userID' => $userID, 'access' => $access ], true, false, true)->call($this->accessCallback);
 	}
 
 

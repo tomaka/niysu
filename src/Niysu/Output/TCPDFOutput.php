@@ -23,7 +23,7 @@ class TCPDFOutput implements \Niysu\OutputInterface {
 	 * Every function call you make is redirected to TCPDF.
 	 */
 	public function __call($function, $arguments) {
-		call_user_func_array([ $this->pdf, $function ], $arguments);
+		return call_user_func_array([ $this->pdf, $function ], $arguments);
 	}
 
 	public function flush() {
