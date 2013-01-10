@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="robots" content="index, follow, all" />
+        <title>Niysu\Filters\HTTPBasicAuthFilter | API</title>
+                    <link rel="stylesheet" type="text/css" href="../../stylesheet.css">
+                            </head>
+        <body id="class">
+            <div class="header">
+        <ul>
+            <li><a href="../../classes.html">Classes</a></li>
+                            <li><a href="../../namespaces.html">Namespaces</a></li>
+                        <li><a href="../../interfaces.html">Interfaces</a></li>
+            <li><a href="../../doc-index.html">Index</a></li>
+            
+        </ul>
+
+        <div id="title">API</div>
+
+            <div class="type">Class</div>
+    <h1><a href="../../Niysu/Filters.html">Niysu\Filters</a>\HTTPBasicAuthFilter</h1>
+    </div>
+        <div class="content">
+                <p>class    <strong>HTTPBasicAuthFilter</strong>        extends <a href="../../Niysu/HTTPRequestFilterInterface.html"><abbr title="Niysu\HTTPRequestFilterInterface">HTTPRequestFilterInterface</abbr></a></p>
+
+    
+    
+    
+            <h2>Methods</h2>
+
+            <table>
+                    <tr>
+                <td class="type">
+                    
+                </td>
+                <td class="last">
+                    <a href="#method___construct">__construct</a>(<abbr title="Niysu\Filters\Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr> $request, <abbr title="Niysu\Filters\Niysu\Services\AuthService">AuthService</abbr> $authService, <abbr title="Niysu\Filters\Monolog\Logger">Logger</abbr> $log = null)
+                    <p>Sets the informations source of this filter.</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    <a href="../../Niysu/HTTPRequestInterface.html"><abbr title="Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr></a>
+                </td>
+                <td class="last">
+                    <a href="#method_getInput">getInput</a>()
+                    <p>Returns the HTTPRequestInterface that was passed to the constructor.</p>
+                </td>
+                <td><small>from&nbsp;<a href="../../Niysu/HTTPRequestFilterInterface.html#method_getInput"><abbr title="Niysu\HTTPRequestFilterInterface">HTTPRequestFilterInterface</abbr></a></small></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    string
+                </td>
+                <td class="last">
+                    <a href="#method_getURL">getURL</a>()
+                    <p>Returns the URL requested by the query, like: /users/5-john-doe</p>
+                </td>
+                <td><small>from&nbsp;<a href="../../Niysu/HTTPRequestFilterInterface.html#method_getURL"><abbr title="Niysu\HTTPRequestFilterInterface">HTTPRequestFilterInterface</abbr></a></small></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    string
+                </td>
+                <td class="last">
+                    <a href="#method_getMethod">getMethod</a>()
+                    <p>Returns the method of the request: GET, POST, PUT, etc.</p>
+                </td>
+                <td><small>from&nbsp;<a href="../../Niysu/HTTPRequestFilterInterface.html#method_getMethod"><abbr title="Niysu\HTTPRequestFilterInterface">HTTPRequestFilterInterface</abbr></a></small></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    string
+                </td>
+                <td class="last">
+                    <a href="#method_getHeader">getHeader</a>(string $header, integer $index)
+                    <p>Returns the value of this header.</p>
+                </td>
+                <td><small>from&nbsp;<a href="../../Niysu/HTTPRequestFilterInterface.html#method_getHeader"><abbr title="Niysu\HTTPRequestFilterInterface">HTTPRequestFilterInterface</abbr></a></small></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    array
+                </td>
+                <td class="last">
+                    <a href="#method_getHeadersList">getHeadersList</a>()
+                    <p>Returns an associative array of header =&gt; value</p>
+                </td>
+                <td><small>from&nbsp;<a href="../../Niysu/HTTPRequestFilterInterface.html#method_getHeadersList"><abbr title="Niysu\HTTPRequestFilterInterface">HTTPRequestFilterInterface</abbr></a></small></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    string
+                </td>
+                <td class="last">
+                    <a href="#method_getRawData">getRawData</a>()
+                    <p>Returns the raw data given with the query.</p>
+                </td>
+                <td><small>from&nbsp;<a href="../../Niysu/HTTPRequestFilterInterface.html#method_getRawData"><abbr title="Niysu\HTTPRequestFilterInterface">HTTPRequestFilterInterface</abbr></a></small></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    boolean
+                </td>
+                <td class="last">
+                    <a href="#method_isHTTPS">isHTTPS</a>()
+                    <p>Returns true if the request is made through HTTPS.</p>
+                </td>
+                <td><small>from&nbsp;<a href="../../Niysu/HTTPRequestFilterInterface.html#method_isHTTPS"><abbr title="Niysu\HTTPRequestFilterInterface">HTTPRequestFilterInterface</abbr></a></small></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    <abbr title="Niysu\Filters\False">False</abbr>
+                </td>
+                <td class="last">
+                    <a href="#method_login">login</a>()
+                    <p></p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    
+                </td>
+                <td class="last">
+                    <a href="#method_hasAccess">hasAccess</a>($access)
+                    <p>Returns whether the current user has the given access.</p>
+                </td>
+                <td></td>
+            </tr>
+            </table>
+
+
+        <h2>Details</h2>
+
+                        <h3 id="method___construct">
+        <div class="location">at line 11</div>
+        <code>            public            
+    <strong>__construct</strong>(<abbr title="Niysu\Filters\Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr> $request, <abbr title="Niysu\Filters\Niysu\Services\AuthService">AuthService</abbr> $authService, <abbr title="Niysu\Filters\Monolog\Logger">Logger</abbr> $log = null)</code>
+    </h3>
+    <div class="details">
+        <p>Sets the informations source of this filter.</p>
+        <p></p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td><abbr title="Niysu\Filters\Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr></td>
+                <td>$request</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Niysu\Filters\Niysu\Services\AuthService">AuthService</abbr></td>
+                <td>$authService</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Niysu\Filters\Monolog\Logger">Logger</abbr></td>
+                <td>$log</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_getInput">
+        <div class="location">in <a href="../../Niysu/HTTPRequestFilterInterface.html#method_getInput"><abbr title="Niysu\HTTPRequestFilterInterface">HTTPRequestFilterInterface</abbr></a> at line 26</div>
+        <code>            public            <a href="../../Niysu/HTTPRequestInterface.html"><abbr title="Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr></a>
+    <strong>getInput</strong>()</code>
+    </h3>
+    <div class="details">
+        <p>Returns the HTTPRequestInterface that was passed to the constructor.</p>
+        <p></p>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td><a href="../../Niysu/HTTPRequestInterface.html"><abbr title="Niysu\HTTPRequestInterface">HTTPRequestInterface</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_getURL">
+        <div class="location">in <a href="../../Niysu/HTTPRequestFilterInterface.html#method_getURL"><abbr title="Niysu\HTTPRequestFilterInterface">HTTPRequestFilterInterface</abbr></a> at line 30</div>
+        <code>            public            string
+    <strong>getURL</strong>()</code>
+    </h3>
+    <div class="details">
+        <p>Returns the URL requested by the query, like: /users/5-john-doe</p>
+        <p></p>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_getMethod">
+        <div class="location">in <a href="../../Niysu/HTTPRequestFilterInterface.html#method_getMethod"><abbr title="Niysu\HTTPRequestFilterInterface">HTTPRequestFilterInterface</abbr></a> at line 34</div>
+        <code>            public            string
+    <strong>getMethod</strong>()</code>
+    </h3>
+    <div class="details">
+        <p>Returns the method of the request: GET, POST, PUT, etc.</p>
+        <p></p>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_getHeader">
+        <div class="location">in <a href="../../Niysu/HTTPRequestFilterInterface.html#method_getHeader"><abbr title="Niysu\HTTPRequestFilterInterface">HTTPRequestFilterInterface</abbr></a> at line 38</div>
+        <code>            public            string
+    <strong>getHeader</strong>(string $header, integer $index)</code>
+    </h3>
+    <div class="details">
+        <p>Returns the value of this header.</p>
+        <p>Returns null if the header has not been set.<br />
+<br />
+ If there are multiple headers with the same name, the $index parameter can specify the index of the value to retreive.</p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td>string</td>
+                <td>$header</td>
+                <td>Header to read</td>
+            </tr>
+                    <tr>
+                <td>integer</td>
+                <td>$index</td>
+                <td>Index of the header</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_getHeadersList">
+        <div class="location">in <a href="../../Niysu/HTTPRequestFilterInterface.html#method_getHeadersList"><abbr title="Niysu\HTTPRequestFilterInterface">HTTPRequestFilterInterface</abbr></a> at line 42</div>
+        <code>            public            array
+    <strong>getHeadersList</strong>()</code>
+    </h3>
+    <div class="details">
+        <p>Returns an associative array of header =&gt; value</p>
+        <p></p>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td>array</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_getRawData">
+        <div class="location">in <a href="../../Niysu/HTTPRequestFilterInterface.html#method_getRawData"><abbr title="Niysu\HTTPRequestFilterInterface">HTTPRequestFilterInterface</abbr></a> at line 46</div>
+        <code>            public            string
+    <strong>getRawData</strong>()</code>
+    </h3>
+    <div class="details">
+        <p>Returns the raw data given with the query.</p>
+        <p></p>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_isHTTPS">
+        <div class="location">in <a href="../../Niysu/HTTPRequestFilterInterface.html#method_isHTTPS"><abbr title="Niysu\HTTPRequestFilterInterface">HTTPRequestFilterInterface</abbr></a> at line 50</div>
+        <code>            public            boolean
+    <strong>isHTTPS</strong>()</code>
+    </h3>
+    <div class="details">
+        <p>Returns true if the request is made through HTTPS.</p>
+        <p></p>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td>boolean</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_login">
+        <div class="location">at line 20</div>
+        <code>            public            <abbr title="Niysu\Filters\False">False</abbr>
+    <strong>login</strong>()</code>
+    </h3>
+    <div class="details">
+        <p></p>
+        <p></p>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td><abbr title="Niysu\Filters\False">False</abbr></td>
+            <td>if the client didn&#039;t provide any username/password, or the result of calling the auth function</td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_hasAccess">
+        <div class="location">at line 48</div>
+        <code>            public            
+    <strong>hasAccess</strong>($access)</code>
+    </h3>
+    <div class="details">
+        <p>Returns whether the current user has the given access.</p>
+        <p></p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td></td>
+                <td>$access</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+    
+            </div>
+            <div id="footer">
+        Generated by <a href="http://sami.sensiolabs.org/" target="_top">Sami, the API Documentation Generator</a>.
+    </div>
+    </body>
+</html>

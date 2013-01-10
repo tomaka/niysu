@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="robots" content="index, follow, all" />
-        <title>Niysu\Output\PHPExcelOutput | API</title>
+        <title>Niysu\Filters\WWWAuthenticateResponseFilter | API</title>
                     <link rel="stylesheet" type="text/css" href="../../stylesheet.css">
                             </head>
         <body id="class">
@@ -19,14 +19,14 @@
         <div id="title">API</div>
 
             <div class="type">Class</div>
-    <h1><a href="../../Niysu/Output.html">Niysu\Output</a>\PHPExcelOutput</h1>
+    <h1><a href="../../Niysu/Filters.html">Niysu\Filters</a>\WWWAuthenticateResponseFilter</h1>
     </div>
         <div class="content">
-                <p>class    <strong>PHPExcelOutput</strong>        implements
-        <a href="../../Niysu/OutputInterface.html"><abbr title="Niysu\OutputInterface">OutputInterface</abbr></a></p>
+                <p>class    <strong>WWWAuthenticateResponseFilter</strong>        implements
+        <a href="../../Niysu/HTTPResponseInterface.html"><abbr title="Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr></a></p>
 
             <div class="description">
-            <p>Allows to easily send Excel documents to the response using PHPExcel.</p>
+            <p>If the response contains a 401 status code, this filter will send along a WWW-Authenticate header</p>
             <p></p>
         </div>
     
@@ -40,7 +40,7 @@
                     
                 </td>
                 <td class="last">
-                    <a href="#method___construct">__construct</a>(<abbr title="Niysu\Output\Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr> $next)
+                    <a href="#method___construct">__construct</a>(<abbr title="Niysu\Filters\Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr> $response)
                     <p></p>
                 </td>
                 <td></td>
@@ -50,18 +50,8 @@
                     
                 </td>
                 <td class="last">
-                    <a href="#method___call">__call</a>($function, $arguments)
-                    <p>Invokes PHPExcel.</p>
-                </td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td class="type">
-                    
-                </td>
-                <td class="last">
-                    <a href="#method_flush">flush</a>()
-                    <p>Sends the response to the HTTPResponseInterface.</p>
+                    <a href="#method_setStatusCode">setStatusCode</a>(integer $statusCode)
+                    <p>Sets the status code to return with the headers.</p>
                 </td>
                 <td></td>
             </tr>
@@ -71,9 +61,9 @@
         <h2>Details</h2>
 
                         <h3 id="method___construct">
-        <div class="location">at line 12</div>
+        <div class="location">at line 14</div>
         <code>            public            
-    <strong>__construct</strong>(<abbr title="Niysu\Output\Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr> $next)</code>
+    <strong>__construct</strong>(<abbr title="Niysu\Filters\Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr> $response)</code>
     </h3>
     <div class="details">
         <p></p>
@@ -83,8 +73,8 @@
 
                     <table>
                     <tr>
-                <td><abbr title="Niysu\Output\Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr></td>
-                <td>$next</td>
+                <td><abbr title="Niysu\Filters\Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr></td>
+                <td>$response</td>
                 <td></td>
             </tr>
             </table>
@@ -95,45 +85,25 @@
                     </div>
     </div>
 
-                <h3 id="method___call">
-        <div class="location">at line 21</div>
+                <h3 id="method_setStatusCode">
+        <div class="location">at line 18</div>
         <code>            public            
-    <strong>__call</strong>($function, $arguments)</code>
+    <strong>setStatusCode</strong>(integer $statusCode)</code>
     </h3>
     <div class="details">
-        <p>Invokes PHPExcel.</p>
-        <p>Every function call you make is redirected to PHPExcel.</p>
+        <p>Sets the status code to return with the headers.</p>
+        <p></p>
         <div class="tags">
                             <h4>Parameters</h4>
 
                     <table>
                     <tr>
-                <td></td>
-                <td>$function</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td></td>
-                <td>$arguments</td>
-                <td></td>
+                <td>integer</td>
+                <td>$statusCode</td>
+                <td>The status code</td>
             </tr>
             </table>
 
-            
-            
-            
-                    </div>
-    </div>
-
-                <h3 id="method_flush">
-        <div class="location">at line 26</div>
-        <code>            public            
-    <strong>flush</strong>()</code>
-    </h3>
-    <div class="details">
-        <p>Sends the response to the HTTPResponseInterface.</p>
-        <p></p>
-        <div class="tags">
             
             
             

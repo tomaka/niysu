@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="robots" content="index, follow, all" />
+        <title>Niysu\Services\AuthService | API</title>
+                    <link rel="stylesheet" type="text/css" href="../../stylesheet.css">
+                            </head>
+        <body id="class">
+            <div class="header">
+        <ul>
+            <li><a href="../../classes.html">Classes</a></li>
+                            <li><a href="../../namespaces.html">Namespaces</a></li>
+                        <li><a href="../../interfaces.html">Interfaces</a></li>
+            <li><a href="../../doc-index.html">Index</a></li>
+            
+        </ul>
+
+        <div id="title">API</div>
+
+            <div class="type">Class</div>
+    <h1><a href="../../Niysu/Services.html">Niysu\Services</a>\AuthService</h1>
+    </div>
+        <div class="content">
+                <p>class    <strong>AuthService</strong></p>
+
+            <div class="description">
+            <p>Class which allows authentication.</p>
+            <p></p>
+        </div>
+    
+    
+    
+            <h2>Methods</h2>
+
+            <table>
+                    <tr>
+                <td class="type">
+                    
+                </td>
+                <td class="last">
+                    <a href="#method___construct">__construct</a>(<abbr title="Niysu\Services\Niysu\Scope">Scope</abbr> $scope = null, <abbr title="Niysu\Services\Monolog\Logger">Logger</abbr> $log = null)
+                    <p>Constructs the AuthService.</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    
+                </td>
+                <td class="last">
+                    <a href="#method_setLoginCallback">setLoginCallback</a>(<abbr title="Niysu\Services\callable">callable</abbr> $callback)
+                    <p>Sets the callback to use when a login attempt is detected.</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    
+                </td>
+                <td class="last">
+                    <a href="#method_setAccessTestCallback">setAccessTestCallback</a>(<abbr title="Niysu\Services\callable">callable</abbr> $callback)
+                    <p>Sets the callback to use when an access request is made.</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    mixed
+                </td>
+                <td class="last">
+                    <a href="#method_login">login</a>(array $data)
+                    <p>Login attempt of a client.</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    boolean
+                </td>
+                <td class="last">
+                    <a href="#method_hasAccess">hasAccess</a>(mixed $userID, string $access)
+                    <p>Tests whether a user has a specific access.</p>
+                </td>
+                <td></td>
+            </tr>
+            </table>
+
+
+        <h2>Details</h2>
+
+                        <h3 id="method___construct">
+        <div class="location">at line 18</div>
+        <code>            public            
+    <strong>__construct</strong>(<abbr title="Niysu\Services\Niysu\Scope">Scope</abbr> $scope = null, <abbr title="Niysu\Services\Monolog\Logger">Logger</abbr> $log = null)</code>
+    </h3>
+    <div class="details">
+        <p>Constructs the AuthService.</p>
+        <p></p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td><abbr title="Niysu\Services\Niysu\Scope">Scope</abbr></td>
+                <td>$scope</td>
+                <td>The scope that will be accessible to callbacks</td>
+            </tr>
+                    <tr>
+                <td><abbr title="Niysu\Services\Monolog\Logger">Logger</abbr></td>
+                <td>$log</td>
+                <td>Logging object</td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_setLoginCallback">
+        <div class="location">at line 36</div>
+        <code>            public            
+    <strong>setLoginCallback</strong>(<abbr title="Niysu\Services\callable">callable</abbr> $callback)</code>
+    </h3>
+    <div class="details">
+        <p>Sets the callback to use when a login attempt is detected.</p>
+        <p>This callback will have access to the scope passed to the constructor.<br />
+ It will also have access to the variables passed to the login() function, ie. usually &quot;login&quot; and &quot;password&quot;.<br />
+<br />
+ The callback should return an ID for the client, or something non-true in case of login failure.</p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td><abbr title="Niysu\Services\callable">callable</abbr></td>
+                <td>$callback</td>
+                <td>Callback function</td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_setAccessTestCallback">
+        <div class="location">at line 51</div>
+        <code>            public            
+    <strong>setAccessTestCallback</strong>(<abbr title="Niysu\Services\callable">callable</abbr> $callback)</code>
+    </h3>
+    <div class="details">
+        <p>Sets the callback to use when an access request is made.</p>
+        <p>This callback will have access to the scope passed to the constructor.<br />
+ It will also have access to the variables &quot;userID&quot; and &quot;access&quot;, which are the parameters to test for.<br />
+ If &quot;userID&quot; is false, this means the guest user.<br />
+ <br />
+ The callback should return true if the user has the specified access, or false if it has not.</p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td><abbr title="Niysu\Services\callable">callable</abbr></td>
+                <td>$callback</td>
+                <td>Callback function</td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_login">
+        <div class="location">at line 67</div>
+        <code>            public            mixed
+    <strong>login</strong>(array $data)</code>
+    </h3>
+    <div class="details">
+        <p>Login attempt of a client.</p>
+        <p>Calls the login callback and returns what the login callback returns.<br />
+ A non-true value (loose comparaison) means that the login failed.<br />
+<br />
+ The parameter must be an associative array. The keys are not specified, but &quot;login&quot; and &quot;password&quot; are recommended if available.<br />
+ The content of this array will be passed to the login function.</p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td>array</td>
+                <td>$data</td>
+                <td>See description</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td>mixed</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_hasAccess">
+        <div class="location">at line 83</div>
+        <code>            public            boolean
+    <strong>hasAccess</strong>(mixed $userID, string $access)</code>
+    </h3>
+    <div class="details">
+        <p>Tests whether a user has a specific access.</p>
+        <p>This function calls the callback previously set with setAccessTestCallback.<br />
+ <br />
+ The userID is a value that the login callback returned, or false for the guest user.<br />
+ The access can be any string. It is recommended to use URI-like access, eg. &quot;read:/users/1&quot;.</p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td>mixed</td>
+                <td>$userID</td>
+                <td>Identifier of the user</td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$access</td>
+                <td>The access to test</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td>boolean</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+    
+            </div>
+            <div id="footer">
+        Generated by <a href="http://sami.sensiolabs.org/" target="_top">Sami, the API Documentation Generator</a>.
+    </div>
+    </body>
+</html>
