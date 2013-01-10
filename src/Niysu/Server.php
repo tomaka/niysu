@@ -67,6 +67,7 @@ class Server {
 		$this->setProvider('maintenanceModeResponseFilter', 'Niysu\\Filters\\MaintenanceModeResponseFilter');
 		$this->setProvider('serverCacheResponseFilter', 'Niysu\\Filters\\ServerCacheResponseFilter');
 		$this->setProvider('sessionFilter', 'Niysu\\Filters\\SessionFilter');
+		$this->setProvider('sessionAuthFilter', 'Niysu\\Filters\\SessionAuthFilter');
 		$this->setProvider('tidyResponseFilter', 'Niysu\\Filters\\TidyResponseFilter');
 		$this->setProvider('wwwAuthenticateResponseFilter', 'Niysu\\Filters\\WWWAuthenticateResponseFilter');
 
