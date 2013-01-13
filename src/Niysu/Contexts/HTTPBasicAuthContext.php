@@ -1,5 +1,5 @@
 <?php
-namespace Niysu\Filters;
+namespace Niysu\Contexts;
 
 /**
  *
@@ -7,7 +7,7 @@ namespace Niysu\Filters;
  * @license 	MIT http://opensource.org/licenses/MIT
  * @link 		http://github.com/Tomaka17/niysu
  */
-class HTTPBasicAuthFilter extends \Niysu\HTTPRequestFilterInterface {
+class HTTPBasicAuthContext extends \Niysu\HTTPRequestFilterInterface {
 	public function __construct(\Niysu\HTTPRequestInterface $request, \Niysu\Services\AuthService $authService, \Monolog\Logger $log = null) {
 		parent::__construct($request);
 		$this->authService = $authService;

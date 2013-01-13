@@ -1,5 +1,5 @@
 <?php
-namespace Niysu\Filters;
+namespace Niysu\Contexts;
 
 /**
  * Trait 
@@ -8,7 +8,7 @@ namespace Niysu\Filters;
  * @license 	MIT http://opensource.org/licenses/MIT
  * @link 		http://github.com/Tomaka17/niysu
  */
-trait AuthFilterTrait {
+trait AuthContextTrait {
 	
 };
 
