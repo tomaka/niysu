@@ -1,5 +1,5 @@
 <?php
-namespace Niysu\Filters;
+namespace Niysu\Contexts;
 
 /**
  * Allows authentication with sessions.
@@ -8,11 +8,11 @@ namespace Niysu\Filters;
  * @license 	MIT http://opensource.org/licenses/MIT
  * @link 		http://github.com/Tomaka17/niysu
  */
-class SessionAuthFilter extends SessionFilter {
-	public function __construct(\Niysu\HTTPRequestInterface $request, \Niysu\SessionFilter $sessionFilter, \Niysu\Services\AuthService $authService, \Monolog\Logger $log = null) {
+class SessionAuthContext extends SessionFilter {
+	public function __construct(\Niysu\HTTPRequestInterface $request, \Niysu\SessionContext $sessionContext, \Niysu\Services\AuthService $authService, \Monolog\Logger $log = null) {
 		parent::__construct($request);
 		$this->authService = $authService;
-		$this->sessionFilter = $sessionFilter;
+		$this->sessionContext = $sessionContext;
 		$this->log = $log;
 	}
 
@@ -20,11 +20,11 @@ class SessionAuthFilter extends SessionFilter {
 	 * @return False if the client didn't provide any username/password, or the result of calling the auth function
 	 */
 	public function login() {
-		if (!$this->sessionFilter->hasSessionLoaded())
+		if (!$this->sessionContext->hasSessionLoaded())
 			return false;
-		if (!isset($this->sessionFilter->userID))
+		if (!isset($this->sessionContext->userID))
 			return false;
-		return $this->sessionFilter->userID;
+		return $this->sessionContext->userID;
 	}
 
 	/**
@@ -35,7 +35,7 @@ class SessionAuthFilter extends SessionFilter {
 	}
 
 	private $authService;
-	private $sessionFilter;
+	private $sessionContext;
 	private $log;
 };
 

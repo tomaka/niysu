@@ -64,13 +64,13 @@ class Server {
 		$this->setProvider('formAnalyserResponseFilter', 'Niysu\\Filters\\FormAnalyserResponseFilter');
 		$this->setProvider('maintenanceModeResponseFilter', 'Niysu\\Filters\\MaintenanceModeResponseFilter');
 		$this->setProvider('serverCacheResponseFilter', 'Niysu\\Filters\\ServerCacheResponseFilter');
-		$this->setProvider('sessionAuthFilter', 'Niysu\\Filters\\SessionAuthFilter');
 		$this->setProvider('tidyResponseFilter', 'Niysu\\Filters\\TidyResponseFilter');
 		$this->setProvider('wwwAuthenticateResponseFilter', 'Niysu\\Filters\\WWWAuthenticateResponseFilter');
 
 		$this->setProvider('cookiesContext', 'Niysu\\Contexts\\CookiesContext');
 		$this->setProvider('httpBasicAuthContext', 'Niysu\\Contexts\\HTTPBasicAuthContext');
 		$this->setProvider('sessionContext', 'Niysu\\Contexts\\SessionContext');
+		$this->setProvider('sessionAuthContext', 'Niysu\\Contexts\\SessionAuthContext');
 
 		$this->setProvider('formInput', 'Niysu\\Input\\FormInput');
 		$this->setProvider('jsonInput', 'Niysu\\Input\\JSONInput');
