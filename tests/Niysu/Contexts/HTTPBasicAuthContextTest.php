@@ -1,13 +1,13 @@
 <?php
-namespace Niysu\Filters;
+namespace Niysu\Contexts;
 
-class HTTPBasicAuthFilterTest extends \PHPUnit_Framework_TestCase {
+class HTTPBasicAuthContextTest extends \PHPUnit_Framework_TestCase {
 	public function testNoAuthorizationHeader() {
 		$authService = $this->getMock('Niysu\\Services\\AuthService');
 		$request = new \Niysu\HTTPRequestCustom('/', 'GET', []);
 
-		$basicAuthFilter = new HTTPBasicAuthFilter($request, $authService);
-		$this->assertFalse($basicAuthFilter->login());
+		$basicAuthContext = new HTTPBasicAuthContext($request, $authService);
+		$this->assertFalse($basicAuthContext->login());
 	}
 
 	public function testWrongAuthorizationHeaderFormat() {
@@ -16,8 +16,8 @@ class HTTPBasicAuthFilterTest extends \PHPUnit_Framework_TestCase {
 			'Authorization' => 'This format is wrong'					// wrong format
 		]);
 
-		$basicAuthFilter = new HTTPBasicAuthFilter($request, $authService);
-		$this->assertFalse($basicAuthFilter->login());
+		$basicAuthContext = new HTTPBasicAuthContext($request, $authService);
+		$this->assertFalse($basicAuthContext->login());
 	}
 	
 	public function testAuthFunctionCalled() {
@@ -32,8 +32,8 @@ class HTTPBasicAuthFilterTest extends \PHPUnit_Framework_TestCase {
 			->with($this->equalTo([ 'login' => 'login', 'password' => 'password' ]))
 			->will($this->returnValue(12));
 
-		$basicAuthFilter = new HTTPBasicAuthFilter($request, $authService);
-		$this->assertEquals(12, $basicAuthFilter->login());
+		$basicAuthContext = new HTTPBasicAuthContext($request, $authService);
+		$this->assertEquals(12, $basicAuthContext->login());
 	}
 
 	/**
@@ -56,8 +56,8 @@ class HTTPBasicAuthFilterTest extends \PHPUnit_Framework_TestCase {
 			->method('hasAccess')
 			->with($this->equalTo(12), $this->equalTo('accessName'));
 
-		$basicAuthFilter = new HTTPBasicAuthFilter($request, $authService);
-		$basicAuthFilter->hasAccess('accessName');
+		$basicAuthContext = new HTTPBasicAuthContext($request, $authService);
+		$basicAuthContext->hasAccess('accessName');
 	}
 };
 
