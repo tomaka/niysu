@@ -52,6 +52,67 @@ class DatabaseSchemaService {
 	 * 
 	 */
 	public function fromDatabase() {
+		// this will contain the final result
+		$result = '';
+
+		// listing sequences
+		foreach ($this->databaseService->query('SELECT * FROM INFORMATION_SCHEMA.SEQUENCES WHERE "sequence_schema" = \'public\'') as $sequence) {
+			$result .= 'CREATE SEQUENCE "'.$sequence['sequence_name'].'"'."\r";
+			$result .= 'INCREMENT '.$sequence['increment'].' MINVALUE '.$sequence['minimum_value'].' MAXVALUE '.$sequence['maximum_value'].' START '.$sequence['start_value'].' CACHE 1';
+			$result .= ';'."\r\r";
+		}
+
+		// listing tables
+		foreach ($this->databaseService->query('SELECT "table_name" FROM INFORMATION_SCHEMA.TABLES WHERE "table_schema" = \'public\' AND "table_type" = \'BASE TABLE\'') as $table) {
+			$result .= 'CREATE TABLE "'.$table['table_name'].'" ('."\r";
+
+			// adding columns
+			foreach ($this->databaseService->query('SELECT "column_name", "data_type", "character_maximum_length", "numeric_precision", "column_default", "is_nullable" = \'YES\' FROM INFORMATION_SCHEMA.COLUMNS WHERE "table_name" = ? ORDER BY "ordinal_position"', [ $table['table_name'] ]) as $column) {
+				$result .= "\t".'"'.$column['column_name'].'" '.$column['data_type'];
+				if ($column['character_maximum_length'])		$result .= '('.$column['character_maximum_length'].')';
+				else if ($column['numeric_precision'])			$result .= '('.$column['numeric_precision'].')';
+				if ($column['column_default'])					$result .= ' DEFAULT '.$column['column_default'];
+				if (!$column['is_nullable'])					$result .= ' NOT NULL';
+				$result .= ','."\r";
+			}
+
+			// primary keys
+			if ($primaryKey = $this->databaseService->query('SELECT c."constraint_name", k."column_name" FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS c LEFT JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE k ON c."constraint_name" = k."constraint_name" WHERE c."table_name" = ? AND c."constraint_type" = \'PRIMARY KEY\'', [ $table['table_name'] ])) {
+				$result .= "\t".'CONSTRAINT "'.$primaryKey[0]['constraint_name'].'" PRIMARY KEY(';
+				$resultKey = '';
+				foreach ($primaryKey as $k)
+					$resultKey .= ($resultKey == '' ? '' : ', ').'"'.$k['column_name'].'"';
+				$result .= $resultKey.'),'."\r";
+			}
+
+			// TODO: foreign keys and checks
+
+			// finishing
+			if (substr($result, -2, 1) == ',')
+				$result = substr($result, 0, -2)."\r";
+			$result .= ');'."\r\r";
+		}
+
+		// listing views
+		foreach ($this->databaseService->query('SELECT "table_name", "view_definition" FROM INFORMATION_SCHEMA.VIEWS WHERE "table_schema" = \'public\'') as $view) {
+			// adding line breaks in the SQL definition
+			$view['view_definition'] = str_replace('WHERE', "\r".'WHERE', $view['view_definition']);
+			$view['view_definition'] = str_replace('UNION', "\r".'UNION', $view['view_definition']);
+			$view['view_definition'] = str_replace('GROUP', "\r".'GROUP', $view['view_definition']);
+			$view['view_definition'] = str_replace('FROM', "\r".'FROM', $view['view_definition']);
+			$view['view_definition'] = str_replace('ORDER', "\r".'ORDER', $view['view_definition']);
+			$view['view_definition'] = str_replace('LEFT', "\r".'LEFT', $view['view_definition']);
+			$view['view_definition'] = str_replace('RIGHT', "\r".'RIGHT', $view['view_definition']);
+			$view['view_definition'] = str_replace('INNER', "\r".'INNER', $view['view_definition']);
+			$view['view_definition'] = str_replace('FULL', "\r".'FULL', $view['view_definition']);
+
+			$result .= 'CREATE VIEW "'.$view['table_name'].'" AS '."\r";
+			$result .= $view['view_definition'];
+			$result .= ';'."\r\r";
+		}
+
+		// finished
+		return $result;
 	}
 
 
