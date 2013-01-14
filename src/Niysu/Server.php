@@ -67,9 +67,9 @@ class Server {
 		$this->setProvider('tidyResponseFilter', 'Niysu\\Filters\\TidyResponseFilter');
 		$this->setProvider('wwwAuthenticateResponseFilter', 'Niysu\\Filters\\WWWAuthenticateResponseFilter');
 
-		$this->setProvider('cookiesContext', 'Niysu\\Filters\\CookiesFilter');
-		$this->setProvider('httpBasicAuthContext', 'Niysu\\Filters\\HTTPBasicAuthFilter');
-		$this->setProvider('sessionContext', 'Niysu\\Filters\\SessionFilter');
+		$this->setProvider('cookiesContext', 'Niysu\\Contexts\\CookiesContext');
+		$this->setProvider('httpBasicAuthContext', 'Niysu\\Contexts\\HTTPBasicAuthContext');
+		$this->setProvider('sessionContext', 'Niysu\\Contexts\\SessionContext');
 
 		$this->setProvider('formInput', 'Niysu\\Input\\FormInput');
 		$this->setProvider('jsonInput', 'Niysu\\Input\\JSONInput');
