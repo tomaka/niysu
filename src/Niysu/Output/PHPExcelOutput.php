@@ -11,30 +11,15 @@ namespace Niysu\Output;
 class PHPExcelOutput implements \Niysu\OutputInterface {
 	public function __construct(\Niysu\HTTPResponseInterface $next) {
 		$this->outputResponse = $next;
-
 		$this->excelDoc = new \PHPExcel();
 	}
 
 	/**
-	 * Changes the value inside a cell
-	 *
-	 * @param string 	$cell 		The cell to change (eg. 'A1')
-	 * @param string 	$value 		New value of the cell (formulas start by '=')
-	 * @param integer 	$sheet 		Numero of the sheet to modify
+	 * Invokes PHPExcel.
+	 * Every function call you make is redirected to PHPExcel.
 	 */
-	public function setCellValue($cell, $value, $sheet = null) {
-		$this->getSheet($sheet)->setCellValue($cell, $value);
-	}
-
-	/**
-	 * Changes the style of a cell
-	 *
-	 * @param string 	$cell 		The cell to change (eg. 'A1')
-	 * @param array 	$style 		New style of the cell
-	 * @param integer 	$sheet 		Numero of the sheet to modify
-	 */
-	public function setCellStyle($cell, $style, $sheet = null) {
-		$this->getSheet($sheet)->getStyle($cell)->applyFromArray($style);
+	public function __call($function, $arguments) {
+		return call_user_func_array([ $this->excelDoc, $function ], $arguments);
 	}
 
 
@@ -49,13 +34,6 @@ class PHPExcelOutput implements \Niysu\OutputInterface {
 		unlink($tempFile);
 	}
 
-
-	private function getSheet($sheet) {
-		if ($sheet === null)
-			return $this->excelDoc->getActiveSheet();
-		// TODO: if not enough sheets, create new ones
-		return $this->excelDoc->getSheet($sheet);
-	}
 
 	private $excelDoc;
 	private $outputResponse;

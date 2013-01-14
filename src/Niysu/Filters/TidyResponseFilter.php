@@ -36,6 +36,20 @@ class TidyResponseFilter implements \Niysu\HTTPResponseInterface {
 	}
 
 	/**
+	 * Enables the Tidy filter.
+	 */
+	public function enable() {
+		$this->userEnabled = true;
+	}
+
+	/**
+	 * Disables the Tidy filter.
+	 */
+	public function disable() {
+		$this->userEnabled = false;
+	}
+
+	/**
 	 * Sets the configuration to use when calling tidy_repair_string()
 	 *
 	 * @param mixed 	$config 	See http://fr2.php.net/manual/fr/tidy.repairstring.php
@@ -50,8 +64,8 @@ class TidyResponseFilter implements \Niysu\HTTPResponseInterface {
 	}
 
 	public function appendData($data) {
-		if ($this->enabled)		$this->data .= $data;
-		else					$this->outputResponse->appendData($data);
+		if ($this->enabled && $this->userEnabled)		$this->data .= $data;
+		else											$this->outputResponse->appendData($data);
 	}
 
 	public function setHeader($header, $data) {
@@ -67,7 +81,7 @@ class TidyResponseFilter implements \Niysu\HTTPResponseInterface {
 	}
 
 	public function flush() {
-		if ($this->enabled)
+		if ($this->enabled && $this->userEnabled)
 			$this->outputResponse->appendData(\tidy_repair_string($this->data, $this->config, 'utf8'));
 		$this->outputResponse->flush();
 
@@ -85,6 +99,7 @@ class TidyResponseFilter implements \Niysu\HTTPResponseInterface {
 
 	private $dataBuffer;
 	private $enabled = false;
+	private $userEnabled = true;
 	private $config = [];
 };
 

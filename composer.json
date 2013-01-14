@@ -12,9 +12,10 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "jdorn/sql-formatter": "1.1.*",
+        "jdorn/sql-formatter": "1.*",
         "monolog/monolog": "1.2.*",
-        "twig/twig": "1.*"
+        "symfony/process": "2.1.*",
+        "twig/twig": "1.12.*"
     },
     "require-dev": {
         "CodePlex/PHPExcel": "1.*"

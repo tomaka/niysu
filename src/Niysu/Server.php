@@ -45,12 +45,12 @@ class Server {
 		$this->scope->passByRef('log', false);
 		
 		// building default services providers
+		$this->setProvider('authService', 'Niysu\\Services\\AuthService');
 		$this->setProvider('cacheService', 'Niysu\\Services\\CacheService');
 		$this->setProvider('databaseService', 'Niysu\\Services\\DatabaseService');
 		$this->setProvider('databaseProfilingService', 'Niysu\\Services\\DatabaseProfilingService');
 		$this->setProvider('emailService', 'Niysu\\Services\\EmailService');
 		$this->setProvider('formValidationService', 'Niysu\\Services\\FormValidationService');
-		$this->setProvider('httpBasicAuthService', 'Niysu\\Services\\HTTPBasicAuthService');
 		$this->setProvider('maintenanceModeService', 'Niysu\\Services\\MaintenanceModeService');
 		$this->setProvider('resourcesCacheService', 'Niysu\\Services\\ResourcesCacheService');
 		$this->setProvider('sessionService', 'Niysu\\Services\\SessionService');
@@ -58,15 +58,18 @@ class Server {
 
 		// building filters
 		$this->setProvider('contentEncodingResponseFilter', 'Niysu\\Filters\\ContentEncodingResponseFilter');
-		$this->setProvider('cookiesFilter', 'Niysu\\Filters\\CookiesFilter');
 		$this->setProvider('debugPanelResponseFilter', 'Niysu\\Filters\\DebugPanelResponseFilter');
 		$this->setProvider('errorPagesResponseFilter', 'Niysu\\Filters\\ErrorPagesResponseFilter');
 		$this->setProvider('etagResponseFilter', 'Niysu\\Filters\\ETagResponseFilter');
 		$this->setProvider('formAnalyserResponseFilter', 'Niysu\\Filters\\FormAnalyserResponseFilter');
 		$this->setProvider('maintenanceModeResponseFilter', 'Niysu\\Filters\\MaintenanceModeResponseFilter');
 		$this->setProvider('serverCacheResponseFilter', 'Niysu\\Filters\\ServerCacheResponseFilter');
-		$this->setProvider('sessionFilter', 'Niysu\\Filters\\SessionFilter');
 		$this->setProvider('tidyResponseFilter', 'Niysu\\Filters\\TidyResponseFilter');
+		$this->setProvider('wwwAuthenticateResponseFilter', 'Niysu\\Filters\\WWWAuthenticateResponseFilter');
+
+		$this->setProvider('cookiesContext', 'Niysu\\Contexts\\CookiesContext');
+		$this->setProvider('httpBasicAuthContext', 'Niysu\\Contexts\\HTTPBasicAuthContext');
+		$this->setProvider('sessionContext', 'Niysu\\Contexts\\SessionContext');
 
 		$this->setProvider('formInput', 'Niysu\\Input\\FormInput');
 		$this->setProvider('jsonInput', 'Niysu\\Input\\JSONInput');
@@ -95,8 +98,8 @@ class Server {
 		foreach ($this->configFunctions as $f) {
 			// building scope for configuration
 			$configScope = $this->scope->newChild();
-			foreach ($this->serviceProviders as $serviceName => $provider)
-				$configScope->set($serviceName.'Provider', $provider);
+			foreach ($this->providers as $name => $provider)
+				$configScope->set($name.'Provider', $provider);
 			$configScope->call($f);
 		}
 	}
@@ -194,26 +197,36 @@ class Server {
 
 		$this->log->debug('Starting handling of resource', [ 'url' => $input->getURL(), 'method' => $input->getMethod() ]);
 
-		$this->currentResponsesStack[] = $output;
-
 		try {
 			$localScope = $this->generateQueryScope();
+
 			if ($this->routesCollection->handle($input, $output, $localScope)) {
-				// flushing output
-				if ($localScope->output && $localScope->output instanceof \Niysu\OutputInterface)
-					$localScope->output->flush();
-
-				// flush response
-				$output->flush();
-
 				$this->log->debug('Successful handling of resource', [ 'url' => $input->getURL(), 'method' => $input->getMethod() ]);
-				if ($nb = gc_collect_cycles())
-					$this->log->notice('gc_collect_cycles() returned non-zero value: '.$nb);
 
-				return;
+			} else {
+				// handling 404 if we didn't find any handler
+				$this->log->debug('Didn\'t find any route for request', [ 'url' => $input->getURL(), 'method' => $input->getMethod() ]);
+				$this->followPseudoRoute($input, $output, 404, $localScope);
 			}
 
-		} catch(Exception $exception) {
+			// flushing output
+			if (isset($localScope->output) && $localScope->output instanceof OutputInterface) {
+				$this->log->debug('Flushing the OutputInterface object');
+				$localScope->output->flush();
+
+			} else {
+				$this->log->debug('No OutputInterface object has been found');
+			}
+
+			// flush response
+			$this->log->debug('Flushing the updated HTTPResponseInterface (with filters)');
+			$output->flush();
+
+			// gc_collect
+			if ($nb = gc_collect_cycles())
+				$this->log->notice('gc_collect_cycles() returned non-zero value: '.$nb);
+
+		} catch(\Exception $exception) {
 			try { $this->log->err($exception->getMessage(), $exception->getTrace()); } catch(\Exception $e) {}
 			if (!$output->isHeadersListSent())
 				$output->setStatusCode(500);
@@ -225,11 +238,6 @@ class Server {
 				$output->flush();
 			}
 		}
-
-		// handling 404 if we didn't find any handler
-		$this->log->debug('Didn\'t find any route for request, going to the 404 route', [ 'url' => $input->getURL(), 'method' => $input->getMethod() ]);
-		$this->followPseudoRoute($input, $output, 404);
-		array_pop($this->currentResponsesStack);
 	}
 
 	/**
@@ -381,7 +389,7 @@ class Server {
 		}
 	}
 
-	private function followPseudoRoute($request, $response, $code) {
+	private function followPseudoRoute(&$request, &$response, $code, $scope) {
 		$route = new Route('/', '.*', function(HTTPResponseInterface $response) use ($code) {
 			$response->setStatusCode($code);
 		});
@@ -389,8 +397,9 @@ class Server {
 		foreach ($this->routesCollection->getBeforeFunctions() as $r)
 			$route->before($r);
 
-		$route->handleNoURLCheck($request, $response, $this->generateQueryScope());
-		$response->flush();
+		$this->log->debug('Following a pseudo-route that will return a '.$code.' status code');
+
+		$route->handleNoURLCheck($request, $response, $scope);
 	}
 	
 	private function replaceErrorHandling() {
@@ -400,15 +409,17 @@ class Server {
 			if ($error != null) {
 				try {
 					$this->log->crit($error['message'], $error);
-					if ($this->printErrors)
-						$this->printError(new \ErrorException($error['message'], 0, $error['type'], $error['file'], $error['line']));
 
-					if (count($this->currentResponsesStack) >= 1) {
-						$response = $this->currentResponsesStack[count($this->currentResponsesStack) - 1];
+					if ($this->printErrors) {
+						$this->printError(new \ErrorException($error['message'], 0, $error['type'], $error['file'], $error['line']));
+						
+					} else {
+						$response = new HTTPResponseGlobal();
 						if (!$response->isHeadersListSent())
 							$response->setStatusCode(500);
 					}
-				} catch(Exception $e) { }
+
+				} catch(\Exception $e) { }
 			}
 		});
 		
@@ -427,11 +438,12 @@ class Server {
 		// changing the handler to be called when an exception is not handled
 		set_exception_handler(function($exception) {
 			try { $this->log->err($exception->getMessage(), $exception->getTrace()); } catch(\Exception $e) {}
-			if ($this->printErrors)
+
+			if ($this->printErrors) {
 				$this->printError($exception);
 
-			if (count($this->currentResponsesStack) >= 1) {
-				$response = $this->currentResponsesStack[count($this->currentResponsesStack) - 1];
+			} else {
+				$response = new HTTPResponseGlobal();
 				if (!$response->isHeadersListSent())
 					$response->setStatusCode(500);
 			}
@@ -492,7 +504,6 @@ class Server {
 	private $routesCollection;					// main RoutesCollection
 	private $configFunctions = [];				// configuration functions (coming from the environment) to call
 	private $providers = [];					// all providers
-	private $currentResponsesStack = [];		// at every call to handle(), the response is pushed on top of this stack, and removed when the handle() is finished
 };
 
 ?>

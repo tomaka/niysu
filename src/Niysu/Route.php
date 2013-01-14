@@ -359,6 +359,7 @@ class Route {
 			$url = '/';
 		
 		// checking whether the URL matches
+		$result = null;
 		foreach ($this->urlPatterns as $p) {
 			$result = $p->testURL($url);
 			if (isset($result))
@@ -378,7 +379,7 @@ class Route {
 		$localScope = clone $scope;
 		
 		// adding parts of the URL inside scope
-		if ($result) {
+		if (isset($result)) {
 			foreach ($result as $varName => $value)
 				$localScope->set($varName, $value);
 		}
@@ -388,10 +389,7 @@ class Route {
 		$localScope->passByRef('request', true);
 		$localScope->set('response', $response);
 		$localScope->passByRef('response', true);
-		$localScope->set('isWrongResource', false);		// DEPRECATED
-		$localScope->set('ignoreHandler', false);		// DEPRECATED
 		$localScope->set('isRightResource', true);
-		$localScope->set('callHandler', true);
 		$localScope->set('stopRoute', false);
 		
 		// calling befores
@@ -399,29 +397,22 @@ class Route {
 			$localScope->call($before);
 
 			// checking controlling variables
-			if ($localScope->get('isWrongResource') === true) {		// DEPRECATED
-				if (isset($scope->log))
-					$scope->log->err('The isWrongResource parameter is deprecated');
-				return false;
-			}
-			if ($localScope->get('ignoreHandler') === true) {			// DEPRECATED
-				if (isset($scope->log))
-					$scope->log->err('The ignoreHandler parameter is deprecated');
-				return true;
-			}
 			if ($localScope->get('isRightResource') === false) {
 				if (isset($scope->log))
-					$scope->log->debug('Route ignored by before handler');
+					$scope->log->debug('Route ignored by before function');
+				
+				// pushing back in variables
+				$request = $localScope->request;
+				$response = $localScope->response;
 				return false;
-			}
-			if ($localScope->get('callHandler') === false) {
-				if (isset($scope->log))
-					$scope->log->debug('Route\'s handler won\'t get called because of before handler');
-				return true;
 			}
 			if ($localScope->get('stopRoute') === true) {
 				if (isset($scope->log))
-					$scope->log->debug('Route\'s handler has been stopped by before handler');
+					$scope->log->debug('Route\'s handler has been stopped by before function');
+
+				// pushing back in variables
+				$request = $localScope->request;
+				$response = $localScope->response;
 				return true;
 			}
 		}

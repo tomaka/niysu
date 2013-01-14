@@ -13,20 +13,41 @@ namespace Niysu\Services;
  * @link 		http://github.com/Tomaka17/niysu
  */
 class TwigService {
-	public function __construct(\Niysu\Server $server) {
-		$this->server = $server;
-
+	public function __construct(\Niysu\Server $server, \Monolog\Logger $log = null) {
+		// creating the loader
 		$this->filesystemLoader = new \Twig_Loader_Filesystem([]);
-
 		$loader = new \Twig_Loader_Chain([
 			$this->filesystemLoader,
 			new \Twig_Loader_String()
 		]);
 
+		// creating twig
 		$this->twig = new \Twig_Environment($loader, [ ]);
 
-		$this->twig->addFunction('path', new \Twig_Function_Function(get_class().'::url'));
-		$this->twig->addFunction('url', new \Twig_Function_Function(get_class().'::url'));
+		// the "path" function
+	 	// TODO: log when something wrong happens
+	 	$pathFunction = function($name, $params = []) use ($server, $log) {
+			$route = $server->getRouteByName($name);
+			if (!$route) {
+				$log->err('Unable to find route named '.$name.' in Twig template');
+				return '';
+			}
+
+			if (!isset($params) || !is_array($params))
+				$params = [];
+
+			try {
+				return $route->getURL($params);
+
+			} catch(\Exception $e) {
+				$log->err('Unable to build route URL for '.$name.' in Twig template', [ 'params' => $params ]);
+				return '';
+			}
+		};
+
+		// registering functions
+		$this->twig->addFunction(new \Twig_SimpleFunction('path', $pathFunction));
+		$this->twig->addFunction(new \Twig_SimpleFunction('url', $pathFunction));
 	}
 
 	public function setCachePath($directory) {
@@ -51,37 +72,13 @@ class TwigService {
 
 	public function render($template, $variables = []) {
 		$template = $this->twig->loadTemplate($template);
-
-		self::$currentServer = $this->server;
 		$result = $template->render($variables);
-		self::$currentServer = null;
-
 		return $result;
-	}
-
-	/**
-	 * @todo Log when something wrong happens
-	 */
-	public static function url($name, $params = null) {
-		$route = self::$currentServer->getRouteByName($name);
-		if (!$route)	return '';
-
-		if (!isset($params) || !is_array($params))
-			$params = [];
-
-		try {
-			return $route->getURL($params);
-		} catch(\Exception $e) {
-			return '';
-		}
 	}
 
 
 	private $twig;
 	private $filesystemLoader;
-	private $server;
-
-	private static $currentServer = null;
 };
 
 ?>

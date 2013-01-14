@@ -49,6 +49,8 @@ class ErrorPagesResponseFilter implements \Niysu\HTTPResponseInterface {
 	}
 
 	public function flush() {
+		$route = null;
+
 		if (!$this->currentReplacement) {
 			if ($this->currentStatusCode >= 400)
 				$route = $this->server->getRouteByName($this->currentStatusCode);
@@ -62,12 +64,22 @@ class ErrorPagesResponseFilter implements \Niysu\HTTPResponseInterface {
 			}
 		}
 
-		if ($route) {
+		if (isset($route)) {
 			if ($this->log)
 				$this->log->debug('ErrorPagesResponseFilter will now replace the response by the route: '.$route->getName());
 
+			$request = $this->request;
 			$response = new StatusCodeOverwriteResponseFilter($this->outputResponse, $this->currentStatusCode);
-			$route->handleNoURLCheck($this->request, $response, $this->server->generateQueryScope());
+			$scope = $this->server->generateQueryScope();
+
+			$route->handleNoURLCheck($request, $response, $scope);
+			if (isset($scope->output) && $scope->output instanceof \Niysu\OutputInterface) {
+				$this->log->debug('Flushing the OutputInterface object from within ErrorPagesResponseFilter');
+				$scope->output->flush();
+			} else {
+				$this->log->debug('No OutputInterface object has been found within ErrorPagesResponseFilter');
+			}
+			$this->log->debug('Flushing the updated HTTPResponseInterface (with filters) from within ErrorPagesResponseFilter');
 			$response->flush();
 
 		} else {
