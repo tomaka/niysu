@@ -1,8 +1,8 @@
 <?php
-namespace Niysu\Filters;
+namespace Niysu\Contexts;
 use org\bovigo\vfs\vfsStream;
 
-class SessionFilterTest extends \PHPUnit_Framework_TestCase {
+class SessionContextTest extends \PHPUnit_Framework_TestCase {
 	private $request;
 	private $response;
 	private $sessionService;
@@ -12,7 +12,7 @@ class SessionFilterTest extends \PHPUnit_Framework_TestCase {
 		$this->request = $this->getMock('\\Niysu\\HTTPRequestInterface');
 		$this->response = $this->getMock('\\Niysu\\HTTPResponseInterface');
 		$this->sessionService = $this->getMockBuilder('\\Niysu\\Services\\SessionService')->disableOriginalConstructor()->getMock();
-		$this->cookiesService = $this->getMockBuilder('\\Niysu\\Filters\\CookiesFilter')->disableOriginalConstructor()->getMock();
+		$this->cookiesService = $this->getMockBuilder('\\Niysu\\Contexts\\CookiesContext')->disableOriginalConstructor()->getMock();
 	}
 
 	/**
@@ -23,10 +23,10 @@ class SessionFilterTest extends \PHPUnit_Framework_TestCase {
 								->with($this->equalTo('session'))
 								->will($this->returnValue(false));
 
-		$sessionFilter = new SessionFilter($this->request, $this->response, $this->sessionService, $this->cookiesService, null);
-		$sessionFilter->setCookieName('session');
+		$sessionContext = new SessionContext($this->request, $this->response, $this->sessionService, $this->cookiesService, null);
+		$sessionContext->setCookieName('session');
 
-		$this->assertFalse($sessionFilter->hasSessionLoaded());
+		$this->assertFalse($sessionContext->hasSessionLoaded());
 	}
 
 	/**
@@ -39,10 +39,10 @@ class SessionFilterTest extends \PHPUnit_Framework_TestCase {
 								->with($this->equalTo('session'))
 								->will($this->returnValue(false));
 
-		$sessionFilter = new SessionFilter($this->request, $this->response, $this->sessionService, $this->cookiesService, null);
-		$sessionFilter->setCookieName('session');
+		$sessionContext = new SessionContext($this->request, $this->response, $this->sessionService, $this->cookiesService, null);
+		$sessionContext->setCookieName('session');
 
-		$sessionFilter->test;
+		$sessionContext->test;
 	}
 
 	/**
@@ -63,10 +63,10 @@ class SessionFilterTest extends \PHPUnit_Framework_TestCase {
 								->with($this->equalTo('testID'))
 								->will($this->returnValue(false));
 
-		$sessionFilter = new SessionFilter($this->request, $this->response, $this->sessionService, $this->cookiesService, null);
-		$sessionFilter->setCookieName('session');
+		$sessionContext = new SessionContext($this->request, $this->response, $this->sessionService, $this->cookiesService, null);
+		$sessionContext->setCookieName('session');
 
-		$this->assertFalse($sessionFilter->hasSessionLoaded());
+		$this->assertFalse($sessionContext->hasSessionLoaded());
 	}
 
 	/**
@@ -89,10 +89,10 @@ class SessionFilterTest extends \PHPUnit_Framework_TestCase {
 								->with($this->equalTo('testID'))
 								->will($this->returnValue(false));
 
-		$sessionFilter = new SessionFilter($this->request, $this->response, $this->sessionService, $this->cookiesService, null);
-		$sessionFilter->setCookieName('session');
+		$sessionContext = new SessionContext($this->request, $this->response, $this->sessionService, $this->cookiesService, null);
+		$sessionContext->setCookieName('session');
 
-		$sessionFilter->test;
+		$sessionContext->test;
 	}
 
 	/**
@@ -118,12 +118,12 @@ class SessionFilterTest extends \PHPUnit_Framework_TestCase {
 								->with($this->equalTo('testID'))
 								->will($this->returnValue([ 'a' => 2 ]));
 
-		$sessionFilter = new SessionFilter($this->request, $this->response, $this->sessionService, $this->cookiesService, null);
-		$sessionFilter->setCookieName('session');
+		$sessionContext = new SessionContext($this->request, $this->response, $this->sessionService, $this->cookiesService, null);
+		$sessionContext->setCookieName('session');
 
-		$this->assertTrue($sessionFilter->hasSessionLoaded());
-		$this->assertEquals('testID', $sessionFilter->getSessionID());
-		$this->assertEquals(2, $sessionFilter->a);
+		$this->assertTrue($sessionContext->hasSessionLoaded());
+		$this->assertEquals('testID', $sessionContext->getSessionID());
+		$this->assertEquals(2, $sessionContext->a);
 	}
 
 	/**
