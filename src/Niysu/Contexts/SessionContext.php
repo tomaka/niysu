@@ -1,25 +1,25 @@
 <?php
-namespace Niysu\Filters;
+namespace Niysu\Contexts;
 
 /**
- * Filter that loads and stores sessions.
+ * Context that loads and stores sessions.
  * 
  * @copyright 	2012 Pierre Krieger <pierre.krieger1708@gmail.com>
  * @license 	MIT http://opensource.org/licenses/MIT
  * @link 		http://github.com/Tomaka17/niysu
  */
-class SessionFilter extends \Niysu\HTTPRequestFilterInterface implements \Niysu\HTTPResponseInterface {
+class SessionContext extends \Niysu\HTTPRequestFilterInterface implements \Niysu\HTTPResponseInterface {
 	use \Niysu\HTTPResponseFilterTrait;
 
 	/**
 	 * Constructor.
 	 */
-	public function __construct(\Niysu\HTTPRequestInterface $request, \Niysu\HTTPResponseInterface $response, \Niysu\Services\SessionService $sessionService, \Niysu\Filters\CookiesFilter $cookiesFilter, \Monolog\Logger $log = null) {
+	public function __construct(\Niysu\HTTPRequestInterface $request, \Niysu\HTTPResponseInterface $response, \Niysu\Services\SessionService $sessionService, \Niysu\Contexts\CookiesContext $cookiesContext, \Monolog\Logger $log = null) {
 		parent::__construct($request);
 		$this->outputResponse = $response;
 
 		$this->sessionService = $sessionService;
-		$this->cookiesFilter = $cookiesFilter;
+		$this->cookiesContext = $cookiesContext;
 		$this->log = $log;
 	}
 
@@ -55,7 +55,7 @@ class SessionFilter extends \Niysu\HTTPRequestFilterInterface implements \Niysu\
 	 */
 	public function __set($varName, $value) {
 		if (!$this->getSessionID())
-			$this->cookiesFilter->{$this->cookieName} = $this->sessionService->generateSessionID();
+			$this->cookiesContext->{$this->cookieName} = $this->sessionService->generateSessionID();
 
 		$v = $this->sessionService[$this->getSessionID()];
 		if (!$v) $v = [];
@@ -77,9 +77,9 @@ class SessionFilter extends \Niysu\HTTPRequestFilterInterface implements \Niysu\
 	 * @return boolean
 	 */
 	public function hasSessionLoaded() {
-		if (!isset($this->cookiesFilter->{$this->cookieName}))
+		if (!isset($this->cookiesContext->{$this->cookieName}))
 			return false;
-		$sessionID = $this->cookiesFilter->{$this->cookieName};
+		$sessionID = $this->cookiesContext->{$this->cookieName};
 		return isset($this->sessionService[$sessionID]);
 	}
 
@@ -91,7 +91,7 @@ class SessionFilter extends \Niysu\HTTPRequestFilterInterface implements \Niysu\
 	public function getSessionID() {
 		if (!$this->hasSessionLoaded())
 			throw new \RuntimeException('No session loaded');
-		return $this->cookiesFilter->{$this->cookieName};
+		return $this->cookiesContext->{$this->cookieName};
 	}
 
 	/**
@@ -105,7 +105,7 @@ class SessionFilter extends \Niysu\HTTPRequestFilterInterface implements \Niysu\
 
 	private $cookieName = 'session';
 	private $sessionService;
-	private $cookiesFilter;
+	private $cookiesContext;
 	private $log;
 };
 

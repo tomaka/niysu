@@ -1,5 +1,5 @@
 <?php
-namespace Niysu\Filters;
+namespace Niysu\Contexts;
 
 /**
  * Reads and/or writes cookies from the request or to the response.
@@ -8,7 +8,7 @@ namespace Niysu\Filters;
  * @license 	MIT http://opensource.org/licenses/MIT
  * @link 		http://github.com/Tomaka17/niysu
  */
-class CookiesFilter extends \Niysu\HTTPRequestFilterInterface implements \Niysu\HTTPResponseInterface {
+class CookiesContext extends \Niysu\HTTPRequestFilterInterface implements \Niysu\HTTPResponseInterface {
 	use \Niysu\HTTPResponseFilterTrait;
 
 	public function __construct(\Niysu\HTTPRequestInterface $request, \Niysu\HTTPResponseInterface $response, \Monolog\Logger $log = null) {

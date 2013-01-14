@@ -59,17 +59,18 @@ class Server {
 
 		// building filters
 		$this->setProvider('contentEncodingResponseFilter', 'Niysu\\Filters\\ContentEncodingResponseFilter');
-		$this->setProvider('cookiesFilter', 'Niysu\\Filters\\CookiesFilter');
 		$this->setProvider('debugPanelResponseFilter', 'Niysu\\Filters\\DebugPanelResponseFilter');
 		$this->setProvider('errorPagesResponseFilter', 'Niysu\\Filters\\ErrorPagesResponseFilter');
 		$this->setProvider('etagResponseFilter', 'Niysu\\Filters\\ETagResponseFilter');
 		$this->setProvider('formAnalyserResponseFilter', 'Niysu\\Filters\\FormAnalyserResponseFilter');
-		$this->setProvider('httpBasicAuthFilter', 'Niysu\\Filters\\HTTPBasicAuthFilter');
 		$this->setProvider('maintenanceModeResponseFilter', 'Niysu\\Filters\\MaintenanceModeResponseFilter');
 		$this->setProvider('serverCacheResponseFilter', 'Niysu\\Filters\\ServerCacheResponseFilter');
-		$this->setProvider('sessionFilter', 'Niysu\\Filters\\SessionFilter');
 		$this->setProvider('tidyResponseFilter', 'Niysu\\Filters\\TidyResponseFilter');
 		$this->setProvider('wwwAuthenticateResponseFilter', 'Niysu\\Filters\\WWWAuthenticateResponseFilter');
+
+		$this->setProvider('cookiesContext', 'Niysu\\Contexts\\CookiesContext');
+		$this->setProvider('httpBasicAuthContext', 'Niysu\\Contexts\\HTTPBasicAuthContext');
+		$this->setProvider('sessionContext', 'Niysu\\Contexts\\SessionContext');
 
 		$this->setProvider('formInput', 'Niysu\\Input\\FormInput');
 		$this->setProvider('jsonInput', 'Niysu\\Input\\JSONInput');
