@@ -78,7 +78,8 @@ class DatabaseSchemaService {
 
 			// primary keys
 			if ($primaryKey = $this->databaseService->query('SELECT c."constraint_name", k."column_name" FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS c LEFT JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE k ON c."constraint_name" = k."constraint_name" WHERE c."table_name" = ? AND c."constraint_type" = \'PRIMARY KEY\'', [ $table['table_name'] ])) {
-				$result .= "\t".'CONSTRAINT "'.$primaryKey[0]['constraint_name'].'" PRIMARY KEY(';
+				$result .= "\t";
+				$result .= ($primaryKey[0]['constraint_name'] ? 'CONSTRAINT "'.$primaryKey[0]['constraint_name'].'" ' : '').'PRIMARY KEY(';
 				$resultKey = '';
 				foreach ($primaryKey as $k)
 					$resultKey .= ($resultKey == '' ? '' : ', ').'"'.$k['column_name'].'"';
@@ -94,7 +95,7 @@ class DatabaseSchemaService {
 		}
 
 		// listing views
-		foreach ($this->databaseService->query('SELECT "table_name", "view_definition" FROM INFORMATION_SCHEMA.VIEWS WHERE "table_schema" = \'public\'') as $view) {
+		foreach ($this->databaseService->query('SELECT "table_schema", "table_name", "view_definition" FROM INFORMATION_SCHEMA.VIEWS WHERE "table_schema" = \'public\'') as $view) {
 			// adding line breaks in the SQL definition
 			$view['view_definition'] = str_replace('WHERE', "\r".'WHERE', $view['view_definition']);
 			$view['view_definition'] = str_replace('UNION', "\r".'UNION', $view['view_definition']);
@@ -106,8 +107,27 @@ class DatabaseSchemaService {
 			$view['view_definition'] = str_replace('INNER', "\r".'INNER', $view['view_definition']);
 			$view['view_definition'] = str_replace('FULL', "\r".'FULL', $view['view_definition']);
 
-			$result .= 'CREATE VIEW "'.$view['table_name'].'" AS '."\r";
+			$result .= 'CREATE VIEW "'.$view['table_schema'].'"."'.$view['table_name'].'" AS '."\r";
 			$result .= $view['view_definition'];
+			$result .= ';'."\r\r";
+		}
+
+		// listing triggers
+		foreach ($this->databaseService->query('SELECT "trigger_name", "action_timing", "event_manipulation", "event_object_schema", "event_object_table", "action_orientation", "action_condition", "action_statement", "action_reference_old_table", "action_reference_old_row", "action_reference_new_table", "action_reference_new_row" FROM INFORMATION_SCHEMA.TRIGGERS WHERE "trigger_schema" = \'public\'') as $trigger) {
+			$result .= 'CREATE TRIGGER "'.$trigger['trigger_name'].'"'."\r";
+			$result .= $trigger['action_timing'].' '.$trigger['event_manipulation'];
+			$result .= ' ON "'.$trigger['event_object_schema'].'"."'.$trigger['event_object_table'].'"'."\r";
+			if ($trigger['action_reference_old_table'] || $trigger['action_reference_old_row'] || $trigger['action_reference_new_table'] || $trigger['action_reference_new_row']) {
+				$result .= 'REFERENCES';
+				if ($trigger['action_reference_old_table'])		$result .= ' OLD TABLE AS "'.$trigger['action_reference_old_table'].'"';
+				if ($trigger['action_reference_new_table'])		$result .= ' NEW TABLE AS "'.$trigger['action_reference_new_table'].'"';
+				if ($trigger['action_reference_old_row'])		$result .= ' OLD ROW AS "'.$trigger['action_reference_old_row'].'"';
+				if ($trigger['action_reference_new_row'])		$result .= ' NEW ROW AS "'.$trigger['action_reference_new_row'].'"';
+			}
+			$result .= 'FOR EACH '.$trigger['action_orientation']."\r";
+			if ($trigger['action_condition'])
+				$result .= 'WHEN '.$trigger['action_condition']."\r";
+			$result .= $trigger['action_statement'];
 			$result .= ';'."\r\r";
 		}
 
