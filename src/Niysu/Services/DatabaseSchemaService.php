@@ -44,6 +44,9 @@ class DatabaseSchemaService {
 			} else if (false) {
 				// handling CREATE INDEX
 
+			} else if (preg_match('/^CREATE\\s+(OR\\s+REPLACE\\s+)?(TEMP(ORARY)?\\s+)?VIEW.*/i', $query)) {
+				// handling CREATE VIEW
+				$this->checkView($query);
 			}
 		}
 	}
@@ -152,6 +155,14 @@ class DatabaseSchemaService {
 			throw new \RuntimeException('Table doesn\'t exist: '.$tableName);
 
 
+	}
+
+
+	private function checkView($sql) {
+		if (!preg_match('/^CREATE\\s+(OR\\s+REPLACE\\s+)?(TEMP(ORARY)?\\s+)?VIEW.*$/i', $query, $matches))
+			$sql = preg_replace('/CREATE/i', 'CREATE OR REPLACE', $sql);
+		
+		$this->databaseService->execute($sql);
 	}
 
 
