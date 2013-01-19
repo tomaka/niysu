@@ -391,15 +391,18 @@ class Route {
 		$localScope->passByRef('response', true);
 		$localScope->set('isRightResource', true);
 		$localScope->set('stopRoute', false);
+
+		// list of function objects to call
+		$toCall = array_merge($this->before, [ $this->callback ], $this->after);
 		
-		// calling befores
-		foreach ($this->before as $before) {
-			$localScope->call($before);
+		// calling functions
+		foreach ($toCall as $f) {
+			$localScope->call($f);
 
 			// checking controlling variables
 			if ($localScope->get('isRightResource') === false) {
 				if (isset($scope->log))
-					$scope->log->debug('Route ignored by before function');
+					$scope->log->debug('Route ignored by function');
 				
 				// pushing back in variables
 				$request = $localScope->request;
@@ -408,22 +411,10 @@ class Route {
 			}
 			if ($localScope->get('stopRoute') === true) {
 				if (isset($scope->log))
-					$scope->log->debug('Route\'s handler has been stopped by before function');
-
-				// pushing back in variables
-				$request = $localScope->request;
-				$response = $localScope->response;
-				return true;
+					$scope->log->debug('Route\'s handler has been stopped by function');
+				break;
 			}
 		}
-		
-		// calling the handler
-		/*$scope->log->debug('Calling handler of route '.$this->getOriginalPattern());*/
-		$localScope->call($this->callback);
-		
-		// calling after
-		foreach ($this->after as $filter)
-			$localScope->call($filter);
 
 		// pushing back in variables
 		$request = $localScope->request;
