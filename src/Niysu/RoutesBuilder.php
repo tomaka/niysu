@@ -176,8 +176,11 @@ class RoutesBuilder {
 
 		// handling parameters
 		$parameters = [];
-		if (count($parts) >= 2)
+		if (count($parts) >= 2) {
 			$parameters = json_decode(implode(' ', array_splice($parts, 1)));
+			if (!$parameters)
+				throw new \LogicException('Error while parsing JSON parameter: '.implode(' ', array_splice($parts, 1)));
+		}
 
 		// now we are sure that parts[0] is a function name
 		if ($reflectionClass->hasMethod($parts[0])) {
