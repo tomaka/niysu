@@ -12,7 +12,14 @@ class POSTInput implements \Niysu\InputInterface {
 	}
 
 	public function __get($varName) {
-		return $this->getPOSTData()->$varName;
+		$data = $this->getPOSTData();
+		if (isset($data->$varName))
+			return $data->$varName;
+
+		if ($f = $this->getFile($varName))
+			return $f;
+
+		return null;
 	}
 	
 	public function __isset($varName) {
@@ -20,8 +27,7 @@ class POSTInput implements \Niysu\InputInterface {
 	}
 
 	public function getFile($fileID) {
-		$g = self::isGlobalRequest($this);
-		if (!$g)
+		if (!self::isGlobalRequest($this->request))
 			return null;
 		if (!isset($_FILES[$fileID]))
 			return null;
@@ -30,6 +36,7 @@ class POSTInput implements \Niysu\InputInterface {
 			'mime' => $_FILES[$fileID]['type'],
 			'name' => $_FILES[$fileID]['name'],
 			'size' => $_FILES[$fileID]['size'],
+			'file' => $_FILES[$fileID]['tmp_name'],
 			'stream' => new \SplFileObject($_FILES[$fileID]['tmp_name'], 'r')
 		];
 	}
@@ -57,9 +64,15 @@ class POSTInput implements \Niysu\InputInterface {
 	}
 
 	public function getPOSTData() {
-		$array = [];
-		parse_str($this->request->getRawData(), $array);
-		return (object)$array;
+		try {
+			$array = [];
+			parse_str($this->request->getRawData(), $array);
+			return (object)$array;
+
+		} catch(\Exception $e) {
+			if (self::isGlobalRequest($this->request))
+				return $_POST;
+		}
 	}
 
 
