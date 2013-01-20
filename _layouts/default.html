@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{% if page.title %}{{ page.title }} - {% endif %}Niysu</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <header>
+    <h1>Niysu</h1>
+
+    <nav id="mainMenu">
+      <ul>
+        <li>Documentation</li>
+        <li><a href="/doc">API</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  {{ content }}
+
+  <footer>
+  </footer>
+
+</body>
+</html>
