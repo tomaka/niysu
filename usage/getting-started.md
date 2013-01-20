@@ -1,6 +1,8 @@
 ---
 layout: default
+title: Getting started
 ---
+
 # README
 
 **Niysu** is a light but flexible and easy to use PHP framework.
