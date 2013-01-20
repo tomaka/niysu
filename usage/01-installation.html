@@ -1,0 +1,31 @@
+---
+layout: usage
+title: 'Installation'
+---
+
+<h2>Installation</h2>
+
+<p>To install Niysu, the first to do is to install <a href="http://getcomposer.org/">composer</a>.
+<strong>Composer</strong> is a dependency manager which allows you to easily install and upgrade any PHP library you depend upon.</p>
+
+<p>Once it is installed, write a <code>composer.json</code> file in the main directory of your website:</p>
+
+<pre class="brush: javascript">
+{
+    "require": {
+    	"tomaka17/niysu": "dev-master"
+    }
+}
+</pre>
+
+<p>This will tell <strong>Composer</strong> that you have a dependency on <strong>Niysu</strong>.</p>
+
+<p>Now open a shell, and type:</p>
+<pre class="brush: bash">composer install</pre>
+
+<p>This will install Niysu and all its dependencies in the <code>vendor</code> directory.</p>
+
+<p>Now to use Niysu in a PHP script, simply add this line at the top of the script:</p>
+<pre class="brush: php">>
+require 'vendor/autoload.php';			// change the path if you are not in the main directory
+</pre>
