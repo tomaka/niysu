@@ -8,11 +8,9 @@ namespace Niysu\Contexts;
  * @license 	MIT http://opensource.org/licenses/MIT
  * @link 		http://github.com/Tomaka17/niysu
  */
-class CookiesContext extends \Niysu\HTTPRequestFilterInterface implements \Niysu\HTTPResponseInterface {
-	use \Niysu\HTTPResponseFilterTrait;
-
+class CookiesContext {
 	public function __construct(\Niysu\HTTPRequestInterface $request, \Niysu\HTTPResponseInterface $response, \Monolog\Logger $log = null) {
-		parent::__construct($request);
+		$this->inputRequest = $request;
 		$this->outputResponse = $response;
 		$this->log = $log;
 		$this->refreshRequestCookies();
@@ -60,7 +58,7 @@ class CookiesContext extends \Niysu\HTTPRequestFilterInterface implements \Niysu
 	}
 
 	/**
-	 * Returns true if this cookie exists in the getInput() or has previously been set.
+	 * Returns true if this cookie exists in the request or has previously been set.
 	 *
 	 * @param string 	$varName 	Name of the cookie to check
 	 * @return boolean
@@ -86,7 +84,7 @@ class CookiesContext extends \Niysu\HTTPRequestFilterInterface implements \Niysu
 	/**
 	 * Reads a cookie.
 	 *
-	 * This function reads a cookie from the getInput().
+	 * This function reads a cookie from the request.
 	 * Returns null if the cookie doesn't exist.
 	 *
 	 * If a cookie of this name has been set using add(), then its value is returned instead.
@@ -108,7 +106,7 @@ class CookiesContext extends \Niysu\HTTPRequestFilterInterface implements \Niysu
 	/**
 	 * Destroys a cookie.
 	 *
-	 * This function will destroy a cookie by sending to the getInput() a expiration date in the past.
+	 * This function will destroy a cookie by sending to the response a expiration date in the past.
 	 * Further attempts to get this cookie using get() will return null.
 	 *
 	 * @param string 	$cookieName 	Name of the cookie to destroy
@@ -166,7 +164,7 @@ class CookiesContext extends \Niysu\HTTPRequestFilterInterface implements \Niysu
 
 		if ($this->outputResponse) {
 			$this->log->debug('Sending cookie '.$name.' set to value: '.$value);
-			if ($this->getInput() && !$this->getInput()->isHTTPS() && $secure)
+			if ($this->inputRequest && !$this->inputRequest->isHTTPS() && $secure)
 				$this->log->notice('Setting a secure cookie not through HTTPS is pointless');
 
 			$this->outputResponse->addHeader('Set-Cookie', $header);
@@ -178,8 +176,8 @@ class CookiesContext extends \Niysu\HTTPRequestFilterInterface implements \Niysu
 	private function refreshRequestCookies() {
 		$this->requestCookies = [];
 
-		if (!$this->getInput()) return;
-		$header = $this->getInput()->getHeader('Cookie');
+		if (!$this->inputRequest) return;
+		$header = $this->inputRequest->getHeader('Cookie');
 		if (!$header) return;
 
 		foreach (explode(';', $header) as $cookie) {
@@ -189,8 +187,10 @@ class CookiesContext extends \Niysu\HTTPRequestFilterInterface implements \Niysu
 	}
 
 
+	private $inputRequest;
+	private $outputResponse;
 	private $log;
-	private $requestCookies = [];			// cookies read from the getInput() ; array of format name => value
+	private $requestCookies = [];			// cookies read from the request ; array of format name => value
 	private $updatedCookies = [];			// same format as $requestCookies but for cookies that have been set by this function
 	private $defaultLifetime = null;		// default lifetime for cookies when expires is null
 };
