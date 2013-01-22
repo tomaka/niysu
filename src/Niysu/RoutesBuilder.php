@@ -28,15 +28,17 @@ class RoutesBuilder {
 	 * 
 	 * The @before token has several possible syntaxes:
 	 *  - @before {global_function} {params}
-	 *		where {global_function} is the name of a global function to be called before the handler, and {params} is a JSON array
+	 *		where {global_function} is the name of a global function to be called before the handler, and {params} can be eval'd as a PHP array
 	 *  - @before {method} {params}
-	 *		where {method} is the name of a method of the current class to be called before the handler, and {params} is a JSON array
+	 *		where {method} is the name of a method of the current class to be called before the handler, and {params} can be eval'd as a PHP array
 	 *  - @before {class}
 	 *		where {class} is a class name
 	 *		the before function will simply invoke the given class and do nothing
 	 *  - @before {class}::{method} {params}
-	 *		where {class} is a class name, {method} is the name of a method of the class, and {params} is a JSON array
+	 *		where {class} is a class name, {method} is the name of a method of the class, and {params} can be eval'd as a PHP array
 	 *		the before function will try to find an object whose type is the class, and call the method on it
+	 *  - @before function({params}) { {php code} }
+	 *		the function and code will be evaled as a PHP closure
 	 *  - @before onlyif {anything}
 	 *		where {anything} can be any of the other syntaxes above, and {code} is a status code
 	 *		if the "anything part" returns false, then the route is considered not to match and another route will be tried (isRightResource is set to false)
@@ -172,6 +174,11 @@ class RoutesBuilder {
 				$scope->$varName = $val;
 				return $val;
 			};
+		}
+
+		// handling the "function(...) { }" syntax
+		if (preg_match('/^\\s*function\\(.*\\)\\s*{.*}$/i', $beforeText, $matches)) {
+			return eval('return '.$beforeText.';');
 		}
 
 		// handling parameters
