@@ -27,16 +27,16 @@ class RoutesBuilder {
 	 * The first before function of the new route collection will create an instance of the class and put it in $scope->this.
 	 * 
 	 * The @before token has several possible syntaxes:
-	 *  - @before {global_function} {params}
-	 *		where {global_function} is the name of a global function to be called before the handler, and {params} can be eval'd as a PHP array
-	 *  - @before {method} {params}
-	 *		where {method} is the name of a method of the current class to be called before the handler, and {params} can be eval'd as a PHP array
+	 *  - @before {global_function}
+	 *		where {global_function} is the name of a global function to be called before the handler
+	 *  - @before {method}
+	 *		where {method} is the name of a method of the current class to be called before the handler
 	 *  - @before {class}
 	 *		where {class} is a class name
 	 *		the before function will simply invoke the given class and do nothing
 	 *  - @before {class}::{method} {params}
 	 *		where {class} is a class name, {method} is the name of a method of the class, and {params} can be eval'd as a PHP array
-	 *		the before function will try to find an object whose type is the class, and call the method on it
+	 *		the before function will try to find in the scope an object whose type is the class, and call the method on it
 	 *  - @before function({params}) { {php code} }
 	 *		the function and code will be evaled as a PHP closure
 	 *  - @before onlyif {anything}
@@ -182,11 +182,12 @@ class RoutesBuilder {
 		}
 
 		// handling parameters
-		$parameters = [];
+		$parameters = function() { return []; };
 		if (count($parts) >= 2) {
-			$parameters = json_decode(implode(' ', array_splice($parts, 1)));
-			if (!$parameters)
-				throw new \LogicException('Error while parsing JSON parameter: '.implode(' ', array_splice($parts, 1)));
+			$phpCode = implode(' ', array_splice($parts, 1));
+			$phpCode = preg_replace('/\\$(\w+)/', '$scope->$1', $phpCode);
+			$phpCode = preg_replace('/\\$\\{\'(\w+)\'\\}/', '$scope->{\'$1\'}', $phpCode);
+			$parameters = eval('return function(\\Niysu\\Scope $scope) { return '.$phpCode.'; };');
 		}
 
 		// now we are sure that parts[0] is a function name
@@ -215,7 +216,10 @@ class RoutesBuilder {
 
 			return function(Scope $scope) use ($matches, $parameters) {
 				$obj = $scope->getByType($matches[1]);
-				return call_user_func_array([ $obj, $matches[2] ], $parameters);
+				$paramsValue = $parameters($scope);
+				if (!is_array($paramsValue))
+					$paramsValue = [ $paramsValue ];
+				return call_user_func_array([ $obj, $matches[2] ], $paramsValue);
 			};
 
 		} else {
