@@ -17,7 +17,7 @@ class SessionAuthContext extends SessionFilter {
 	}
 
 	/**
-	 * @return False if the client didn't provide any username/password, or the result of calling the auth function
+	 * @return boolean False if the client is not currently logged in, otherwise returns the user's ID.
 	 */
 	public function login() {
 		if (!$this->sessionContext->hasSessionLoaded())
@@ -29,10 +29,35 @@ class SessionAuthContext extends SessionFilter {
 
 	/**
 	 * Returns whether the current user has the given access.
+	 * @return boolean
 	 */
 	public function hasAccess($access) {
 		return $this->authService->hasAccess($this->login(), $access);
 	}
+
+	/**
+	 * Sets the login and password when the client sends them.
+	 * @return boolean The UserID (returned by AuthService's login function) or false.
+	 */
+	public function setLogin($login, $password) {
+		if (!isset($login) && !isset($password)) {
+			unset($this->sessionContext->userID);
+			return false;
+		}
+
+		if ($id = $this->authService->login([ 'login' => $login, 'password' => $password ]))
+			$this->sessionContext->userID = $id;
+		return $id;
+	}
+
+	/**
+	 * 
+	 */
+	public function clearLogin() {
+		$this->setLogin(null, null);
+	}
+
+
 
 	private $authService;
 	private $sessionContext;
