@@ -194,8 +194,10 @@ class DatabaseService {
 		} catch(\Exception $e) {}
 
 		$before = microtime(true);
-		$this->databasePDO = new \PDO($this->dsn, $this->username, $this->password);
-		$this->databasePDO->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+		$this->databasePDO = new \PDO($this->dsn, $this->username, $this->password, [
+			\PDO::ATTR_PERSISTENT => true,
+			\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION
+		]);
 
 		if ($this->databaseProfilingService)
 			$this->databaseProfilingService->signalConnection($this->dsn, round(1000 * (microtime(true) - $before)));
