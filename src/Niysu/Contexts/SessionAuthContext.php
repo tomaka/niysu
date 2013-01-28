@@ -8,9 +8,8 @@ namespace Niysu\Contexts;
  * @license 	MIT http://opensource.org/licenses/MIT
  * @link 		http://github.com/Tomaka17/niysu
  */
-class SessionAuthContext extends SessionFilter {
-	public function __construct(\Niysu\HTTPRequestInterface $request, \Niysu\SessionContext $sessionContext, \Niysu\Services\AuthService $authService, \Monolog\Logger $log = null) {
-		parent::__construct($request);
+class SessionAuthContext {
+	public function __construct(\Niysu\SessionContext $sessionContext, \Niysu\Services\AuthService $authService, \Monolog\Logger $log = null) {
 		$this->authService = $authService;
 		$this->sessionContext = $sessionContext;
 		$this->log = $log;
