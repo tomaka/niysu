@@ -70,6 +70,7 @@ class Server {
 		$this->setProvider('cookiesContext', 'Niysu\\Contexts\\CookiesContext');
 		$this->setProvider('httpBasicAuthContext', 'Niysu\\Contexts\\HTTPBasicAuthContext');
 		$this->setProvider('sessionContext', 'Niysu\\Contexts\\SessionContext');
+		$this->setProvider('sessionAuthContext', 'Niysu\\Contexts\\SessionAuthContext');
 
 		$this->setProvider('formInput', 'Niysu\\Input\\FormInput');
 		$this->setProvider('jsonInput', 'Niysu\\Input\\JSONInput');
