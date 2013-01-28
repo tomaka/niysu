@@ -9,7 +9,7 @@ namespace Niysu\Contexts;
  * @link 		http://github.com/Tomaka17/niysu
  */
 class SessionAuthContext {
-	public function __construct(\Niysu\SessionContext $sessionContext, \Niysu\Services\AuthService $authService, \Monolog\Logger $log = null) {
+	public function __construct(\Niysu\Contexts\SessionContext $sessionContext, \Niysu\Services\AuthService $authService, \Monolog\Logger $log = null) {
 		$this->authService = $authService;
 		$this->sessionContext = $sessionContext;
 		$this->log = $log;
