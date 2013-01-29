@@ -89,7 +89,9 @@ class RoutesBuilder {
 				if (isset($parameters['disabled']))
 					continue;
 
-				$route = $newCollection->register($parameters['url']);
+				// building the route
+				if (isset($parameters['url']))		$route = $newCollection->register($parameters['url']);
+				else 								$route = $newCollection->register();
 
 				// setting name of the route
 				if (isset($parameters['name'])) {
