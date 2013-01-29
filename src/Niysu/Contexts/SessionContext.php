@@ -46,15 +46,16 @@ class SessionContext {
 	 * @param mixed 	$value 		Value
 	 */
 	public function __set($varName, $value) {
-		if (!$this->hasSessionLoaded())
-			$this->cookiesContext->{$this->cookieName} = $this->sessionService->generateSessionID();
+		if (!$this->hasSessionLoaded()) {
+			$newID = $this->sessionService->generateSessionID();
+			$this->cookiesContext->{$this->cookieName} = $newID;
+			$this->sessionService[$newID] = [];
+		}
 
 		$v = $this->sessionService[$this->getSessionID()];
-		
-		if (!$v) $v = [];
+		if (!$v) 				$v = [];
 		if ($value === null)	unset($v[$varName]);
 		else 					$v[$varName] = $value;
-
 		$this->sessionService[$this->getSessionID()] = $v;
 	}
 
