@@ -31,14 +31,11 @@ class SessionContext {
 	 * Returns the value of a variable in the current session.
 	 * @param string 	$varName 	Name of the variable to retreive
 	 * @return mixed
-	 * @throws RuntimeException If the variable doesn't exist or if no session is started
 	 */
 	public function __get($varName) {
 		if (!$this->hasSessionLoaded())
-			throw new \RuntimeException('No session is currently started');
+			return null;
 		$val = $this->sessionService[$this->getSessionID()];
-		if (!isset($val[$varName]))
-			throw new \RuntimeException('Variable doesn\'t exist in the current session');
 		return $val[$varName];
 	}
 
@@ -49,13 +46,15 @@ class SessionContext {
 	 * @param mixed 	$value 		Value
 	 */
 	public function __set($varName, $value) {
-		if (!$this->getSessionID())
+		if (!$this->hasSessionLoaded())
 			$this->cookiesContext->{$this->cookieName} = $this->sessionService->generateSessionID();
 
 		$v = $this->sessionService[$this->getSessionID()];
+		
 		if (!$v) $v = [];
 		if ($value === null)	unset($v[$varName]);
 		else 					$v[$varName] = $value;
+
 		$this->sessionService[$this->getSessionID()] = $v;
 	}
 
