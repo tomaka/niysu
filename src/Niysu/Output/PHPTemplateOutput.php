@@ -34,6 +34,17 @@ class PHPTemplateOutput implements \Niysu\OutputInterface {
 		$this->template = $template;
 	}
 
+	/**
+	 * Sets the file to load the template from.
+	 *
+	 * @param string 	$file 		Path to the file which contains the template
+	 */
+	public function setTemplateFile($file) {
+		if (!file_exists($file))
+			throw new \LogicException('Template file doesn\'t exist');
+		$this->template = file_get_contents($file);
+	}
+
 
 	private $outputResponse;
 	private $scope;
