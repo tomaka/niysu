@@ -52,6 +52,7 @@ class Server {
 		$this->setProvider('emailService', 'Niysu\\Services\\EmailService');
 		$this->setProvider('formValidationService', 'Niysu\\Services\\FormValidationService');
 		$this->setProvider('maintenanceModeService', 'Niysu\\Services\\MaintenanceModeService');
+		$this->setProvider('phpTemplateService', 'Niysu\\Services\\PHPTemplateService');
 		$this->setProvider('resourcesCacheService', 'Niysu\\Services\\ResourcesCacheService');
 		$this->setProvider('sessionService', 'Niysu\\Services\\SessionService');
 		$this->setProvider('xsltService', 'Niysu\\Services\\XSLTService');
@@ -82,6 +83,7 @@ class Server {
 		$this->setProvider('phpExcelOutput', 'Niysu\\Output\\PHPExcelOutput');
 		$this->setProvider('jsonOutput', 'Niysu\\Output\\JSONOutput');
 		$this->setProvider('plainTextOutput', 'Niysu\\Output\\PlainTextOutput');
+		$this->setProvider('phpTemplateOutput', 'Niysu\\Output\\PHPTemplateOutput');
 		$this->setProvider('redirectionOutput', 'Niysu\\Output\\RedirectionOutput');
 		$this->setProvider('tcpdfOutput', 'Niysu\\Output\\TCPDFOutput');
 		$this->setProvider('twigOutput', 'Niysu\\Output\\TwigOutput');
