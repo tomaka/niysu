@@ -13,6 +13,26 @@ class PHPTemplateService {
 	}
 
 	public function render($template, \Niysu\Scope $scope) {
+		$compiledPHP = $this->compileTemplate($template);
+
+		try {
+			$currentObNestLevel = ob_get_level();
+			call_user_func(function() use ($compiledPHP, $scope) {
+				eval('unset($compiledPHP);?>'.$compiledPHP);
+			});
+			while (ob_get_level() > $currentObNestLevel)
+				ob_end_flush();
+
+		} catch(\Exception $e) {
+			while (ob_get_level() > $currentObNestLevel)
+				ob_end_flush();
+			throw $e;
+		}
+	}
+
+
+
+	private function compileTemplate($template) {
 		$tokens = token_get_all($template);
 
 		$compiledPHP = '';
@@ -37,21 +57,8 @@ class PHPTemplateService {
 			}
 		}
 
-		try {
-			$currentObNestLevel = ob_get_level();
-			call_user_func(function() use ($compiledPHP, $scope) {
-				eval('unset($compiledPHP);?>'.$compiledPHP);
-			});
-			while (ob_get_level() > $currentObNestLevel)
-				ob_end_flush();
-
-		} catch(\Exception $e) {
-			while (ob_get_level() > $currentObNestLevel)
-				ob_end_flush();
-			throw $e;
-		}
+		return $compiledPHP;
 	}
-
 };
 
 ?>
