@@ -22,7 +22,7 @@ class PHPTemplateOutput implements \Niysu\OutputInterface {
 			throw new \LogicException('The PHP template to use has not been set');
 
 		$this->outputResponse->setHeader('Content-Type', 'text/html; charset=utf8');
-		$this->outputResponse->appendData($this->phpTemplateService->render($this->template, $this->scope));
+		$this->phpTemplateService->render($this->template, $this->scope, function($data) { $this->outputResponse->appendData($data); });
 	}
 
 	/**

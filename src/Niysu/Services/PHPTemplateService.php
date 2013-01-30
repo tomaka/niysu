@@ -12,22 +12,45 @@ class PHPTemplateService {
 	public function __construct(\Niysu\Server $server, \Monolog\Logger $log = null) {
 	}
 
-	public function render($template, \Niysu\Scope $scope) {
+	/**
+	 * Processes a template.
+	 *
+	 * This function doesn't return anything but calls the third parameter with data as first parameter.
+	 *
+	 * @param string $template 				PHP source code to process as a template
+	 * @param Scope $scope 					The scope that will be used to read variables from
+	 * @param callable $outputFunction 		Function that will be called to output the result
+	 */
+	public function render($template, \Niysu\Scope $scope, $outputFunction) {
 		$compiledPHP = $this->compileTemplate($template);
 
+		ob_start();
+		$currentObNestLevel = ob_get_level();
+
 		try {
-			$currentObNestLevel = ob_get_level();
+			// executing the template
 			call_user_func(function() use ($compiledPHP, $scope) {
 				eval('unset($compiledPHP);?>'.$compiledPHP);
 			});
-			while (ob_get_level() > $currentObNestLevel)
-				ob_end_flush();
 
 		} catch(\Exception $e) {
 			while (ob_get_level() > $currentObNestLevel)
 				ob_end_flush();
+			ob_end_clean();
 			throw $e;
 		}
+
+		// closing all inner output buffers
+		while (ob_get_level() > $currentObNestLevel)
+			ob_end_flush();
+		if (ob_get_level() != $currentObNestLevel)
+			throw new \RuntimeException('Template called ob_end_clean or ob_end_flush too many times');
+
+		// final output
+		$content = ob_get_contents();
+		ob_end_clean();
+		if ($content)
+			$outputFunction($content);
 	}
 
 
@@ -51,6 +74,9 @@ class PHPTemplateService {
 
 			} else if ($token[0] == T_VARIABLE) {
 				$compiledPHP .= '$scope->'.substr($token[1], 1);
+
+			} else if ($token[0] == T_STRING && $token[1] == 'flush') {
+				$compiledPHP .= $token[1];
 
 			} else {
 				$compiledPHP .= $token[1];
