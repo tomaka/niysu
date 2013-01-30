@@ -41,7 +41,7 @@ class PHPTemplateOutput implements \Niysu\OutputInterface {
 	 */
 	public function setTemplateFile($file) {
 		if (!file_exists($file))
-			throw new \LogicException('Template file doesn\'t exist');
+			throw new \LogicException('Template file doesn\'t exist: '.$file);
 		$this->template = file_get_contents($file);
 	}
 
