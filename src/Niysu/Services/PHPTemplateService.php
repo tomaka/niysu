@@ -10,6 +10,8 @@ namespace Niysu\Services;
  */
 class PHPTemplateService {
 	public function __construct(\Niysu\Server $server, \Monolog\Logger $log = null) {
+		$this->server = $server;
+		$this->log = $log;
 	}
 
 	/**
@@ -28,8 +30,42 @@ class PHPTemplateService {
 		$currentObNestLevel = ob_get_level();
 
 		try {
-			// executing the template
-			call_user_func(function() use ($compiledPHP, $scope) {
+			// defining all functions accessible from within the template
+			// flush
+			$_niysu_function_flush = function() use ($outputFunction) {
+				ob_end_flush();
+				$content = ob_get_contents();
+				ob_end_clean();
+				$outputFunction($content);
+				ob_start();
+				ob_start(function($str) { return htmlentities($str); });
+			};
+
+			// path
+			$_niysu_function_path = function($name, $params = []) {
+				$route = $this->server->getRouteByName($name);
+				if (!$route) {
+					if ($this->log)
+						$this->log->err('Unable to find route named '.$name.' in PHP template');
+					return '';
+				}
+
+				if (!isset($params) || !is_array($params))
+					$params = [];
+
+				try {
+					return $route->getURL($params);
+
+				} catch(\Exception $e) {
+					$this->log->err('Unable to build route URL for '.$name.' in PHP template', [ 'params' => $params ]);
+					return '';
+				}
+			};
+
+			// we'll execute the template in an isolated scope
+			call_user_func(function() use ($compiledPHP, $scope, $_niysu_function_flush, $_niysu_function_path) {
+
+				// executing the template
 				eval('unset($compiledPHP);?>'.$compiledPHP);
 			});
 
@@ -75,8 +111,11 @@ class PHPTemplateService {
 			} else if ($token[0] == T_VARIABLE) {
 				$compiledPHP .= '$scope->'.substr($token[1], 1);
 
-			} else if ($token[0] == T_STRING && $token[1] == 'flush') {
-				$compiledPHP .= $token[1];
+			} else if ($token[0] == T_STRING && ($token[1] == 'flush' || $token[1] == 'path')) {
+				$compiledPHP .= '$_niysu_function_'.$token[1];
+
+			} else if ($token[0] == T_STRING && substr($token[1], 0, 3) == 'ob_') {
+				throw new \LogicException('Output buffer functions are not available in PHP templates');
 
 			} else {
 				$compiledPHP .= $token[1];
@@ -85,6 +124,10 @@ class PHPTemplateService {
 
 		return $compiledPHP;
 	}
+
+
+	private $server;
+	private $log;
 };
 
 ?>
