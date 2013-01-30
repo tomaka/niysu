@@ -21,8 +21,17 @@ class PHPTemplateOutput implements \Niysu\OutputInterface {
 		if (!$this->template)
 			throw new \LogicException('The PHP template to use has not been set');
 
-		$this->outputResponse->setHeader('Content-Type', 'text/html; charset=utf8');
+		$this->outputResponse->setHeader('Content-Type', $contentType);
 		$this->phpTemplateService->render($this->template, $this->scope, function($data) { $this->outputResponse->appendData($data); });
+	}
+
+	/**
+	 * Sets the content type to use on output.
+	 *
+	 * @param string $contentType 	MIME type of the output
+	 */
+	public function setContentType($contentType) {
+		$this->contentType = $contentType;
 	}
 
 	/**
@@ -48,7 +57,8 @@ class PHPTemplateOutput implements \Niysu\OutputInterface {
 
 	private $outputResponse;
 	private $scope;
-	private $template = null;
+	private $template;
+	private $contentType = 'text/html; charset=utf8';
 	private $phpTemplateService;
 }
 
