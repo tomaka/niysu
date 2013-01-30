@@ -26,15 +26,21 @@ class DebugPanelResponseFilter implements \Niysu\HTTPResponseInterface {
 	}
 
 	public function setHeader($header, $value) {
-		if (strtolower($header) == 'content-type')
+		if (strcasecmp($header, 'Content-Type') == 0)
 			$this->goodContentType = self::testContentType($value);
 		$this->outputResponse->setHeader($header, $value);
 	}
 
 	public function addHeader($header, $value) {
-		if (strtolower($header) == 'content-type')
+		if (strcasecmp($header, 'Content-Type') == 0)
 			$this->goodContentType = self::testContentType($value);
 		$this->outputResponse->addHeader($header, $value);
+	}
+
+	public function removeHeader($header) {
+		if (strcasecmp($header, 'Content-Type') == 0)
+			$this->goodContentType = false;
+		$this->outputResponse->removeHeader($header);
 	}
 
 	public function appendData($data) {
