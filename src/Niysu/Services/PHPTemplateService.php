@@ -33,7 +33,6 @@ class PHPTemplateService {
 				$compiledPHP .= '$scope->'.substr($token[1], 1);
 
 			} else {
-				var_dump(token_name($token[0]).' '.$token[1]);
 				$compiledPHP .= $token[1];
 			}
 		}
