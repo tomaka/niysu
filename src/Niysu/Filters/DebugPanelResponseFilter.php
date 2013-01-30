@@ -117,7 +117,7 @@ class DebugPanelResponseFilter implements \Niysu\HTTPResponseInterface {
 			</span>
 			<span style=
 				"margin-left:2em;
-				background-color:<?= $timeElapsed > 0.1 ? \'#E63C3C\' : (timeElapsed > 0.05 ? \'#DB7E04\' : \'#519157\') ?>;
+				background-color:<?= $timeElapsed > 0.1 ? \'#E63C3C\' : ($timeElapsed > 0.05 ? \'#DB7E04\' : \'#519157\') ?>;
 				border-radius:4px; border:2px solid black; padding:3px 4px;"
 			>
 				<?= round(1000 * $timeElapsed) ?> ms
