@@ -38,9 +38,13 @@ class HTTPRequestGlobal extends HTTPRequestInterface {
 	}
 
 	public function getRawData() {
+		if ($this->rawData)
+			return $this->rawData;
 		if (count($_FILES) >= 1)
 			throw new \RuntimeException('The getRawData() function is not available in case of file uploads');
-		return file_get_contents('php://input');
+
+		$this->rawData = file_get_contents('php://input');
+		return $this->rawData;
 	}
 
 	public function isHTTPS() {
@@ -62,7 +66,8 @@ class HTTPRequestGlobal extends HTTPRequestInterface {
 	    }
 	}
 
-	private $headersList = null;
+	private $headersList;
+	private $rawData;
 }
 
 ?>
