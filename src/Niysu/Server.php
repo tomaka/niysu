@@ -411,18 +411,20 @@ class Server {
 		// in case of critical fault
 		register_shutdown_function(function() {
 			$error = error_get_last();
-			if ($error != null) {
+			if ($error != null && $error['type'] == E_ERROR) {
 				try {
 					$this->log->crit($error['message'], $error);
-
+					$response = new HTTPResponseGlobal();
+					
 					if ($this->printErrors) {
-						$this->printError(new \ErrorException($error['message'], 0, $error['type'], $error['file'], $error['line']));
+						$this->printError(new \ErrorException($error['message'], 0, $error['type'], $error['file'], $error['line']), $response);
 						
 					} else {
-						$response = new HTTPResponseGlobal();
 						if (!$response->isHeadersListSent())
 							$response->setStatusCode(500);
 					}
+
+					$response->flush();
 
 				} catch(\Exception $e) { }
 			}
