@@ -95,7 +95,7 @@ class ErrorPagesResponseFilter implements \Niysu\HTTPResponseInterface {
 	}
 
 	public function isHeadersListSent() {
-		return $this->headersSent;
+		return $this->headersSent || $this->outputResponse->isHeadersListSent();
 	}
 
 

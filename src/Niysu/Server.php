@@ -231,15 +231,17 @@ class Server {
 
 		} catch(\Exception $exception) {
 			try { $this->log->err($exception->getMessage(), $exception->getTrace()); } catch(\Exception $e) {}
-			if (!$output->isHeadersListSent())
-				$output->setStatusCode(500);
+
 			if ($this->printErrors) {
-				$this->printError($exception);
+				$this->printError($exception, $output);
 
 			} else {
+				if (!$output->isHeadersListSent())
+					$output->setStatusCode(500);
 				$output->appendData('A server-side error occured. Please try again later.');
-				$output->flush();
 			}
+
+			$output->flush();
 		}
 	}
 
@@ -442,36 +444,37 @@ class Server {
 		set_exception_handler(function($exception) {
 			try { $this->log->err($exception->getMessage(), $exception->getTrace()); } catch(\Exception $e) {}
 
+			$response = new HTTPResponseGlobal();
+
 			if ($this->printErrors) {
-				$this->printError($exception);
+				$this->printError($exception, $response);
 
 			} else {
-				$response = new HTTPResponseGlobal();
 				if (!$response->isHeadersListSent())
 					$response->setStatusCode(500);
 			}
+
+			$response->flush();
 		});
 		
 		// finally disabling error reporting
 		//error_reporting(0);
 	}
 
-	private function printError(\Exception $e) {
-		$response = new HTTPResponseGlobal();
-
-		if (!$response->isHeadersListSent()) {
-			$response->setStatusCode(500);
-			$response->removeHeader('ETag');
-			$response->removeHeader('Content-Encoding');
-			$response->setHeader('Content-Type', 'text/html; charset=utf8');
-			$response->setHeader('Cache-Control', 'no-cache');
+	private function printError(\Exception $e, HTTPResponseInterface $output) {
+		if (!$output->isHeadersListSent()) {
+			$output->setStatusCode(500);
+			$output->removeHeader('ETag');
+			$output->removeHeader('Content-Encoding');
+			$output->setHeader('Content-Type', 'text/html; charset=utf8');
+			$output->setHeader('Cache-Control', 'no-cache');
 		}
 
 		$headersSentFile = null;
 		$headersSentLine = null;
 		headers_sent($headersSentFile, $headersSentLine);
 
-		$response->appendData(
+		$output->appendData(
 			'<html>
 				<head><title>Error</title></head>
 
@@ -493,9 +496,6 @@ class Server {
 					</div>
 				</body>
 			</html>');
-
-		$response->flush();
-		exit(1);
 	}
 	
 
