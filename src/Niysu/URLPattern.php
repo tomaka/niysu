@@ -136,5 +136,3 @@ class URLPattern {
 	private $patternRegexOriginal = [];		// constant parts of $patternRegex but unparsed
 	private $variablesList = [];			// the list of variables in the right order
 }
-
-?>

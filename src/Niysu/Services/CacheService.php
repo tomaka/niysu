@@ -235,5 +235,3 @@ class CacheService {
 	private $compressionLevel = -1;
 	private $log = null;
 };
-
-?>

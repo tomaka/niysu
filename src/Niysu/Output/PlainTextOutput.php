@@ -33,5 +33,3 @@ class PlainTextOutput implements \Niysu\OutputInterface {
 	private $outputResponse;
 	private $data;
 };
-
-?>

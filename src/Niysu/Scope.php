@@ -406,5 +406,3 @@ class Scope implements \Serializable {
 	private $noRefsFromParent = false;
 	private $setModifiesParent = false;
 };
-
-?>

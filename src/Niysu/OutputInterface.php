@@ -14,5 +14,3 @@ interface OutputInterface {
 	 */
 	public function flush();
 };
-
-?>

@@ -42,5 +42,3 @@ class JSONOutput implements \Niysu\OutputInterface {
 	private $data;
 	private $response;
 };
-
-?>

@@ -3,14 +3,10 @@ namespace Niysu\Contexts;
 use org\bovigo\vfs\vfsStream;
 
 class SessionContextTest extends \PHPUnit_Framework_TestCase {
-	private $request;
-	private $response;
 	private $sessionService;
 	private $cookiesService;
 
 	protected function setUp() {
-		$this->request = $this->getMock('\\Niysu\\HTTPRequestInterface');
-		$this->response = $this->getMock('\\Niysu\\HTTPResponseInterface');
 		$this->sessionService = $this->getMockBuilder('\\Niysu\\Services\\SessionService')->disableOriginalConstructor()->getMock();
 		$this->cookiesService = $this->getMockBuilder('\\Niysu\\Contexts\\CookiesContext')->disableOriginalConstructor()->getMock();
 	}
@@ -23,7 +19,7 @@ class SessionContextTest extends \PHPUnit_Framework_TestCase {
 								->with($this->equalTo('session'))
 								->will($this->returnValue(false));
 
-		$sessionContext = new SessionContext($this->request, $this->response, $this->sessionService, $this->cookiesService, null);
+		$sessionContext = new SessionContext($this->sessionService, $this->cookiesService, null);
 		$sessionContext->setCookieName('session');
 
 		$this->assertFalse($sessionContext->hasSessionLoaded());
@@ -39,7 +35,7 @@ class SessionContextTest extends \PHPUnit_Framework_TestCase {
 								->with($this->equalTo('session'))
 								->will($this->returnValue(false));
 
-		$sessionContext = new SessionContext($this->request, $this->response, $this->sessionService, $this->cookiesService, null);
+		$sessionContext = new SessionContext($this->sessionService, $this->cookiesService, null);
 		$sessionContext->setCookieName('session');
 
 		$sessionContext->test;
@@ -63,7 +59,7 @@ class SessionContextTest extends \PHPUnit_Framework_TestCase {
 								->with($this->equalTo('testID'))
 								->will($this->returnValue(false));
 
-		$sessionContext = new SessionContext($this->request, $this->response, $this->sessionService, $this->cookiesService, null);
+		$sessionContext = new SessionContext($this->sessionService, $this->cookiesService, null);
 		$sessionContext->setCookieName('session');
 
 		$this->assertFalse($sessionContext->hasSessionLoaded());
@@ -89,7 +85,7 @@ class SessionContextTest extends \PHPUnit_Framework_TestCase {
 								->with($this->equalTo('testID'))
 								->will($this->returnValue(false));
 
-		$sessionContext = new SessionContext($this->request, $this->response, $this->sessionService, $this->cookiesService, null);
+		$sessionContext = new SessionContext($this->sessionService, $this->cookiesService, null);
 		$sessionContext->setCookieName('session');
 
 		$sessionContext->test;
@@ -118,7 +114,7 @@ class SessionContextTest extends \PHPUnit_Framework_TestCase {
 								->with($this->equalTo('testID'))
 								->will($this->returnValue([ 'a' => 2 ]));
 
-		$sessionContext = new SessionContext($this->request, $this->response, $this->sessionService, $this->cookiesService, null);
+		$sessionContext = new SessionContext($this->sessionService, $this->cookiesService, null);
 		$sessionContext->setCookieName('session');
 
 		$this->assertTrue($sessionContext->hasSessionLoaded());

@@ -80,5 +80,3 @@ class TwigService {
 	private $twig;
 	private $filesystemLoader;
 };
-
-?>

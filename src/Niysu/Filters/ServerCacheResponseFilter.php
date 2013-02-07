@@ -150,5 +150,3 @@ class ServerCacheResponseFilter implements \Niysu\HTTPResponseInterface {
 	private $log;									// the Monolog\Logger
 	private $ttl = 60;								// TTL to transmit to the cacheService
 };
-
-?>

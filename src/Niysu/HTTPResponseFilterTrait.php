@@ -41,5 +41,3 @@ trait HTTPResponseFilterTrait {
 
 	private $outputResponse = null;
 };
-
-?>
