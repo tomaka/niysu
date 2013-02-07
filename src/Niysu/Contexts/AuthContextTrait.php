@@ -11,5 +11,3 @@ namespace Niysu\Contexts;
 trait AuthContextTrait {
 	
 };
-
-?>

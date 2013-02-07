@@ -200,5 +200,3 @@ class DatabaseServiceTable implements \Iterator, \ArrayAccess, \Countable {
 
 	private $currentTraversedRow = 0;		// when iterating through ourselves, this stores the current row id
 };
-
-?>

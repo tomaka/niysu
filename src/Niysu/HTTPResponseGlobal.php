@@ -61,5 +61,3 @@ class HTTPResponseGlobal implements HTTPResponseInterface {
 
 	private $flushed = false;
 }
-
-?>

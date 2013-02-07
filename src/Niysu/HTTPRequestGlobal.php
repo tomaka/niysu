@@ -69,5 +69,3 @@ class HTTPRequestGlobal extends HTTPRequestInterface {
 	private $headersList;
 	private $rawData;
 }
-
-?>

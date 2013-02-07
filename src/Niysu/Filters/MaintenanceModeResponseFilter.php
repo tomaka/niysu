@@ -53,5 +53,3 @@ class MaintenanceModeResponseFilter implements \Niysu\HTTPResponseInterface {
 
 	private $maintenanceMode;
 }
-
-?>

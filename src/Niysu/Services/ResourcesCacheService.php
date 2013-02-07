@@ -102,5 +102,3 @@ class ResourcesCacheService {
 	private $category = 'resources';
 	private $cache;
 };
-
-?>

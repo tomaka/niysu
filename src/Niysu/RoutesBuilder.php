@@ -262,5 +262,3 @@ class RoutesBuilder {
 		return $parameters;
 	}
 };
-
-?>

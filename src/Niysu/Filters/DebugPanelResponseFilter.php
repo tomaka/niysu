@@ -167,5 +167,3 @@ class DebugPanelResponseFilter implements \Niysu\HTTPResponseInterface {
 			</span>
 		</div>';
 };
-
-?>

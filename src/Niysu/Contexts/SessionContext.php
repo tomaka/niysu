@@ -103,5 +103,3 @@ class SessionContext {
 	private $cookiesContext;
 	private $log;
 };
-
-?>

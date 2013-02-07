@@ -61,5 +61,3 @@ class PHPTemplateOutput implements \Niysu\OutputInterface {
 	private $contentType = 'text/html; charset=utf8';
 	private $phpTemplateService;
 }
-
-?>

@@ -74,5 +74,3 @@ class DatabaseProfilingService {
 	private $totalTime = 0;
 	private $queries = [];
 };
-
-?>

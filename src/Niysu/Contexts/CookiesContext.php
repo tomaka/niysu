@@ -194,5 +194,3 @@ class CookiesContext {
 	private $updatedCookies = [];			// same format as $requestCookies but for cookies that have been set by this function
 	private $defaultLifetime = null;		// default lifetime for cookies when expires is null
 };
-
-?>

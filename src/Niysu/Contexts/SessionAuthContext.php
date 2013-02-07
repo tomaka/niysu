@@ -62,5 +62,3 @@ class SessionAuthContext {
 	private $sessionContext;
 	private $log;
 };
-
-?>

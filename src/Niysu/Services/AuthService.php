@@ -90,5 +90,3 @@ class AuthService {
 	private $accessCallback;
 	private $log;
 };
-
-?>

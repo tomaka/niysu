@@ -227,5 +227,3 @@ class DatabaseService {
 	private $databasePDO = null;
 	private $colNameDelimiter = '"';
 };
-
-?>

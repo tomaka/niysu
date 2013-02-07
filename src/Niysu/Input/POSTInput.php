@@ -88,5 +88,3 @@ class POSTInput implements \Niysu\InputInterface {
 
 	private $request;
 }
-
-?>

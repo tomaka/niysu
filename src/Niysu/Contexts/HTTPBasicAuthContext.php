@@ -53,5 +53,3 @@ class HTTPBasicAuthContext {
 	private $request;
 	private $log;
 };
-
-?>

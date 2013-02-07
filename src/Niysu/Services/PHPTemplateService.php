@@ -127,5 +127,3 @@ class PHPTemplateService {
 	private $server;
 	private $log;
 };
-
-?>

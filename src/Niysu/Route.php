@@ -432,5 +432,3 @@ class Route {
 	private $name = null;
 	private $prefixCallback = null;				// callback function that returns the prefix
 };
-
-?>

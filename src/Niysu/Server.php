@@ -510,5 +510,3 @@ class Server {
 	private $configFunctions = [];				// configuration functions (coming from the environment) to call
 	private $providers = [];					// all providers
 };
-
-?>
