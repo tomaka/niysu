@@ -1,0 +1,40 @@
+---
+layout: usage
+title: 'Security 101'
+---
+
+<h2>Security 101</h2>
+
+
+<h3>Never trust user input</h3>
+
+<p>You must <strong>always</strong> validate</p>
+
+
+<h3>Use SQL prepared statements</h3>
+
+<p>If you use a database, <strong>never</strong> write something like this:</p>
+
+<pre class="brush: php">
+$databaseService->query('SELECT col FROM table WHERE id = '.$id);
+</pre>
+
+<p>...except if you are <strong>100% sure</strong> that <code>$id</code> is a number and no a string.</p>
+
+<p>Instead you should write this:</p>
+
+<pre class="brush: php">
+$databaseService->query('SELECT col FROM table WHERE id = ?', [ $id ]);
+</pre>
+
+<p>Or if you have multiple parameters:</p>
+
+<pre class="brush: php">
+$databaseService->query('SELECT col FROM table WHERE id = ? AND id2 = ?', [ $id, $id2 ]);
+</pre>
+
+<p>Or also:</p>
+
+<pre class="brush: php">
+$databaseService->query('SELECT col FROM table WHERE id = :param', [ ':param' => $id ]);
+</pre>

@@ -5,10 +5,16 @@ title: 'Installation'
 
 <h2>Installation</h2>
 
-<p>To install Niysu, the first to do is to install <a href="http://getcomposer.org/">composer</a>.
-<strong>Composer</strong> is a dependency manager which allows you to easily install and upgrade any PHP library you depend upon.</p>
+<h3>Installing composer</h3>
 
-<p>Once it is installed, write a <code>composer.json</code> file in the main directory of your website:</p>
+<p>To install Niysu, the first thing to do is to install <a href="http://getcomposer.org/">composer</a>.
+<strong>Composer</strong> is a small PHP script which allows you to easily install and upgrade any PHP library you depend upon.</p>
+
+<p>Simply follow <a href="http://getcomposer.org/doc/00-intro.md#installation-nix">these instructions</a> in order to install composer.</p>
+
+<h3>Downloading and installing Niysu</h3>
+
+<p>Now we will tell composer that we want to use Niysu, and it will download it for us. To do so, write a <code>composer.json</code> file in the main directory of your website and put this inside:</p>
 
 <pre class="brush: javascript">
 {
@@ -18,14 +24,26 @@ title: 'Installation'
 }
 </pre>
 
-<p>This will tell <strong>Composer</strong> that you have a dependency on <strong>Niysu</strong>.</p>
-
 <p>Now open a shell, and type:</p>
 <pre class="brush: bash">composer install</pre>
 
 <p>This will install Niysu and all its dependencies in the <code>vendor</code> directory.</p>
 
-<p>Now to use Niysu in a PHP script, simply add this line at the top of the script:</p>
+<h3>Writing your first script</h3>
+
+<p>Niysu is a <strong>front controller</strong>, which means that every single request must pass through it (except static resources if you wish so, for performances reasons).
+This means that you must write a file (for example <code>index.php</code>) which will handle every requests received by your server, and which will dispatch it to the right controller.</p>
+
+<p>Here is an example <code>index.php</code>:</p>
 <pre class="brush: php">
-require 'vendor/autoload.php';			// change the path if you are not in the main directory
+&lt;php
+require 'vendor/autoload.php';
+
+$server = new \Niysu\Server();
+
+$server->register('/', 'get', function($plainTextOutput) {
+	$plainTextOutput->setText('Hello world!');
+});
 </pre>
+
+<h3>Setting up the web server</h3>
