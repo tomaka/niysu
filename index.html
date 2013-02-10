@@ -3,5 +3,51 @@ layout: default
 ---
 
 <section class="mainPage">
-	Welcome to Niysu's site!
+	<h2>Easy-to-use PHP framework</h2>
+
+	<p>Niysu is a PHP framework that is designed to be easy to use, but not lack any feature of a real framework.</p>
+
+
+	<h3>Easy to use</h3>
+
+	<p>This example handles URLs like <code>/users/12</code>, reads the corresponding user from the database, and returns the values of the columns as JSON data:</p>
+<pre class="brush: php">
+class Foo {
+	/**
+	 * @url /users/{userID}
+	 */
+	public function handler($userID, $databaseService, $jsonOutput) {
+		$jsonOutput->setData($databaseService->users[['id' => $userID]]);
+	}
+};
+</pre>
+	
+	<p><code>$databaseService</code> and <code>$jsonOutput</code> are services that are automatically created when the route is called.</p>
+
+
+	<h3>PHP template engine</h3>
+
+	<p>If you use a custom template engine, you will have to spend a lot of time learning its syntax and writing missing features.
+		That's why Niysu encourages you to use PHP as a template engine.</p>
+
+	<p>The major drawback of PHP is that you have to call <code>htmlspecialchars()</code> whenever you output something inside HTML.
+		This is not needed with Niysu's PHP template service. Anything that is inside PHP tags <code>&lt;?php ?&gt;</code> will be automatically escaped.</p>
+
+<pre class="brush: php">
+	// the template:
+	&lt;div&gt;
+		&lt;p&gt;Value: &lt;?php echo 'Unescaped &lt; st&amp;ring'; ?&gt;&lt;/p&gt;
+	&lt;/div&gt;
+
+	// the route handler:
+	public function handler($phpTemplateOutput) {
+		$phpTemplateOutput->setTemplate('/path/to/template.php');
+	}
+
+	// the output:
+	&lt;div&gt;
+		&lt;p&gt;Value: Unescaped &amp;lt; st&amp;amp;ring&lt;/p&gt;
+	&lt;/div&gt;
+</pre>
+
 </section>
