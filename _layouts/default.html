@@ -13,23 +13,25 @@
   <link rel="stylesheet" href="/niysu/style.css" />
 </head>
 <body>
-  <header>
-    <h1>Niysu</h1>
+  <div id="wrap">
+    <header>
+      <h1>Niysu</h1>
 
-    <nav id="mainMenu">
-      <ul>
-        <li><a href="/niysu/usage">Manual</a></li>
-        <li><a href="/niysu/doc">Documentation</a></li>
-      </ul>
-    </nav>
-  </header>
+      <nav id="mainMenu">
+        <ul>
+          <li><a href="/niysu/usage"><button>Manual</button></a></li>
+          <li><a href="/niysu/doc"><button>Documentation</button></a></li>
+        </ul>
+      </nav>
+    </header>
 
-  <div id="outsideContent">
-    {{ content }}
+    <div id="outsideContent">
+      {{ content }}
+    </div>
+
+    <footer>
+    </footer>
   </div>
-
-  <footer>
-  </footer>
 
   <script type="text/javascript">
     SyntaxHighlighter.all()
