@@ -13,47 +13,93 @@
 			    .appendTo($('body')).hide()
 			    .ajaxStart(function() { $(this).show(); }).ajaxStop(function() { $(this).hide(); });
 
-			$('form').on('submit', function(ev) {
-				ev.preventDefault();
-
+		});
+		
+		function AjaxTestController($scope) {
+			$scope.go = function() {
 				var headers = [];
-				var inputHeaders = $('#dataHeaders').val().split("\n");
-				for (var i in inputHeaders) {
-					var j = inputHeaders[i].split(':');
-					if (j.length != 2)
-						continue;
-					headers[j[0]] = j[1].trim();
-				}
+				angular.forEach($scope.inputHeaders, function(val) {
+					var a = val.split(':', 2);
+					if (!a || a.length < 2)
+						return;
+					headers[a[0]] = a[1];
+				});
 
 				$.ajax({
-					url: $('#target').val(),
-					type: $('#method').val(),
+					url: $scope.inputURL,
+					type: $scope.inputMethod,
 					headers: headers,
 					processData: false,
-					data: $('#data').val(),
+					data: $scope.inputData,
 					complete: function(jqXHR) {
-						$('#outputStatusCode').val(jqXHR.status + ' ' + jqXHR.statusText);
-						$('#output').val(jqXHR.responseText);
-						$('#outputHeaders').val(jqXHR.getAllResponseHeaders());
+						$scope.outputStatusCode = { code: jqXHR.status, text: jqXHR.statusText };
+						$scope.outputHeaders = jqXHR.getAllResponseHeaders().split(/[\r\n]+/);
+						$scope.rawOutput = jqXHR.responseText;
+						$scope.$digest();
 					}
 				});
 
-				window.location.hash = '';
-				window.location.hash = '#outputStatusCode';
+				/*window.location.hash = '';
+				window.location.hash = '#outputStatusCode';*/
+			};
+
+			$scope.$watch('outputHeaders', function(val) {
+				for (var i in val) {
+					var r = val[i].match(/^\s*Content-Type\s*:\s*(.*?)\s*(;.*)?$/i);
+					if (r)
+						$scope.outputContentType = r[1];
+				}
 			});
-		});
+
+			$scope.btoa = function(data) {
+				return btoa(unescape(encodeURIComponent(data)));
+			};
+		}
 	</script>
 {% endblock %}
 
 {% block body %}
-	<form>
-		<p>Target: <input style="min-width:25em;" type="text" id="target" placeholder="Target URL" /></p>
-		<p>Method: <input type="text" id="method" value="GET" /></p>
-		<p>Input headers: (will modify browser-defined headers but not replace them)<br/><textarea id="dataHeaders" style="width:100%; min-height:5em;"></textarea></p>
-		<p>Input: (warning: will only be sent for non-GET requests)<br/><textarea id="data" style="width:100%; min-height:14em;"></textarea></p>
-		<div style="text-align:center;"><button type="submit">Go</button></div>
-		<p>Output status code: <input type="text" readonly="readonly" id="outputStatusCode" /></p>
-		<p>Output headers: (except Set-Cookie and Set-Cookie2)<br /><textarea id="outputHeaders" style="width:100%; min-height:8em;" readonly="readonly"></textarea></p>
-		<p>Output:<br /><textarea id="output" style="width:100%; min-height:20em;" readonly="readonly"></textarea></p>
-	</form>
+	{% raw %}
+		<form
+			data-ng-app data-ng-controller="AjaxTestController"
+			data-ng-submit="go()"
+			data-ng-init="inputMethod = 'GET'"
+		>
+			<p>Target: <input style="min-width:25em;" type="text" data-ng-model="inputURL" placeholder="Target URL" /></p>
+			<p>Method: <input type="text" data-ng-model="inputMethod" value="GET" /></p>
+			<p>Input headers: (will modify browser-defined headers but not replace them)<br/>
+				<textarea data-ng-model="inputHeaders" data-ng-list="/[\r\n]+/" style="width:100%; min-height:5em;"></textarea>
+			</p>
+			<p>Input: (warning: will only be sent for non-GET requests)<br/>
+				<textarea data-ng-model="inputData" style="width:100%; min-height:14em;"></textarea>
+			</p>
+			<div style="text-align:center;"><button type="submit">Go</button></div>
+
+			<p>Output status code: <input type="text" readonly="readonly" value="{{ outputStatusCode.code }} {{ outputStatusCode.text }}" /></p>
+			<p>Output headers: (except Set-Cookie and Set-Cookie2)<br />
+				<textarea style="width:100%; min-height:8em;" readonly="readonly">{{ outputHeaders.join("\r\n") }}</textarea>
+			</p>
+			<p>Raw output:<br />
+				<textarea style="width:100%; min-height:20em;" readonly="readonly">{{ rawOutput }}</textarea>
+			</p>
+
+			<!-- HTML -->
+			<p data-ng-show="outputContentType.substr(0,9) == 'text/html'">
+				HTML formatted output:<br />
+				<iframe srcdoc="{{ rawOutput }}" style="width:100%; height:600px;" sandbox=""></iframe>
+			</p>
+			
+			<!-- JSON -->
+			<!--<p data-ng-show="outputContentType.substr(0,16) == 'application/json'">
+				JSON formatted output:<br />
+			</p>-->
+			
+			<!-- image -->
+			<!-- doesn't work -->
+			<!--<p data-ng-show="outputContentType.substr(0,6) == 'image/'">
+				Image:<br />
+				<img src="data:{{ outputContentType }};base64,{{ btoa(rawOutput) }}" alt="" />
+			</p>-->
+		</form>
+	{% endraw %}
 {% endblock %}

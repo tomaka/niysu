@@ -61,6 +61,33 @@ class AdminSite {
 
 
 	/**
+	 * @url /routes
+	 * @method GET
+	 */
+	public function routesList(\Niysu\Server $server, $twigOutput) {
+		$twigOutput->setTemplate('@niysuAdminSite/routesList.htm');
+		$twigOutput->setVariables([ 'routes' => $server->getRoutesList() ]);
+	}
+
+
+	/**
+	 * @url /routes/{routeID}
+	 * @pattern routeID .*
+	 * @method GET
+	 */
+	public function routeAnalysis($routeID, \Niysu\Server $server, $twigOutput) {
+		$route = null;
+		if (is_numeric($routeID))
+			$route = $server->getRoutesList()[$routeID];
+		if (!$route)
+			try { $route = $server->getRouteByName($routeID); } catch(\Exception $e) {}
+
+		$twigOutput->setTemplate('@niysuAdminSite/routeAnalysis.htm');
+		$twigOutput->setVariables([ 'route' => $route ]);
+	}
+
+
+	/**
 	 * @url /git
 	 * @method GET
 	 */
