@@ -50,12 +50,6 @@ class MaintenanceModeResponseFilter implements \Niysu\HTTPResponseInterface {
 			$this->outputResponse->appendData($data);
 	}
 
-	public function isHeadersListSent() {
-		return !$this->maintenanceMode && $this->outputResponse->isHeadersListSent();
-	}
-
 
 	private $maintenanceMode;
 }
-
-?>

@@ -38,5 +38,3 @@ class PHPExcelOutput implements \Niysu\OutputInterface {
 	private $excelDoc;
 	private $outputResponse;
 };
-
-?>

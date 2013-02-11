@@ -86,5 +86,3 @@ class XSLTService {
 	private $response;
 	private $outputXMLService;
 };
-
-?>

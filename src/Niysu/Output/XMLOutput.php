@@ -150,5 +150,3 @@ class XMLOutput implements \Niysu\OutputInterface {
 	private $outputResponse;
 	private $data;
 };
-
-?>

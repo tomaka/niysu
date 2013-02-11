@@ -70,5 +70,3 @@ interface HTTPResponseInterface {
 	 */
 	public function flush();
 };
-
-?>

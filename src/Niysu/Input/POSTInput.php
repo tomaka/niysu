@@ -12,11 +12,33 @@ class POSTInput implements \Niysu\InputInterface {
 	}
 
 	public function __get($varName) {
-		return $this->getPOSTData()->$varName;
+		$data = $this->getPOSTData();
+		if (isset($data->$varName))
+			return $data->$varName;
+
+		if ($f = $this->getFile($varName))
+			return $f;
+
+		return null;
 	}
 	
 	public function __isset($varName) {
 		return isset($this->getPOSTData()->$varName);
+	}
+
+	public function getFile($fileID) {
+		if (!self::isGlobalRequest($this->request))
+			return null;
+		if (!isset($_FILES[$fileID]))
+			return null;
+
+		return (object)[
+			'mime' => $_FILES[$fileID]['type'],
+			'name' => $_FILES[$fileID]['name'],
+			'size' => $_FILES[$fileID]['size'],
+			'file' => $_FILES[$fileID]['tmp_name'],
+			'stream' => new \SplFileObject($_FILES[$fileID]['tmp_name'], 'r')
+		];
 	}
 	
 	public function isPOSTContentType() {
@@ -42,9 +64,25 @@ class POSTInput implements \Niysu\InputInterface {
 	}
 
 	public function getPOSTData() {
-		$array = [];
-		parse_str($this->request->getRawData(), $array);
-		return (object)$array;
+		try {
+			$array = [];
+			parse_str($this->request->getRawData(), $array);
+			return (object)$array;
+
+		} catch(\Exception $e) {
+			if (self::isGlobalRequest($this->request))
+				return $_POST;
+		}
+	}
+
+
+
+	private static function isGlobalRequest(\Niysu\HTTPRequestInterface $rq) {
+		if ($rq instanceof \Niysu\HTTPRequestGlobal)
+			return true;
+		if ($rq instanceof \Niysu\HTTPRequestFilterInterface)
+			return $rq->getInput();
+		return false;
 	}
 
 

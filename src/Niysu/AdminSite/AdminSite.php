@@ -165,5 +165,3 @@ class AdminSite {
 		$twigOutput->setVariables([ 'data' => $data ]);
 	}
 }
-
-?>

@@ -161,5 +161,3 @@ class FormValidationService {
 	private $cache;
 	private $category = 'forms';
 };
-
-?>

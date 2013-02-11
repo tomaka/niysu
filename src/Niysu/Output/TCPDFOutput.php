@@ -38,5 +38,3 @@ class TCPDFOutput implements \Niysu\OutputInterface {
 	private $outputResponse;
 	private $data;
 };
-
-?>

@@ -272,5 +272,3 @@ abstract class HTTPRequestInterface {
 		return null;
 	}
 };
-
-?>

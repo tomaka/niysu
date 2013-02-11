@@ -8,16 +8,11 @@ namespace Niysu\Contexts;
  * @license 	MIT http://opensource.org/licenses/MIT
  * @link 		http://github.com/Tomaka17/niysu
  */
-class SessionContext extends \Niysu\HTTPRequestFilterInterface implements \Niysu\HTTPResponseInterface {
-	use \Niysu\HTTPResponseFilterTrait;
-
+class SessionContext {
 	/**
 	 * Constructor.
 	 */
-	public function __construct(\Niysu\HTTPRequestInterface $request, \Niysu\HTTPResponseInterface $response, \Niysu\Services\SessionService $sessionService, \Niysu\Contexts\CookiesContext $cookiesContext, \Monolog\Logger $log = null) {
-		parent::__construct($request);
-		$this->outputResponse = $response;
-
+	public function __construct(\Niysu\Services\SessionService $sessionService, \Niysu\Contexts\CookiesContext $cookiesContext, \Monolog\Logger $log = null) {
 		$this->sessionService = $sessionService;
 		$this->cookiesContext = $cookiesContext;
 		$this->log = $log;
@@ -36,14 +31,11 @@ class SessionContext extends \Niysu\HTTPRequestFilterInterface implements \Niysu
 	 * Returns the value of a variable in the current session.
 	 * @param string 	$varName 	Name of the variable to retreive
 	 * @return mixed
-	 * @throws RuntimeException If the variable doesn't exist or if no session is started
 	 */
 	public function __get($varName) {
 		if (!$this->hasSessionLoaded())
-			throw new \RuntimeException('No session is currently started');
+			return null;
 		$val = $this->sessionService[$this->getSessionID()];
-		if (!isset($val[$varName]))
-			throw new \RuntimeException('Variable doesn\'t exist in the current session');
 		return $val[$varName];
 	}
 
@@ -54,11 +46,14 @@ class SessionContext extends \Niysu\HTTPRequestFilterInterface implements \Niysu
 	 * @param mixed 	$value 		Value
 	 */
 	public function __set($varName, $value) {
-		if (!$this->getSessionID())
-			$this->cookiesContext->{$this->cookieName} = $this->sessionService->generateSessionID();
+		if (!$this->hasSessionLoaded()) {
+			$newID = $this->sessionService->generateSessionID();
+			$this->cookiesContext->{$this->cookieName} = $newID;
+			$this->sessionService[$newID] = [];
+		}
 
 		$v = $this->sessionService[$this->getSessionID()];
-		if (!$v) $v = [];
+		if (!$v) 				$v = [];
 		if ($value === null)	unset($v[$varName]);
 		else 					$v[$varName] = $value;
 		$this->sessionService[$this->getSessionID()] = $v;
@@ -108,5 +103,3 @@ class SessionContext extends \Niysu\HTTPRequestFilterInterface implements \Niysu
 	private $cookiesContext;
 	private $log;
 };
-
-?>

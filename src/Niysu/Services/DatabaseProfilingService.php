@@ -28,7 +28,7 @@ class DatabaseProfilingService {
 		if (is_numeric($timer))
 			$this->totalTime += $timer;
 
-		$this->queries[] = [
+		$this->queries[] = (object)[
 			'sql' => $sql,
 			'dsn' => $dsn,
 			'time' => $timer
@@ -74,5 +74,3 @@ class DatabaseProfilingService {
 	private $totalTime = 0;
 	private $queries = [];
 };
-
-?>
