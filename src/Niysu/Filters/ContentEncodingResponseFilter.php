@@ -87,5 +87,3 @@ class ContentEncodingResponseFilter implements \Niysu\HTTPResponseInterface {
 	private $data;
 	private $compressFunction;
 };
-
-?>

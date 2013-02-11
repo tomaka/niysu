@@ -49,5 +49,3 @@ class TwigOutput implements \Niysu\OutputInterface {
 	private $variables = [];
 	private $twigService;
 }
-
-?>

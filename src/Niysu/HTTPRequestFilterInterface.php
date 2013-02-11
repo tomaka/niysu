@@ -53,5 +53,3 @@ class HTTPRequestFilterInterface extends HTTPRequestInterface {
 	
 	private $source;
 };
-
-?>

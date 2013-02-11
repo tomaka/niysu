@@ -30,5 +30,3 @@ class SessionAuthService {
 
 	private $sessionService;
 };
-
-?>

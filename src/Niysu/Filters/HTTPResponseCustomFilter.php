@@ -87,5 +87,3 @@ class HTTPResponseCustomFilter implements HTTPResponseInterface {
 	private $httpStorage;
 	private $contentCallback;
 };
-
-?>

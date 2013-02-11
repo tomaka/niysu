@@ -53,6 +53,7 @@ class Server {
 		$this->setProvider('emailService', 'Niysu\\Services\\EmailService');
 		$this->setProvider('formValidationService', 'Niysu\\Services\\FormValidationService');
 		$this->setProvider('maintenanceModeService', 'Niysu\\Services\\MaintenanceModeService');
+		$this->setProvider('phpTemplateService', 'Niysu\\Services\\PHPTemplateService');
 		$this->setProvider('resourcesCacheService', 'Niysu\\Services\\ResourcesCacheService');
 		$this->setProvider('sessionService', 'Niysu\\Services\\SessionService');
 		$this->setProvider('xsltService', 'Niysu\\Services\\XSLTService');
@@ -71,6 +72,7 @@ class Server {
 		$this->setProvider('cookiesContext', 'Niysu\\Contexts\\CookiesContext');
 		$this->setProvider('httpBasicAuthContext', 'Niysu\\Contexts\\HTTPBasicAuthContext');
 		$this->setProvider('sessionContext', 'Niysu\\Contexts\\SessionContext');
+		$this->setProvider('sessionAuthContext', 'Niysu\\Contexts\\SessionAuthContext');
 
 		$this->setProvider('formInput', 'Niysu\\Input\\FormInput');
 		$this->setProvider('jsonInput', 'Niysu\\Input\\JSONInput');
@@ -82,6 +84,7 @@ class Server {
 		$this->setProvider('phpExcelOutput', 'Niysu\\Output\\PHPExcelOutput');
 		$this->setProvider('jsonOutput', 'Niysu\\Output\\JSONOutput');
 		$this->setProvider('plainTextOutput', 'Niysu\\Output\\PlainTextOutput');
+		$this->setProvider('phpTemplateOutput', 'Niysu\\Output\\PHPTemplateOutput');
 		$this->setProvider('redirectionOutput', 'Niysu\\Output\\RedirectionOutput');
 		$this->setProvider('tcpdfOutput', 'Niysu\\Output\\TCPDFOutput');
 		$this->setProvider('twigOutput', 'Niysu\\Output\\TwigOutput');
@@ -229,15 +232,17 @@ class Server {
 
 		} catch(\Exception $exception) {
 			try { $this->log->err($exception->getMessage(), $exception->getTrace()); } catch(\Exception $e) {}
-			if (!$output->isHeadersListSent())
-				$output->setStatusCode(500);
+
 			if ($this->printErrors) {
-				$this->printError($exception);
+				$this->printError($exception, $output);
 
 			} else {
+				if (!$output->isHeadersListSent())
+					$output->setStatusCode(500);
 				$output->appendData('A server-side error occured. Please try again later.');
-				$output->flush();
 			}
+
+			$output->flush();
 		}
 	}
 
@@ -407,18 +412,20 @@ class Server {
 		// in case of critical fault
 		register_shutdown_function(function() {
 			$error = error_get_last();
-			if ($error != null) {
+			if ($error != null && $error['type'] == E_ERROR) {
 				try {
 					$this->log->crit($error['message'], $error);
-
+					$response = new HTTPResponseGlobal();
+					
 					if ($this->printErrors) {
-						$this->printError(new \ErrorException($error['message'], 0, $error['type'], $error['file'], $error['line']));
+						$this->printError(new \ErrorException($error['message'], 0, $error['type'], $error['file'], $error['line']), $response);
 						
 					} else {
-						$response = new HTTPResponseGlobal();
 						if (!$response->isHeadersListSent())
 							$response->setStatusCode(500);
 					}
+
+					$response->flush();
 
 				} catch(\Exception $e) { }
 			}
@@ -440,36 +447,37 @@ class Server {
 		set_exception_handler(function($exception) {
 			try { $this->log->err($exception->getMessage(), $exception->getTrace()); } catch(\Exception $e) {}
 
+			$response = new HTTPResponseGlobal();
+
 			if ($this->printErrors) {
-				$this->printError($exception);
+				$this->printError($exception, $response);
 
 			} else {
-				$response = new HTTPResponseGlobal();
 				if (!$response->isHeadersListSent())
 					$response->setStatusCode(500);
 			}
+
+			$response->flush();
 		});
 		
 		// finally disabling error reporting
 		//error_reporting(0);
 	}
 
-	private function printError(\Exception $e) {
-		$response = new HTTPResponseGlobal();
-
-		if (!$response->isHeadersListSent()) {
-			$response->setStatusCode(500);
-			$response->removeHeader('ETag');
-			$response->removeHeader('Content-Encoding');
-			$response->setHeader('Content-Type', 'text/html; charset=utf8');
-			$response->setHeader('Cache-Control', 'no-cache');
+	private function printError(\Exception $e, HTTPResponseInterface $output) {
+		if (!$output->isHeadersListSent()) {
+			$output->setStatusCode(500);
+			$output->removeHeader('ETag');
+			$output->removeHeader('Content-Encoding');
+			$output->setHeader('Content-Type', 'text/html; charset=utf8');
+			$output->setHeader('Cache-Control', 'no-cache');
 		}
 
 		$headersSentFile = null;
 		$headersSentLine = null;
 		headers_sent($headersSentFile, $headersSentLine);
 
-		$response->appendData(
+		$output->appendData(
 			'<html>
 				<head><title>Error</title></head>
 
@@ -491,9 +499,6 @@ class Server {
 					</div>
 				</body>
 			</html>');
-
-		$response->flush();
-		exit(1);
 	}
 	
 
@@ -506,5 +511,3 @@ class Server {
 	private $configFunctions = [];				// configuration functions (coming from the environment) to call
 	private $providers = [];					// all providers
 };
-
-?>

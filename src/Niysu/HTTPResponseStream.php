@@ -114,5 +114,3 @@ class HTTPResponseStream {
 	private $writeHeaders = false;
 	static private $wrapperRegistered = false;
 }
-
-?>

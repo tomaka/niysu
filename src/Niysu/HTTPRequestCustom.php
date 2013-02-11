@@ -102,5 +102,3 @@ class HTTPRequestCustom extends HTTPRequestInterface {
 	private $rawData;
 	private $https;
 }
-
-?>

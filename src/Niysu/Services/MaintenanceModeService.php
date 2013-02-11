@@ -84,5 +84,3 @@ class MaintenanceModeService {
 
 	private $file = null;
 };
-
-?>

@@ -246,5 +246,3 @@ class RoutesCollection {
 	private $parent = null;
 	private $children = [];					// 
 };
-
-?>

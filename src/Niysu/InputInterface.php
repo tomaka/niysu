@@ -14,5 +14,3 @@ interface InputInterface {
 	 */
 	public function isValid();
 };
-
-?>

@@ -73,5 +73,3 @@ class RedirectionOutput implements \Niysu\OutputInterface {
 	private $statusCode = 302;
 	private $location = '/';
 };
-
-?>

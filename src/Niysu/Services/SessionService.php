@@ -95,5 +95,3 @@ class SessionService implements \ArrayAccess {
 	private $category = 'sessions';
 	private $ttl = null;
 };
-
-?>

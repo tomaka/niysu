@@ -32,5 +32,3 @@ class HTTPResponseNull implements HTTPResponseInterface {
 	public function appendData($data) {
 	}
 }
-
-?>

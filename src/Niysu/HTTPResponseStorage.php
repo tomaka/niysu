@@ -113,5 +113,3 @@ class HTTPResponseStorage implements HTTPResponseInterface {
 	private $headers = [];
 	private $data = '';
 };
-
-?>

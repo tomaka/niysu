@@ -71,5 +71,3 @@ class CSVOutput implements \Niysu\OutputInterface {
 	private $outputResponse;
 	private $data;
 };
-
-?>

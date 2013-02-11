@@ -102,5 +102,3 @@ class TidyResponseFilter implements \Niysu\HTTPResponseInterface {
 	private $userEnabled = true;
 	private $config = [];
 };
-
-?>
