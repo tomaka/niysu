@@ -51,7 +51,7 @@ class DatabaseService {
 	public function openQuery($sql, $params = []) {
 		if (!is_array($params)) {
 			$params = func_get_args();
-			array_splice($params, 0, 1);
+			array_shift($params);
 		}
 
 		$this->buildDatabase();
@@ -60,9 +60,28 @@ class DatabaseService {
 			if ($this->logService)
 				$this->logService->debug('SQL query: '.$sql);
 		} catch(\Exception $e) {}
-		
+
+		$before = microtime(true);
 		$query = $this->databasePDO->prepare($sql);
-		$query->execute($params);
+
+		foreach ($params as $key => $val) {
+			$realKey = is_numeric($key) ? $key+1 : $key;
+
+			if (is_resource($val))			$type = \PDO::PARAM_LOB;
+			else if (is_null($val))			$type = \PDO::PARAM_NULL;
+			else if (is_numeric($val))		$type = \PDO::PARAM_INT;
+			else if (is_bool($val))			$type = \PDO::PARAM_BOOL;
+			else 							$type = \PDO::PARAM_STR;
+
+			$query->bindValue($realKey, $val, $type);
+		}
+
+		$query->execute();
+		$after = microtime(true);
+
+		if ($this->databaseProfilingService)
+			$this->databaseProfilingService->signalQuery($sql, $this->dsn, round(1000 * ($after - $before)));
+
 		return $query;
 	}
 	
@@ -76,27 +95,22 @@ class DatabaseService {
 	 * @return array
 	 */
 	public function query($sql, $params = []) {
-		if (!is_array($params)) {
-			$params = func_get_args();
-			array_splice($params, 0, 1);
+		$query = call_user_func_array([ $this, 'openQuery' ], func_get_args());
+
+		$resultRow = [];
+		for ($i = 0; $i < $query->columnCount(); ++$i) {
+			$meta = $query->getColumnMeta($i);
+			$query->bindColumn($i + 1, $resultRow[$meta['name']], $meta['pdo_type']);
+			$resultRow[$i] =& $resultRow[$meta['name']];
 		}
 
-		$this->buildDatabase();
-
-		try {
-			if ($this->logService)
-				$this->logService->debug('SQL query: '.$sql);
-		} catch(\Exception $e) {}
-		
-		$before = microtime(true);
-		$query = $this->databasePDO->prepare($sql);
-		$query->execute($params);
-		$result = $query->fetchAll(\PDO::FETCH_BOTH);
-		$after = microtime(true);
-
-		if ($this->databaseProfilingService)
-			$this->databaseProfilingService->signalQuery($sql, $this->dsn, round(1000 * ($after - $before)));
-
+		$result = [];
+		while ($query->fetch(\PDO::FETCH_BOUND)) {
+			$rowCopy = [];
+			foreach ($resultRow as $k => $v)
+				$rowCopy[$k] = $v;
+			$result[] = $rowCopy;
+		}
 		return $result;
 	}
 	
@@ -110,11 +124,7 @@ class DatabaseService {
 	 * @return array
 	 */
 	public function querySingle($sql, $params = []) {
-		if (!is_array($params)) {
-			$params = func_get_args();
-			array_splice($params, 0, 1);
-		}
-		$r = $this->query($sql, $params);
+		$r = call_user_func_array([ $this, 'query' ], func_get_args());
 		return count($r) > 0 ? $r[0] : null;
 	}
 	
@@ -125,23 +135,7 @@ class DatabaseService {
 	 * @param array 	$param 		An array with the parameters
 	 */
 	public function execute($sql, $params = []) {
-		if (!is_array($params))
-			$params = array_splice(func_get_args(), 0, 1);
-
-		$this->buildDatabase();
-
-		try {
-			if ($this->logService)
-				$this->logService->debug('SQL query: '.$sql);
-		} catch(\Exception $e) {}
-
-		$before = microtime(true);
-		$query = $this->databasePDO->prepare($sql);
-		$query->execute($params);
-		$after = microtime(true);
-
-		if ($this->databaseProfilingService)
-			$this->databaseProfilingService->signalQuery($sql, $this->dsn, round(1000 * ($after - $before)));
+		call_user_func_array([ $this, 'query' ], func_get_args());
 	}
 	
 	/// \brief Returns the last insert ID
