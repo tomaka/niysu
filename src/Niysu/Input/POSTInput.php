@@ -91,15 +91,12 @@ class POSTInput implements \Niysu\InputInterface {
 	}
 
 	public function getPOSTData() {
-		try {
-			$array = [];
-			parse_str($this->request->getRawData(), $array);
-			return (object)$array;
+		if (self::isGlobalRequest($this->request))
+			return (object)$_POST;
 
-		} catch(\Exception $e) {
-			if (self::isGlobalRequest($this->request))
-				return $_POST;
-		}
+		$array = [];
+		parse_str($this->request->getRawData(), $array);
+		return (object)$array;
 	}
 
 
