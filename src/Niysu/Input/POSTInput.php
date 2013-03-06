@@ -32,13 +32,40 @@ class POSTInput implements \Niysu\InputInterface {
 		if (!isset($_FILES[$fileID]))
 			return null;
 
-		return (object)[
-			'mime' => $_FILES[$fileID]['type'],
-			'name' => $_FILES[$fileID]['name'],
-			'size' => $_FILES[$fileID]['size'],
-			'file' => $_FILES[$fileID]['tmp_name'],
-			'stream' => new \SplFileObject($_FILES[$fileID]['tmp_name'], 'r')
-		];
+		$result = [];
+		if (is_array($_FILES[$fileID]['type'])) {
+			foreach ($_FILES[$fileID]['type'] as $key => $v) {
+
+				if ($_FILES[$fileID]['error'][$key] != UPLOAD_ERR_OK) {
+					$result[] = (object)[ 'errorCode' => $_FILES[$fileID]['error'][$key], 'errorString' => $_FILES[$fileID]['error'][$key] ];
+
+				} else {
+					$result[] = (object)[
+						'mime' => $_FILES[$fileID]['type'][$key],
+						'name' => $_FILES[$fileID]['name'][$key],
+						'size' => $_FILES[$fileID]['size'][$key],
+						'file' => $_FILES[$fileID]['tmp_name'][$key],
+						'stream' => new \SplFileObject($_FILES[$fileID]['tmp_name'][$key], 'r')
+					];
+				}
+			}
+
+		} else {
+			if ($_FILES[$fileID]['error'] != UPLOAD_ERR_OK) {
+				$result = (object)[ 'errorCode' => $_FILES[$fileID]['error'], 'errorString' => $_FILES[$fileID]['error'] ];
+
+			} else {
+				$result = (object)[
+					'mime' => $_FILES[$fileID]['type'],
+					'name' => $_FILES[$fileID]['name'],
+					'size' => $_FILES[$fileID]['size'],
+					'file' => $_FILES[$fileID]['tmp_name'],
+					'stream' => new \SplFileObject($_FILES[$fileID]['tmp_name'], 'r')
+				];
+			}
+		}
+
+		return $result;
 	}
 	
 	public function isPOSTContentType() {
