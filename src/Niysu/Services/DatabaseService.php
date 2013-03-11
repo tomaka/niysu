@@ -69,10 +69,16 @@ class DatabaseService {
 
 			if (is_null($val))				$type = \PDO::PARAM_NULL;
 			else if (is_resource($val))		$type = \PDO::PARAM_LOB;
-			//else if (is_numeric($val))		$type = \PDO::PARAM_INT;
+			else if (is_numeric($val))		$type = \PDO::PARAM_STR;		// PARAM_INT
 			else if (is_bool($val))			$type = \PDO::PARAM_BOOL;
 			else if (is_string($val))		$type = \PDO::PARAM_STR;
-			else							throw new \LogicException('SQL query parameter of unknown type');
+			else {
+				ob_start();
+				var_dump($val);
+				$data = ob_get_contents();
+				ob_end_clean();
+				throw new \LogicException('SQL query parameter of unknown type: '.$data);
+			}
 
 			$query->bindValue($realKey, $val, $type);
 		}
