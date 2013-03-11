@@ -67,11 +67,12 @@ class DatabaseService {
 		foreach ($params as $key => $val) {
 			$realKey = is_numeric($key) ? $key+1 : $key;
 
-			if (is_resource($val))			$type = \PDO::PARAM_LOB;
-			else if (is_null($val))			$type = \PDO::PARAM_NULL;
-			else if (is_numeric($val))		$type = \PDO::PARAM_INT;
+			if (is_null($val))				$type = \PDO::PARAM_NULL;
+			else if (is_resource($val))		$type = \PDO::PARAM_LOB;
+			//else if (is_numeric($val))		$type = \PDO::PARAM_INT;
 			else if (is_bool($val))			$type = \PDO::PARAM_BOOL;
-			else 							$type = \PDO::PARAM_STR;
+			else if (is_string($val))		$type = \PDO::PARAM_STR;
+			else							throw new \LogicException('SQL query parameter of unknown type');
 
 			$query->bindValue($realKey, $val, $type);
 		}
