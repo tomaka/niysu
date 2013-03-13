@@ -11,7 +11,6 @@ namespace Niysu\Output;
 class XMLOutput implements \Niysu\OutputInterface {
 	public function __construct(\Niysu\HTTPResponseInterface $next) {
 		$this->outputResponse = $next;
-		$this->contentType = 'application/xml';
 	}
 
 	public function setContentType($contentType) {
@@ -31,6 +30,9 @@ class XMLOutput implements \Niysu\OutputInterface {
 	}
 
 	public function flush() {
+		if (!$this->data)
+			return;
+
 		$this->outputResponse->setHeader('Content-Type', $contentType);
 		$this->outputResponse->appendData($this->data);
 	}
@@ -146,7 +148,7 @@ class XMLOutput implements \Niysu\OutputInterface {
 	}
 
 
-	private $contentType;
+	private $contentType = 'application/xml';
 	private $outputResponse;
 	private $data;
 };

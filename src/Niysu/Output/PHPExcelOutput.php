@@ -19,11 +19,15 @@ class PHPExcelOutput implements \Niysu\OutputInterface {
 	 * Every function call you make is redirected to PHPExcel.
 	 */
 	public function __call($function, $arguments) {
+		$this->active = true;
 		return call_user_func_array([ $this->excelDoc, $function ], $arguments);
 	}
 
 
 	public function flush() {
+		if (!$this->active)
+			return;
+
 		$this->outputResponse->setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 
 		$writer = new \PHPExcel_Writer_Excel2007($this->excelDoc);
@@ -36,5 +40,6 @@ class PHPExcelOutput implements \Niysu\OutputInterface {
 
 
 	private $excelDoc;
+	private $active = false;
 	private $outputResponse;
 };

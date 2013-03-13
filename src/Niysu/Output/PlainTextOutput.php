@@ -24,6 +24,9 @@ class PlainTextOutput implements \Niysu\OutputInterface {
 	}
 
 	public function flush() {
+		if (!$this->data)
+			return;
+
 		$this->outputResponse->setHeader('Content-Length', strlen($this->data));
 		$this->outputResponse->setHeader('Content-Type', 'text/plain; charset=utf8');
 		$this->outputResponse->appendData($this->data);
@@ -31,5 +34,5 @@ class PlainTextOutput implements \Niysu\OutputInterface {
 
 
 	private $outputResponse;
-	private $data;
+	private $data = null;
 };
