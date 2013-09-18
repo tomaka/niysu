@@ -33,12 +33,15 @@ class JSONOutput implements \Niysu\OutputInterface {
 	}
 
 	public function flush() {
+		if ($this->data === null)
+			return;
+
 		if (!$this->response->isHeadersListSent())
 			$this->response->setHeader('Content-Type', 'application/json');
 		$this->response->appendData($this->data);
 	}
 
 
-	private $data;
+	private $data = null;
 	private $response;
 };

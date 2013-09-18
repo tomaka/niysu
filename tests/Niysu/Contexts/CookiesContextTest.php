@@ -20,7 +20,7 @@ class CookiesContextTest extends \PHPUnit_Framework_TestCase {
 		$cookiesService = $scope->call(__NAMESPACE__.'\\CookiesContext');
 
 		$this->assertNull($cookiesService->test);
-		$this->assertEquals(count($cookiesService->getCookiesList()), 0);
+		$this->assertEquals(0, count($cookiesService->getCookiesList()));
 	}
 
 	public function testGetCookie() {
@@ -35,7 +35,24 @@ class CookiesContextTest extends \PHPUnit_Framework_TestCase {
 		$cookiesService = $scope->call(__NAMESPACE__.'\\CookiesContext');
 
 		$this->assertEquals($cookiesService->test, 'hello');
-		$this->assertEquals(count($cookiesService->getCookiesList()), 1);
+		$this->assertEquals(1, count($cookiesService->getCookiesList()));
+	}
+
+	/**
+	 * @depends testGetCookie
+	 */
+	public function testGetCookieDefaultValue() {
+		$scope = new \Niysu\Scope([
+			'log' => $this->logger,
+			'response' => new \Niysu\HTTPResponseStorage(),
+			'request' => new \Niysu\HTTPRequestCustom('/', 'GET', [			// no cookies header
+			])
+		]);
+		
+		$cookiesService = $scope->call(__NAMESPACE__.'\\CookiesContext');
+		
+		$this->assertEquals('hello', $cookiesService->get('test', 'hello'));
+		$this->assertEquals(0, count($cookiesService->getCookiesList()));
 	}
 
 	/**

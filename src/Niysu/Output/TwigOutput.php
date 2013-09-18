@@ -18,6 +18,8 @@ class TwigOutput implements \Niysu\OutputInterface {
 	}
 
 	public function flush() {
+		if (!$this->active)
+			return;
 		if (!$this->template)
 			throw new \LogicException('The Twig template to use has not been set');
 
@@ -32,6 +34,7 @@ class TwigOutput implements \Niysu\OutputInterface {
 	 */
 	public function setTemplate($template) {
 		$this->template = $template;
+		$this->active = true;
 	}
 
 	/**
@@ -41,10 +44,12 @@ class TwigOutput implements \Niysu\OutputInterface {
 	 */
 	public function setVariables($variables) {
 		$this->variables = $variables;
+		$this->active = true;
 	}
 
 
 	private $outputResponse;
+	private $active = false;
 	private $template = null;
 	private $variables = [];
 	private $twigService;

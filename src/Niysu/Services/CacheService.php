@@ -15,6 +15,8 @@ class CacheService {
 	public function setCacheDirectory($directory) {
 		if (!is_dir($directory))
 			throw new \RuntimeException('The cache directory doesn\'t exist: '.$directory);
+		if (!is_writable($directory))
+			throw new \RuntimeException('The cache directory is not writable: '.$directory);
 		$this->directory = $directory;
 	}
 

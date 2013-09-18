@@ -21,6 +21,7 @@ class RedirectionOutput implements \Niysu\OutputInterface {
 	 */
 	public function setLocation($url, $statusCode = null) {
 		$this->location = $url;
+		$this->active = true;
 
 		if ($statusCode)
 			$this->setStatusCode($statusCode);
@@ -33,7 +34,7 @@ class RedirectionOutput implements \Niysu\OutputInterface {
 	 * @param array 	$routeParams 	Parameters used to build the route's URL
 	 * @param integer 	$statusCode 	(optional) The status code
 	 */
-	public function setLocationToRoute($routeName, $routeParams = [], $statusCode = null) {
+	public function setLocationToRoute($routeName, $routeParams = [], $statusCode = null) {		
 		if (!$this->server)
 			throw new \LogicException('No server was passed to constructor');
 		
@@ -42,6 +43,7 @@ class RedirectionOutput implements \Niysu\OutputInterface {
 			throw new \RuntimeException('This route doesn\'t exist: '.$routeName);
 		
 		$this->location = $route->getURL($routeParams);
+		$this->active = true;
 		
 		if ($statusCode)
 			$this->setStatusCode($statusCode);
@@ -59,10 +61,14 @@ class RedirectionOutput implements \Niysu\OutputInterface {
 			throw new \LogicException('Unvalid redirection status code: '.$statusCode);
 
 		$this->statusCode = $statusCode;
+		$this->active = true;
 	}
 
 
 	public function flush() {
+		if (!$this->active)
+			return;
+
 		$this->outputResponse->setStatusCode($this->statusCode);
 		$this->outputResponse->setHeader('Location', $this->location);
 	}
@@ -70,6 +76,7 @@ class RedirectionOutput implements \Niysu\OutputInterface {
 
 	private $outputResponse;
 	private $server;
+	private $active = false;
 	private $statusCode = 302;
 	private $location = '/';
 };

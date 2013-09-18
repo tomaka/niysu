@@ -27,9 +27,8 @@ class SessionContextTest extends \PHPUnit_Framework_TestCase {
 
 	/**
 	 * @depends testHasSessionLoadedFalseWithNoCookie
-	 * @expectedException Exception
 	 */
-	public function testGetThrowsWithNoCookie() {
+	public function testGetNullsWithNoCookie() {
 		$this->cookiesService	->expects($this->atLeastOnce())
 								->method('__isset')
 								->with($this->equalTo('session'))
@@ -38,7 +37,7 @@ class SessionContextTest extends \PHPUnit_Framework_TestCase {
 		$sessionContext = new SessionContext($this->sessionService, $this->cookiesService, null);
 		$sessionContext->setCookieName('session');
 
-		$sessionContext->test;
+		$this->assertNull($sessionContext->test);
 	}
 
 	/**
@@ -67,9 +66,8 @@ class SessionContextTest extends \PHPUnit_Framework_TestCase {
 
 	/**
 	 * @depends testHasSessionLoadedFalseWithCookieWithWrongID
-	 * @expectedException Exception
 	 */
-	public function testGetThrowsWithCookieWithWrongID() {
+	public function testGetNullWithCookieWithWrongID() {
 		$this->cookiesService	->expects($this->any())
 								->method('__isset')
 								->with($this->equalTo('session'))
@@ -88,7 +86,7 @@ class SessionContextTest extends \PHPUnit_Framework_TestCase {
 		$sessionContext = new SessionContext($this->sessionService, $this->cookiesService, null);
 		$sessionContext->setCookieName('session');
 
-		$sessionContext->test;
+		$this->assertNull($sessionContext->test);
 	}
 
 	/**

@@ -80,7 +80,7 @@ class CookiesContext {
 			unset($val[$pos]);
 		return $val;
 	}
-
+	
 	/**
 	 * Reads a cookie.
 	 *
@@ -90,15 +90,16 @@ class CookiesContext {
 	 * If a cookie of this name has been set using add(), then its value is returned instead.
 	 * If a cookie of this name has been destroyed using destroy(), then null is returned instead.
 	 *
-	 * @param string 	$varName 	The name of the cookie to read
+	 * @param string 	$cookieName 	The name of the cookie to read
+	 * @param mixed 	$default 		Default value to return if the cookie doesn't exist
 	 * @return string
 	 */
-	public function get($cookieName) {
+	public function get($cookieName, $default = null) {
 		if (isset($this->updatedCookies[$cookieName]))
 			return $this->updatedCookies[$cookieName];
 
 		if (!isset($this->requestCookies[$cookieName]))
-			return null;
+			return $default;
 
 		return $this->requestCookies[$cookieName];
 	}

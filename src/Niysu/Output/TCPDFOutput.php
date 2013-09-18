@@ -23,10 +23,14 @@ class TCPDFOutput implements \Niysu\OutputInterface {
 	 * Every function call you make is redirected to TCPDF.
 	 */
 	public function __call($function, $arguments) {
+		$this->active = true;
 		return call_user_func_array([ $this->pdf, $function ], $arguments);
 	}
 
 	public function flush() {
+		if (!$this->active)
+			return;
+
 		$data = $this->pdf->Output('', 'S');
 
 		$this->outputResponse->setHeader('Content-Length', strlen($data));
@@ -36,5 +40,6 @@ class TCPDFOutput implements \Niysu\OutputInterface {
 
 
 	private $outputResponse;
-	private $data;
+	private $pdf;
+	private $active = false;
 };

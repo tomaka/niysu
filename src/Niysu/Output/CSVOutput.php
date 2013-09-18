@@ -45,6 +45,9 @@ class CSVOutput implements \Niysu\OutputInterface {
 		rewind($fp);
 		$csv = stream_get_contents($fp);
 		fclose($fp);
+
+		if ($this->data === null)
+			$this->data = '';
 		$this->data .= $csv;
 	}
 
@@ -63,11 +66,14 @@ class CSVOutput implements \Niysu\OutputInterface {
 
 
 	public function flush() {
+		if ($this->data === null)
+			return;
+
 		$this->outputResponse->setHeader('Content-Type', 'text/csv');
 		$this->outputResponse->appendData($this->data);
 	}
 
 
 	private $outputResponse;
-	private $data;
+	private $data = null;
 };

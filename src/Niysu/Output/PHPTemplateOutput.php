@@ -18,6 +18,9 @@ class PHPTemplateOutput implements \Niysu\OutputInterface {
 	}
 
 	public function flush() {
+		if (!$this->active)
+			return;
+
 		if (!$this->template)
 			throw new \LogicException('The PHP template to use has not been set');
 
@@ -32,6 +35,7 @@ class PHPTemplateOutput implements \Niysu\OutputInterface {
 	 */
 	public function setContentType($contentType) {
 		$this->contentType = $contentType;
+		$this->active = true;
 	}
 
 	/**
@@ -41,6 +45,7 @@ class PHPTemplateOutput implements \Niysu\OutputInterface {
 	 */
 	public function setTemplate($template) {
 		$this->template = $template;
+		$this->active = true;
 	}
 
 	/**
@@ -52,10 +57,12 @@ class PHPTemplateOutput implements \Niysu\OutputInterface {
 		if (!file_exists($file))
 			throw new \LogicException('Template file doesn\'t exist: '.$file);
 		$this->template = file_get_contents($file);
+		$this->active = true;
 	}
 
 
 	private $outputResponse;
+	private $active = false;
 	private $scope;
 	private $template;
 	private $contentType = 'text/html; charset=utf8';
