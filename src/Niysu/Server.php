@@ -19,6 +19,8 @@ class Server {
 	 * @param mixed 	$environment 	Either the name of a file to load or an array containing the config
 	 */
 	public function __construct($environment = null) {
+		$serverCreationTime = microtime(true);
+
 		// building the main RoutesCollection
 		$this->routesCollection = new RoutesCollection('');
 
@@ -39,7 +41,7 @@ class Server {
 		$this->scope = new Scope();
 		$this->scope->server = $this;
 		$this->scope->passByRef('server', false);
-		$this->scope->elapsedTime = function() { return 0; };
+		$this->scope->elapsedTime = function() use ($serverCreationTime) { $now = microtime(true); return $now - $serverCreationTime; };
 		$this->scope->passByRef('elapsedTime', false);
 		$this->scope->log = $this->log;
 		$this->scope->passByRef('log', false);
