@@ -44,6 +44,18 @@ $server = new \Niysu\Server();
 $server->register('/', 'get', function($plainTextOutput) {
 	$plainTextOutput->setText('Hello world!');
 });
+
+$server->handle();
 </pre>
 
 <h3>Setting up the web server</h3>
+
+<p>You need to set up your web server so that it redirects every single request to your <code>index.php</code>.</p>
+
+<h4>PHP test server</h4>
+
+<p>Since version 5.4, PHP comes with an internal web server for testing purposes.</p>
+
+<p>Just type this is a shell in the directory of your <code>index.php</code>, and it will start the server:</p>
+
+<pre><code>php -S localhost:80 index.php</code></pre>

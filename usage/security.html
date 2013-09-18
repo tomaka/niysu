@@ -19,7 +19,7 @@ title: 'Security 101'
 $databaseService->query('SELECT col FROM table WHERE id = '.$id);
 </pre>
 
-<p>...except if you are <strong>100% sure</strong> that <code>$id</code> is a number and no a string.</p>
+<p>...except if you are <strong>100% sure</strong> that <code>$id</code> is a number and not a string.</p>
 
 <p>Instead you should write this:</p>
 
@@ -33,7 +33,7 @@ $databaseService->query('SELECT col FROM table WHERE id = ?', [ $id ]);
 $databaseService->query('SELECT col FROM table WHERE id = ? AND id2 = ?', [ $id, $id2 ]);
 </pre>
 
-<p>Or also:</p>
+<p>Or:</p>
 
 <pre class="brush: php">
 $databaseService->query('SELECT col FROM table WHERE id = :param', [ ':param' => $id ]);
