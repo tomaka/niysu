@@ -10,7 +10,8 @@ require_once __DIR__.'/HTTPRequestInterface.php';
  * @link 		http://github.com/Tomaka17/niysu
  */
 class HTTPRequestFromStream extends HTTPRequestInterface {
-	public function __construct($stream) {
+	public function __construct($stream, $isHTTPS = false) {
+		$this->isHTTPS = $isHTTPS;
 		$this->stream = $stream;
 	}
 
@@ -74,7 +75,7 @@ class HTTPRequestFromStream extends HTTPRequestInterface {
 	}
 
 	public function isHTTPS() {
-		return false;		// TODO: ?
+		return $this->isHTTPS;
 	}
 
 
@@ -110,6 +111,7 @@ class HTTPRequestFromStream extends HTTPRequestInterface {
 
 
 	private $stream;
+	private $isHTTPS;
 	private $headersList = null;
 	private $method = null;
 	private $url = null;
