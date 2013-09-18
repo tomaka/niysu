@@ -8,7 +8,11 @@ class DatabaseServiceTest extends \PHPUnit_Framework_TestCase {
 		$scope = new \Niysu\Scope();
 		$this->service = $scope->call(__NAMESPACE__.'\\DatabaseService');
 		$this->service->setDatabase('sqlite::memory:');
-		$this->service->execute('CREATE TABLE test (id INTEGER)');
+		try {
+			$this->service->execute('CREATE TABLE test (id INTEGER)');
+		} catch(\Exception $e) {
+			$this->service->execute('DELETE FROM test WHERE 1');
+		}
 	}
 
 	public function testExecute() {
