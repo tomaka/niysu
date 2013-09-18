@@ -25,7 +25,7 @@
                 <p>interface    <strong>OutputInterface</strong></p>
 
             <div class="description">
-            <p>Interface for the response of an HTTP request</p>
+            <p>Interface for an object who should be flushed at the end of its lifetime</p>
             <p></p>
         </div>
     
@@ -50,13 +50,14 @@
         <h2>Details</h2>
 
                         <h3 id="method_flush">
-        <div class="location">at line 15</div>
+        <div class="location">at line 18</div>
         <code>            public            
     <strong>flush</strong>()</code>
     </h3>
     <div class="details">
         <p>Sends the response to the HTTPResponseInterface.</p>
-        <p></p>
+        <p>This function should have no effect if the user did not explicitely specify that it wants to use the object<br />
+ For example $x = new Foo(); $x-&gt;flush(); should have no effect</p>
         <div class="tags">
             
             

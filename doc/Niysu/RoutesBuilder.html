@@ -46,7 +46,7 @@
         <h2>Details</h2>
 
                         <h3 id="method_parseClass">
-        <div class="location">at line 54</div>
+        <div class="location">at line 56</div>
         <code>            public            <a href="../Niysu/RoutesCollection.html"><abbr title="Niysu\RoutesCollection">RoutesCollection</abbr></a>
     <strong>parseClass</strong>(<abbr title="Niysu\ReflectionClass">ReflectionClass</abbr> $reflectionClass, <a href="../Niysu/RoutesCollection.html"><abbr title="Niysu\RoutesCollection">RoutesCollection</abbr></a> $parent)</code>
     </h3>
@@ -69,16 +69,18 @@
  The first before function of the new route collection will create an instance of the class and put it in $scope-&gt;this.<br />
  <br />
  The @before token has several possible syntaxes:<br />
-  - @before {global_function} {params}<br />
-		where {global_function} is the name of a global function to be called before the handler, and {params} is a JSON array<br />
-  - @before {method} {params}<br />
-		where {method} is the name of a method of the current class to be called before the handler, and {params} is a JSON array<br />
+  - @before {global_function}<br />
+		where {global_function} is the name of a global function to be called before the handler<br />
+  - @before {method}<br />
+		where {method} is the name of a method of the current class to be called before the handler<br />
   - @before {class}<br />
 		where {class} is a class name<br />
 		the before function will simply invoke the given class and do nothing<br />
   - @before {class}::{method} {params}<br />
-		where {class} is a class name, {method} is the name of a method of the class, and {params} is a JSON array<br />
-		the before function will try to find an object whose type is the class, and call the method on it<br />
+		where {class} is a class name, {method} is the name of a method of the class, and {params} can be eval&#039;d as a PHP array<br />
+		the before function will try to find in the scope an object whose type is the class, and call the method on it<br />
+  - @before function({params}) { {php code} }<br />
+		the function and code will be evaled as a PHP closure<br />
   - @before onlyif {anything}<br />
 		where {anything} can be any of the other syntaxes above, and {code} is a status code<br />
 		if the &quot;anything part&quot; returns false, then the route is considered not to match and another route will be tried (isRightResource is set to false)<br />

@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="robots" content="index, follow, all" />
-        <title>Niysu\Output\PlainTextOutput | API</title>
+        <title>Niysu\Services\PHPTemplateService | API</title>
                     <link rel="stylesheet" type="text/css" href="../../stylesheet.css">
                             </head>
         <body id="class">
@@ -19,14 +19,13 @@
         <div id="title">API</div>
 
             <div class="type">Class</div>
-    <h1><a href="../../Niysu/Output.html">Niysu\Output</a>\PlainTextOutput</h1>
+    <h1><a href="../../Niysu/Services.html">Niysu\Services</a>\PHPTemplateService</h1>
     </div>
         <div class="content">
-                <p>class    <strong>PlainTextOutput</strong>        implements
-        <a href="../../Niysu/OutputInterface.html"><abbr title="Niysu\OutputInterface">OutputInterface</abbr></a></p>
+                <p>class    <strong>PHPTemplateService</strong></p>
 
             <div class="description">
-            <p>Send plain text to the response.</p>
+            <p>Service which allows to use PHP templates.</p>
             <p></p>
         </div>
     
@@ -40,7 +39,7 @@
                     
                 </td>
                 <td class="last">
-                    <a href="#method___construct">__construct</a>(<abbr title="Niysu\Output\Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr> $response)
+                    <a href="#method___construct">__construct</a>(<abbr title="Niysu\Services\Niysu\Server">Server</abbr> $server, <abbr title="Niysu\Services\Monolog\Logger">Logger</abbr> $log = null)
                     <p></p>
                 </td>
                 <td></td>
@@ -50,18 +49,8 @@
                     
                 </td>
                 <td class="last">
-                    <a href="#method_setText">setText</a>(string $text)
-                    <p>Sets the text to send.</p>
-                </td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td class="type">
-                    
-                </td>
-                <td class="last">
-                    <a href="#method_flush">flush</a>()
-                    <p>Sends the response to the HTTPResponseInterface.</p>
+                    <a href="#method_render">render</a>(string $template, <abbr title="Niysu\Services\Niysu\Scope">Scope</abbr> $scope, <abbr title="Niysu\Services\callable">callable</abbr> $outputFunction)
+                    <p>Processes a template.</p>
                 </td>
                 <td></td>
             </tr>
@@ -73,7 +62,7 @@
                         <h3 id="method___construct">
         <div class="location">at line 12</div>
         <code>            public            
-    <strong>__construct</strong>(<abbr title="Niysu\Output\Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr> $response)</code>
+    <strong>__construct</strong>(<abbr title="Niysu\Services\Niysu\Server">Server</abbr> $server, <abbr title="Niysu\Services\Monolog\Logger">Logger</abbr> $log = null)</code>
     </h3>
     <div class="details">
         <p></p>
@@ -83,8 +72,13 @@
 
                     <table>
                     <tr>
-                <td><abbr title="Niysu\Output\Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr></td>
-                <td>$response</td>
+                <td><abbr title="Niysu\Services\Niysu\Server">Server</abbr></td>
+                <td>$server</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Niysu\Services\Monolog\Logger">Logger</abbr></td>
+                <td>$log</td>
                 <td></td>
             </tr>
             </table>
@@ -95,41 +89,35 @@
                     </div>
     </div>
 
-                <h3 id="method_setText">
-        <div class="location">at line 22</div>
+                <h3 id="method_render">
+        <div class="location">at line 26</div>
         <code>            public            
-    <strong>setText</strong>(string $text)</code>
+    <strong>render</strong>(string $template, <abbr title="Niysu\Services\Niysu\Scope">Scope</abbr> $scope, <abbr title="Niysu\Services\callable">callable</abbr> $outputFunction)</code>
     </h3>
     <div class="details">
-        <p>Sets the text to send.</p>
-        <p></p>
+        <p>Processes a template.</p>
+        <p>This function doesn&#039;t return anything but calls the third parameter with data as first parameter.</p>
         <div class="tags">
                             <h4>Parameters</h4>
 
                     <table>
                     <tr>
                 <td>string</td>
-                <td>$text</td>
-                <td>Plain-text data</td>
+                <td>$template</td>
+                <td>PHP source code to process as a template</td>
+            </tr>
+                    <tr>
+                <td><abbr title="Niysu\Services\Niysu\Scope">Scope</abbr></td>
+                <td>$scope</td>
+                <td>The scope that will be used to read variables from</td>
+            </tr>
+                    <tr>
+                <td><abbr title="Niysu\Services\callable">callable</abbr></td>
+                <td>$outputFunction</td>
+                <td>Function that will be called to output the result</td>
             </tr>
             </table>
 
-            
-            
-            
-                    </div>
-    </div>
-
-                <h3 id="method_flush">
-        <div class="location">at line 26</div>
-        <code>            public            
-    <strong>flush</strong>()</code>
-    </h3>
-    <div class="details">
-        <p>Sends the response to the HTTPResponseInterface.</p>
-        <p>This function should have no effect if the user did not explicitely specify that it wants to use the object<br />
- For example $x = new Foo(); $x-&gt;flush(); should have no effect</p>
-        <div class="tags">
             
             
             

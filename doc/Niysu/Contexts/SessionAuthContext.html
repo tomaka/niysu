@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="robots" content="index, follow, all" />
+        <title>Niysu\Contexts\SessionAuthContext | API</title>
+                    <link rel="stylesheet" type="text/css" href="../../stylesheet.css">
+                            </head>
+        <body id="class">
+            <div class="header">
+        <ul>
+            <li><a href="../../classes.html">Classes</a></li>
+                            <li><a href="../../namespaces.html">Namespaces</a></li>
+                        <li><a href="../../interfaces.html">Interfaces</a></li>
+            <li><a href="../../doc-index.html">Index</a></li>
+            
+        </ul>
+
+        <div id="title">API</div>
+
+            <div class="type">Class</div>
+    <h1><a href="../../Niysu/Contexts.html">Niysu\Contexts</a>\SessionAuthContext</h1>
+    </div>
+        <div class="content">
+                <p>class    <strong>SessionAuthContext</strong></p>
+
+            <div class="description">
+            <p>Allows authentication with sessions.</p>
+            <p></p>
+        </div>
+    
+    
+    
+            <h2>Methods</h2>
+
+            <table>
+                    <tr>
+                <td class="type">
+                    
+                </td>
+                <td class="last">
+                    <a href="#method___construct">__construct</a>(<abbr title="Niysu\Contexts\Niysu\Contexts\SessionContext">SessionContext</abbr> $sessionContext, <abbr title="Niysu\Contexts\Niysu\Services\AuthService">AuthService</abbr> $authService, <abbr title="Niysu\Contexts\Monolog\Logger">Logger</abbr> $log = null)
+                    <p></p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    boolean
+                </td>
+                <td class="last">
+                    <a href="#method_login">login</a>()
+                    <p></p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    boolean
+                </td>
+                <td class="last">
+                    <a href="#method_hasAccess">hasAccess</a>($access)
+                    <p>Returns whether the current user has the given access.</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    boolean
+                </td>
+                <td class="last">
+                    <a href="#method_setLogin">setLogin</a>($login, $password)
+                    <p>Sets the login and password when the client sends them.</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    
+                </td>
+                <td class="last">
+                    <a href="#method_clearLogin">clearLogin</a>()
+                    <p></p>
+                </td>
+                <td></td>
+            </tr>
+            </table>
+
+
+        <h2>Details</h2>
+
+                        <h3 id="method___construct">
+        <div class="location">at line 12</div>
+        <code>            public            
+    <strong>__construct</strong>(<abbr title="Niysu\Contexts\Niysu\Contexts\SessionContext">SessionContext</abbr> $sessionContext, <abbr title="Niysu\Contexts\Niysu\Services\AuthService">AuthService</abbr> $authService, <abbr title="Niysu\Contexts\Monolog\Logger">Logger</abbr> $log = null)</code>
+    </h3>
+    <div class="details">
+        <p></p>
+        <p></p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td><abbr title="Niysu\Contexts\Niysu\Contexts\SessionContext">SessionContext</abbr></td>
+                <td>$sessionContext</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Niysu\Contexts\Niysu\Services\AuthService">AuthService</abbr></td>
+                <td>$authService</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Niysu\Contexts\Monolog\Logger">Logger</abbr></td>
+                <td>$log</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_login">
+        <div class="location">at line 21</div>
+        <code>            public            boolean
+    <strong>login</strong>()</code>
+    </h3>
+    <div class="details">
+        <p></p>
+        <p></p>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td>boolean</td>
+            <td>False if the client is not currently logged in, otherwise returns the user&#039;s ID.</td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_hasAccess">
+        <div class="location">at line 33</div>
+        <code>            public            boolean
+    <strong>hasAccess</strong>($access)</code>
+    </h3>
+    <div class="details">
+        <p>Returns whether the current user has the given access.</p>
+        <p></p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td></td>
+                <td>$access</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td>boolean</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_setLogin">
+        <div class="location">at line 41</div>
+        <code>            public            boolean
+    <strong>setLogin</strong>($login, $password)</code>
+    </h3>
+    <div class="details">
+        <p>Sets the login and password when the client sends them.</p>
+        <p></p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td></td>
+                <td>$login</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$password</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table>
+        <tr>
+            <td>boolean</td>
+            <td>The UserID (returned by AuthService&#039;s login function) or false.</td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_clearLogin">
+        <div class="location">at line 55</div>
+        <code>            public            
+    <strong>clearLogin</strong>()</code>
+    </h3>
+    <div class="details">
+        <p></p>
+        <p></p>
+        <div class="tags">
+            
+            
+            
+                    </div>
+    </div>
+
+    
+            </div>
+            <div id="footer">
+        Generated by <a href="http://sami.sensiolabs.org/" target="_top">Sami, the API Documentation Generator</a>.
+    </div>
+    </body>
+</html>

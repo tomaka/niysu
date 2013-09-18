@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="robots" content="index, follow, all" />
-        <title>Niysu\Output\XMLOutput | API</title>
+        <title>Niysu\Output\PHPTemplateOutput | API</title>
                     <link rel="stylesheet" type="text/css" href="../../stylesheet.css">
                             </head>
         <body id="class">
@@ -19,15 +19,15 @@
         <div id="title">API</div>
 
             <div class="type">Class</div>
-    <h1><a href="../../Niysu/Output.html">Niysu\Output</a>\XMLOutput</h1>
+    <h1><a href="../../Niysu/Output.html">Niysu\Output</a>\PHPTemplateOutput</h1>
     </div>
         <div class="content">
-                <p>class    <strong>XMLOutput</strong>        implements
+                <p>class    <strong>PHPTemplateOutput</strong>        implements
         <a href="../../Niysu/OutputInterface.html"><abbr title="Niysu\OutputInterface">OutputInterface</abbr></a></p>
 
             <div class="description">
-            <p>Send XML data to the response.</p>
-            <p></p>
+            <p>Generates an HTML page using PHPTemplateService and sends it to the response.</p>
+            <p>The actual generation is done when flushing the filter, ie. usually after the handler is called.</p>
         </div>
     
     
@@ -40,28 +40,8 @@
                     
                 </td>
                 <td class="last">
-                    <a href="#method___construct">__construct</a>(<abbr title="Niysu\Output\Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr> $next)
+                    <a href="#method___construct">__construct</a>(<abbr title="Niysu\Output\Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr> $response, <abbr title="Niysu\Output\Niysu\Scope">Scope</abbr> $scope, <abbr title="Niysu\Output\Niysu\Services\PHPTemplateService">PHPTemplateService</abbr> $phpTemplateService)
                     <p></p>
-                </td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td class="type">
-                    
-                </td>
-                <td class="last">
-                    <a href="#method_setContentType">setContentType</a>($contentType)
-                    <p></p>
-                </td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td class="type">
-                    
-                </td>
-                <td class="last">
-                    <a href="#method_setData">setData</a>(mixed $xml)
-                    <p>Sets the XML data to send when the response is sent.</p>
                 </td>
                 <td></td>
             </tr>
@@ -80,8 +60,28 @@
                     
                 </td>
                 <td class="last">
-                    <a href="#method_toString">toString</a>($xml)
-                    <p>Turns anything that can represent XML into a string.</p>
+                    <a href="#method_setContentType">setContentType</a>(string $contentType)
+                    <p>Sets the content type to use on output.</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    
+                </td>
+                <td class="last">
+                    <a href="#method_setTemplate">setTemplate</a>(string $template)
+                    <p>Sets the template that will be used when rendering.</p>
+                </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type">
+                    
+                </td>
+                <td class="last">
+                    <a href="#method_setTemplateFile">setTemplateFile</a>(string $file)
+                    <p>Sets the file to load the template from.</p>
                 </td>
                 <td></td>
             </tr>
@@ -91,9 +91,9 @@
         <h2>Details</h2>
 
                         <h3 id="method___construct">
-        <div class="location">at line 12</div>
+        <div class="location">at line 14</div>
         <code>            public            
-    <strong>__construct</strong>(<abbr title="Niysu\Output\Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr> $next)</code>
+    <strong>__construct</strong>(<abbr title="Niysu\Output\Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr> $response, <abbr title="Niysu\Output\Niysu\Scope">Scope</abbr> $scope, <abbr title="Niysu\Output\Niysu\Services\PHPTemplateService">PHPTemplateService</abbr> $phpTemplateService)</code>
     </h3>
     <div class="details">
         <p></p>
@@ -104,58 +104,18 @@
                     <table>
                     <tr>
                 <td><abbr title="Niysu\Output\Niysu\HTTPResponseInterface">HTTPResponseInterface</abbr></td>
-                <td>$next</td>
+                <td>$response</td>
                 <td></td>
             </tr>
-            </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-                <h3 id="method_setContentType">
-        <div class="location">at line 16</div>
-        <code>            public            
-    <strong>setContentType</strong>($contentType)</code>
-    </h3>
-    <div class="details">
-        <p></p>
-        <p></p>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table>
                     <tr>
-                <td></td>
-                <td>$contentType</td>
+                <td><abbr title="Niysu\Output\Niysu\Scope">Scope</abbr></td>
+                <td>$scope</td>
                 <td></td>
             </tr>
-            </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-                <h3 id="method_setData">
-        <div class="location">at line 28</div>
-        <code>            public            
-    <strong>setData</strong>(mixed $xml)</code>
-    </h3>
-    <div class="details">
-        <p>Sets the XML data to send when the response is sent.</p>
-        <p></p>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table>
                     <tr>
-                <td>mixed</td>
-                <td>$xml</td>
-                <td>Data representing XML</td>
+                <td><abbr title="Niysu\Output\Niysu\Services\PHPTemplateService">PHPTemplateService</abbr></td>
+                <td>$phpTemplateService</td>
+                <td></td>
             </tr>
             </table>
 
@@ -166,7 +126,7 @@
     </div>
 
                 <h3 id="method_flush">
-        <div class="location">at line 32</div>
+        <div class="location">at line 20</div>
         <code>            public            
     <strong>flush</strong>()</code>
     </h3>
@@ -181,22 +141,72 @@
                     </div>
     </div>
 
-                <h3 id="method_toString">
-        <div class="location">at line 43</div>
+                <h3 id="method_setContentType">
+        <div class="location">at line 36</div>
         <code>            public            
-    <strong>toString</strong>($xml)</code>
+    <strong>setContentType</strong>(string $contentType)</code>
     </h3>
     <div class="details">
-        <p>Turns anything that can represent XML into a string.</p>
+        <p>Sets the content type to use on output.</p>
         <p></p>
         <div class="tags">
                             <h4>Parameters</h4>
 
                     <table>
                     <tr>
-                <td></td>
-                <td>$xml</td>
-                <td></td>
+                <td>string</td>
+                <td>$contentType</td>
+                <td>MIME type of the output</td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_setTemplate">
+        <div class="location">at line 46</div>
+        <code>            public            
+    <strong>setTemplate</strong>(string $template)</code>
+    </h3>
+    <div class="details">
+        <p>Sets the template that will be used when rendering.</p>
+        <p></p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td>string</td>
+                <td>$template</td>
+                <td>Content of the template</td>
+            </tr>
+            </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+                <h3 id="method_setTemplateFile">
+        <div class="location">at line 56</div>
+        <code>            public            
+    <strong>setTemplateFile</strong>(string $file)</code>
+    </h3>
+    <div class="details">
+        <p>Sets the file to load the template from.</p>
+        <p></p>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table>
+                    <tr>
+                <td>string</td>
+                <td>$file</td>
+                <td>Path to the file which contains the template</td>
             </tr>
             </table>
 
