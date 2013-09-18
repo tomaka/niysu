@@ -115,5 +115,3 @@ class HTTPRequestFromStream extends HTTPRequestInterface {
 	private $url = null;
 	private $data = '';
 }
-
-?>

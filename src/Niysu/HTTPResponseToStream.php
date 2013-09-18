@@ -61,5 +61,3 @@ class HTTPResponseToStream implements HTTPResponseInterface {
 	private $headers = [];
 	private $headersListSent = false;
 };
-
-?>
