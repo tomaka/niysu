@@ -24,7 +24,7 @@ class PHPTemplateOutput implements \Niysu\OutputInterface {
 		if (!$this->template)
 			throw new \LogicException('The PHP template to use has not been set');
 
-		$this->outputResponse->setHeader('Content-Type', $contentType);
+		$this->outputResponse->setHeader('Content-Type', $this->contentType);
 		$this->phpTemplateService->render($this->template, $this->scope, function($data) { $this->outputResponse->appendData($data); });
 	}
 
