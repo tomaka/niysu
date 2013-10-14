@@ -212,22 +212,20 @@ class Server {
 
 		try {
 			if ($this->routesCollection->handle($input, $output, $localScope)) {
-				$output->flush();
 				$this->log->debug('Successful handling of resource', [ 'url' => $input->getURL(), 'method' => $input->getMethod() ]);
+				
+				// flushing output
+				if (isset($localScope->output) && $localScope->output instanceof OutputInterface) {
+					$this->log->debug('Flushing the OutputInterface object');
+					$localScope->output->flush();
+				} else {
+					$this->log->debug('No OutputInterface object has been found');
+				}
 
 			} else {
 				// handling 404 if we didn't find any handler
 				$this->log->debug('Didn\'t find any route for request', [ 'url' => $input->getURL(), 'method' => $input->getMethod() ]);
 				$this->followPseudoRoute($input, $output, 404, $localScope);
-			}
-
-			// flushing output
-			if (isset($localScope->output) && $localScope->output instanceof OutputInterface) {
-				$this->log->debug('Flushing the OutputInterface object');
-				$localScope->output->flush();
-
-			} else {
-				$this->log->debug('No OutputInterface object has been found');
 			}
 
 			// flush response
