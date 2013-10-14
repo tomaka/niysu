@@ -31,22 +31,26 @@ class HTTPResponseGlobal implements HTTPResponseInterface {
 
 	public function setStatusCode($statusCode) {
 		http_response_code($statusCode);
+		$this->flushed = false;
 	}
 
 	public function addHeader($header, $value) {
 		$code = http_response_code();
 		header($header.': '.$value, false);
 		http_response_code($code);
+		$this->flushed = false;
 	}
 
 	public function setHeader($header, $value) {
 		$code = http_response_code();
 		header($header.': '.$value, true);
 		http_response_code($code);
+		$this->flushed = false;
 	}
 
 	public function removeHeader($header) {
 		header_remove($header);
+		$this->flushed = false;
 	}
 
 	public function isHeadersListSent() {
@@ -55,7 +59,7 @@ class HTTPResponseGlobal implements HTTPResponseInterface {
 
 	public function appendData($data) {
 		echo $data;
-		flush();
+		$this->flushed = false;
 	}
 
 
