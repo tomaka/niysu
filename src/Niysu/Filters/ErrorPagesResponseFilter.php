@@ -37,10 +37,18 @@ class ErrorPagesResponseFilter implements \Niysu\HTTPResponseInterface {
 	 * @param string 	$routeName 		Name of the route to be called
 	 */
 	public function setErrorRoute($errorCode, $routeName) {
+		if ($this->headersSent)
+			throw new \LogicException('Headers already sent');
+
 		$this->errorReplacements[$errorCode] = $routeName;
+		if ($errorCode == $this->currentStatusCode)
+			$this->currentReplacement = $routeName;
 	}
 
 	public function setStatusCode($statusCode) {
+		if ($this->headersSent)
+			throw new \LogicException('Headers already sent');
+
 		$this->currentStatusCode = $statusCode;
 		if ($this->server && isset($this->errorReplacements[$statusCode]))
 			$this->currentReplacement = $this->errorReplacements[$statusCode];
@@ -89,6 +97,13 @@ class ErrorPagesResponseFilter implements \Niysu\HTTPResponseInterface {
 	}
 
 	public function appendData($data) {
+		if (!$this->headersSent) {
+			if (!$this->currentReplacement && $this->currentStatusCode >= 400) {
+				if ($this->server->getRouteByName($this->currentStatusCode))
+					$this->currentReplacement = $this->currentStatusCode;
+			}
+		}
+
 		$this->headersSent = true;
 		if (!$this->currentReplacement)
 			$this->outputResponse->appendData($data);
