@@ -483,7 +483,7 @@ class Server {
 
 		$headersSentFile = null;
 		$headersSentLine = null;
-		headers_sent($headersSentFile, $headersSentLine);
+		$headersSent = headers_sent($headersSentFile, $headersSentLine);
 
 		$output->appendData(
 			'<html>
@@ -500,7 +500,7 @@ class Server {
 						<p>File: '.nl2br(htmlentities($e->getFile())).'<br />
 						Line: '.nl2br(htmlentities($e->getLine())).'<br />
 						Code: '.nl2br(htmlentities($e->getCode())).'<br />
-						Headers sent: '.nl2br(htmlentities($headersSentFile.':'.$headersSentLine)).'</p>
+						Headers sent: '.($headersSent ? nl2br(htmlentities($headersSentFile.':'.$headersSentLine)) : 'no').'</p>
 
 						<h3>Stack</h3>
 						<p>'.nl2br(htmlentities($e->getTraceAsString())).'</p>
