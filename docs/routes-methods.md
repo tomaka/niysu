@@ -1,9 +1,5 @@
----
-layout: usage
-title: 'How to register routes'
----
-
-<h2>How to register routes</h2>
+How to register routes
+======================
 
 <p>There are two methods available to you in order to give the Niysu server a list of routes.</p>
 

@@ -49,12 +49,12 @@ Here is an example `index.php`:
 Setting up the web server
 -------------------------
 
-<p>You need to set up your web server so that it redirects every single request to your <code>index.php</code>.</p>
+You need to set up your web server so that it redirects every single request to your `index.php`.
 
-<h4>PHP test server</h4>
+PHP test server
 
-<p>Since version 5.4, PHP comes with an internal web server for testing purposes.</p>
+Since version 5.4, PHP comes with an internal web server for testing purposes.
 
-<p>Just type this is a shell in the directory of your <code>index.php</code>, and it will start the server:</p>
+Just type this is a shell in the directory of your `index.php`, and it will start the server:
 
-<pre><code>php -S localhost:80 index.php</code></pre>
+	php -S localhost:80 index.php

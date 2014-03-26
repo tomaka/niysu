@@ -1,31 +1,23 @@
----
-layout: usage
-title: 'Handling errors'
----
+Handling errors
+===============
 
-<h2>Handling errors</h2>
+If you try to access an non-existing page of your website or if you get an error, you will get a blank page.
+To circumvent that, you need to use the `ErrorPagesResponseFilter`
 
-<p>If you try to access an non-existing page of your website or if you get an error, you will get a blank page.
-To circumvent that, you need to use the <code>ErrorPagesResponseFilter</code></p>
+The first thing to do is to enable the filter. Add this to your global configuration:
 
-<p>The first thing to do is to enable the filter. Add this to your global configuration:</p>
-
-<pre class="brush: php">
 	before: [
 		...
 		function($errorPagesResponseFilter) {},
 		...
 	]
-</pre>
 
-<p>Now you just need to name some routes like status codes.
-For example if you name a route <code>404</code>, it will automatically be called instead of a 404 response.</p>
+Now you just need to name some routes like status codes.
+For example if you name a route `404`, it will automatically be called instead of a 404 response.
 
-<pre class="brush: php">
-$server
-	->register()
-	->name('404')
-	->handler(function($plainTextOutput) {
-		$plainTextOutput->setText('Page not found!');
-	});
-</pre>
+	$server
+		->register()
+		->name('404')
+		->handler(function($plainTextOutput) {
+			$plainTextOutput->setText('Page not found!');
+		});
